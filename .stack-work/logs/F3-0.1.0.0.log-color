@@ -1,0 +1,14 @@
+Configuring F3-0.1.0.0...
+Preprocessing library for F3-0.1.0.0..
+Building library for F3-0.1.0.0..
+[1 of 2] Compiling Lib              ( src/Lib.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/Lib.o )
+[2 of 2] Compiling Paths_F3         ( .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/autogen/Paths_F3.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/Paths_F3.o )
+ignoring (possibly broken) abi-depends field for packages
+Preprocessing executable 'F3-exe' for F3-0.1.0.0..
+Building executable 'F3-exe' for F3-0.1.0.0..
+[1 of 2] Compiling Main             ( app/Main.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/F3-exe/F3-exe-tmp/Main.o )
+[2 of 2] Compiling Paths_F3         ( .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/F3-exe/autogen/Paths_F3.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/F3-exe/F3-exe-tmp/Paths_F3.o )
+Linking .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/F3-exe/F3-exe ...
+Installing library in /home/james/Documents/Uni/MSci-Project/.stack-work/install/x86_64-linux/lts-12.13/8.4.3/lib/x86_64-linux-ghc-8.4.3/F3-0.1.0.0-LXdvBXfU7wW1rwLzZVup6k
+Installing executable F3-exe in /home/james/Documents/Uni/MSci-Project/.stack-work/install/x86_64-linux/lts-12.13/8.4.3/bin
+Registering library for F3-0.1.0.0..

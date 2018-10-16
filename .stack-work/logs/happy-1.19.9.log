@@ -1,0 +1,44 @@
+[1 of 2] Compiling Main             ( /tmp/stack9696/happy-1.19.9/Setup.lhs, /tmp/stack9696/happy-1.19.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/Main.o )
+
+/tmp/stack9696/happy-1.19.9/Setup.lhs:48:22: warning: [-Wdeprecations]
+    In the use of ‘rawSystemProgramConf’
+    (imported from Distribution.Simple.Program):
+    Deprecated: "use runDbProgram instead. This symbol will be removed in Cabal-3.0 (est. Oct 2018)."
+   |
+48 |   let runProgram p = rawSystemProgramConf (fromFlagOrDefault normal (buildVerbosity flags))
+   |                      ^^^^^^^^^^^^^^^^^^^^
+[2 of 2] Compiling StackSetupShim   ( /home/james/.stack/setup-exe-src/setup-shim-mPHDZzAJ.hs, /tmp/stack9696/happy-1.19.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/StackSetupShim.o )
+Linking /tmp/stack9696/happy-1.19.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/setup ...
+Warning: happy.cabal:25:2: Tabs used as indentation at 25:2, 26:2, 27:2, 28:2,
+29:2, 30:2, 31:2, 32:2, 33:2, 34:2, 35:2, 36:2, 37:2, 38:2, 39:2, 40:2, 41:2,
+42:2, 43:2, 44:2, 45:2, 46:2, 47:2, 48:2, 49:2, 50:2, 51:2, 52:2, 53:2, 54:2,
+55:2, 56:2, 57:2, 58:2, 59:2, 60:2, 61:2, 62:2, 63:2, 64:2, 65:2, 66:2, 67:2,
+68:2, 69:2, 70:2, 71:2, 72:2, 73:2, 74:2, 75:2, 76:2, 77:2, 78:2, 79:2, 80:2,
+81:2, 82:2, 83:2, 84:2, 85:2, 86:2, 87:2, 88:2, 89:2, 90:2, 91:2, 92:2, 93:2,
+94:2, 95:2, 96:2, 97:2, 98:2, 99:2, 100:2, 101:2, 102:2, 103:2, 104:2, 105:2,
+106:2, 107:2, 108:2, 109:2, 110:2, 111:2, 112:2, 113:2, 114:2, 115:2, 116:2,
+117:2, 118:2, 119:2, 120:2, 121:2, 122:2
+Configuring happy-1.19.9...
+Preprocessing executable 'happy' for happy-1.19.9..
+Building executable 'happy' for happy-1.19.9..
+[ 1 of 19] Compiling AbsSyn           ( src/AbsSyn.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/AbsSyn.o )
+[ 2 of 19] Compiling GenUtils         ( src/GenUtils.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/GenUtils.o )
+[ 3 of 19] Compiling NameSet          ( src/NameSet.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/NameSet.o )
+[ 4 of 19] Compiling ParamRules       ( src/ParamRules.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/ParamRules.o )
+[ 5 of 19] Compiling ParseMonad       ( src/ParseMonad.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/ParseMonad.o )
+[ 6 of 19] Compiling Lexer            ( src/Lexer.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Lexer.o )
+[ 7 of 19] Compiling AttrGrammar      ( src/AttrGrammar.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/AttrGrammar.o )
+[ 8 of 19] Compiling AttrGrammarParser ( src/AttrGrammarParser.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/AttrGrammarParser.o )
+[ 9 of 19] Compiling Grammar          ( src/Grammar.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Grammar.o )
+[10 of 19] Compiling LALR             ( src/LALR.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/LALR.o )
+[11 of 19] Compiling First            ( src/First.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/First.o )
+[12 of 19] Compiling Parser           ( src/Parser.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Parser.o )
+[13 of 19] Compiling Paths_happy      ( .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/autogen/Paths_happy.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Paths_happy.o )
+[14 of 19] Compiling Info             ( src/Info.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Info.o )
+[15 of 19] Compiling PrettyGrammar    ( src/PrettyGrammar.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/PrettyGrammar.o )
+[16 of 19] Compiling ProduceGLRCode   ( src/ProduceGLRCode.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/ProduceGLRCode.o )
+[17 of 19] Compiling Target           ( src/Target.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Target.o )
+[18 of 19] Compiling ProduceCode      ( src/ProduceCode.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/ProduceCode.o )
+[19 of 19] Compiling Main             ( src/Main.lhs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy-tmp/Main.o )
+Linking .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/happy/happy ...
+Installing executable happy in /home/james/.stack/snapshots/x86_64-linux/lts-12.13/8.4.3/bin
