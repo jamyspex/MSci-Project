@@ -1,11 +1,42 @@
+{-# LANGUAGE AllowAmbiguousTypes          #-}
+{-# LANGUAGE DataKinds                    #-}
+{-# LANGUAGE DeriveGeneric                #-}
+{-# LANGUAGE DuplicateRecordFields        #-}
+{-# LANGUAGE FlexibleContexts             #-}
+{-# LANGUAGE GADTs                        #-}
+{-# LANGUAGE NoMonomorphismRestriction    #-}
+{-# LANGUAGE OverloadedLabels             #-}
+{-# LANGUAGE PartialTypeSignatures        #-}
+{-# LANGUAGE Rank2Types                   #-}
+{-# LANGUAGE ScopedTypeVariables          #-}
+{-# LANGUAGE TypeApplications             #-}
+{-# LANGUAGE UndecidableInstances         #-}
+{-# OPTIONS_GHC -Wno-missing-signatures   #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports  #-}
+
 module Parser
     ( 
         parseTestFile
 
     ) where
 
-import LanguageFortranTools (parseFile)
+import LanguageFortranTools
 import qualified Data.Map as DMap
+import Language.Fortran
+
+import Control.Lens
+import Data.Maybe (maybeToList)
+import GHC.Generics (Generic)
+import Data.Function ((&))
+import Data.Generics.Internal.VL.Lens
+import Data.Generics.Product
+import Data.Generics.Sum
+import GHC.Generics
+import Data.Generics.Internal.VL.Iso
+import Data.Generics.Internal.VL.Prism
+import Data.Generics.Internal.Profunctor.Lens
+import Data.Generics.Internal.Profunctor.Iso
+import Data.Generics.Internal.Profunctor.Prism
   
 parseTestFile :: IO ()
 parseTestFile = do
@@ -13,7 +44,9 @@ parseTestFile = do
     let
         (parsedProgram, stash, moduleVarTable) = parseOutput
         stashValues = snd stash
-    putStrLn $ "AST: " ++ (show $ fst parsedProgram)
+        astObj = fst parsedProgram
+    putStrLn $ "AST: " ++ (show astObj)
+    playAboutWithLens astObj 
     putStrLn $ "Program lines:"
     mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram
 
@@ -31,6 +64,11 @@ parseTestFile = do
 
     -- putStrLn $ "Program String" ++ (snd parsedProgram)
     return ()
+
+playAboutWithLens :: Program Anno -> IO (Program Anno)
+playAboutWithLens ast = do
+    putStrLn $ show $ toListOf (types @(VarName _)) ast
+    return ast
 
 printModVarTable :: DMap.Map String String -> IO ()
 printModVarTable table = do

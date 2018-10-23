@@ -26,6 +26,8 @@ dependencies:
 - syb
 - process
 - language-fortran
+- generic-lens
+- lens
  
 library:
   source-dirs: src
