@@ -1,52 +1,21 @@
-{-# LANGUAGE AllowAmbiguousTypes          #-}
-{-# LANGUAGE DataKinds                    #-}
-{-# LANGUAGE DeriveGeneric                #-}
-{-# LANGUAGE DuplicateRecordFields        #-}
-{-# LANGUAGE FlexibleContexts             #-}
-{-# LANGUAGE GADTs                        #-}
-{-# LANGUAGE NoMonomorphismRestriction    #-}
-{-# LANGUAGE OverloadedLabels             #-}
-{-# LANGUAGE PartialTypeSignatures        #-}
-{-# LANGUAGE Rank2Types                   #-}
-{-# LANGUAGE ScopedTypeVariables          #-}
-{-# LANGUAGE TypeApplications             #-}
-{-# LANGUAGE UndecidableInstances         #-}
-{-# OPTIONS_GHC -Wno-missing-signatures   #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports  #-}
-
-module Parser
-    ( 
-        parseTestFile
-
-    ) where
+module Parser (parseTestFile) where
 
 import LanguageFortranTools
 import qualified Data.Map as DMap
 import Language.Fortran
 
-import Control.Lens
-import Data.Maybe (maybeToList)
-import GHC.Generics (Generic)
-import Data.Function ((&))
-import Data.Generics.Internal.VL.Lens
-import Data.Generics.Product
-import Data.Generics.Sum
-import GHC.Generics
-import Data.Generics.Internal.VL.Iso
-import Data.Generics.Internal.VL.Prism
-import Data.Generics.Internal.Profunctor.Lens
-import Data.Generics.Internal.Profunctor.Iso
-import Data.Generics.Internal.Profunctor.Prism
-  
+import Data.Generics                 (mkQ, mkT, gmapQ, gmapT, everything, everywhere)
+
+
 parseTestFile :: IO ()
 parseTestFile = do
-    parseOutput <- parseFile [] [] False "Shallow-Water-2D/init.f95"
+    parseOutput <- parseFile [] [] False "Shallow-Water-2D/main.f95"
     let
         (parsedProgram, stash, moduleVarTable) = parseOutput
         stashValues = snd stash
         astObj = fst parsedProgram
     putStrLn $ "AST: " ++ (show astObj)
-    playAboutWithLens astObj 
+    playAboutWithAst astObj 
     putStrLn $ "Program lines:"
     mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram
 
@@ -65,9 +34,17 @@ parseTestFile = do
     -- putStrLn $ "Program String" ++ (snd parsedProgram)
     return ()
 
-playAboutWithLens :: Program Anno -> IO (Program Anno)
-playAboutWithLens ast = do
-    putStrLn $ show $ toListOf (types @(VarName _)) ast
+
+getLoopVariables :: Fortran Anno -> [String]
+getLoopVariables (For _ _ (VarName _ name) e1 e2 e3 _) = [name]
+getLoopVariables _ = []
+
+getVarName :: VarName Anno -> [String]
+getVarName (VarName _ name) = [name]
+
+playAboutWithAst :: Program Anno -> IO (Program Anno)
+playAboutWithAst ast = do
+    putStrLn $ show $ everything (++) (mkQ [] getLoopVariables) ast
     return ast
 
 printModVarTable :: DMap.Map String String -> IO ()
