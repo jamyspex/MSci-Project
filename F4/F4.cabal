@@ -1,0 +1,88 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 6f94be1b7932f783549fd03fb572d6e987add52324d0808a0d47f5258338fcf7
+
+name:           F4
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/F4#readme>
+homepage:       https://github.com/githubuser/F4#readme
+bug-reports:    https://github.com/githubuser/F4/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2018 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/F4
+
+library
+  exposed-modules:
+      F95IntrinsicFunctions
+      F95StatementParser
+      LanguageFortranTools
+      Lib
+      Parser
+      PreProcessor
+      Warning
+  other-modules:
+      Paths_F4
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , directory
+    , generic-lens
+    , language-fortran
+    , lens
+    , process
+    , syb
+  default-language: Haskell2010
+
+executable F4-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_F4
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      F4
+    , base >=4.7 && <5
+    , containers
+    , directory
+    , generic-lens
+    , language-fortran
+    , lens
+    , process
+    , syb
+  default-language: Haskell2010
+
+test-suite F4-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_F4
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      F4
+    , base >=4.7 && <5
+    , containers
+    , directory
+    , generic-lens
+    , language-fortran
+    , lens
+    , process
+    , syb
+  default-language: Haskell2010
