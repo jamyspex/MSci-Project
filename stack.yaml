@@ -35,7 +35,7 @@ resolver: lts-12.13
 #  - wai
 packages:
 - AutoParallel-Fortran
-- F3
+- F4
 - AutoParallel-Fortran/language-fortran
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.

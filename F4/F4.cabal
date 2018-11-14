@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6f94be1b7932f783549fd03fb572d6e987add52324d0808a0d47f5258338fcf7
+-- hash: 56ffb3fe96d6ba20b9d21b874c454c73685b5a6fdd8a2b38e63fbb73af67165b
 
 name:           F4
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       F95StatementParser
       LanguageFortranTools
       Lib
+      MiniPP
       Parser
       PreProcessor
       Warning
@@ -38,7 +39,10 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      QuickPlot
+    , aeson
+    , base >=4.7 && <5
+    , bytestring
     , containers
     , directory
     , generic-lens
@@ -57,7 +61,10 @@ executable F4-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , QuickPlot
+    , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , directory
     , generic-lens
@@ -77,7 +84,10 @@ test-suite F4-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , QuickPlot
+    , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , directory
     , generic-lens

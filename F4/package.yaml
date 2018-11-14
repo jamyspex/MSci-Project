@@ -26,8 +26,11 @@ dependencies:
 - syb
 - process
 - language-fortran
+- QuickPlot
 - generic-lens
 - lens
+- aeson
+- bytestring
  
 library:
   source-dirs: src
