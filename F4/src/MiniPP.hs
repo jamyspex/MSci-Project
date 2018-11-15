@@ -140,8 +140,55 @@ miniPPFT stmt tab =  case stmt of
                  OpenCLReduce _ _ vrs vws lvars ilvars rvarexprs stmt1 -> "! OpenCLReduce ( "++(showVarLst vrs)++","++(  showVarLst vws)++","++( showLoopVarLst lvars)++","++( showVarLst ilvars)++","++ (showReductionVarLst rvarexprs)++") {\n"++(miniPPFT stmt1 tab) ++"\n"++tab++"}" -- WV20170426
                  OpenCLBufferWrite _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
-                 Return _ _ expr -> tab++"return "++(miniPP expr)
+                 Return _ _ expr -> tab ++ "return "++(miniPP expr)
+                 --Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
+                 --Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")" 
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
+
+miniPPSpecs :: [Spec Anno] -> String -> String
+miniPPSpecs specs tab = (intercalate ", " $ map (miniPPSpec tab) specs)
+
+miniPPSpec :: String -> Spec Anno -> String 
+miniPPSpec tab spec = case spec of
+                        Access       _ e     -> miniPP e 
+                        Action       _ e     -> miniPP e
+                        Advance      _ e     -> miniPP e
+                        Blank        _ e     -> miniPP e
+                        Delim        _ e     -> miniPP e
+                        Direct       _ e     -> miniPP e
+                        End          _ e     -> miniPP e
+                        Err          _ e     -> miniPP e
+                        ExFile       _ e     -> miniPP e
+                        Exist        _ e     -> miniPP e
+                        Eor          _ e     -> miniPP e
+                        File         _ e     -> "file=" ++ miniPP e
+                        FMT          _ e     -> miniPP e
+                        Form         _ e     -> "form=" ++ miniPP e
+                        Formatted    _ e     -> "formatted=" ++ miniPP e
+                        Unformatted  _ e     -> miniPP e
+                        IOLength     _ e     -> miniPP e
+                        IOStat       _ e     -> miniPP e
+                        Name         _ e     -> miniPP e
+                        Named        _ e     -> miniPP e
+                        NoSpec       _ e     -> miniPP e
+                        Number       _ e     -> miniPP e
+                        Floating     _ e1 e2 -> miniPP e1 ++ "\n" ++ miniPP e2
+                        NextRec      _ e     -> miniPP e
+                        NML          _ e     -> miniPP e
+                        Opened       _ e     -> miniPP e
+                        Pad          _ e     -> miniPP e
+                        Position     _ e     -> miniPP e
+                        Read         _ e     -> miniPP e
+                        ReadWrite    _ e     -> miniPP e
+                        Rec          _ e     -> miniPP e
+                        Recl         _ e     -> miniPP e
+                        Sequential   _ e     -> miniPP e
+                        Size         _ e     -> miniPP e
+                        Status       _ e     -> miniPP e
+                        StringLit    _ s     -> s                       
+                        Unit         _ e     -> miniPP e
+                        WriteSp      _ e     -> miniPP e
+                        Delimiter    _       -> ","
 
 showVar (VarName _ v) = v
 showVarLst lst = show $ map showVar lst

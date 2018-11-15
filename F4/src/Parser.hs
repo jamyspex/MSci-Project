@@ -13,23 +13,24 @@ import Language.Fortran.Pretty
 
 import Data.Generics                 (mkQ, mkT, mkM, gmapQ, gmapT, everything, everywhere, everywhereM)
 
--- import Data.Aeson (FromJSON, ToJSON, decode, encode)
--- import qualified Data.ByteString.Lazy.Char8 as BL
 
--- instance FromJSON (Program Anno)
--- instance ToJSON (Program Anno)
+blockToFortran :: Block Anno -> Fortran Anno 
+blockToFortran (Block _ _ _ _ _ (f)) = f
 
--- plot :: (QuickPlot.Plottable p)
---      => MVar ()
---      -> p
---      -> IO ()
--- plot isStarted content = do
---     takeMVar isStarted
---     QuickPlot.plot content
---     putStrLn "Press enter to continue..."
---     getLine 
---     putMVar isStarted ()
---     return ()
+getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
+getFortranFromProgUnit (Main _ _ _ _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
+getFortranFromProgUnit (Sub _ _ _ _ _ b) = [blockToFortran b]
+getFortranFromProgUnit (Function _ _ _ _ _ _ b) = [blockToFortran b]
+getFortranFromProgUnit (Module _ _ _ _ _ _ p) = concatMap getFortranFromProgUnit p
+getFortranFromProgUnit (BlockData _ _ _ _ _ _) = []
+getFortranFromProgUnit (PSeq _ _ p1 p2) = getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
+getFortranFromProgUnit (Prog _ _ p) = getFortranFromProgUnit p
+getFortranFromProgUnit (NullProg _ _) = []
+getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
+getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
+
+getFortranForProgram :: Program Anno -> [Fortran Anno]
+getFortranForProgram prog = concatMap getFortranFromProgUnit prog
 
 printFortranAnno :: Fortran Anno -> IO (Fortran Anno)
 printFortranAnno input = do
@@ -50,66 +51,9 @@ parseTestFile = do
 
     putStrLn $ "Code stash name: " ++ (fst stash)
 
+    -- everywhereM (mkM printFortranAnno) astObj
 
-    everywhereM (mkM printFortranAnno) astObj
-
-    -- putStrLn astObj
-    
-    -- quickPlotStarted <- QuickPlot.runQuickPlot
-
-    -- let test = [treant|{
-    --     text: {
-    --         name: "img/malory.png"
-    --     },
-    --     children: [
-    --         {
-    --             text: {
-    --                 name: "img/lana.png"
-    --             },
-    --             collapsed: true,
-    --             children: [
-    --                 {
-    --                     text: {
-    --                         name: "img/figgs.png"
-    --                     }
-    --                 }
-    --             ]
-    --         },
-    --         {
-    --             text: {
-    --                 name: "img/sterling.png"
-    --             },
-    --             childrenDropLevel: 1,
-    --             children: [
-    --                 {
-    --                     text: {
-    --                         name: "img/woodhouse.png"
-    --                     }
-    --                 }
-    --             ]
-    --         },
-    --         {
-    --             pseudo: true,
-    --             children: [
-    --                 {
-    --                     text: {
-    --                         name: "img/cheryl.png"
-    --                     }
-    --                 },
-    --                 {
-    --                     text: {
-    --                         name: "img/pam.png"
-    --                     } 
-                        
-    --                 }
-    --             ]
-    --         }
-    --     ]
-    -- }|]
-
-    -- plot quickPlotStarted test
-
-    -- plot quickPlotStarted test
+    putStrLn $ concatMap miniPPF $ everything (++) (mkQ [] getFortranForProgram) astObj
 
     if (length $ DMap.keys stashValues) > 0 then
         printStash stashValues

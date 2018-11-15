@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "fortran-opencl-built/bin/python",
+    "python.linting.pylintEnabled": false
+}
