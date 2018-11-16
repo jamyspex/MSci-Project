@@ -41,12 +41,6 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps: 
   - ./language-fortran
-  - ../AST-Viz
-  - snap-1.1.1.0
-  - heist-1.1
-  - map-syntax-0.3
-  - pwstore-fast-2.4.4
-  - xmlhtml-0.2.5.2
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

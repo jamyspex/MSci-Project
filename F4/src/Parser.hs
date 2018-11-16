@@ -5,9 +5,6 @@ module Parser (parseTestFile) where
 import LanguageFortranTools
 import qualified Data.Map as DMap
 import Language.Fortran
-import qualified QuickPlot 
-import QuickPlot.Plotly
-import Control.Concurrent
 import MiniPP
 import Language.Fortran.Pretty
 

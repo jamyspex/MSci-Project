@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 56ffb3fe96d6ba20b9d21b874c454c73685b5a6fdd8a2b38e63fbb73af67165b
+-- hash: 7896d5cd857feb21dcc4bd3372a7edceb26ff47cdd8748a0a82429be5d2d7b17
 
 name:           F4
 version:        0.1.0.0
@@ -15,10 +17,9 @@ copyright:      2018 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
-    ChangeLog.md
     README.md
+    ChangeLog.md
 
 source-repository head
   type: git
@@ -39,10 +40,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      QuickPlot
-    , aeson
-    , base >=4.7 && <5
-    , bytestring
+      base >=4.7 && <5
     , containers
     , directory
     , generic-lens
@@ -61,10 +59,7 @@ executable F4-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
-    , QuickPlot
-    , aeson
     , base >=4.7 && <5
-    , bytestring
     , containers
     , directory
     , generic-lens
@@ -84,10 +79,7 @@ test-suite F4-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
-    , QuickPlot
-    , aeson
     , base >=4.7 && <5
-    , bytestring
     , containers
     , directory
     , generic-lens

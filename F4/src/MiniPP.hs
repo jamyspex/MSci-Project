@@ -141,8 +141,8 @@ miniPPFT stmt tab =  case stmt of
                  OpenCLBufferWrite _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
-                 --Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
-                 --Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")" 
+                 Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
+                 Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")" 
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
 
 miniPPSpecs :: [Spec Anno] -> String -> String
