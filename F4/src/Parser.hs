@@ -12,7 +12,7 @@ import Data.Generics                 (mkQ, mkT, mkM, gmapQ, gmapT, everything, e
 
 
 blockToFortran :: Block Anno -> Fortran Anno 
-blockToFortran (Block _ _ _ _ _ (f)) = f
+blockToFortran (Block _ _ _ _ _ f) = f
 
 getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
 getFortranFromProgUnit (Main _ _ _ _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
@@ -46,11 +46,17 @@ parseTestFile = do
     putStrLn $ "Program lines:"
     mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram
 
+    writeFile "./preprocessed.f95" $ unlines (snd parsedProgram)
+
     putStrLn $ "Code stash name: " ++ (fst stash)
 
     -- everywhereM (mkM printFortranAnno) astObj
 
-    putStrLn $ concatMap miniPPF $ everything (++) (mkQ [] getFortranForProgram) astObj
+    let astPP = miniPPProgram astObj
+
+    putStrLn astPP
+
+    writeFile "./fromAst.f95" astPP
 
     if (length $ DMap.keys stashValues) > 0 then
         printStash stashValues

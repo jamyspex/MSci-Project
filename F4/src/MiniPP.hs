@@ -1,4 +1,4 @@
-module MiniPP (miniPPF, miniPP, miniPPO, miniPPD, miniPPP, showVarLst, showSubName )
+module MiniPP (miniPPF, miniPP, miniPPO, miniPPD, miniPPProgram, miniPPP, showVarLst, showSubName )
 where
 import Language.Fortran
 import LanguageFortranTools
@@ -113,6 +113,31 @@ miniPPD decl  = case decl of
 
 miniPPF :: Fortran Anno -> String        
 miniPPF stmt = miniPPFT stmt "    "
+
+blockToFortran :: Block Anno -> Fortran Anno 
+blockToFortran (Block _ _ _ _ _ (f)) = f
+
+
+-- subname (SubName _ name) =  
+
+getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
+getFortranFromProgUnit (Main _ _ subname _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
+getFortranFromProgUnit (Sub _ _ _ _ _ b) = [blockToFortran b]
+getFortranFromProgUnit (Function _ _ _ _ _ _ b) = [blockToFortran b]
+getFortranFromProgUnit (Module _ _ _ _ _ _ p) = concatMap getFortranFromProgUnit p
+getFortranFromProgUnit (BlockData _ _ _ _ _ _) = []
+getFortranFromProgUnit (PSeq _ _ p1 p2) = getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
+getFortranFromProgUnit (Prog _ _ p) = getFortranFromProgUnit p
+getFortranFromProgUnit (NullProg _ _) = []
+getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
+getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
+
+getFortranForProgram :: Program Anno -> [Fortran Anno]
+getFortranForProgram prog = concatMap getFortranFromProgUnit prog
+
+miniPPProgram :: Program Anno -> String
+miniPPProgram prog =
+    concatMap miniPPF (getFortranForProgram prog) 
 
 miniPPFT :: Fortran Anno -> String -> String
 miniPPFT stmt tab =  case stmt of

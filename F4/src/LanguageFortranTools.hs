@@ -66,7 +66,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
         inp' = unlines $ oneVarDeclPerVarDeclLine contentLines
     -- Then we preprocess, which should remove blank lines        
         (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
-    -- Write this out to a file so we can call cpp on it via the shell    
+    -- Write this out to a file so we can call cpp on it via the shell
     let    
         filename_no_dot 
             | head filename == '.' = tail $ tail filename
@@ -87,7 +87,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
     -- First declarations from used modules are inlined. Why first? Surely it would be better to do that *after* running CPP?
     (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
     let
-        preproc_inp'' = unlines exp_inp_lines'    
+        preproc_inp'' = unlines exp_inp_lines'
     return (preproc_inp'', stash,moduleVarTable)
 
 
