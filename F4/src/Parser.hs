@@ -36,7 +36,7 @@ printFortranAnno input = do
     
 parseTestFile :: IO ()
 parseTestFile = do
-    parseOutput <- parseFile [] [] False "Shallow-Water-2D/main.f95"
+    parseOutput <- parseFile [] [] False "Shallow-Water-2D/dyn.f95"
     let
         (parsedProgram, stash, moduleVarTable) = parseOutput
         stashValues = snd stash

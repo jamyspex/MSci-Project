@@ -132,15 +132,43 @@ getFortranFromProgUnit (NullProg _ _) = []
 getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
 getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
 
-getFortranForProgram :: Program Anno -> [Fortran Anno]
-getFortranForProgram prog = concatMap getFortranFromProgUnit prog
-
 miniPPProgram :: Program Anno -> String
-miniPPProgram prog =
-    concatMap miniPPF (getFortranForProgram prog) 
+miniPPProgram prog = concatMap miniPPProgUnit prog
 
+miniPPProgUnit :: ProgUnit Anno -> String
+miniPPProgUnit prog = case prog of 
+                    (Main _ _ (SubName _ subname) args b p) -> 
+                        "program " ++ subname ++ "\n" ++ printArgs args ++ printBlock b ++ "\n" ++ concatMap miniPPProgUnit p ++ "\nend program " ++ subname
+                    (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ printArgs args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
+                    -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
+                    (Module _ _ (SubName _ moduleName) _ _ _ p) -> 
+                        "module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName
+                    _ -> "program anno unsuppported"
+                    -- (BlockData _ _ _ _ _ _) -> []
+                    -- (PSeq _ _ p1 p2) -> getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
+                    -- (Prog _ _ p) -> getFortranFromProgUnit p
+                    -- (NullProg _ _) -> []
+                    -- (IncludeProg _ _ _ (Just f)) -> [f]
+                    -- (IncludeProg _ _ _ (Nothing)) -> [] 
+
+printBlock (Block _ _ _ _ decls fortran) = 
+    miniPPD decls ++ "\n" ++ miniPPF fortran
+
+printArgs (Arg _ argName _) =  "(" ++ printArgName argName ++ ")"
+    -- case args of
+    --         Arg _ (ArgName _ argname) _ -> argname
+    --         Arg _ (NullArg _) _ -> ""
+    --         Arg _ (ASeq _ a1 a2) _ -> a1 ++ a2
+    --         _ -> show args
+            
+printArgName argName = case argName of 
+                    ArgName _ argname -> argname
+                    NullArg _ -> "" 
+                    ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
+
+                    
 miniPPFT :: Fortran Anno -> String -> String
-miniPPFT stmt tab =  case stmt of
+miniPPFT stmt tab = case stmt of
                  (Assg _ _ expr1 expr2)  -> tab++ (miniPP expr1)++" = "++(miniPP expr2)
                  For  _ _ (VarName _ v) expr1 expr2 expr3 stmt1 -> tab++"do "++v++" = "++ (miniPP expr1)++ ", "++(miniPP expr2)++", "++ (miniPP expr3)++"\n"++(miniPPFT stmt1 (tab++tab))++"\n"++tab++"end do"
                  DoWhile  _ _ expr stmt1-> tab++ "do while ("++(miniPP expr)++ ") "++"\n"++(miniPPFT stmt1 (tab++tab))++"\n"++tab++"end do"
@@ -167,6 +195,7 @@ miniPPFT stmt tab =  case stmt of
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
                  Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
+                 Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"
                  Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")" 
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
 
@@ -270,8 +299,8 @@ miniPPO (Plus _) = "+"
 miniPPO (Minus _) = "-"
 miniPPO (Mul _) = "*"
 miniPPO (Div _) = "/"
-miniPPO (Or _) = "||"
-miniPPO (And _) = "&&"
+miniPPO (Or _) = " .or. "
+miniPPO (And _) = " .and. "
 miniPPO (Concat _) = "//"
 miniPPO (Power _) = "**"
 miniPPO (RelEQ _) = "=="
