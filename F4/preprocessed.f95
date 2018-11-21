@@ -1,82 +1,81 @@
-module module_dyn
- contains
-subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
-      integer(4), parameter :: ny=500
-      integer(4), parameter :: nx=500
-      integer :: j 
-      integer :: k 
-      real, intent(In) :: dx
-      real, intent(In) :: g
-      real, dimension(0:ny+1,0:nx+1) :: eta 
-      real, intent(In) :: dt
-      real, intent(In) :: dy
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: u
-      integer, dimension(0:ny+1,0:nx+1), intent(In) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: vn
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: h
-      real, dimension(0:ny+1,0:nx+1) :: etan 
-real, dimension(0:ny+1,0:nx+1) :: du
-real, dimension(0:ny+1,0:nx+1) :: dv
-real :: uu
-real :: vv
-real :: duu
-real :: dvv
-real :: hue
-real :: huw
-real :: hwp
-real :: hwn
-real :: hen
-real :: hep
-real :: hvn
-real :: hvs
-real :: hsp
-real :: hsn
-real :: hnn
-real :: hnp
+      program wave2d
+integer(4), parameter :: nx=500
+integer(4), parameter :: ny=500
+      real :: dt
+      real :: dx
+      real :: dy
+      real :: eps
+      real, dimension(0:ny+1,0:nx+1) :: eta
+      real, dimension(0:ny+1,0:nx+1) :: etan
+      real :: g
+      real, dimension(0:ny+1,0:nx+1) :: h
+      real :: hmin
+      real, dimension(0:ny+1,0:nx+1) :: hzero
+      integer :: j
+      integer :: k
+      real, dimension(0:ny+1,0:nx+1) :: u
+      real, dimension(0:ny+1,0:nx+1) :: un
+      real, dimension(0:ny+1,0:nx+1) :: v
+      real, dimension(0:ny+1,0:nx+1) :: vn
+      integer, dimension(0:ny+1,0:nx+1) :: wet
+real :: hmax
+real :: time
+real :: dtmax
+real :: c
+real :: lambda
+integer :: n
+integer :: ntot
+integer :: nout
+integer :: dummy
+ntot = 10000
+eps = 0.05
+call init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
+open(90,file ='debug.dat',form='formatted')
+open(10,file ='eta0.dat',form='formatted')
+  do j = 0,ny+1
+    write(10,'(101F12.6)')(eta(j,k),k=0,nx+1)
+  end do
+close(10)
+open(10,file ='h0.dat',form='formatted')
+  do j = 0,ny+1
+    write(10,'(101F12.6)')(hzero(j,k),k=0,nx+1)
+  end do
+close(10)
+hmax = 0.
 do j = 1,ny
 do k = 1,nx
-  du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-  dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+  hmax = max(hmax,h(j,k))
 end do
 end do
-do j = 1,ny
-do k = 1,nx
-un(j,k) = 0.0
-uu = u(j,k)
-duu = du(j,k)
-if(wet(j,k)==1) then
-  if((wet(j,k+1)==1) .or. (duu>0.0)) un(j,k) = uu+duu
-else
-  if((wet(j,k+1)==1) .and. (duu<0.0)) un(j,k) = uu+duu
+dummy = 0
+c = sqrt(2*g*hmax)
+write(6,*)"c = ",c
+lambda = dt*sqrt(g*hmax)/min(dx,dy)
+write(6,*)"lambda = ",lambda
+if(lambda > 1)then
+  write(6,*) "This will not work. Do you know why?"
+  stop
 end if
-vv = v(j,k)
-dvv = dv(j,k)
-vn(j,k) = 0.0
-if(wet(j,k)==1) then
-  if((wet(j+1,k)==1) .or. (dvv>0.0)) vn(j,k) = vv+dvv
-else
-  if((wet(j+1,k)==1) .and. (dvv<0.0)) vn(j,k) = vv+dvv
-end if
+open(10,file ='eta.dat',form='formatted')
+open(20,file ='h.dat',form='formatted')
+open(30,file ='u.dat',form='formatted')
+open(40,file ='v.dat',form='formatted')
+do j = 26,26
+do k = 26,26
+eta(j,k) = 1.0
 end do
 end do
-do j = 1,ny
-do k = 1,nx
-  hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-  hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-  hue = hep+hen
-  hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-  hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-  huw = hwp+hwn
-  hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-  hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-  hvn = hnp+hnn
-  hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-  hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-  hvs = hsp+hsn
-  etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+do n = 1,ntot
+time = real(n)*dt
+  call dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
+  call shapiro(j,k,wet,etan,eps,eta)
+      call vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
 end do
+do j = 0,ny+1
+  write(10,'(101F12.6)')(eta(j,k),k=0,nx+1)
+  write(20,'(101F12.6)')(h(j,k) ,k=0,nx+1)
+  write(30,'(101F12.6)')(u(j,k) ,k=0,nx+1)
+  write(40,'(101F12.6)')(v(j,k) ,k=0,nx+1)
 end do
-end subroutine dyn
-end module module_dyn
+write(6,*)"Data output at time = ",time/60.0," min"
+end program wave2d

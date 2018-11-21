@@ -36,7 +36,7 @@ printFortranAnno input = do
     
 parseTestFile :: IO ()
 parseTestFile = do
-    parseOutput <- parseFile [] [] False "Shallow-Water-2D/dyn.f95"
+    parseOutput <- parseFile [] [] False "Shallow-Water-2D/main.f95"
     let
         (parsedProgram, stash, moduleVarTable) = parseOutput
         stashValues = snd stash
@@ -44,7 +44,9 @@ parseTestFile = do
     putStrLn $ "AST: " ++ (show astObj)
     playAboutWithAst astObj 
     putStrLn $ "Program lines:"
-    mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram
+    mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram 
+
+    writeFile "./ast.txt" $ show astObj
 
     writeFile "./preprocessed.f95" $ unlines (snd parsedProgram)
 

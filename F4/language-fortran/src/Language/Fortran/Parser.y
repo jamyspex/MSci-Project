@@ -942,8 +942,7 @@ section_subscript
 
 expr :: { Expr A0 }
 expr
-  : level_5_expr                                       { $1 }
-
+  : level_5_expr                                          { $1 }
 
 level_5_expr :: { Expr A0 }
 level_5_expr
@@ -1012,7 +1011,7 @@ primary
 | srcloc type_cast '(' expr ')'    {% getSrcSpan $1 >>= (\s -> return $ Var DMap.empty s [(VarName DMap.empty $2, [$4])]) }
                       
 | array_constructor                { $1 }
-| '(' expr ')'                     { $2 }
+| '(' expr ')'                     { ParenthesizedExpr DMap.empty (spanTrans $2 $2) $2 }
 | srcloc SQRT '(' expr ')'     {% getSrcSpan $1 >>= (\s -> return $ Sqrt DMap.empty s $4) }
 
 
@@ -1141,7 +1140,7 @@ do_block : line newline do_block { FSeq DMap.empty (spanTrans $1 $3) $1 $3 }
 | end_do      {% getSrcSpanNull >>= (\s -> return $ NullStmt DMap.empty s) }
 
 do_block_num :: { (Fortran A0, String) }
-do_block_num : line newline do_block_num { let (fs, n) = $3 in (FSeq DMap.empty (spanTrans $1 fs) $1 fs, n) }
+: line newline do_block_num { let (fs, n) = $3 in (FSeq DMap.empty (spanTrans $1 fs) $1 fs, n) }
 | num end_do  {% getSrcSpanNull >>= (\s -> return $ (NullStmt DMap.empty s, $1)) }
 
 
@@ -1221,7 +1220,7 @@ equivalence_stmt
 action_stmt :: { Fortran A0 }
 action_stmt
   : allocate_stmt                                 { $1 }
-  | assignment_stmt                                { $1 }
+  | assignment_stmt                               { $1 }
   | backspace_stmt                                { $1 }
   | call_stmt                                     { $1 }
   | close_stmt                                    { $1 }

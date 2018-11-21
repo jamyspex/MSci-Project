@@ -53,26 +53,30 @@ showArg (Arg _ argname _) = let
     in
         if arg_str == ""  then  "" else "("++arg_str++")"
 
-showArgName  (ArgName _ arg) = arg
-showArgName  (NullArg _) = ""
-showArgName  (ASeq _ (NullArg _) (NullArg _)) = ""
-showArgName  (ASeq _ (NullArg _) a2) = showArgName a2
-showArgName  (ASeq _ a1 (NullArg _)) = showArgName a1
-showArgName  (ASeq _ a1 a2) = (showArgName a1)++", "++(showArgName a2) 
+showArgName argName = case argName of 
+                ArgName _ argname -> argname
+                NullArg _ -> "" 
+                ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
+                
+-- showArgName  (NullArg _) = ""
+-- showArgName  (ASeq _ (NullArg _) (NullArg _)) = ""
+-- showArgName  (ASeq _ (NullArg _) a2) = showArgName a2
+-- showArgName  (ASeq _ a1 (NullArg _)) = showArgName a1
+-- showArgName  (ASeq _ a1 a2) = (showArgName a1)++", "++(showArgName a2) 
 
 
 miniPPP (Main _ _ subname args block ps) = "! Generated code\n"++"program "++(showSubName subname)++" "++(showArg args)++"\n"++(miniPPB block) ++ (unlines (map miniPPP ps))++"\nend program "++(showSubName subname)++"\n"    -- TODO
 miniPPP progunit = show progunit 
 -- Decl     p = Decl           p SrcSpan [(Expr p, Expr p, Maybe Int)] (Type p)      -- declaration stmt
-miniPPB (Block _ useblock implicit _ decl fortran) = (miniPPD decl) ++"\n" ++ (miniPPF fortran) -- TODO
+miniPPB (Block _ useblock implicit _ decl fortran) = (miniPPD decl) ++ "\n" ++ (miniPPF fortran) -- TODO
 
 miniPPAttr attr = case attr of
     Parameter _ -> "parameter"
     Dimension _ dim_exp_tups -> "dimension("++ (intercalate "," (map (\(b,e)-> (if (miniPP b == "") then "" else ((miniPP b) ++":"))++(miniPP e)) dim_exp_tups )) ++")" -- [(Expr p, Expr p)]
     Intent _ intent_attr -> "intent(" ++ (case   intent_attr of
-            In _ -> "in"
-            Out _ -> "out"
-            InOut _ -> "inout"
+            In _ -> "In"
+            Out _ -> "Out"
+            InOut _ -> "InOut"
         ) ++ ")"
     _ -> showAttr attr
 
@@ -120,17 +124,17 @@ blockToFortran (Block _ _ _ _ _ (f)) = f
 
 -- subname (SubName _ name) =  
 
-getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
-getFortranFromProgUnit (Main _ _ subname _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
-getFortranFromProgUnit (Sub _ _ _ _ _ b) = [blockToFortran b]
-getFortranFromProgUnit (Function _ _ _ _ _ _ b) = [blockToFortran b]
-getFortranFromProgUnit (Module _ _ _ _ _ _ p) = concatMap getFortranFromProgUnit p
-getFortranFromProgUnit (BlockData _ _ _ _ _ _) = []
-getFortranFromProgUnit (PSeq _ _ p1 p2) = getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
-getFortranFromProgUnit (Prog _ _ p) = getFortranFromProgUnit p
-getFortranFromProgUnit (NullProg _ _) = []
-getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
-getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
+-- getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
+-- getFortranFromProgUnit (Main _ _ subname _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
+-- getFortranFromProgUnit (Sub _ _ _ _ _ b) = [blockToFortran b]
+-- getFortranFromProgUnit (Function _ _ _ _ _ _ b) = [blockToFortran b]
+-- getFortranFromProgUnit (Module _ _ _ _ _ _ p) = concatMap getFortranFromProgUnit p
+-- getFortranFromProgUnit (BlockData _ _ _ _ _ _) = []
+-- getFortranFromProgUnit (PSeq _ _ p1 p2) = getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
+-- getFortranFromProgUnit (Prog _ _ p) = getFortranFromProgUnit p
+-- getFortranFromProgUnit (NullProg _ _) = []
+-- getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
+-- getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
 
 miniPPProgram :: Program Anno -> String
 miniPPProgram prog = concatMap miniPPProgUnit prog
@@ -138,8 +142,8 @@ miniPPProgram prog = concatMap miniPPProgUnit prog
 miniPPProgUnit :: ProgUnit Anno -> String
 miniPPProgUnit prog = case prog of 
                     (Main _ _ (SubName _ subname) args b p) -> 
-                        "program " ++ subname ++ "\n" ++ printArgs args ++ printBlock b ++ "\n" ++ concatMap miniPPProgUnit p ++ "\nend program " ++ subname
-                    (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ printArgs args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
+                        "program " ++ subname ++ "\n" ++ showArg args ++ printBlock b ++ "\n" ++ concatMap miniPPProgUnit p ++ "\nend program " ++ subname
+                    (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ showArg args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
                     -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
                     (Module _ _ (SubName _ moduleName) _ _ _ p) -> 
                         "module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName
@@ -154,13 +158,6 @@ miniPPProgUnit prog = case prog of
 printBlock (Block _ _ _ _ decls fortran) = 
     miniPPD decls ++ "\n" ++ miniPPF fortran
 
-printArgs (Arg _ argName _) =  "(" ++ printArgName argName ++ ")"
-    -- case args of
-    --         Arg _ (ArgName _ argname) _ -> argname
-    --         Arg _ (NullArg _) _ -> ""
-    --         Arg _ (ASeq _ a1 a2) _ -> a1 ++ a2
-    --         _ -> show args
-            
 printArgName argName = case argName of 
                     ArgName _ argname -> argname
                     NullArg _ -> "" 
@@ -292,6 +289,7 @@ miniPP expr = case expr of
     (ArrayCon _ _ es) -> "("++(intercalate "," (map miniPP es))++")"
     (Sqrt _ _ expr1) -> "sqrt("++(miniPP expr1)++")" -- WV: This is silly, should be handled either for all intrinsics or none
     (AssgExpr _ _ name e1) -> name++" = "++(miniPP e1)
+    (ParenthesizedExpr _ _ innerExpr) -> "(" ++ miniPP innerExpr ++ ")"
     otherwise -> "! UNSUPPORTED in miniPP ! "++(show expr)
 
 -- miniPPO binop
