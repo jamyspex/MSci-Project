@@ -39,7 +39,7 @@ parseFile cppDArgs cppXArgs fixedForm filename = do
     (preproc_inp, stash,moduleVarTable) <- preProcessingHelper cppDArgs cppXArgs fixedForm True filename
     let
         preproc_inp_lines = lines preproc_inp
-        -- mapM putStrLn preproc_inp_lines    
+    mapM (\line -> putStrLn $ "parseFile: " ++ line) preproc_inp_lines    
     return ((warning (parse preproc_inp) ("Parsing "++filename), preproc_inp_lines),(filename, stash),moduleVarTable)
     --return (parse  preproc_inp, preproc_inp_lines) -- ,(filename, stash))
     -- return ()

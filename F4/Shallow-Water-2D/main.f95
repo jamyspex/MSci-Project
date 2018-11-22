@@ -48,7 +48,6 @@ ntot = 10000
 ! set epsilon for Shapiro filter
 eps = 0.05
 call init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
-
 !**********
 !debug
 open(90,file ='debug.dat',form='formatted')
