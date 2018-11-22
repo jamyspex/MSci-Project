@@ -115,6 +115,7 @@ import qualified Data.Map as DMap
  END      { Key "end" }
  ENDIF      { Key "endif" }
  ENDDO      { Key "enddo" }
+-- END_DO     { Key "end do"}
  ENDFILE                { Key "endfile" }
 -- ENTRY    { Key "entry" }
  EQUIVALENCE    { Key "equivalence" }
@@ -1011,7 +1012,7 @@ primary
 | srcloc type_cast '(' expr ')'    {% getSrcSpan $1 >>= (\s -> return $ Var DMap.empty s [(VarName DMap.empty $2, [$4])]) }
                       
 | array_constructor                { $1 }
-| '(' expr ')'                     { ParenthesizedExpr DMap.empty (spanTrans $2 $2) $2 }
+| srcloc '(' expr ')'                     { %getSrcSpan $1 >>= (\s -> return $ ParenthesizedExpr DMap.empty s $3) }
 | srcloc SQRT '(' expr ')'     {% getSrcSpan $1 >>= (\s -> return $ Sqrt DMap.empty s $4) }
 
 
@@ -1054,10 +1055,10 @@ constant
 
 literal_constant :: { Expr A0 }
 literal_constant 
-: srcloc num                      {% (getSrcSpan $1) >>= (\s -> return $ Con DMap.empty s $2) }
-| srcloc ZLIT                     {% (getSrcSpan $1) >>= (\s -> return $ ConL DMap.empty s 'z' $2) }
-| srcloc STR        {% (getSrcSpan $1) >>= (\s -> return $ ConS DMap.empty s $2) }
-| logical_literal_constant    { $1 }
+: srcloc num                        {% (getSrcSpan $1) >>= (\s -> return $ Con DMap.empty s $2) }
+| srcloc ZLIT                       {% (getSrcSpan $1) >>= (\s -> return $ ConL DMap.empty s 'z' $2) }
+| srcloc STR                        {% (getSrcSpan $1) >>= (\s -> return $ ConS DMap.empty s $2) }
+| logical_literal_constant          { $1 }
 
 --lit_mark :: { Char }
 --lit_mark 
@@ -1096,28 +1097,28 @@ do_construct
 block_do_construct :: { Fortran A0 } 
 block_do_construct                  
 : srcloc nonlabel_do_stmt newline do_block {% getSrcSpan $1 >>= (\s -> return $ For DMap.empty s (fst4 $2) (snd4 $2) (trd4 $2) (frh4 $2) $4) } 
-| srcloc DO WHILE  '(' logical_expr ')' newline do_block {% getSrcSpan $1 >>= (\s -> return $ DoWhile DMap.empty s $5 $8) }
-| srcloc DO num ',' loop_control newline do_block_num 
-                    {% do { (fs, n) <- return $ $7;
-          s       <- getSrcSpan $1;
-          if (n == $3) then 
-        return $ For DMap.empty s (fst4 $5) (snd4 $5) (trd4 $5) (frh4 $5) fs
-                            else parseError "DO/END DO labels don't match"
-                          } }
-| srcloc DO num loop_control newline do_block_num 
-                    {% do { (fs, n) <- return $ $6;
-          s       <- getSrcSpan $1;
-          if (n == $3) then 
-        return $ For DMap.empty s (fst4 $4) (snd4 $4) (trd4 $4) (frh4 $4) fs
-                            else parseError "DO/END DO labels don't match"
-                          } }
-| srcloc DO num loop_control newline do_block_cont 
-                    {% do { (fs, n) <- return $ $6;
-          s       <- getSrcSpan $1;
-          if (n == $3) then 
-        return $ For DMap.empty s (fst4 $4) (snd4 $4) (trd4 $4) (frh4 $4) fs
-            else return $ NullStmt DMap.empty s --  parseError $ "DO/CONTINUE labels don't match" -- NEEDS FIXING!
-                          } }
+-- | srcloc DO WHILE  '(' logical_expr ')' newline do_block {% getSrcSpan $1 >>= (\s -> return $ DoWhile DMap.empty s $5 $8) }
+-- | srcloc DO num ',' loop_control newline do_block_num 
+--                     {% do { (fs, n) <- return $ $7;
+--           s       <- getSrcSpan $1;
+--           if (n == $3) then 
+--         return $ For DMap.empty s (fst4 $5) (snd4 $5) (trd4 $5) (frh4 $5) fs
+--                             else parseError "DO/END DO labels don't match"
+--                           } }
+-- | srcloc DO num loop_control newline do_block_num 
+--                     {% do { (fs, n) <- return $ $6;
+--           s       <- getSrcSpan $1;
+--           if (n == $3) then 
+--         return $ For DMap.empty s (fst4 $4) (snd4 $4) (trd4 $4) (frh4 $4) fs
+--                             else parseError "DO/END DO labels don't match"
+--                           } }
+-- | srcloc DO num loop_control newline do_block_cont 
+--                     {% do { (fs, n) <- return $ $6;
+--           s       <- getSrcSpan $1;
+--           if (n == $3) then 
+--         return $ For DMap.empty s (fst4 $4) (snd4 $4) (trd4 $4) (frh4 $4) fs
+--             else return $ NullStmt DMap.empty s --  parseError $ "DO/CONTINUE labels don't match" -- NEEDS FIXING!
+--                           } }
 
 nonlabel_do_stmt :: { (VarName A0, Expr A0, Expr A0, Expr A0) }
 nonlabel_do_stmt
@@ -1135,26 +1136,25 @@ loop_control2
 | {- empty -}                      {% getSrcSpanNull >>= (\s -> return $ Con DMap.empty s "1") }
 
 do_block :: { Fortran A0 }
-do_block : line newline do_block { FSeq DMap.empty (spanTrans $1 $3) $1 $3 }
-| num end_do  {% getSrcSpanNull >>= (\s -> return $ NullStmt DMap.empty s) }
-| end_do      {% getSrcSpanNull >>= (\s -> return $ NullStmt DMap.empty s) }
+: num end_do             {% getSrcSpanNull >>= (\s -> return $ NullStmt DMap.empty s) }
+| end_do                 {% getSrcSpanNull >>= (\s -> return $ NullStmt DMap.empty s) }
+| line newline do_block  { FSeq DMap.empty (spanTrans $1 $3) $1 $3 }
 
 do_block_num :: { (Fortran A0, String) }
-: line newline do_block_num { let (fs, n) = $3 in (FSeq DMap.empty (spanTrans $1 fs) $1 fs, n) }
-| num end_do  {% getSrcSpanNull >>= (\s -> return $ (NullStmt DMap.empty s, $1)) }
+: num end_do                 {% getSrcSpanNull >>= (\s -> return $ (NullStmt DMap.empty s, $1)) }
+| line newline do_block_num  { let (fs, n) = $3 in (FSeq DMap.empty (spanTrans $1 fs) $1 fs, n) }
 
 
 do_block_cont :: { (Fortran A0, String) }
-do_block_cont : 
-   num CONTINUE  {% getSrcSpanNull >>= (\s -> return $ (NullStmt DMap.empty s, $1)) }
+do_block_cont 
+: num CONTINUE  {% getSrcSpanNull >>= (\s -> return $ (NullStmt DMap.empty s, $1)) }
 | line newline do_block_cont { let (fs, n) = $3 in (FSeq DMap.empty (spanTrans $1 fs) $1 fs, n) }
 
 line :: { Fortran A0 }
-line :  num executable_constructP   {% getSrcSpanNull >>= (\s -> return $ Label DMap.empty s $1 $2  ) }
-          | executable_constructP  { $1 }
+: num executable_constructP   {% getSrcSpanNull >>= (\s -> return $ Label DMap.empty s $1 $2  ) }
+| executable_constructP       { $1 }
 
 end_do :: { }
-end_do
 : END DO {}
 | ENDDO  {} 
 
@@ -1180,11 +1180,10 @@ executable_construct
 |  executable_constructP     { $1 }
 
 executable_constructP :: { Fortran A0 }
-executable_constructP
-:   do_construct                                  { $1 }
-  | if_construct                                  { $1 }
-  | action_stmt                                   { $1 }
-  | select_construct                              { $1 }  -- GAV ADDED
+ : action_stmt                                   { $1 }
+ | select_construct                              { $1 }  -- GAV ADDED
+ | do_construct                                  { $1 }
+ | if_construct                                  { $1 }
 
 select_construct :: { Fortran A0 }                        -- GAV ADDED
 select_construct
