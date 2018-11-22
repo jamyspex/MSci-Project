@@ -64,7 +64,8 @@ $exponent_letter = [EeDd]
 
 tokens :-
   \n\# .* $			{ \s -> Text s }
-  \n(C|c).*$                    { \s -> ContLineAlt }  -- Fortran 77 style comment
+  -- Removed this as was causing lines begin with C/c to be skipped 
+  --\n(C|c).*$                    { \s -> ContLineAlt }  -- Fortran 77 style comment
   \n				{ \s -> NewLine }
   ($white # \n)+		;
   "#"				{ \s -> Hash }
@@ -220,10 +221,10 @@ lexer' = do s <- getInput
 	      			     	       -- turn on for useful debugging info on lexing
 	      			     	       (show (tok, (take 20 s), len) ++ "\n") `trace` return ()
                                                case tok of
-					          NewLine    -> lexNewline >> (return tok)
-					          ContLine   -> (discard (len - 1)) >> lexNewline >> lexer'
-					          ContLineNoNewLine  -> (discard len) >> lexer'
-					          ContLineAlt -> lexNewline >> (discard (len - 1)) >> lexer'
+                                                  NewLine    -> lexNewline >> (return tok)
+                                                  ContLine   -> (discard (len - 1)) >> lexNewline >> lexer'
+                                                  ContLineNoNewLine  -> (discard len) >> lexer'
+                                                  ContLineAlt -> lexNewline >> (discard (len - 1)) >> lexer'
 					 	  ContLineWithComment -> lexNewline >> lexNewline  >> (discard (len - 2)) >> lexer'
                                                   _           -> (discard len) >> (return tok)
 }
