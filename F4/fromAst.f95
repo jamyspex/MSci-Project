@@ -1,9 +1,5 @@
 program wave2d
-<<<<<<< HEAD
       integer(4), parameter :: nx = 500 
-=======
-()      integer(4), parameter :: nx = 500 
->>>>>>> fac83012a29cc55f8fc952508feb740a3ef46c42
       integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
@@ -33,21 +29,11 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-<<<<<<< HEAD
-=======
     call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
->>>>>>> fac83012a29cc55f8fc952508feb740a3ef46c42
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
-<<<<<<< HEAD
-    end do
-    open(10, file='h0.dat', form='formatted')
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(hzero(j,k), k = 0, nx+1)
-    end do
-=======
     end do
     close(10)
     open(10, file='h0.dat', form='formatted')
@@ -55,7 +41,6 @@ program wave2d
         write(10, '(101F12.6)')(hzero(j,k), k = 0, nx+1)
     end do
     close(10)
->>>>>>> fac83012a29cc55f8fc952508feb740a3ef46c42
     hmax = 0.
     do j = 1, ny, 1
         do k = 1, nx, 1
@@ -63,10 +48,7 @@ program wave2d
         end do
     end do
     dummy = 0
-<<<<<<< HEAD
-=======
     c = sqrt(2*g*hmax)
->>>>>>> fac83012a29cc55f8fc952508feb740a3ef46c42
     write(6, *)("c = ", c)
     lambda = dt*sqrt(g*hmax)/min(dx,dy)
     write(6, *)("lambda = ", lambda)
