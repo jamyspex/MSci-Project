@@ -46,9 +46,9 @@ parseTestFile = do
     putStrLn $ "Program lines:"
     mapM_ putStrLn $ map (\line -> "\t" ++ line) $ snd parsedProgram 
 
-    writeFile "./ast.txt" $ show astObj
+    -- writeFile "./ast.txt" $ show astObj
 
-    writeFile "./preprocessed.f95" $ unlines (snd parsedProgram)
+    -- writeFile "./preprocessed.f95" $ unlines (snd parsedProgram)
 
     putStrLn $ "Code stash name: " ++ (fst stash)
 
@@ -58,7 +58,7 @@ parseTestFile = do
 
     putStrLn astPP
 
-    writeFile "./fromAst.f95" astPP
+    -- writeFile "./fromAst.f95" astPP
 
     if (length $ DMap.keys stashValues) > 0 then
         printStash stashValues
