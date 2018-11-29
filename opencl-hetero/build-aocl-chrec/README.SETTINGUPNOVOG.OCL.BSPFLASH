@@ -1,0 +1,29 @@
+SETTING UP SYSTEM TO RUN OCL APPLICATIONS ON NOVO-G#
+-----------------------------------------------------
+1. module load aocl/15.1
+2. export AOCL_BOARD_PACKAGE_ROOT=/share/apps/altera/15.1/hld/board/ProceV
+3. aoc --list-boards
+4. Run aoc compiler on example
+
+
+
+
+
+SETTING UP BSP ON BOARDS
+-------------------------
+  If the BSP on the boards has been erased (due to power down), then it needs to be flashed with the correct version of BSP.
+
+1. Find base.aocx on novo-g (head node)
+   /home/lawande/ProceV/hardware/ProceV_D8/base.aocx
+
+2. aocl binedit base.aocx list (Do step 2 or 3, not sure which)
+
+3. aocl binedit list base.aocx 
+
+4. aocl binedit base.aocx get .acl.fpga.bin ~/fpga.bin
+
+5. aocl binedit fpga.bin list
+
+6. aocl binedit fpga.bin get .acl.sof base.sof
+
+7. Use base.sof to flash the FPGA(s)

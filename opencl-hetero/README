@@ -1,0 +1,59 @@
+Waqar Nabi; June 2017; Gainseville FL, Glasgow UK
+---------------------------------------------------
+waqarnabi@gmail.com
+
+DESCRIPTION:
+----------------
+1. Opencl implementation of the 2d-shallow water from Kampf text, for heterogenuous targets.
+  a) AOCL (Nallatech on BOLAMA)
+  b) AOCL_CHREC (Gidel boards on Novo-G# cluster)
+  [The following are not yet implemented. Artefacts of code for each of these targets is there, but some work is needed to make code compatible,
+  specially on the use of AOCL specific channels]
+  c) SDACCEL (Alpha Data on BOLAMA)
+  d) GPU (Nvidia on KANTON)
+  e) CPU (Intel Xeon on BOLAMA) 
+
+BUILD:
+------
+
+The project has a perl based build system. Run the following to look at its help:
+
+> cd ./build
+> ./build.pl -h
+
+E.g. usage for HOST-only run, 51x51 (2 added on each side for boundaries), floating points
+(remove -nut if you want to create a unique build directory for each run)
+
+> ./build.pl -tar CPU -nut -w FLOAT -d 53
+> cd build-host-only/build-current/run.exe
+
+
+RUN
+---:
+
+1. <host_exectuble> <kernel source>
+
+2. If target is NOVOG, then you have to pass a separate kernel file for each device, in the correct sequence 
+   (first argumetn for device[0] and so on)
+
+ 
+Folders
+-------
+
+/build
+Common build folder for all targets. This will be your starting point 
+for all builds
+
+/build-xxx
+target specific builds are placed in theor respective folders; 
+every build is placed into a unique sub-folder named from time-stamp and 
+application parameters
+
+/device
+common kernel file for all targets
+
+/host
+common host file for all targets. Target specific choices are made by Pre-Processor
+
+
+

@@ -1,0 +1,101 @@
+#  ----------------------------------
+#  Compiler generic options
+#  ------------------------------
+
+CXX = g++-4.8
+	#c++11 requires gcc4.8
+LDLIBS = -l OpenCL
+CXXFLAGS = -std=c++11 -O0 -g -DNVIDIA
+	#-g = produce debeggin info
+
+#  ----------------------------------
+#  Macros for app' parameterizations
+#  ----------------------------------
+CDEFINES =
+KERNEL_DEFS = 
+
+ifdef NO_INTERLEAVING
+KERNEL_DEFS += --no-interleaving default
+endif
+
+#target board/flow [AOCL*/SDACCEL]
+ifdef TARGET
+CDEFINES 		+= -DTARGET=$(TARGET)
+else
+CDEFINES 		+= -DTARGET=GPU
+endif
+
+# User specified array dimensions
+ifdef STREAM_ARRAY_SIZE_DIM1
+CDEFINES 		+= -DSTREAM_ARRAY_SIZE_DIM1=$(STREAM_ARRAY_SIZE_DIM1)
+endif
+
+ifdef WORD
+CDEFINES += -DWORD=$(WORD)
+endif
+
+ifdef USECHANNELS
+CDEFINES += -DUSECHANNELS=$(USECHANNELS)
+endif
+
+ifdef VECTOR_SIZE
+CDEFINES += -DVECTOR_SIZE=$(VECTOR_SIZE)
+endif
+
+ifdef NUM_SIMD_ITEMS
+CDEFINES += -DNUM_SIMD_ITEMS=$(NUM_SIMD_ITEMS)
+endif
+
+ifdef REQ_WORKGROUP_SIZE
+CDEFINES += -DREQ_WORKGROUP_SIZE=$(REQ_WORKGROUP_SIZE)
+endif
+
+ifdef LOOPING
+CDEFINES += -DLOOPING=$(LOOPING)
+endif
+
+ifdef NESTING
+CDEFINES += -DNESTING=$(NESTING)
+endif
+
+ifdef NUM_COMPUTE_UNITS
+CDEFINES += -DNUM_COMPUTE_UNITS=$(NUM_COMPUTE_UNITS)
+endif
+
+ifdef OPENCLCOMPILERSTRING
+CDEFINES += -DOPENCLCOMPILERSTRING=$(OPENCLCOMPILERSTRING)
+endif
+
+ifdef LOGRESULTS
+CDEFINES += -DLOGRESULTS
+endif
+
+#  ----------------------------------
+#  Specify Sources
+#  ------------------------------
+COMMON_SRCS := 
+HOST_SRCS :=  ../../host/host.cpp
+KERNEL_SRCS = ../../device/Kernel.cl
+
+SRCS = $(COMMON_SRCS) $(HOST_SRCS)
+
+#  ----------------------------------
+#  Specify EXE
+#  ------------------------------
+#HOST_EXE=opencl-$(STREAM_ARRAY_SIZE_DIM1)-$(LOOPING)-$(NESTING)-$(FLOW).exe
+HOST_EXE=opencl-run.exe
+
+#  ----------------------------------
+#  Specify Targets
+#  ------------------------------
+host: $(HOST_EXE)
+all: host
+run : host	
+	./${HOST_EXE} ${KERNEL_SRCS}
+
+
+$(HOST_EXE): $(HOST_SRCS) Makefile
+	$(CXX) $(CXXFLAGS) $(CDEFINES) $< -o $@ $(OPT) $(LDLIBS)
+
+clean:
+	rm -f $(HOST_EXE)

@@ -1,0 +1,116 @@
+#  ----------------------------------
+#  Compiler generic options
+#  ------------------------------
+
+#CXX = g++48
+	#c++11 requires gcc4.8
+LDLIBS = 
+CXXFLAGS = -O0 -g 
+	#-std=c++11 
+	#-g = produce debeggin info
+
+#  ----------------------------------
+#  Macros for app' parameterizations
+#  ----------------------------------
+CDEFINES =
+KERNEL_DEFS = 
+
+ifdef NO_INTERLEAVING
+KERNEL_DEFS += --no-interleaving default
+endif
+
+#target board/flow [AOCL*/SDACCEL]
+ifdef TARGET
+CDEFINES 		+= -DTARGET=$(TARGET)
+else
+CDEFINES 		+= -DTARGET=HOST
+endif
+
+# User specified array dimensions
+ifdef ROWS
+CDEFINES 		+= -DROWS=$(ROWS)
+endif
+
+ifdef COLS
+CDEFINES 		+= -DCOLS=$(COLS)
+endif
+
+ifdef NTOT
+CDEFINES 		+= -DNTOT=$(NTOT)
+endif
+
+ifdef NTIMES
+CDEFINES 		+= -DNTIMES=$(NTIMES)
+endif
+
+
+ifdef WORD
+CDEFINES += -DWORD=$(WORD)
+endif
+
+ifdef WORKITEMS
+CDEFINES += -DWORKITEMS=$(WORKITEMS)
+endif
+
+ifdef USECHANNELS
+CDEFINES += -DUSECHANNELS=$(USECHANNELS)
+endif
+
+
+ifdef VECTOR_SIZE
+CDEFINES += -DVECTOR_SIZE=$(VECTOR_SIZE)
+endif
+
+ifdef NUM_SIMD_ITEMS
+CDEFINES += -DNUM_SIMD_ITEMS=$(NUM_SIMD_ITEMS)
+endif
+
+ifdef REQ_WORKGROUP_SIZE
+CDEFINES += -DREQ_WORKGROUP_SIZE=$(REQ_WORKGROUP_SIZE)
+endif
+
+
+ifdef NUM_COMPUTE_UNITS
+CDEFINES += -DNUM_COMPUTE_UNITS=$(NUM_COMPUTE_UNITS)
+endif
+
+ifdef OPENCLCOMPILERSTRING
+CDEFINES += -DOPENCLCOMPILERSTRING=$(OPENCLCOMPILERSTRING)
+endif
+
+ifdef LOGRESULTS
+CDEFINES += -DLOGRESULTS
+endif
+
+#  ----------------------------------
+#  Specify Sources
+#  ------------------------------
+# Since Makefile is copied into the target build folder
+COMMON_SRCS := 
+HOST_SRCS :=  ../../host/host.c
+HOST_SRCS +=  ../../host/host-generic.c
+HOST_SRCS +=  ../../host/host-sw2d.c
+KERNEL_SRCS = ../../device/Kernel.cl
+
+SRCS = $(COMMON_SRCS) $(HOST_SRCS)
+
+#  ----------------------------------
+#  Specify EXE
+#  ------------------------------
+HOST_EXE=run.exe
+
+#  ----------------------------------
+#  Specify Targets
+#  ------------------------------
+host: $(HOST_EXE)
+all: host
+run : host	
+	./${HOST_EXE} ${KERNEL_SRCS}
+
+
+$(HOST_EXE): $(HOST_SRCS)
+#  $(CC) $(CXXFLAGS) $(CDEFINES) $^ -o $@ $(OPT) $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(CDEFINES) $^ -o $@ $(OPT) $(LDLIBS)
+
+clean:
+	rm -f $(HOST_EXE)

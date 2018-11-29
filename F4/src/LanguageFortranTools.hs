@@ -2,23 +2,24 @@ module LanguageFortranTools where
 
 --    This module contains a set of functions that are used all over the source for the compiler. Essentially a utility module.
 
-import Data.Generics                     (Data, Typeable, mkQ, mkT, gmapQ, gmapT, everything, everywhere)
-import Data.Typeable
-import Data.Char
-import Data.List
-import Data.Maybe
-import System.Process
-import System.Directory
-import Text.Read
-import qualified Data.Map as DMap
-import Warning (warning)
-import Debug.Trace (traceId)
+import           Data.Char
+import           Data.Generics           (Data, Typeable, everything,
+                                          everywhere, gmapQ, gmapT, mkQ, mkT)
+import           Data.List
+import qualified Data.Map                as DMap
+import           Data.Maybe
+import           Data.Typeable
+import           Debug.Trace             (traceId)
+import           System.Directory
+import           System.Process
+import           Text.Read
+import           Warning                 (warning)
 
-import Language.Fortran.Parser  ( parse ) -- note: parse :: String -> Program (DMap.Map String [String]) -- 
-import Language.Fortran
+import           Language.Fortran
+import           Language.Fortran.Parser (parse)
 
-import PreProcessor                     (preProcess,removeBlankLines)
-import F95IntrinsicFunctions (f95IntrinsicFunctions)
+import           F95IntrinsicFunctions   (f95IntrinsicFunctions)
+import           PreProcessor            (preProcess, removeBlankLines)
 
 type ModuleVarsTable = DMap.Map String String
 --  the Int is a label in the source code, to be replaced with the stashed code
@@ -35,51 +36,50 @@ nullAnno = DMap.empty
 
 --    Taken from language-fortran example. Runs preprocessor on target source and then parses the result, returning an AST.
 parseFile :: [String] -> [String] -> Bool -> String -> IO ( (Program Anno, [String]) , (String, CodeStash), ModuleVarsTable)
-parseFile cppDArgs cppXArgs fixedForm filename = do 
+parseFile cppDArgs cppXArgs fixedForm filename = do
     (preproc_inp, stash,moduleVarTable) <- preProcessingHelper cppDArgs cppXArgs fixedForm True filename
     let
         preproc_inp_lines = lines preproc_inp
-    mapM (\line -> putStrLn $ "parseFile: " ++ line) preproc_inp_lines    
     return ((warning (parse preproc_inp) ("Parsing "++filename), preproc_inp_lines),(filename, stash),moduleVarTable)
     --return (parse  preproc_inp, preproc_inp_lines) -- ,(filename, stash))
     -- return ()
 
 runCpp :: [String] -> [String] -> Bool -> String -> IO String
-runCpp cppDArgs cppXArgs fixedForm filename = do 
+runCpp cppDArgs cppXArgs fixedForm filename = do
     (preproc_inp, _, _) <- preProcessingHelper cppDArgs cppXArgs fixedForm False filename
     return preproc_inp
 
 preProcessingHelper :: [String] -> [String] -> Bool -> Bool -> String -> IO (String, CodeStash, ModuleVarsTable)
-preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do 
-    let 
+preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
+    let
         dFlagList = if length cppDArgs > 0
             then foldl (\accum item -> accum ++ ["-D"++item]) [] cppDArgs
             else  []
-        dFlagStr = if length dFlagList == 0 
-            then  "" 
-            else unwords dFlagList    
+        dFlagStr = if length dFlagList == 0
+            then  ""
+            else unwords dFlagList
     inp <- readFile filename
     let
-        contentLines = lines inp        
+        contentLines = lines inp
     let
     -- Then we split out var decls into one per line
         inp' = unlines $ oneVarDeclPerVarDeclLine contentLines
-    -- Then we preprocess, which should remove blank lines        
+    -- Then we preprocess, which should remove blank lines
         (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
     -- Write this out to a file so we can call cpp on it via the shell
-    let    
-        filename_no_dot 
+    let
+        filename_no_dot
             | head filename == '.' = tail $ tail filename
             | otherwise = filename
         filename_noext = head $ split '.' filename_no_dot
-    writeFile ("./"++filename_noext++"_tmp.f95") preproc_inp   
+    writeFile ("./"++filename_noext++"_tmp.f95") preproc_inp
     -- Apply the C preprocessor on the temporary file and remove the blank lines
     let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " ./"++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
     -- putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
-    let        
+    let
     -- Remove all comments
-    -- Language.Fortran.Parser borks on lines starting with !# and on trailing comments           
+    -- Language.Fortran.Parser borks on lines starting with !# and on trailing comments
         exp_inp_lines_no_comments = map (takeWhile (/= '!')) (lines preproc_inp')
     -- I also skip any blank lines
         exp_inp_lines'' = removeBlankLines exp_inp_lines_no_comments
@@ -101,44 +101,44 @@ errorLocationRangeFormatting :: SrcSpan -> String
 errorLocationRangeFormatting ((SrcLoc _ line_start _), (SrcLoc _ line_end _)) = "line " ++ show line_start ++ " and line " ++ show line_end -- ++ ", column " ++ show column
 
 outputExprFormatting :: Expr Anno -> String
-outputExprFormatting (Var _ _ list) = foldl (++) "" (map (\(varname, exprList) -> ((\(VarName _ str) -> str) varname) ++ 
-                                                            (if exprList /= [] then "(" ++ (foldl (\accum item -> (if accum /= "" then accum ++ "," else "") 
+outputExprFormatting (Var _ _ list) = foldl (++) "" (map (\(varname, exprList) -> ((\(VarName _ str) -> str) varname) ++
+                                                            (if exprList /= [] then "(" ++ (foldl (\accum item -> (if accum /= "" then accum ++ "," else "")
                                                                 ++ item) "" (map (outputExprFormatting) exprList)) ++ ")" else "")) list)
 outputExprFormatting (Con _ _ str) = if takeLast 2 str == ".0" then take ((length str) - 2) str else str
 outputExprFormatting (Bin _ _ op expr1 expr2) = "(" ++ outputExprFormatting expr1 ++ " " ++ op_str ++ " " ++ outputExprFormatting expr2 ++ ")"
                             where
                                 op_str = case op of
-                                    Plus p -> "+"
-                                    Minus p -> "-"
-                                    Mul p -> "*"
-                                    Div p -> "/"
-                                    Or p -> ".OR."
-                                    And p -> ".AND."
+                                    Plus p   -> "+"
+                                    Minus p  -> "-"
+                                    Mul p    -> "*"
+                                    Div p    -> "/"
+                                    Or p     -> ".OR."
+                                    And p    -> ".AND."
                                     Concat p -> "//"
-                                    Power p -> "**"
-                                    RelEQ p -> "=="
-                                    RelNE p -> "/="
-                                    RelLT p -> "<"
-                                    RelLE p -> "<="
-                                    RelGT p -> ">"
-                                    RelGE p -> ">="
+                                    Power p  -> "**"
+                                    RelEQ p  -> "=="
+                                    RelNE p  -> "/="
+                                    RelLT p  -> "<"
+                                    RelLE p  -> "<="
+                                    RelGT p  -> ">"
+                                    RelGE p  -> ">="
 outputExprFormatting (NullExpr _ _) = ""
 outputExprFormatting (Null _ _) = "null"
 outputExprFormatting (Unary _ _ unOp expr) = "(" ++ op_str ++ outputExprFormatting expr ++ ")"
-                            where 
+                            where
                                 op_str = case unOp of
                                     UMinus p -> "-"
-                                    Not p -> ".NOT."
+                                    Not p    -> ".NOT."
 outputExprFormatting codeSeg = show codeSeg
 
 takeLast :: Int -> [a] -> [a]
 takeLast n lst = reverse (take n (reverse lst))
 
 orElem :: Eq a => a -> [[a]] -> Bool
-orElem item [] = False
+orElem item []                = False
 orElem item (firstList:lists) = elem item firstList || orElem item lists
 
-listExtractSingleAppearances :: Eq a => [a] -> [a] 
+listExtractSingleAppearances :: Eq a => [a] -> [a]
 listExtractSingleAppearances list = listExtractSingleAppearances' list list
 
 listExtractSingleAppearances' :: Eq a => [a] -> [a] -> [a]
@@ -150,7 +150,7 @@ listExtractSingleAppearances' (x:tailList) wholeList = if appearances == 1 then 
             appearances = listCountAppearances x wholeList
 
 
--- WV: this seems rather roundabout. Why not say 
+-- WV: this seems rather roundabout. Why not say
 -- listCountAppearances value xs = length (filter (==value) xs)
 listCountAppearances :: Eq a => a -> [a] -> Int
 listCountAppearances value (x:[])     |     value == x = 1
@@ -166,17 +166,17 @@ listConcatUnique :: Eq a => [a] -> [a] -> [a]
 listConcatUnique a b = foldl (\accum item -> if notElem item accum then accum ++ [item] else accum) b a
 
 --    Used by SYB query to extract expressions
-extractExpr :: Expr Anno -> Expr Anno 
+extractExpr :: Expr Anno -> Expr Anno
 extractExpr expr = expr
 
-extractExpr_list :: Expr Anno -> [Expr Anno] 
+extractExpr_list :: Expr Anno -> [Expr Anno]
 extractExpr_list (ESeq _ _ _ _) = []
-extractExpr_list expr = [expr]
+extractExpr_list expr           = [expr]
 
 extractArgName :: ArgName Anno -> [ArgName Anno]
 extractArgName codeSeg = case codeSeg of
                             ArgName _ _ -> [codeSeg]
-                            _ -> []
+                            _           -> []
 
 extractReductionVarNames :: Fortran Anno -> [VarName Anno]
 extractReductionVarNames (OpenCLReduce _ _ _ _ _ _ redVars _) = map (fst) redVars -- WV20170426
@@ -187,7 +187,7 @@ extractOpenCLReduces ast = everything (++) (mkQ [] (extractOpenCLReduces')) ast
 extractOpenCLReduces' :: Fortran Anno -> [Fortran Anno]
 extractOpenCLReduces' codeSeg = case codeSeg of
                             OpenCLReduce _ _ _ _ _ _ _ _ -> [codeSeg] -- WV20170426
-                            _ -> []
+                            _                            -> []
 
 extractLoopIters :: Fortran Anno -> [String]
 extractLoopIters  ast = everything (++) (mkQ [] (extractLoopIters')) ast
@@ -195,40 +195,40 @@ extractLoopIters  ast = everything (++) (mkQ [] (extractLoopIters')) ast
 extractLoopIters' :: Fortran Anno -> [String]
 extractLoopIters' codeSeg = case codeSeg of
                             For _ _ (VarName _ idx) _ _ _ _ -> [idx]
-                            _ -> []
-                            
+                            _                               -> []
+
 extractLoops  ast = everything (++) (mkQ [] (extractLoops')) ast
 
 extractLoops' :: Fortran Anno -> [Fortran Anno]
 extractLoops' codeSeg = case codeSeg of
                             For _ _ _ _ _ _ _ -> [codeSeg]
-                            _ -> []
-                            
+                            _                 -> []
+
 -- extractKernels :: Program Anno -> [Fortran Anno]
 extractKernels ast = everything (++) (mkQ [] (extractKernels')) ast
 
 extractKernels' :: Fortran Anno -> [Fortran Anno]
 extractKernels' codeSeg = case codeSeg of
-                            OpenCLMap _ _ _ _ _ _ _ -> [codeSeg] -- WV20170426
+                            OpenCLMap _ _ _ _ _ _ _      -> [codeSeg] -- WV20170426
                             OpenCLReduce _ _ _ _ _ _ _ _ -> [codeSeg] -- WV20170426
-                            _ -> []
+                            _                            -> []
 
 
 getWrittenArgs  ast = everything (++) (mkQ [] (getWrittenArgs')) ast
 
 getWrittenArgs' codeSeg = case codeSeg of
-                            OpenCLMap _ _ _ vws _ _ _ -> vws 
+                            OpenCLMap _ _ _ vws _ _ _      -> vws
                             OpenCLReduce _ _ _ vws _ _ _ _ -> vws
-                            _ -> []
+                            _                              -> []
 
 
 
 getReadArgs  ast = everything (++) (mkQ [] (getReadArgs')) ast
 
 getReadArgs' codeSeg = case codeSeg of
-                            OpenCLMap _ _ vrs vws _ _ _ -> vrs
+                            OpenCLMap _ _ vrs vws _ _ _      -> vrs
                             OpenCLReduce _ _ vrs vws _ _ _ _ -> vrs
-                            _ -> []
+                            _                                -> []
 
 
 extractBufferWrites ast = everything (++) (mkQ [] (extractBufferWrites')) ast
@@ -236,14 +236,14 @@ extractBufferWrites ast = everything (++) (mkQ [] (extractBufferWrites')) ast
 extractBufferWrites' :: Fortran Anno -> [Fortran Anno]
 extractBufferWrites' codeSeg = case codeSeg of
                             OpenCLBufferWrite _ _ _ -> [codeSeg]
-                            _ -> []
+                            _                       -> []
 
 extractBufferReads ast = everything (++) (mkQ [] (extractBufferReads')) ast
 
 extractBufferReads' :: Fortran Anno -> [Fortran Anno]
 extractBufferReads' codeSeg = case codeSeg of
                             OpenCLBufferRead _ _ _ -> [codeSeg]
-                            _ -> []
+                            _                      -> []
 
 --    Used to break down a tree of expressions that might form a calculation into a list of expressions for analysis.
 extractOperands :: (Typeable p, Data p) => Expr p -> [Expr p]
@@ -280,11 +280,11 @@ extractAllVarNames ::(Data (a Anno)) => a Anno -> [VarName Anno]
 extractAllVarNames = everything (++) (mkQ [] (extractVarNames))
 
 
--- Used to extract array index expressions and function call arguments. 
+-- Used to extract array index expressions and function call arguments.
 extractContainedVars :: (Typeable p, Data p) => Expr p -> [Expr p]
 extractContainedVars (Var _ _ lst) = foldl (\accumExprs (itemVar, itemExprs) -> accumExprs ++ itemExprs) [] lst
 extractContainedVars _ = []
--- WV 
+-- WV
 extractContainedVarsWV :: (Typeable p, Data p) => Expr p -> [Expr p]
 extractContainedVarsWV expr = case expr of
     (Var _ _ lst) ->
@@ -302,9 +302,9 @@ extractContainedOperands expr =  foldl (\accum item -> accum ++ (extractOperands
                     containedVars = extractContainedVars expr
 
 extractAssignments :: Fortran Anno -> [Fortran Anno]
-extractAssignments codeSeg = case codeSeg of 
+extractAssignments codeSeg = case codeSeg of
                                 Assg _ _ _ _ -> [codeSeg]
-                                _    -> []
+                                _            -> []
 
 extractFortran :: Fortran Anno -> [Fortran Anno]
 extractFortran fort = [fort]
@@ -326,7 +326,7 @@ extractBlock :: Block Anno -> [Block Anno]
 extractBlock block = [block]
 
 extractVarNames_loopVars :: [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)] -> [VarName Anno]
-extractVarNames_loopVars = map (\(x,_,_,_) -> x) 
+extractVarNames_loopVars = map (\(x,_,_,_) -> x)
 
 --    Generates a SrcSpan that is attached to nodes that have been generated by this program
 nullSrcSpan :: SrcSpan
@@ -391,7 +391,7 @@ srcSpanInSrcSpan ((SrcLoc _ rSLine rSCol), (SrcLoc _ rELine rECol)) ((SrcLoc _ s
             endsBeforeRange = srcELine < rELine || srcELine == rELine && srcECol <= rECol
 
 generateAssgCode :: Expr Anno -> Expr Anno -> Fortran Anno
-generateAssgCode expr1 expr2 = Assg nullAnno nullSrcSpan expr1 expr2 
+generateAssgCode expr1 expr2 = Assg nullAnno nullSrcSpan expr1 expr2
 
 generateLTExpr :: Expr Anno -> Expr Anno -> Expr Anno
 generateLTExpr expr1 expr2 = Bin nullAnno nullSrcSpan (RelLT nullAnno) expr1 expr2
@@ -433,26 +433,26 @@ generateDivisionExpr :: Expr Anno -> Expr Anno -> Expr Anno
 generateDivisionExpr expr1 expr2 = Bin nullAnno nullSrcSpan (Div nullAnno) expr1 expr2
 
 getUses :: Uses Anno -> [Uses Anno]
-getUses uses = case uses of 
+getUses uses = case uses of
                     (Use _ _ _ _) -> [uses]
-                    _ -> []
+                    _             -> []
 
 getSubNames :: SubName Anno -> [SubName Anno]
 getSubNames sub = case sub of
                     SubName _ _ -> [sub]
-                    _ -> []
+                    _           -> []
 
 getUnitName :: ProgUnit Anno -> String
 getUnitName progunit = foldl (++) [] (gmapQ (mkQ [] getUnitName') progunit)
 
 getUnitName' :: SubName Anno -> String
 getUnitName' (SubName _ str) = str
-getUnitName' _ = ""
+getUnitName' _               = ""
 
 --     Function returns the loop variable for an AST representing a for loop
 getLoopVar :: Fortran p -> Maybe(VarName p)
 getLoopVar (For _ _ var _ _ _ _) = Just var
-getLoopVar _ = Nothing
+getLoopVar _                     = Nothing
 
 hasOperand :: Expr Anno -> Expr Anno -> Bool
 hasOperand container contains = all (== True) $ map (\x -> elem x (extractOperands $ applyGeneratedSrcSpans container)) (extractOperands $ applyGeneratedSrcSpans contains)
@@ -495,15 +495,15 @@ removeAnnotations original = case original of
 combineAnnotations :: Anno -> Anno -> Anno
 combineAnnotations a b = combineMaps a b
 
--- WV This checks if one of the varNames is used in the expression, where the expression can be a variable or a binary operation. 
+-- WV This checks if one of the varNames is used in the expression, where the expression can be a variable or a binary operation.
 -- WV So unary operations are ignored, but worse, function calls too, and it is not clear to me why array indices are ignored
 {-
-data Expr  p = 
+data Expr  p =
              | Var p SrcSpan  [(VarName p, [Expr p])]
              | Bin p SrcSpan  (BinOp p) (Expr p) (Expr p)
              | Unary p SrcSpan (UnaryOp p) (Expr p)
              | ESeq p SrcSpan (Expr p) (Expr p)
-             | AssgExpr p SrcSpan Variable (Expr p) 
+             | AssgExpr p SrcSpan Variable (Expr p)
 -}
 usesVarName_list :: [VarName Anno] -> Expr Anno -> Bool
 usesVarName_list varNames (Var _ _ list) = foldl (||) False $ map (\(varname, exprs) -> elem varname varNames) list -- so any variable used as an array index or argument of a function call is ignored!
@@ -515,18 +515,18 @@ usesVarName varnameInp (Var _ _ list) = foldl (||) False $ map (\(varname, exprs
 
 isVar :: Expr Anno -> Bool
 isVar (Var _ _ _) = True
-isVar _ = False
+isVar _           = False
 
 extractLoopVars :: Fortran Anno -> [VarName Anno]
 extractLoopVars codeSeg = everything (++) (mkQ [] extractLoopVars') codeSeg
 
 extractLoopVars' :: Fortran Anno -> [VarName Anno]
 extractLoopVars' (For _ _ var _ _ _ _) = [var]
-extractLoopVars' _ = []
+extractLoopVars' _                     = []
 
 extractUsedVarName :: Expr Anno -> [VarName Anno]
 extractUsedVarName (Var _ _ list) = map (\(varname, exprs) -> varname) list
-extractUsedVarName _ = []
+extractUsedVarName _              = []
 
 replaceAllOccurences_varnamePairs :: Fortran Anno -> [VarName Anno] -> [VarName Anno] -> Fortran Anno
 replaceAllOccurences_varnamePairs codeSeg originals replacements = foldl (\accum (v1, v2) -> replaceAllOccurences_varname accum v1 v2) codeSeg pairs
@@ -544,8 +544,8 @@ varNameStr :: VarName Anno -> String
 varNameStr (VarName _ str) = str
 
 varNameListStr :: [VarName Anno] -> String
-varNameListStr [] =  ""
-varNameListStr (var:[]) = varNameStr var
+varNameListStr []         =  ""
+varNameListStr (var:[])   = varNameStr var
 varNameListStr (var:vars) = (varNameStr var) ++ "," ++ (varNameListStr vars)
 
 replaceFortran progAst oldFortran newFortran = everywhere (mkT (replaceFortran' oldFortran newFortran)) progAst
@@ -554,7 +554,7 @@ replaceFortran' :: Fortran Anno -> Fortran Anno -> Fortran Anno -> Fortran Anno
 replaceFortran' oldFortran newFortran currentFortran     |    (applyGeneratedSrcSpans oldFortran) == (applyGeneratedSrcSpans currentFortran) = normaliseSrcSpan currentFortran newFortran
                                                         |    otherwise = currentFortran
 
-replaceProgUnit ast oldProgUnit newProgUnit = everywhere (mkT (replaceProgUnit' oldProgUnit newProgUnit)) ast 
+replaceProgUnit ast oldProgUnit newProgUnit = everywhere (mkT (replaceProgUnit' oldProgUnit newProgUnit)) ast
 
 replaceProgUnit' :: ProgUnit Anno -> ProgUnit Anno -> ProgUnit Anno -> ProgUnit Anno
 replaceProgUnit' oldProgUnit newProgUnit currentProgUnit     |     (applyGeneratedSrcSpans oldProgUnit) == (applyGeneratedSrcSpans currentProgUnit) = normaliseSrcSpan currentProgUnit newProgUnit
@@ -586,7 +586,7 @@ extractFirstChildFor (For _ _ _ _ _ _ fortran)     |    forFound = Just(priorFor
             allFors = everything (++) (mkQ [] extractForWithFollowing) fortran
             forFound = case extractedFor of
                             Nothing -> False
-                            Just a -> True
+                            Just a  -> True
             extractedFor = extractForWithFollowing_beta fortran
             (firstFor, followingFortran) = fromMaybe (error "extractFirstChildFor") extractedFor
             -- (firstFor, followingFortran) = head allFors
@@ -608,7 +608,7 @@ extractForWithFollowing_beta codeSeg = case codeSeg of
             recursiveCheck = (gmapQ (mkQ Nothing extractForWithFollowing_beta) codeSeg)
             recursiveCheck_maybe = case recursiveCheck of
                                         [] -> Nothing
-                                        _ -> head recursiveCheck
+                                        _  -> head recursiveCheck
 
 extractPriorToFor :: Fortran Anno -> Fortran Anno
 extractPriorToFor codeSeg = case codeSeg of
@@ -619,7 +619,7 @@ extractPriorToFor codeSeg = case codeSeg of
 extractFor :: Fortran Anno -> [Fortran Anno]
 extractFor codeSeg = case codeSeg of
                         For _ _ _ _ _ _ _ -> [codeSeg]
-                        _ -> []
+                        _                 -> []
 
 extractLineNumber :: SrcSpan -> Int
 extractLineNumber ((SrcLoc _ line _), _) = line
@@ -698,7 +698,7 @@ listIntersection :: Eq a => [a] -> [a] -> [a]
 listIntersection a b = filter (\x -> elem x b) a
 
 listUnion :: Eq a => [a] -> [a] -> [a]
-listUnion a b = nub (a++b) 
+listUnion a b = nub (a++b)
 
 combineMaps :: Ord k => DMap.Map k [a] -> DMap.Map k [a] -> DMap.Map k [a]
 combineMaps map1 map2 = resultantAnalysis
@@ -711,13 +711,13 @@ appendToMap key item map = DMap.insert key ((DMap.findWithDefault [] key map) ++
 
 extractPrimaryReductionOp :: Expr Anno -> Expr Anno -> Maybe(BinOp Anno)
 extractPrimaryReductionOp assignee (Bin _ _ op expr1 expr2) = case assigneePresent of
-                                        True -> Just op
+                                        True  -> Just op
                                         False -> childOp
                         where
                             primaryOp1 = extractPrimaryReductionOp assignee expr1
-                            primaryOp2 = extractPrimaryReductionOp assignee expr2 
+                            primaryOp2 = extractPrimaryReductionOp assignee expr2
                             childOp = case primaryOp1 of
-                                        Just a -> primaryOp1
+                                        Just a  -> primaryOp1
                                         Nothing ->  primaryOp2
                             assigneePresent = applyGeneratedSrcSpans expr1 == applyGeneratedSrcSpans assignee ||
                                                 applyGeneratedSrcSpans expr2 == applyGeneratedSrcSpans assignee
@@ -757,12 +757,12 @@ evaluateExpr vt expr = extractEvaluatedValue (evaluateExpr_type vt expr)
 
 extractEvaluatedValue :: Maybe(Float, BaseType Anno) -> Maybe(Float)
 extractEvaluatedValue expr = case expr of
-                            Nothing -> Nothing
+                            Nothing       -> Nothing
                             Just (val, _) -> Just val
 
 extractEvaluatedType :: Maybe(Float, BaseType Anno) -> Maybe(BaseType Anno)
 extractEvaluatedType expr = case expr of
-                            Nothing -> Nothing
+                            Nothing       -> Nothing
                             Just (_, typ) -> Just typ
 
 evaluateExpr_type :: ValueTable -> Expr Anno -> Maybe(Float, BaseType Anno)
@@ -782,7 +782,7 @@ evaluateExpr_type vt (Bin _ _ binOp expr1 expr2) = case binOp of
             where
                 expr1_eval = evaluateExpr_type vt expr1
                 expr2_eval = evaluateExpr_type vt expr2
-evaluateExpr_type vt (Unary _ _ unOp expr) = case unOp of 
+evaluateExpr_type vt (Unary _ _ unOp expr) = case unOp of
                                                 UMinus _ -> maybeNegative (evaluateExpr_type vt expr)
                                                 Not _ -> Nothing
 evaluateExpr_type vt (Var p src lst)       | varString == "mod" = maybeBinOp_integral (evaluateExpr_type vt expr1) (evaluateExpr_type vt expr2) (mod)
@@ -802,7 +802,7 @@ lookupValueTable :: String -> ValueTable -> Maybe(Float)
 lookupValueTable str table = value
             where
                 (value, typ) =  case lookupValueTable_type str table of
-                                    Nothing -> (Nothing, Nothing)
+                                    Nothing     -> (Nothing, Nothing)
                                     Just (v, t) -> (Just v, Just t)
 
 lookupValueTable_type :: String -> ValueTable -> Maybe(Float, BaseType Anno)
@@ -856,7 +856,7 @@ resolveType type1 type2 |     type1 == type2 = type1
 
 maybeNegative :: Maybe(Float, BaseType Anno) -> Maybe(Float, BaseType Anno)
 maybeNegative (Just(int, typ)) = Just(-int, typ)
-maybeNegative Nothing = Nothing
+maybeNegative Nothing          = Nothing
 
 trimFront :: String -> String
 trimFront inp = filter (\x -> x /= ' ' && x /= '\t') inp
@@ -877,18 +877,18 @@ commentSeparator str = prefix ++ (commentSeparator' comment body) ++ suffix
         prefix = "! ----"
         suffix = "\n"
         body = (take 122 ['-','-'..'-'])
-        comment = case str of 
+        comment = case str of
                     [] -> ""
-                    _ -> (" " ++ str ++ " ")
+                    _  -> (" " ++ str ++ " ")
 
 commentSeparator' :: String -> String -> String
-commentSeparator' [] (_:seps) = seps
-commentSeparator' comment [] = comment
+commentSeparator' [] (_:seps)       = seps
+commentSeparator' comment []        = comment
 commentSeparator' (x:xs) (sep:seps) = [x] ++ (commentSeparator' xs seps)
 
 extractIndent :: String -> String
 extractIndent (' ':str) = " " ++ extractIndent str
-extractIndent _ = ""
+extractIndent _         = ""
 
 -- WV
 split :: Char -> [Char] -> [[Char]]
@@ -896,14 +896,14 @@ split delim str = map (\w -> map (\c -> if c==delim then ' ' else c) w) $ words 
 
 
 -- "integer,", "parameter", "::", "ip=150"
--- WV 
+-- WV
 findDeclLine :: String -> Bool
 findDeclLine line  = Data.List.isInfixOf "::" line && head ( filter (/=' ') line) /= '!'
-{-        let 
+{-        let
             line_no_comments = head $ split '!' line
-            -- chunks = words line_no_comments -- splits on spaces 
-            chunks = split ':' line_no_comments -- splits on ':' so should 
-        in 
+            -- chunks = words line_no_comments -- splits on spaces
+            chunks = split ':' line_no_comments -- splits on ':' so should
+        in
                 if length chunks < 2 then False else chunks !! (length chunks - 2) == "::"
 -}
 
@@ -917,8 +917,8 @@ findDeclLineVars line  = if Data.List.isInfixOf "::" line && head ( filter (/=' 
                 lhs:rhs:[] = splitDelim "::" line_no_spaces -- (warning line_no_spaces ("<L:"++line_no_spaces++">"))
                 rhs_mvars = splitDelim "," rhs -- (warning rhs ("<"++rhs++">"))
                 rhs_vars = map (head . (splitDelim "=")) rhs_mvars
-            in        
-                rhs_vars            
+            in
+                rhs_vars
         else
             []
 
@@ -937,7 +937,7 @@ isUseDecl line = let
 -- WV This is weak because I assume the module name is the file name. I should at least try and remove "module_" from the name TODO
 -- WV But even then, this should only really be done for modules that only contain declarations, so I should check that TODO
 readUsedModuleDecls :: String -> [String] -> [String] -> Bool -> IO ([String],(String,[String]))
-readUsedModuleDecls line cppDArgs cppXArgs fixedForm = 
+readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
     let
         chunks = filter (not . null) $ words line
         module_name_maybe_commment = chunks !! 1
@@ -953,13 +953,13 @@ readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
             test2 <- doesFileExist (file_name_root ++ ".f95")
             -- print $ "Test1: "++module_name ++ ".f95 "++(show test1)
             -- print $ "Test2: "++file_name_root ++ ".f95 "++(show test2)
-            -- FIXME: I am simply ignoring stash and moduleVarTable for now! 
+            -- FIXME: I am simply ignoring stash and moduleVarTable for now!
             (module_content_str, stash,moduleVarTable) <- if test1
                 then
                         -- readFile (module_name ++ ".f95")
                         preProcessingHelper cppDArgs cppXArgs fixedForm True (module_name ++ ".f95")
                 else
-                    if test2 
+                    if test2
                         then
                             -- OK, this file exists. read it and check if it is decl-only
                             -- we do this by checking for "contains" and "subroutine "
@@ -969,10 +969,10 @@ readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
                             return ("",DMap.empty,DMap.empty)
             let test3 = isDeclOnly module_content_str
             -- print $ "Test3: "++(show test3)++" "++line
-            if test3 
+            if test3
                 then
                     do
-                        let 
+                        let
                             module_lines = lines module_content_str
                             (decl_lines, other_lines) = partition findDeclLine module_lines
                             vars_per_line = map findDeclLineVars decl_lines
@@ -983,7 +983,7 @@ readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
 
 isDeclOnly module_content_str = let
     module_lines = lines module_content_str
-    module_lines_no_comments = map (takeWhile (/= '!')) module_lines 
+    module_lines_no_comments = map (takeWhile (/= '!')) module_lines
     module_lines_no_comments_no_blanks = removeBlankLines module_lines_no_comments
     relevant_module_lines = filter isRelevantModuleLine module_lines_no_comments_no_blanks
     non_decl_lines = filter (not . findDeclLine) relevant_module_lines
@@ -992,9 +992,9 @@ isDeclOnly module_content_str = let
         -- (warning (null non_decl_lines) (show non_decl_lines) )
 
 -- This removes the module declaration as well as "use", "contains" and "implicit". Rather ad-hoc
-isRelevantModuleLine line 
+isRelevantModuleLine line
     | null chunks = False
-    | otherwise = 
+    | otherwise =
         let
             w1 = head chunks
             w2 = if length chunks > 1 then chunks !! 1 else ""
@@ -1003,9 +1003,9 @@ isRelevantModuleLine line
                 | w1 `elem` ["module","contains","use","implicit"] = False
                 | w1 == "end" && w2 `elem` ["module"] = False
                 | otherwise = True
-        in                
+        in
             res
-  where                    
+  where
     chunks = words line
 -- WV: refined this: any "implicit none" after the "use" should come before the inline
 -- The proper way is to check for the presence of such a line, remove it, and in a second pass add it before the first decl / after the last use
@@ -1013,31 +1013,31 @@ isRelevantModuleLine line
 inlineDeclsFromUsedModules :: Bool -> [String] ->[String] ->[String] -> Bool -> IO ([String], ModuleVarsTable)
 inlineDeclsFromUsedModules False contentLines _ _ _ = return (contentLines, DMap.empty)
 inlineDeclsFromUsedModules True contentLines cppDArgs cppXArgs fixedForm = do
-                let 
+                let
                     hasImplicitNone = length (filter isImplicitNoneDecl contentLines) > 0
                 expandedContentLines' <- mapM (\line -> if (isUseDecl line) then (readUsedModuleDecls line cppDArgs cppXArgs fixedForm) else return ([ line ],("",[]))) (filter (not . isImplicitNoneDecl) contentLines)
                 let
                     (expandedContentLines,moduleVarTupleList) = unzip expandedContentLines'
                 let
-                    -- now we must reverse this: we want per variable the module 
+                    -- now we must reverse this: we want per variable the module
                     -- we assume vars are unique, so no conflicts across modules
                     vmtuplst = foldl (++) [] $ map (\(mod_name, vars) -> map (\var -> (var,mod_name)) vars) moduleVarTupleList -- [ (mod,[vars]) ,...]
                     moduleVarTable = DMap.fromList vmtuplst
                 let expandedContentLines' = foldl (++) [] expandedContentLines
                 let
-                    expandedContentLines'' 
-                        | hasImplicitNone = addImplicitNone expandedContentLines' 
-                        | otherwise = expandedContentLines'                
+                    expandedContentLines''
+                        | hasImplicitNone = addImplicitNone expandedContentLines'
+                        | otherwise = expandedContentLines'
                 return (expandedContentLines'', moduleVarTable)
 
-addImplicitNone :: [String] -> [String]                
-addImplicitNone contentLines = 
+addImplicitNone :: [String] -> [String]
+addImplicitNone contentLines =
     let
-        (beforeImplicitNoneDecl,afterImplicitNoneDecl, _) = foldl (\ (bls,als,beforeDecl) line -> 
+        (beforeImplicitNoneDecl,afterImplicitNoneDecl, _) = foldl (\ (bls,als,beforeDecl) line ->
                 let
                     beforeDecl' = if beforeDecl && (Data.List.isInfixOf "::" line)  then False else beforeDecl
                 in
-                    if beforeDecl' 
+                    if beforeDecl'
                         then (bls++[line], als, beforeDecl')
                         else  (bls, als++[line], beforeDecl')
                 ) ([],[],True) contentLines
@@ -1046,52 +1046,52 @@ addImplicitNone contentLines =
 
 
 
-splitDelim :: String -> String -> [String]                
-splitDelim patt line = 
+splitDelim :: String -> String -> [String]
+splitDelim patt line =
     let
-        (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch -> 
+        (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch ->
                     if Data.List.isPrefixOf patt rest_of_line
                         then
                             let
                                  rest_of_line' = case Data.List.stripPrefix patt rest_of_line of
-                                    Just r -> r
+                                    Just r  -> r
                                     Nothing -> rest_of_line
-                            in                                    
+                            in
                                 (chunks++[current_chunk],"",rest_of_line')
-                        else 
-                            if length rest_of_line > 0 
+                        else
+                            if length rest_of_line > 0
                             then
                                 let
                                     ch':rest_of_line' = rest_of_line
                                     current_chunk' = current_chunk++[ch']
-                                in                                        
+                                in
                                     (chunks, current_chunk', rest_of_line')
-                            else                                    
+                            else
                                  (chunks, current_chunk, rest_of_line)
                 ) ([],"",line) line
     in
         chunks++[ last_chunk ]
-{-         
+{-
 splitDelim :: String -> String -> [String]
-splitDelim delim str = words (find_delim delim str []) 
+splitDelim delim str = words (find_delim delim str [])
 
-find_delim :: String -> String -> String -> String    
-find_delim delim str str' 
+find_delim :: String -> String -> String -> String
+find_delim delim str str'
     | length str == 0 =  str'
-    | otherwise = 
+    | otherwise =
         let
             nchars = length delim
             maybe_delim = take nchars str
-        in            
-            if maybe_delim == delim 
-                then 
+        in
+            if maybe_delim == delim
+                then
                     find_delim delim (drop nchars str) (str'++" ")
-                else 
+                else
                     find_delim delim (tail str) (str' ++[head str])
-        
+
 -}
 
-oneVarDeclPerVarDeclLine  :: [String] -> [String]        
+oneVarDeclPerVarDeclLine  :: [String] -> [String]
 oneVarDeclPerVarDeclLine contentLines =
     let
         contentLines' :: [[String]]
@@ -1099,24 +1099,24 @@ oneVarDeclPerVarDeclLine contentLines =
     in
         foldl (++) [] contentLines'
 
-isVarDeclWithMultipleVars :: String -> Bool        
+isVarDeclWithMultipleVars :: String -> Bool
 isVarDeclWithMultipleVars line =
     let
         line_no_comments = head $ splitDelim "!" line
         chunks = splitDelim "::" line_no_comments
     in
         (findDeclLine line_no_comments ) && (length chunks ==2) && (Data.List.isInfixOf "," (chunks !! 1))
-        
+
 --isVarDecl
 --commas after ::
 splitOutVarDecls :: String -> [String]
-splitOutVarDecls line = 
+splitOutVarDecls line =
     let
         line_no_comments =  head $ splitDelim "!" line
         lhs:rhs:[] = splitDelim "::" line_no_comments
         rhs_vars = splitDelim "," rhs
         new_lines = map (\var -> lhs++" :: "++var) rhs_vars
-    in        
+    in
         new_lines
 -- split on "::"
 -- split RHS on ','

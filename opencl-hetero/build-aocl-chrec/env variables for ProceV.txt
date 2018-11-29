@@ -1,0 +1,2 @@
+LD_LIBRARY_PATH=/share/apps/gcc/4.9.4/lib64:/share/apps/gcc/4.9.4/lib:/share/apps/altera/15.1/hld/host/linux64/lib:/share/apps/altera/15.1/hld/board/ProceV/linux64/lib:/share/apps/altera/15.1/hld/linux64/lib
+AOCL_BOARD_PACKAGE_ROOT=Path to ProceV custom platform

@@ -1,12 +1,12 @@
 module MiniPP (miniPPF, miniPP, miniPPO, miniPPD, miniPPProgram, miniPPP, showVarLst, showSubName )
 where
-import Language.Fortran
-import LanguageFortranTools
-import Data.List
-import Data.Char
+import           Data.Char
+import           Data.List
+import           Language.Fortran
+import           LanguageFortranTools
 
 {-
-WV: I know Language.Fortran provides a pretty-printer but getting it to work on the recent version of ghc is too much work so I wrote my own, workmanlike, no fancy features at all.    
+WV: I know Language.Fortran provides a pretty-printer but getting it to work on the recent version of ghc is too much work so I wrote my own, workmanlike, no fancy features at all.
 -}
 
 
@@ -27,8 +27,8 @@ data ProgUnit  p = Main      p SrcSpan                      (SubName p)  (Arg p)
 data SubName p  = SubName p String
                  | NullSubName p
                  deriving (Show, Functor, Typeable, Data, Eq)
- 
-data VarName  p = VarName p Variable 
+
+data VarName  p = VarName p Variable
                   deriving (Show, Functor, Typeable, Data, Eq, Read, Ord)
 
 data ArgName  p = ArgName p String
@@ -42,31 +42,31 @@ data Arg      p = Arg p (ArgName p) SrcSpan
 
 data ArgList  p = ArgList p (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
-                
+
 -}
 
-showSubName (SubName _ s) = s
-showSubName (NullSubName _)  = ""
+showSubName (SubName _ s)   = s
+showSubName (NullSubName _) = ""
 
 showArg (Arg _ argname _) = let
         arg_str = showArgName argname
     in
         if arg_str == ""  then  "" else "("++arg_str++")"
 
-showArgName argName = case argName of 
+showArgName argName = case argName of
                 ArgName _ argname -> argname
-                NullArg _ -> "" 
+                NullArg _ -> ""
                 ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
-                
+
 -- showArgName  (NullArg _) = ""
 -- showArgName  (ASeq _ (NullArg _) (NullArg _)) = ""
 -- showArgName  (ASeq _ (NullArg _) a2) = showArgName a2
 -- showArgName  (ASeq _ a1 (NullArg _)) = showArgName a1
--- showArgName  (ASeq _ a1 a2) = (showArgName a1)++", "++(showArgName a2) 
+-- showArgName  (ASeq _ a1 a2) = (showArgName a1)++", "++(showArgName a2)
 
 
 miniPPP (Main _ _ subname args block ps) = "! Generated code\n"++"program "++(showSubName subname)++" "++(showArg args)++"\n"++(miniPPB block) ++ (unlines (map miniPPP ps))++"\nend program "++(showSubName subname)++"\n"    -- TODO
-miniPPP progunit = show progunit 
+miniPPP progunit = show progunit
 -- Decl     p = Decl           p SrcSpan [(Expr p, Expr p, Maybe Int)] (Type p)      -- declaration stmt
 miniPPB (Block _ useblock implicit _ decl fortran) = (miniPPD decl) ++ "\n" ++ (miniPPF fortran) -- TODO
 
@@ -74,8 +74,8 @@ miniPPAttr attr = case attr of
     Parameter _ -> "parameter"
     Dimension _ dim_exp_tups -> "dimension("++ (intercalate "," (map (\(b,e)-> (if (miniPP b == "") then "" else ((miniPP b) ++":"))++(miniPP e)) dim_exp_tups )) ++")" -- [(Expr p, Expr p)]
     Intent _ intent_attr -> "intent(" ++ (case   intent_attr of
-            In _ -> "In"
-            Out _ -> "Out"
+            In _    -> "In"
+            Out _   -> "Out"
             InOut _ -> "InOut"
         ) ++ ")"
     _ -> showAttr attr
@@ -94,17 +94,17 @@ showType bt e1 e2 = let
     in
         ty_str++kind_str++size_str
 
-miniPPD :: Decl Anno -> String 
+miniPPD :: Decl Anno -> String
 miniPPD decl  = case decl of
          -- Decl _ _ [(Expr p, Expr p, Maybe Int)] (Type p)
-        Decl _ _ ttups ty -> 
+        Decl _ _ ttups ty ->
             let
                 ty_str = case ty of
-                    BaseType _ bt attrs e1 e2 ->(intercalate ", "  ([showType bt e1 e2]++(map miniPPAttr attrs))) 
-                    ArrayT   _ expr_tups bt attrs e1 e2  -> (intercalate ", "  ([showType bt e1 e2]++(map miniPPAttr attrs))) ++ "<<"++ (show expr_tups) ++ ">>" 
+                    BaseType _ bt attrs e1 e2 ->(intercalate ", "  ([showType bt e1 e2]++(map miniPPAttr attrs)))
+                    ArrayT   _ expr_tups bt attrs e1 e2  -> (intercalate ", "  ([showType bt e1 e2]++(map miniPPAttr attrs))) ++ "<<"++ (show expr_tups) ++ ">>"
                 ttups_str = intercalate "," (
                                 map (\(e1,e2,mi) -> (miniPP e1)++( if (miniPP e2)=="" then "" else " = "++(miniPP e2)++" ") ++
-                                    (case mi of 
+                                    (case mi of
                                         Nothing -> ""
                                         Just ii -> " ! " ++(show ii)
                                     ))
@@ -115,14 +115,14 @@ miniPPD decl  = case decl of
         DSeq _ d1 d2 -> (miniPPD d1)++"\n"++(miniPPD d2)
         _ ->  "! UNSUPPORTED in miniPPD! "++(show decl)
 
-miniPPF :: Fortran Anno -> String        
+miniPPF :: Fortran Anno -> String
 miniPPF stmt = miniPPFT stmt "    "
 
-blockToFortran :: Block Anno -> Fortran Anno 
+blockToFortran :: Block Anno -> Fortran Anno
 blockToFortran (Block _ _ _ _ _ (f)) = f
 
 
--- subname (SubName _ name) =  
+-- subname (SubName _ name) =
 
 -- getFortranFromProgUnit :: ProgUnit Anno -> [Fortran Anno]
 -- getFortranFromProgUnit (Main _ _ subname _ b p) = [blockToFortran b] ++ concatMap getFortranFromProgUnit p
@@ -134,18 +134,18 @@ blockToFortran (Block _ _ _ _ _ (f)) = f
 -- getFortranFromProgUnit (Prog _ _ p) = getFortranFromProgUnit p
 -- getFortranFromProgUnit (NullProg _ _) = []
 -- getFortranFromProgUnit (IncludeProg _ _ _ (Just f)) = [f]
--- getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = [] 
+-- getFortranFromProgUnit (IncludeProg _ _ _ (Nothing)) = []
 
 miniPPProgram :: Program Anno -> String
 miniPPProgram prog = concatMap miniPPProgUnit prog
 
 miniPPProgUnit :: ProgUnit Anno -> String
-miniPPProgUnit prog = case prog of 
-                    (Main _ _ (SubName _ subname) args b p) -> 
+miniPPProgUnit prog = case prog of
+                    (Main _ _ (SubName _ subname) args b p) ->
                         "program " ++ subname ++ "\n" ++ showArg args ++ printBlock b ++ "\n" ++ concatMap miniPPProgUnit p ++ "\nend program " ++ subname
                     (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ showArg args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
                     -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
-                    (Module _ _ (SubName _ moduleName) _ _ _ p) -> 
+                    (Module _ _ (SubName _ moduleName) _ _ _ p) ->
                         "module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName
                     _ -> "program anno unsuppported"
                     -- (BlockData _ _ _ _ _ _) -> []
@@ -153,17 +153,17 @@ miniPPProgUnit prog = case prog of
                     -- (Prog _ _ p) -> getFortranFromProgUnit p
                     -- (NullProg _ _) -> []
                     -- (IncludeProg _ _ _ (Just f)) -> [f]
-                    -- (IncludeProg _ _ _ (Nothing)) -> [] 
+                    -- (IncludeProg _ _ _ (Nothing)) -> []
 
-printBlock (Block _ _ _ _ decls fortran) = 
+printBlock (Block _ _ _ _ decls fortran) =
     miniPPD decls ++ "\n" ++ miniPPF fortran
 
-printArgName argName = case argName of 
+printArgName argName = case argName of
                     ArgName _ argname -> argname
-                    NullArg _ -> "" 
+                    NullArg _ -> ""
                     ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
 
-                    
+
 miniPPFT :: Fortran Anno -> String -> String
 miniPPFT stmt tab = case stmt of
                  (Assg _ _ expr1 expr2)  -> tab++ (miniPP expr1)++" = "++(miniPP expr2)
@@ -173,12 +173,12 @@ miniPPFT stmt tab = case stmt of
                  FSeq _ _ stmt1 (NullStmt _ _) -> (miniPPFT stmt1 tab)
                  FSeq _ _ stmt1 stmt2 -> (miniPPFT stmt1 tab)++"\n"++(miniPPFT stmt2 tab)
                  If _ _ expr1 stmt1 exprs_stmts m_stmt -> tab++"if ("++ (miniPP expr1)++") then\n"++(miniPPFT stmt1 (tab++tab))++"\n"++ (unlines (map (\(expr,stmt) -> (  tab++"else if ("++ (miniPP expr)++") then\n"++(miniPPFT stmt (tab++tab)) )) exprs_stmts) ) ++ ""++ (
-                    case m_stmt of 
+                    case m_stmt of
                         Just (NullStmt _ _) -> "" -- tab++"else"
                         Just stmt -> tab++"else\n"++(miniPPFT stmt (tab++tab))++"\n"
                         Nothing -> ""
                         )++tab++"end if"
-                 Call _ _ expr (ArgList _ es) -> tab++"call "++(miniPP expr)++"("++(miniPP es)++")" 
+                 Call _ _ expr (ArgList _ es) -> tab++"call "++(miniPP expr)++"("++(miniPP es)++")"
                  Allocate _ _ expr1 expr2 -> tab++"allocate "++ (show (expr1,expr2))
                  Goto _ _ lbl -> tab++"goto "++lbl
                  Label _ _ lbl stmt1 -> lbl++tab++(miniPPFT stmt1 tab)
@@ -193,15 +193,15 @@ miniPPFT stmt tab = case stmt of
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
                  Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
                  Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"
-                 Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")" 
+                 Write _ _ specs exprs -> tab ++ "write(" ++ miniPPSpecs specs tab ++ ")(" ++ (intercalate ", " (map miniPP exprs)) ++ ")"
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
 
 miniPPSpecs :: [Spec Anno] -> String -> String
 miniPPSpecs specs tab = (intercalate ", " $ map (miniPPSpec tab) specs)
 
-miniPPSpec :: String -> Spec Anno -> String 
+miniPPSpec :: String -> Spec Anno -> String
 miniPPSpec tab spec = case spec of
-                        Access       _ e     -> miniPP e 
+                        Access       _ e     -> miniPP e
                         Action       _ e     -> miniPP e
                         Advance      _ e     -> miniPP e
                         Blank        _ e     -> miniPP e
@@ -236,7 +236,7 @@ miniPPSpec tab spec = case spec of
                         Sequential   _ e     -> miniPP e
                         Size         _ e     -> miniPP e
                         Status       _ e     -> miniPP e
-                        StringLit    _ s     -> s                       
+                        StringLit    _ s     -> s
                         Unit         _ e     -> miniPP e
                         WriteSp      _ e     -> miniPP e
                         Delimiter    _       -> ","
@@ -272,7 +272,7 @@ showReductionVarLst lst = show $ map showReductionVar lst
                 | OpenCLBufferWrite p SrcSpan
                   (VarName p)                           -- Name of var that buffer is written to
                   deriving (Show, Functor, Typeable, Data, Eq)
--}                  
+-}
 
 
 miniPP expr = case expr of
@@ -283,7 +283,7 @@ miniPP expr = case expr of
     (Bin _ _  op e1 e2) -> (miniPP e1)++(miniPPO op)++(miniPP e2)
     (Unary _ _ minus e) -> "-"++(miniPP e)
     (NullExpr _ _) -> "" -- "! NullExpr"
-    (Null _ _) -> "" -- "! Null" 
+    (Null _ _) -> "" -- "! Null"
     (ESeq _ _ e1 e2) -> (miniPP e1)++", "++(miniPP e2)
     (Bound _ _ e1 e2) -> (miniPP e1)++" , "++(miniPP e2)
     (ArrayCon _ _ es) -> "("++(intercalate "," (map miniPP es))++")"
@@ -293,19 +293,19 @@ miniPP expr = case expr of
     otherwise -> "! UNSUPPORTED in miniPP ! "++(show expr)
 
 -- miniPPO binop
-miniPPO (Plus _) = "+"
-miniPPO (Minus _) = "-"
-miniPPO (Mul _) = "*"
-miniPPO (Div _) = "/"
-miniPPO (Or _) = " .or. "
-miniPPO (And _) = " .and. "
+miniPPO (Plus _)   = "+"
+miniPPO (Minus _)  = "-"
+miniPPO (Mul _)    = "*"
+miniPPO (Div _)    = "/"
+miniPPO (Or _)     = " .or. "
+miniPPO (And _)    = " .and. "
 miniPPO (Concat _) = "//"
-miniPPO (Power _) = "**"
-miniPPO (RelEQ _) = "=="
-miniPPO (RelNE _) = "/="
-miniPPO (RelLT _) = "<"
-miniPPO (RelLE _) = "<="
-miniPPO (RelGT _) = ">"
-miniPPO (RelGE _) = ">="
-miniPPO _ = " "
+miniPPO (Power _)  = "**"
+miniPPO (RelEQ _)  = "=="
+miniPPO (RelNE _)  = "/="
+miniPPO (RelLT _)  = "<"
+miniPPO (RelLE _)  = "<="
+miniPPO (RelGT _)  = ">"
+miniPPO (RelGE _)  = ">="
+miniPPO _          = " "
 

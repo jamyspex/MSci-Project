@@ -1,0 +1,673 @@
+// Waqar Nabi, Dec 5 2016
+//
+
+#define DEBUG_KERNEL
+
+
+// include the custom header file generated for this run
+#include "kernelCompilerInclude.h"
+// -------------------------------
+// Dealing with TYPES
+// -------------------------------
+//needed if we want to work with double
+#if WORD==DOUBLE
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
+#endif
+
+//If we are using floats or doubles, we use floating version of abs (fabs)
+#if WORD==INT
+ #define ABS abs
+#else
+ #define ABS fabs
+#endif
+
+// -------------------------------
+// AOCL specific
+// -------------------------------
+#pragma OPENCL EXTENSION cl_altera_channels : enable
+
+
+#if TARGET==AOCL
+#if NUM_COMPUTE_UNITS>1 
+  __attribute__((num_compute_units(NUM_COMPUTE_UNITS)))
+#endif
+  
+#if NUM_SIMD_ITEMS>1
+  __attribute__((num_simd_work_items(NUM_SIMD_ITEMS)))
+#endif
+  
+  //#ifdef REQ_WORKGROUP_SIZE
+  //  __attribute__((reqd_work_group_size(REQ_WORKGROUP_SIZE)))
+  //#endif
+#endif
+
+// -------------------------------
+// SDACCEL specific
+// -------------------------------
+#if TARGET==SDACCEL
+#endif    
+
+// -------------------------------
+// GENERIC attributes/opimizations
+// -------------------------------
+#ifdef REQ_WORKGROUPIZE
+    __attribute__((reqd_work_group_size(REQ_WORKGROUP_SIZE)))
+#endif
+
+// -------------------------------
+// Channel declarations
+// -------------------------------
+channel stypeDevice  u_in_dyn;
+channel stypeDevice  v_in_dyn;
+channel stypeDevice  h_in_dyn;
+channel stypeDevice  eta_in_dyn;
+channel stypeDevice  wet_in_dyn;
+channel stypeDevice  hzero_in_dyn;
+
+channel stypeDevice  un_dyn1_2_dyn2;
+channel stypeDevice  vn_dyn1_2_dyn2;
+channel stypeDevice  h_dyn1_2_dyn2;
+channel stypeDevice  eta_dyn1_2_dyn2;
+channel stypeDevice  wet_dyn1_2_dyn2;
+channel stypeDevice  hzero_dyn1_2_dyn2;
+
+channel stypeDevice  un_dyn2_2_shapiro  ;
+channel stypeDevice  vn_dyn2_2_shapiro;
+channel stypeDevice  h_dyn2_2_shapiro;
+channel stypeDevice  etan_dyn2_2_shapiro;
+channel stypeDevice  wet_dyn2_2_shapiro;
+channel stypeDevice  hzero_dyn2_2_shapiro;
+
+channel stypeDevice eta_shapiro_2_udpate;
+channel stypeDevice un_shapiro_2_udpate;
+channel stypeDevice vn_shapiro_2_udpate;
+channel stypeDevice h_shapiro_2_udpate;
+channel stypeDevice hzero_shapiro_2_udpate;
+
+channel stypeDevice  u_out_update;
+channel stypeDevice  v_out_update;
+channel stypeDevice  h_out_update;
+channel stypeDevice  eta_out_update;
+channel stypeDevice  wet_out_update;
+
+// ===============================
+// KERNELS
+// ===============================
+
+//------------------------------------------
+// Read memory kernel
+//------------------------------------------
+
+__kernel void kernel_mem_rd( __global stypeDevice * restrict u
+                       , __global stypeDevice * restrict v
+                       , __global stypeDevice * restrict h
+                       , __global stypeDevice * restrict eta
+                       , __global stypeDevice * restrict wet
+                       , __global stypeDevice * restrict hzero
+                      ) {
+  int j, k, index;
+
+  for (j=1; j<= ROWS-2; j++) {
+    for (k=1; k<= COLS-2; k++) {
+      //uint index = get_global_id(0);
+      uint index = j*COLS+k;
+
+      stypeDevice u_data = u[index];
+      stypeDevice v_data = v[index];
+      stypeDevice h_data = h[index];
+      stypeDevice eta_data = eta[index];
+      stypeDevice wet_data = wet[index];
+      stypeDevice hzero_data = hzero[index];
+      
+      write_channel_altera(u_in_dyn   ,u_data   );
+      write_channel_altera(v_in_dyn   ,v_data   );
+      write_channel_altera(h_in_dyn   ,h_data   );
+      write_channel_altera(eta_in_dyn ,eta_data );
+      write_channel_altera(wet_in_dyn ,wet_data );
+      write_channel_altera(hzero_in_dyn ,hzero_data );
+
+    }
+  }
+}
+
+
+// -------------------------------
+// DYN1
+// -------------------------------
+/*
+__kernel void kernel_dyn1( const stypeDevice dt
+               , const stypeDevice dx
+               , const stypeDevice dy
+               , const stypeDevice g
+               , __global stypeDevice * restrict eta
+               , __global stypeDevice * restrict un
+               , __global stypeDevice * restrict u
+               , __global stypeDevice * restrict wet
+               , __global stypeDevice * restrict v
+               , __global stypeDevice * restrict vn
+               ) {
+*/
+
+__kernel void kernel_dyn1( const stypeDevice dt
+                         , const stypeDevice dx
+                         , const stypeDevice dy
+                         , const stypeDevice g
+                         ) {
+
+  //locals
+  //-------------------
+  stypeDevice du;
+  stypeDevice dv;
+  stypeDevice uu;
+  stypeDevice vv;
+  stypeDevice duu;
+  stypeDevice dvv;
+  int j, k, index;
+
+  //buffers for  1 row +1 as we only want (j, k+1) and (j+1,k)
+  stypeDevice buffer_eta[1 * COLS + 1];
+  stypeDevice buffer_wet[1 * COLS + 1];
+
+  stypeDevice u_j_k      ;
+  stypeDevice v_j_k      ;
+  stypeDevice h_j_k      ;
+  stypeDevice hzero_j_k  ;
+
+  stypeDevice eta_j_k  ;
+  stypeDevice eta_j_kp1;
+  stypeDevice eta_jp1_k;
+  stypeDevice wet_j_k  ;
+  stypeDevice wet_j_kp1;
+  stypeDevice wet_jp1_k;
+
+  //create stencil loop
+//  for (j=1; j<= ROWS-2; j++) {
+//    for (k=1; k<= COLS-2; k++) {
+    for (int l=0; l< ROWS*COLS + COLS; l++) {
+     
+      j = l/COLS;
+      k = l%COLS;
+
+      //read in from the channel into 0th location of shift register (for stencil)
+      buffer_eta[0] = read_channel_altera(eta_in_dyn);
+      buffer_wet[0] = read_channel_altera(wet_in_dyn);
+      
+      //this unrolled loop implements a shift register
+      //size = COL+1 (as we are  only looking for j+1 and k+1)
+      //start from MS-word so that when shifting is complete, 0th word is at [0]
+      //if we start from LS-word, 0th word will move up to MS-WORD
+      #pragma unroll 
+        for (int i = 1 * COLS; i > 0 ; --i) {
+       //for (int i = 1; i <= 1 * COLS ; ++i) {
+            buffer_eta[i] = buffer_eta[i - 1];
+            buffer_wet[i] = buffer_wet[i - 1];
+            #ifdef DEBUG_KERNEL
+            printf("LOOP1::(j,k) = (%d, %d); buffer_wet[%d] = %f, buffer_eta[i-1] = %f \n",j ,k, i, buffer_wet[i], buffer_wet[i-1]);
+            #endif
+        }
+
+      //get the stencil values
+      eta_j_k   = buffer_eta[0];
+      eta_j_kp1 = buffer_eta[1];
+      eta_jp1_k = buffer_eta[COLS];
+      wet_j_k   = buffer_wet[0];
+      wet_j_kp1 = buffer_wet[1];
+      wet_jp1_k = buffer_wet[COLS];
+//  }
+//}
+//
+//  //compute loop
+//  for (j=1; j<= ROWS-2; j++) {
+//    for (k=1; k<= COLS-2; k++) {
+
+            #ifdef DEBUG_KERNEL
+            printf("LOOP2::(j,k) = (%d, %d); wet_j_k = %f, wet_jp1_k = %f, wet_j_kp1 = %f \n",j ,k
+              , wet_j_k, wet_jp1_k, wet_j_kp1);
+            #endif
+
+//stencil buffer is full, *now* start computing (includind read from other channels)
+if(l>=COLS) {
+      //read from channel (variables not requiring stencil)
+      u_j_k = read_channel_altera(u_in_dyn);
+      v_j_k = read_channel_altera(v_in_dyn);
+      h_j_k = read_channel_altera(h_in_dyn);
+      hzero_j_k = read_channel_altera(hzero_in_dyn);
+
+
+      
+//      //read from channel (variables not requiring stencil)
+//      stypeDevice u_j_k = read_channel_altera(u_in_dyn);
+//      stypeDevice v_j_k = read_channel_altera(v_in_dyn);
+//      stypeDevice h_j_k = read_channel_altera(h_in_dyn);
+//      stypeDevice hzero_j_k = read_channel_altera(hzero_in_dyn);
+//
+//      //read in from the channel into 0th location of shift register (for stencil)
+//      buffer_eta[0] = read_channel_altera(eta_in_dyn);
+//      buffer_wet[0] = read_channel_altera(wet_in_dyn);
+//      
+//      //this unrolled loop implements a shift register
+//      //size = COL+1 (as we are  only looking for j+1 and k+1)
+//      //start from MS-word so that when shifting is complete, 0th word is at [0]
+//      //(Does it really matter?)
+//      #pragma unroll 
+//       // for (int i = 1 * COLS; i > 0 ; --i) {
+//       for (int i = 1; i <= 1 * COLS ; ++i) {
+//            buffer_eta[i] = buffer_eta[i - 1];
+//            buffer_wet[i] = buffer_wet[i - 1];
+//            #ifdef DEBUG_KERNEL
+//            printf("(j,k) = (%d, %d); buffer_wet[%d] = %f, buffer_eta[i-1] = %f \n",j ,k, i, buffer_wet[i], buffer_wet[i-1]);
+//            #endif
+//        }
+//
+//      //get the stencil values
+//      stypeDevice eta_j_k   = buffer_eta[0];
+//      stypeDevice eta_j_kp1 = buffer_eta[1];
+//      stypeDevice eta_jp1_k = buffer_eta[COLS];
+//      stypeDevice wet_j_k   = buffer_wet[0];
+//      stypeDevice wet_j_kp1 = buffer_wet[1];
+//      stypeDevice wet_jp1_k = buffer_wet[COLS];
+
+      //exclude boundaries
+      //if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+      //calculate du, dv on all non-boundary points
+      //-------------------------------------------
+      //index = get_global_id(0);
+      //j = index / ROWS;      
+      //k = index % ROWS;
+
+      duu  = -dt 
+           * g
+           * ( eta_j_kp1
+             - eta_j_k
+             ) 
+           / dx;
+      //*(dv + j*COLS + k)  = -dt 
+      //dv[j][k]  = -dt 
+      dvv  = -dt 
+           * g
+           * ( eta_jp1_k
+             - eta_j_k
+             ) 
+           / dy;
+
+//prediction for u and v (merged loop)
+//---------------------------------
+      stypeDevice un = 0.0;
+      uu = u_j_k;
+      if (  ( (wet_j_k == 1)
+              && ( (wet_j_kp1 == 1) || (duu > 0.0)))
+         || ( (wet_j_kp1 == 1) && (duu < 0.0))     
+         ){
+          un = uu+duu;
+      }//if
+      
+      stypeDevice vn = 0.0;
+      vv = v_j_k;
+      if (  (  (wet_j_k == 1)
+             && ( (wet_jp1_k == 1) || (dvv > 0.0)))
+         || ((wet_jp1_k == 1) && (dvv < 0.0))     
+         ){
+          vn = vv+dvv;
+      }//if
+
+      #ifdef DEBUG_KERNEL
+      printf("DEV-DYN1:j = %d, k = %d, un = %f, vn = %f, wet = %f, wet_jp1_k = %f, wet_j_kp1 = %f,  eta_j_k = %f, eta_jp1_k = %f, eta_j_kp1 = %f,uu = %f, duu = %f, vv = %f, dvv = %f \n"
+                   ,j, k, un, vn, wet_j_k, wet_jp1_k, wet_j_kp1, eta_j_k,  eta_jp1_k, eta_j_kp1, uu, duu, vv, dvv);
+      #endif
+
+
+  write_channel_altera(un_dyn1_2_dyn2  ,un);
+  write_channel_altera(vn_dyn1_2_dyn2  ,vn);
+  write_channel_altera(h_dyn1_2_dyn2   ,h_j_k);
+  write_channel_altera(eta_dyn1_2_dyn2 ,eta_j_k);
+  write_channel_altera(wet_dyn1_2_dyn2 ,wet_j_k); 
+  write_channel_altera(hzero_dyn1_2_dyn2 ,hzero_j_k); 
+ }//if(l>COLS)
+    //}//if
+//  }//for
+// }//for
+ }//for l
+}//()
+
+
+// DYN2
+// -------------------------------
+/*
+__kernel void kernel_dyn2( const stypeDevice dt
+               , const stypeDevice dx
+               , const stypeDevice dy
+               , __global stypeDevice * restrict eta
+               , __global stypeDevice * restrict un
+               , __global stypeDevice * restrict u
+               , __global stypeDevice * restrict v
+               , __global stypeDevice * restrict vn
+               , __global stypeDevice * restrict h
+               , __global stypeDevice * restrict etan
+               ) {
+*/
+__kernel void kernel_dyn2( const stypeDevice dt
+               , const stypeDevice dx
+               , const stypeDevice dy
+               ) {
+  //buffers for  2 row +1 for h as we need 4-point stencil
+  stypeDevice buffer_h[2 * COLS + 1];
+  //for un and vn, we as only want (j, k+1) and (j+1,k)
+  stypeDevice buffer_un[1 * COLS + 1];
+  stypeDevice buffer_vn[1 * COLS + 1];
+
+  int j, k, index;
+
+  for (j=1; j<= ROWS-2; j++) {
+    for (k=1; k<= COLS-2; k++) {
+      
+      //read from channel (variables not requiring stencil)
+      stypeDevice eta_j_k   = read_channel_altera(eta_dyn1_2_dyn2);
+      stypeDevice wet_j_k   = read_channel_altera(wet_dyn1_2_dyn2);
+      stypeDevice hzero_j_k = read_channel_altera(hzero_dyn1_2_dyn2);
+
+      //read in from the channel into 0th location of shift register (for stencil)
+      buffer_h[0]   = read_channel_altera(h_dyn1_2_dyn2);
+      buffer_un[0]  = read_channel_altera(un_dyn1_2_dyn2);
+      buffer_vn[0]  = read_channel_altera(vn_dyn1_2_dyn2);
+      
+      //this unrolled loop implements a shift register
+      //size = 2* COL+1 for a 4-point stencil
+      #pragma unroll 
+        for (int i = 2 * COLS; i > 0 ; --i) {
+            buffer_h[i] = buffer_h[i - 1];
+        }
+
+      //this unrolled loop implements a shift register
+      //size = COL+1 (as we are  only looking for j+1 and k+1)
+      #pragma unroll 
+        for (int i = 1 * COLS; i > 0 ; --i) {
+            buffer_un[i] = buffer_un[i - 1];
+            buffer_vn[i] = buffer_vn[i - 1];
+        }
+
+      //get the stencil values
+      stypeDevice h_jm1_k = buffer_h[0];
+      stypeDevice h_j_km1 = buffer_h[COLS-1];
+      stypeDevice h_j_k   = buffer_h[COLS];
+      stypeDevice h_j_kp1 = buffer_h[COLS+1];
+      stypeDevice h_jp1_k = buffer_h[2*COLS];
+
+      stypeDevice un_jm1_k = buffer_un[0];
+      stypeDevice un_j_km1 = buffer_un[COLS-1];
+      stypeDevice un_j_k   = buffer_un[COLS];
+
+      stypeDevice vn_jm1_k = buffer_vn[0];
+      stypeDevice vn_j_km1 = buffer_vn[COLS-1];
+      stypeDevice vn_j_k   = buffer_vn[COLS];
+
+ //locals
+//-------------------
+//__local stypeDevice du[ROWS][COLS];
+//__local stypeDevice dv[ROWS][COLS];
+//posix_memalign ((void**)&du, ALIGNMENT, SIZE*BytesPerWord);
+//posix_memalign ((void**)&dv, ALIGNMENT, SIZE*BytesPerWord);
+stypeDevice hue;
+stypeDevice huw;
+stypeDevice hwp;
+stypeDevice hwn;
+stypeDevice hen;
+stypeDevice hep;
+stypeDevice hvn;
+stypeDevice hvs;
+stypeDevice hsp;
+stypeDevice hsn;
+stypeDevice hnn;
+stypeDevice hnp;
+stypeDevice etan_j_k;
+/*
+      index = get_global_id(0);
+      j = index / ROW S;      
+      k = index % ROWS;
+*/
+
+//sea level predictor
+//--------------------
+//TODO: Can I merge this loop? Note the use of stencil.. if I merge, then I will get stale values?
+//  for (j=1; j<= ROWS-2; j++) {
+//    for (k=1; k<= COLS-2; k++) {   
+
+//exclude boundaries
+//if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+      hep = 0.5*( un_j_k + ABS(un_j_k) ) * h_j_k;
+      hen = 0.5*( un_j_k - ABS(un_j_k) ) * h_j_kp1;
+      hue = hep+hen;
+
+      hwp = 0.5*( un_j_km1 + ABS(un_j_km1) ) * h_j_km1;
+      hwn = 0.5*( un_j_km1 - ABS(un_j_km1) ) * h_j_k;
+      huw = hwp+hwn;
+
+      hnp = 0.5*( vn_j_k + ABS(vn_j_k) ) * h_j_k;
+      hnn = 0.5*( vn_j_k - ABS(vn_j_k) ) * h_jp1_k;
+      hvn = hnp+hnn;
+
+      hsp = 0.5*( vn_jm1_k + ABS(vn_jm1_k) ) * h_jm1_k;
+      hsn = 0.5*( vn_jm1_k - ABS(vn_jm1_k) ) * h_j_k;
+      hvs = hsp+hsn;
+
+      etan_j_k  = eta_j_k
+                - dt*(hue-huw)/dx
+                - dt*(hvn-hvs)/dy;
+
+      write_channel_altera(un_dyn2_2_shapiro  , un_j_k);
+      write_channel_altera(vn_dyn2_2_shapiro  , vn_j_k);
+//      write_channel_altera(h_dyn2_2_shapiro   , h_j_k);
+      write_channel_altera(wet_dyn2_2_shapiro , wet_j_k);
+      write_channel_altera(etan_dyn2_2_shapiro, etan_j_k);          
+      write_channel_altera(hzero_dyn2_2_shapiro, hzero_j_k);
+//}//if
+    }//for
+  }//for  
+}//()
+
+
+//------------------------------------------
+// SHAPIRO KERNEL
+//------------------------------------------
+/*
+__kernel void kernel_shapiro     ( const stypeDevice eps 
+                        , __global stypeDevice * restrict etan
+                        , __global stypeDevice * restrict wet 
+                        , __global stypeDevice * restrict eta
+                        ) {
+*/
+
+__kernel void kernel_shapiro  ( const stypeDevice eps 
+                              ) {
+
+
+  //4-point stencil
+  stypeDevice buffer_wet [2 * COLS + 1];
+  stypeDevice buffer_etan[2 * COLS + 1];
+
+  int j, k, index;
+
+  for (j=1; j<= ROWS-2; j++) {
+    for (k=1; k<= COLS-2; k++) {
+      
+      //read from channel (variables not requiring stencil)
+  //    stypeDevice h_j_k   = read_channel_altera(h_dyn2_2_shapiro);
+      stypeDevice un_j_k  = read_channel_altera(un_dyn2_2_shapiro);
+      stypeDevice vn_j_k  = read_channel_altera(vn_dyn2_2_shapiro);
+      stypeDevice hzero_j_k  = read_channel_altera(hzero_dyn2_2_shapiro);
+
+      //read in from the channel into 0th location of shift register (for stencil)
+      buffer_wet[0]  = read_channel_altera(wet_dyn2_2_shapiro);
+      buffer_etan[0] = read_channel_altera(etan_dyn2_2_shapiro);
+      
+      //this unrolled loop implements a shift register
+      //size = 2* COL+1 for a 4-point stencil
+      #pragma unroll 
+        for (int i = 2 * COLS; i > 0 ; --i) {
+            buffer_wet[i] = buffer_wet[i - 1];
+            buffer_etan[i]= buffer_etan[i - 1];
+        }
+
+
+    //get the stencil values
+    stypeDevice etan_jm1_k = buffer_etan[0];
+    stypeDevice etan_j_km1 = buffer_etan[COLS-1];
+    stypeDevice etan_j_k   = buffer_etan[COLS];
+    stypeDevice etan_j_kp1 = buffer_etan[COLS+1];
+    stypeDevice etan_jp1_k = buffer_etan[2*COLS];
+
+    stypeDevice wet_jm1_k = buffer_wet[0];
+    stypeDevice wet_j_km1 = buffer_wet[COLS-1];
+    stypeDevice wet_j_k   = buffer_wet[COLS];
+    stypeDevice wet_j_kp1 = buffer_wet[COLS+1];
+    stypeDevice wet_jp1_k = buffer_wet[2*COLS];
+
+  //locals
+  stypeDevice term1,term2,term3;
+  stypeDevice eta_j_k;
+/*
+      index = get_global_id(0);
+      j = index / ROWS;      
+      k = index % ROWS;
+*/
+//1-order Shapiro filter
+//  for (j=1; j<= ROWS-2; j++) {
+//    for (k=1; k<= COLS-2; k++) {   
+
+//exclude boundaries
+//if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+        if (wet_j_k==1) {
+        term1 = ( 1.0-0.25*eps
+                  * ( wet_j_kp1
+                    + wet_j_km1
+                    + wet_jp1_k
+                    + wet_jm1_k
+                    ) 
+                )
+                * etan_j_k;
+        term2 = 0.25*eps
+                * ( wet_j_kp1
+                  * etan_j_kp1
+                  + wet_j_km1
+                  * etan_j_km1
+                  );
+        term3 = 0.25*eps
+                * ( wet_jp1_k
+                  * etan_jp1_k
+                  + wet_jm1_k
+                  * etan_jm1_k
+                  );
+        eta_j_k = term1 + term2 + term3;
+      }//if
+      else {
+        eta_j_k = etan_j_k;
+      }//else
+//}//if
+      write_channel_altera(eta_shapiro_2_udpate , eta_j_k);
+      write_channel_altera(un_shapiro_2_udpate  , un_j_k);
+      write_channel_altera(vn_shapiro_2_udpate  , vn_j_k);
+      write_channel_altera(hzero_shapiro_2_udpate  , hzero_j_k);      
+//      write_channel_altera(h_shapiro_2_udpate   , h_j_k);
+      }//for
+    }//for
+  }//()
+
+
+//------------------------------------------
+// UPDATES KERNEL
+//------------------------------------------
+/*
+__kernel void kernel_updates ( 
+                      __global stypeHost * restrict h 
+                    , __global stypeHost * restrict hzero
+                    , __global stypeHost * restrict eta
+                    , __global stypeHost * restrict u
+                    , __global stypeHost * restrict un
+                    , __global stypeHost * restrict v
+                    , __global stypeHost * restrict vn
+                    , __global stypeHost * restrict wet
+                    , stypeHost hmin
+                    ) {
+*/
+__kernel void kernel_updates  ( stypeHost hmin
+                              ) {
+
+  int j, k, index;
+  stypeDevice h_j_k;
+  stypeDevice u_j_k;
+  stypeDevice v_j_k;
+  stypeDevice hzero_j_k ;
+  stypeDevice eta_j_k   ;
+  stypeDevice un_j_k    ;
+  stypeDevice vn_j_k    ;
+  stypeDevice wet_j_k   ;
+
+/*
+  index = get_global_id(0);
+  j = index / ROWS;      
+  k = index % ROWS;
+*/
+
+  for (int j=1; j<= ROWS-2; j++) {
+    for (int k=1; k<= COLS-2; k++) {
+
+//  for (j=0; j<= ROWS-1; j++) {
+//    for (k=0; k<=COLS-1; k++) {
+      hzero_j_k = read_channel_altera(hzero_shapiro_2_udpate);
+      eta_j_k   = read_channel_altera(eta_shapiro_2_udpate);
+      un_j_k    = read_channel_altera(un_shapiro_2_udpate);
+      vn_j_k    = read_channel_altera(vn_shapiro_2_udpate);
+
+      //h update
+      h_j_k = hzero_j_k
+            + eta_j_k;
+      //wet update
+      wet_j_k = 1;
+      if ( h_j_k < hmin )
+            wet_j_k = 0;
+      //u, v updates
+      u_j_k = un_j_k;
+      v_j_k = vn_j_k;
+
+      write_channel_altera(u_out_update   , u_j_k);
+      write_channel_altera(v_out_update   , v_j_k);
+      write_channel_altera(h_out_update   , h_j_k);
+      write_channel_altera(eta_out_update , eta_j_k);
+      write_channel_altera(wet_out_update , wet_j_k);
+
+    }//for
+  }//for
+}//()
+
+
+//------------------------------------------
+// Write memory kernel
+//------------------------------------------
+kernel void kernel_mem_wr  (__global stypeDevice* restrict u
+                        ,__global stypeDevice* restrict v
+                        ,__global stypeDevice* restrict h
+                        ,__global stypeDevice* restrict eta
+                        ,__global stypeDevice* restrict wet
+) {
+  for (int j=1; j<= ROWS-2; j++) {
+    for (int k=1; k<= COLS-2; k++) {  
+//  for (int j=0; j<= ROWS-1; j++) {
+//    for (int k=0; k<=COLS-1; k++) {
+      //uint index = get_global_id(0);
+      uint index = j*COLS + k;
+
+      stypeDevice u_new   = read_channel_altera(u_out_update);  
+      stypeDevice v_new   = read_channel_altera(v_out_update);  
+      stypeDevice h_new   = read_channel_altera(h_out_update);  
+      stypeDevice eta_new = read_channel_altera(eta_out_update);  
+      stypeDevice wet_new = read_channel_altera(wet_out_update);  
+      
+      u[index] = u_new;
+      v[index] = v_new;
+      h[index] = h_new;
+      eta[index] = eta_new;
+      wet[index] = wet_new;
+    }
+  }
+
+}//()
+

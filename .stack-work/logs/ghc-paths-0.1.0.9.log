@@ -1,0 +1,18 @@
+[1 of 2] Compiling Main             ( /tmp/stack25913/ghc-paths-0.1.0.9/Setup.hs, /tmp/stack25913/ghc-paths-0.1.0.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/Main.o )
+
+/tmp/stack25913/ghc-paths-0.1.0.9/Setup.hs:29:18: warning: [-Wdeprecations]
+    In the use of ‘rawSystemProgramStdoutConf’
+    (imported from Distribution.Simple.Program):
+    Deprecated: "use getDbProgramOutput instead. This symbol will be removed in Cabal-3.0 (est. Oct 2018)."
+   |
+29 |       libdir_ <- rawSystemProgramStdoutConf (fromFlag (configVerbosity flags))
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2 of 2] Compiling StackSetupShim   ( /home/james/.stack/setup-exe-src/setup-shim-mPHDZzAJ.hs, /tmp/stack25913/ghc-paths-0.1.0.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/StackSetupShim.o )
+Linking /tmp/stack25913/ghc-paths-0.1.0.9/.stack-work/dist/x86_64-linux/Cabal-2.2.0.1/setup/setup ...
+Configuring ghc-paths-0.1.0.9...
+Preprocessing library for ghc-paths-0.1.0.9..
+Building library for ghc-paths-0.1.0.9..
+[1 of 1] Compiling GHC.Paths        ( GHC/Paths.hs, .stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/GHC/Paths.o )
+ignoring (possibly broken) abi-depends field for packages
+Installing library in /home/james/.stack/snapshots/x86_64-linux/lts-12.13/8.4.3/lib/x86_64-linux-ghc-8.4.3/ghc-paths-0.1.0.9-BTJEJFO7ixU1hUjA8BfQ4h
+Registering library for ghc-paths-0.1.0.9..

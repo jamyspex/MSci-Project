@@ -1,0 +1,29 @@
+# NOTE
+# -------
+This is the common build file that can be used for multiple platform targets.
+
+It is currently verified with the followign targets:
+
+1. AOCL:	Nallatech's AOCL target on BOLAMA
+2. SDACCEL:     Alpha-Data's SDACCEl target on BOLAMA
+3. GPU:		Nvidia GPU on KANTON
+4. CPU:         Intel Xeon CPU on BOLAMA	
+
+The build file should be run from its current location, but expects certain target folders to be available
+for each of the possible targets. 
+
+The script moves to that folder first, and all following actions are taken from there, including creating a 
+custom build folder for each build.
+
+BATCH BUILD
+-----------
+The batch build script should also be called from this folder. The target must be specified in EACH of the
+build commands in the batch build description file.
+
+
+BUILD EXAMPLES:
+----------------
+
+ ./build.pl -tar AOCL -w FLOAT -row 50  -col 50  -ntot 1000 -wi SINGLEWI -nut -ch -f cpu_emu
+ ./build.pl -tar AOCL -w FLOAT -row 500 -col 500 -ntot 1000 -wi SINGLEWI      -ch -f hw
+

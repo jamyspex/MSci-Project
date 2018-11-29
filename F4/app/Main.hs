@@ -1,6 +1,6 @@
 module Main where
 
-import Parser
+import           F4
 
 main :: IO ()
-main = parseTestFile
+main = processArgs

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7896d5cd857feb21dcc4bd3372a7edceb26ff47cdd8748a0a82429be5d2d7b17
+-- hash: 59c0de1143ced13de7ed8cc1bbab3c32423268d016ae2d113e103d6208215964
 
 name:           F4
 version:        0.1.0.0
@@ -27,6 +27,8 @@ source-repository head
 
 library
   exposed-modules:
+      ConstantFolding
+      F4
       F95IntrinsicFunctions
       F95StatementParser
       LanguageFortranTools
@@ -41,11 +43,10 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , cmdargs
     , containers
     , directory
-    , generic-lens
     , language-fortran
-    , lens
     , process
     , syb
   default-language: Haskell2010
@@ -60,11 +61,10 @@ executable F4-exe
   build-depends:
       F4
     , base >=4.7 && <5
+    , cmdargs
     , containers
     , directory
-    , generic-lens
     , language-fortran
-    , lens
     , process
     , syb
   default-language: Haskell2010
@@ -80,11 +80,10 @@ test-suite F4-test
   build-depends:
       F4
     , base >=4.7 && <5
+    , cmdargs
     , containers
     , directory
-    , generic-lens
     , language-fortran
-    , lens
     , process
     , syb
   default-language: Haskell2010
