@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3340c4c4c54fdee780e1f9661206e91999da00a9195634df00004da86fb307dc
+-- hash: e05193856d060d1498e458a6de867ea8b2b64f2cd2c6f806fc3de0b78ed54542
 
 name:           F4
 version:        0.1.0.0
@@ -15,10 +17,9 @@ copyright:      2018 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
-    ChangeLog.md
     README.md
+    ChangeLog.md
 
 source-repository head
   type: git
@@ -26,15 +27,28 @@ source-repository head
 
 library
   exposed-modules:
+      BufferTransferAnalysis
+      CodeEmitter
+      CodeEmitterUtils
+      CombineKernels
       ConstantFolding
       F4
       F95IntrinsicFunctions
       F95StatementParser
+      FortranGenerator
+      FortranSynthesiser
       LanguageFortranTools
       Lib
+      LoopAnalysis
       MiniPP
       Parser
+      Platform
       PreProcessor
+      SubroutineTable
+      Transformer
+      TupleTable
+      VarAccessAnalysis
+      VarDependencyAnalysis
       Warning
   other-modules:
       Paths_F4

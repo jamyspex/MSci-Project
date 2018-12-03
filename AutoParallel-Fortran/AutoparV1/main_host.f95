@@ -160,18 +160,23 @@ call oclWrite1DFloatArrayBuffer(hmin_buf,hmin_ptr_sz,hmin_ptr)! Automatic conver
 call oclWrite2DFloatArrayBuffer(un_buf,un_sz,un)
 call oclWrite2DFloatArrayBuffer(vn_buf,vn_sz,vn)
 call oclWrite2DFloatArrayBuffer(etan_buf,etan_sz,etan)
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(90,file ='debug.dat',form='formatted')
+----------------------------------CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(10,file ='eta0.dat',form='formatted')
-  do j = 0,ny+1
+----------------------------------  do j = 0,ny+1
     write(10,'(101F12.6)')(eta(j,k),k=0,nx+1)
   end do
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 close(10)
+----------------------------------CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(10,file ='h0.dat',form='formatted')
-  do j = 0,ny+1
+----------------------------------  do j = 0,ny+1
     write(10,'(101F12.6)')(hzero(j,k),k=0,nx+1)
   end do
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 close(10)
-hmax = 0.
+----------------------------------hmax = 0.
 do j = 1,ny
 do k = 1,nx
   hmax = max(hmax,h(j,k))
@@ -179,18 +184,24 @@ end do
 end do
 dummy = 0
 c = sqrt(2*g*hmax)
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 write(6,*)"c = ",c
-lambda = dt*sqrt(g*hmax)/min(dx,dy)
+----------------------------------lambda = dt*sqrt(g*hmax)/min(dx,dy)
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 write(6,*)"lambda = ",lambda
-if(lambda > 1)then
+----------------------------------if(lambda > 1)then
   write(6,*) "This will not work. Do you know why?"
   stop
 end if
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(10,file ='eta.dat',form='formatted')
+----------------------------------CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(20,file ='h.dat',form='formatted')
+----------------------------------CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(30,file ='u.dat',form='formatted')
+----------------------------------CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 open(40,file ='v.dat',form='formatted')
-do j = 26,26
+----------------------------------do j = 26,26
 do k = 26,26
 eta(j,k) = 1.0
 end do
@@ -207,5 +218,6 @@ do j = 0,ny+1
   write(30,'(101F12.6)')(u(j,k) ,k=0,nx+1)
   write(40,'(101F12.6)')(v(j,k) ,k=0,nx+1)
 end do
+CODE EXTRACTED FROM SOURCE FILE DIRECTLY
 write(6,*)"Data output at time = ",time/60.0," min"
-end program wave2d
+----------------------------------end program wave2d
