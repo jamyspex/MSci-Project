@@ -1,5 +1,15 @@
-module MiniPP (miniPPF, miniPP, miniPPO, miniPPD, miniPPProgram, miniPPP, showVarLst, showSubName )
+module MiniPP (
+    miniPPF,
+    miniPP,
+    miniPPO,
+    miniPPD,
+    miniPPProgram,
+    miniPPP,
+    showVarLst,
+    showSubName
+    )
 where
+
 import           Data.Char
 import           Data.List
 import           Language.Fortran

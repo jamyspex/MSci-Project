@@ -1,19 +1,19 @@
 module VarAccessAnalysis (
-        VarAccessAnalysis, 
-        analyseAllVarAccess, 
+        VarAccessAnalysis,
+        analyseAllVarAccess,
         collectVarNames,
         getDeclaredVarNames,
-        analyseAllVarAccess_progUnit, 
-        getPrexistingVars, 
-        getValueAtSrcSpan, 
+        analyseAllVarAccess_progUnit,
+        getPrexistingVars,
+        getValueAtSrcSpan,
         getNonTempVars,
         getArguments,
-        getAccessLocationsInsideSrcSpan, 
-        isFunctionCall, 
+        getAccessLocationsInsideSrcSpan,
+        isFunctionCall,
         f95IntrinsicFunctions,
-        getAccessesBetweenSrcSpans, 
-        getAccessLocationsBeforeSrcSpan, 
-        getAccessLocationsAfterSrcSpan, 
+        getAccessesBetweenSrcSpans,
+        getAccessLocationsBeforeSrcSpan,
+        getAccessLocationsAfterSrcSpan,
         getAccessesBetweenSrcSpansIgnore
         )
 
@@ -22,26 +22,27 @@ where
 --    The code in this file is used to analyse which variables are read and written and where in a certain
 --    program. This information is then used to determine whether or not a variable in a loop can be deemed
 --    temporary and therefore governs how variables are treated. Analysis also determines values/expressions
---    for variables at different points in the program. This is used when generating reduction kernels to be 
+--    for variables at different points in the program. This is used when generating reduction kernels to be
 --    able to assign an initial value to reduction variables. Finally, data from this analysis phase is used
 --    to differentiate between function calls and array accesses in the input source.
 --
--- WV: Here we should identify stencils. 
+-- WV: Here we should identify stencils.
 -- WV: A stencil means that inside the loop, an array has been accessed with different iterators
 -- WV: So I will extend VarAccessRecord to include the read accesses; for completeness also the write accesses:
 -- WV: we use getAccessedExprs() to get the list of index expressions.
 
 
-import Warning
-import Data.Generics                 (Data, Typeable, mkQ, mkT, gmapQ, gmapT, everything, everywhere)
-import qualified Data.Map as DMap
-import Data.Char
-import Data.List
+import           Data.Char
+import           Data.Generics           (Data, Typeable, everything,
+                                          everywhere, gmapQ, gmapT, mkQ, mkT)
+import           Data.List
+import qualified Data.Map                as DMap
+import           Warning
 
-import Language.Fortran.Parser
-import Language.Fortran
-import LanguageFortranTools
-import F95IntrinsicFunctions (f95IntrinsicFunctions)
+import           F95IntrinsicFunctions   (f95IntrinsicFunctions)
+import           Language.Fortran
+import           Language.Fortran.Parser
+import           LanguageFortranTools
 
 
 --    Type used to colate data on variable accesses throughout a program.
@@ -49,7 +50,7 @@ import F95IntrinsicFunctions (f95IntrinsicFunctions)
 type VarAccessRecord = ([SrcSpan],     [SrcSpan])
 
 type VarAccessRecordWV = ( [(SrcSpan,Expr Anno)], [(SrcSpan, Expr Anno)] )
-    
+
 -- WV: this map proveds all read and write locations for a local variable
 type LocalVarAccessAnalysis = DMap.Map (VarName Anno) VarAccessRecord
 -- WV: this map provides the expression(s) defining the local variable, I guess, so this would be assignments and should be args of subcalls with intent Out or InOut
@@ -66,7 +67,7 @@ analyseAllVarAccess :: [String] -> Program Anno -> VarAccessAnalysis
 analyseAllVarAccess ioWriteSubroutineNames prog = ([localVarAccesses,ioRoutineAnalysis], localVarValues, arguments, declarations)
                         where
                             --    LocalVarAccesses is made up of information on all of the reads and writes throughout
-                            --    the program being analysed. It is a list of triplets where each triplet contains a 
+                            --    the program being analysed. It is a list of triplets where each triplet contains a
                             --    VarName, a list of read locations of that VarName and a list of write locations of that
                             --    VarName
                             (localVarAccesses,ioRoutineAnalysis) = analyseLocalVarAccess ioWriteSubroutineNames declarations prog
@@ -76,7 +77,7 @@ analyseAllVarAccess ioWriteSubroutineNames prog = ([localVarAccesses,ioRoutineAn
 
                             --    The main motivation for the tracking the declarations at the top of a program is for
                             --    differentiating function calls from array accesses as Language-Fortran does not do this
-                            --    automatically it seems. 
+                            --    automatically it seems.
                             declarations = everything (++) (mkQ [] getDeclaredVarNames) prog
 
                             localVarValues = everything combineMaps (mkQ DMap.empty analyseAllVarValues_fortran) prog
@@ -85,11 +86,11 @@ analyseLocalVarAccess :: [String] -> [VarName Anno] -> Program Anno -> (LocalVar
 analyseLocalVarAccess ioWriteSubroutineNames declarations prog = (analysis,ioRoutineAnalysis')
                 where
                     blockAnalysis_ioRoutineAnalysis :: [(LocalVarAccessAnalysis,LocalVarAccessAnalysis)]
-                    blockAnalysis_ioRoutineAnalysis = 
+                    blockAnalysis_ioRoutineAnalysis =
                         foldl (\accum item -> accum ++ (gmapQ (mkQ (DMap.empty,DMap.empty) (analyseAllVarAccess_block ioWriteSubroutineNames declarations) ) item) ) [] prog
                     (blockAnalysis,ioRoutineAnalysis) = unzip blockAnalysis_ioRoutineAnalysis
                     progUnitAnalysis_ :: [(LocalVarAccessAnalysis,LocalVarAccessAnalysis)]
-                    progUnitAnalysis_ = 
+                    progUnitAnalysis_ =
                         foldl (\accum item -> accum ++ (gmapQ (mkQ (DMap.empty,DMap.empty) (analyseLocalVarAccess ioWriteSubroutineNames declarations)) item)) [] prog
                     (progUnitAnalysis,_) = unzip progUnitAnalysis_
                     analysis = foldl combineLocalVarAccessAnalysis DMap.empty (blockAnalysis ++ progUnitAnalysis)
@@ -98,11 +99,11 @@ analyseLocalVarAccess ioWriteSubroutineNames declarations prog = (analysis,ioRou
 --    Since Language-Fortran does not seem to differentiate between function calls and array access, it was necessary
 --    to find a way to identify a function call. This function achieves that. When an expression is passed in, a top level
 --    VarNames is extracted (The possibility for multipe varnames is also dealt with here as the Language-Fortran
---    specification allows for this). A check to see whether this VarName was NOT declared at the top of the program is done 
+--    specification allows for this). A check to see whether this VarName was NOT declared at the top of the program is done
 --    and a check to see whether the expr in question contains other expressions is also performed. If both of these checks
 --    pass then the expr is a function call. (The second check here comes from the fact that the arguments of a function call
 --    are stored in a list inside the original expr. If there are no arguments to the function, a NullExpr
---    object can be found. For a normal scalar value, there would be absolutely nothing in this internal list, not even a 
+--    object can be found. For a normal scalar value, there would be absolutely nothing in this internal list, not even a
 --    NullExpr object)
 --    WV: we also need to check for intrinsics using f95IntrinsicFunctions
 
@@ -111,31 +112,31 @@ isFunctionCall intrinsics accessAnalysis expr =  (exprVarNameStr `elem` intrinsi
                         where
                             subVars = extractContainedVars expr -- not so sure if this also works on e.g. sqrt(5)
                             exprVarNames = extractVarNames expr -- in principle just 1 variable name?
-                            exprVarNameStr = if length exprVarNames > 0 
+                            exprVarNameStr = if length exprVarNames > 0
                                 then
-                                    let 
+                                    let
                                         VarName _ exprVarNameStr = head exprVarNames
                                     in
                                         exprVarNameStr
-                                else ""   
+                                else ""
                             declaredVarNames = (\(_,_,_,x) -> x) accessAnalysis -- all var names declared at toplevel
 
 isFunctionCall_varNames :: [String] -> [VarName Anno] -> Expr Anno -> Bool
 isFunctionCall_varNames intrinsics declaredVarNames expr =  (exprVarNameStr `elem` intrinsics  ) || ( (all (\x -> not (elem x declaredVarNames)) exprVarNames) && subVars /= [] )
                         where
-                            exprVarNameStr = if length exprVarNames > 0 
-                                then 
+                            exprVarNameStr = if length exprVarNames > 0
+                                then
                                     let
                                         VarName _ exprVarNameStr = head exprVarNames
                                     in
-                                        exprVarNameStr     
+                                        exprVarNameStr
                                 else ""
                             subVars = extractContainedVars expr
                             exprVarNames = extractVarNames expr
 
 isNullExpr :: Expr Anno -> Bool
 isNullExpr (NullExpr _ _) = True
-isNullExpr _ = False
+isNullExpr _              = False
 
 getAccessLocationsInsideSrcSpan :: VarAccessAnalysis -> VarName Anno -> SrcSpan -> ([SrcSpan], [SrcSpan])
 getAccessLocationsInsideSrcSpan accessAnalysis accessVar src = (readsInside, writesInside)
@@ -205,7 +206,7 @@ varWrittenAfterSrcLoc localVarAccesses loc var = appearance
 varReadAfterSrcLoc :: LocalVarAccessAnalysis -> SrcLoc -> VarName Anno -> Bool
 varReadAfterSrcLoc localVarAccesses loc var = appearance
         where
-            reads = map (fst) (fst (DMap.findWithDefault ([],[]) var localVarAccesses)) 
+            reads = map (fst) (fst (DMap.findWithDefault ([],[]) var localVarAccesses))
             appearance = foldl (\accum item -> accum || ((checkSrcLocBefore loc item) )) False reads
 
 getAccessesBeforeSrcSpan :: VarAccessAnalysis -> SrcLoc -> ([VarName Anno], [VarName Anno])
@@ -222,7 +223,7 @@ getAccessesBetweenSrcSpans accessAnalysis startLoc endLoc = (reads, writes)
 varReadInRange :: LocalVarAccessAnalysis -> SrcLoc -> SrcLoc -> VarName Anno -> Bool
 varReadInRange localVarAccesses startLoc endLoc var = appearance
         where
-            reads = map (fst) (fst (DMap.findWithDefault ([],[]) var localVarAccesses)) 
+            reads = map (fst) (fst (DMap.findWithDefault ([],[]) var localVarAccesses))
             appearance = foldl (\accum item -> accum || ((checkSrcLocBefore startLoc item) && (checkSrcLocBefore item endLoc))) False reads
 
 varWrittenInRange :: LocalVarAccessAnalysis -> SrcLoc -> SrcLoc -> VarName Anno -> Bool
@@ -236,14 +237,14 @@ varWrittenInRange localVarAccesses startLoc endLoc var = appearance
 getArguments :: Program Anno -> [VarName Anno]
 getArguments prog = argNames
         where
-            argNames = everything (++) (mkQ [] getArgNamesAsVarNames) prog 
+            argNames = everything (++) (mkQ [] getArgNamesAsVarNames) prog
 
 getArguments_list :: Arg Anno -> [VarName Anno]
 getArguments_list arg = everything (++) (mkQ [] getArgNamesAsVarNames) arg
 
 getArgNamesAsVarNames :: ArgName Anno -> [VarName Anno]
 getArgNamesAsVarNames (ArgName _ str) = [VarName nullAnno str]
-getArgNamesAsVarNames _ = []
+getArgNamesAsVarNames _               = []
 
 getDeclaredVarNames :: Decl Anno -> [VarName Anno]
 getDeclaredVarNames (Decl _ _ lst _) = foldl (\accum (expr1, _, _) -> accum ++ extractVarNames expr1) [] lst
@@ -279,7 +280,7 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
                                                     allFortran = case maybeFortran of
                                                             Nothing -> mainFortran:elseListFortran
                                                             Just finalElse -> mainFortran:finalElse:elseListFortran
-                                                        
+
                                                     analysis = foldl (addVarReadAccess (srcSpan readExpr)) prevAnalysis readVarNames
                                                     analysis_io = foldl (addVarReadAccess (srcSpan readExpr)) prevAnalysis_io readVarNames
 
@@ -287,14 +288,14 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
                                                     analysisIncChildren = foldl combineLocalVarAccessAnalysis analysis analysisIncChildren_list
                                                     analysisIncChildren_io = foldl combineLocalVarAccessAnalysis analysis analysisIncChildren_io_list
 
-                                 -- Call p SrcSpan (Expr p) (ArgList p);                 
+                                 -- Call p SrcSpan (Expr p) (ArgList p);
                                     Call _ src callExpr argList -> analysis_tup
                                                 where
-                                                    subroutineName = if extractVarNames callExpr == [] 
+                                                    subroutineName = if extractVarNames callExpr == []
                                                         then (error "flattenSubroutineCall: callExpr\n" ++ (show callExpr))
                                                         else varNameStr (head (extractVarNames callExpr))
                                                     -- IOWRITE
-                                                    -- WV the plan is that any calls to subs that are not in the srcs in list on command will be 
+                                                    -- WV the plan is that any calls to subs that are not in the srcs in list on command will be
                                                     -- treated as I/O and eventually lead to generation of oclRead calls
                                                     -- But only if they are not in the main loop.
                                                     -- TODO: for now I just add their names on command line with the -iowrite flag
@@ -302,17 +303,17 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
                                                     -- and read these back before this call
                                                     -- What we need to do is replace the AST node for the sub call with a group (FSeq) with all OpenCLBufferRead statements
                                                     -- Best place to do this is where the other OpenCLBufferRead statements are added
-                                                    analysis_tup = 
+                                                    analysis_tup =
                                                         let
                                                                 extractedExprs = everything (++) (mkQ [] extractExpr_list) argList
                                                                 extractedOperands = foldl (\accum item -> accum ++ extractOperands item) [] extractedExprs
                                                                 --varNames :: [VarName Anno String]
                                                                 varNames = foldl (collectVarNames_foldl declarations) [] extractedOperands
-                                                                -- So these names need to be saved and used later to compare them to the 
+                                                                -- So these names need to be saved and used later to compare them to the
                                                                 -- arguments of the kernel
                                                         in
                                                             if (subroutineName `elem` ioWriteSubroutineNames)
-                                                            then 
+                                                            then
                                                                 let
                                                                     analysis = foldl (addVarReadAccess src) prevAnalysis_io varNames
                                                                     analysis' = foldl (addVarWriteAccess src) analysis varNames
@@ -320,7 +321,7 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
                                                                     --warning DMap.empty ("Subroutine "++subroutineName++" is an I/O Write subroutine, skipping analysis for "++(show analysis')++"\n")
                                                                     -- (prevAnalysis,warning analysis' ("Subroutine "++subroutineName++" is an I/O Write subroutine, skipping analysis for "++(show analysis')++"\n"))
                                                                     (prevAnalysis,analysis')
-                                                            else 
+                                                            else
                                                                 let
 
                                                         --    Both read and write since we don't know the intent inside the function/subroutine call.
@@ -333,7 +334,7 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
 
 
                                     _ -> (analysisIncChildren ,analysisIncChildren_io)
-                                                where 
+                                                where
                                                     extractedExprs = gmapQ (mkQ (Null nullAnno nullSrcSpan) extractExpr) codeSeg
                                                     extractedOperands = foldl (\accum item -> accum ++ extractOperands item) [] extractedExprs
                                                     readVarNames = foldl (collectVarNames_foldl declarations) [] extractedOperands
@@ -345,7 +346,7 @@ analyseAllVarAccess_fortran ioWriteSubroutineNames declarations (prevAnalysis,pr
                                                     analysisIncChildren_io = foldl (combineLocalVarAccessAnalysis) DMap.empty analysisIncChildren_io_list
 
 -- WV: I guess the structure of the If is:
--- If  _ _ condition first_block [else_if cond more_blocks] (Maybe else_block)                                                    
+-- If  _ _ condition first_block [else_if cond more_blocks] (Maybe else_block)
 -- If  p SrcSpan (Expr p) (Fortran p) [((Expr p),(Fortran p))] (Maybe (Fortran p))
 -- WV: This is to deal with function calls. For these, we extract the arguments.
 collectVarNames :: [VarName Anno] -> Expr Anno -> [VarName Anno]
@@ -370,7 +371,7 @@ getAccessedExprs :: [VarName Anno] -> [Expr Anno] -> Expr Anno -> [Expr Anno]
 getAccessedExprs declarations accum item = case fnCall of
                                             True ->    accum ++ extractContainedVars item
                                             False -> accum ++ extractOperands item
-                                        where 
+                                        where
                                             fnCall = isFunctionCall_varNames f95IntrinsicFunctions declarations item
 
 --     Recursive function to add a record of a read for a certain VarName
@@ -385,7 +386,7 @@ addVarWriteAccess :: SrcSpan -> LocalVarAccessAnalysis -> VarName Anno -> LocalV
 addVarWriteAccess srcspan analysis varname = DMap.insert varname newAccessRecord analysis
                                         where
                                             (oldReads, oldWrites) = (DMap.findWithDefault ([],[]) varname analysis)
-                                            newAccessRecord = (oldReads, oldWrites ++ [srcspan])                                                        
+                                            newAccessRecord = (oldReads, oldWrites ++ [srcspan])
 
 combineVarAccessAnalysis :: VarAccessAnalysis -> VarAccessAnalysis -> VarAccessAnalysis
 combineVarAccessAnalysis analysis1 analysis2 = resultantAnalysis
@@ -423,9 +424,9 @@ getPrexistingVars codeBlockSrcSpan accessAnalysis = listRemoveDuplications (prex
             allVars = DMap.keys localVarAccesses
             accessAnalysisInsideSrc = getAccessesInsideSrcSpan localVarAccesses codeBlockSrcSpan
             prexistingVars = filter (isPrexistingVar codeBlockSrcSpan accessAnalysisInsideSrc) allVars
--- This tests if a variable has been written to or read from before the point it is encountered. 
+-- This tests if a variable has been written to or read from before the point it is encountered.
 -- If it was not written to, returns True
--- If it was only written to, returns False 
+-- If it was only written to, returns False
 -- If it was written to after being read from, return True
 isPrexistingVar :: SrcSpan -> LocalVarAccessAnalysis -> VarName Anno -> Bool
 isPrexistingVar codeBlockSrcSpan accessAnalysisInsideSrc var = case earliestWrite of
@@ -438,7 +439,7 @@ isPrexistingVar codeBlockSrcSpan accessAnalysisInsideSrc var = case earliestWrit
             earliestRead = getEarliestSrcSpan reads
             earliestWrite = getEarliestSrcSpan writes
 
-            
+
 
 varHasSrcBefore :: SrcSpan -> LocalVarAccessAnalysis -> VarName Anno -> Bool
 varHasSrcBefore codeBlockSrcSpan localVarAccess var = foldl (\accum item -> accum || (checkSrcSpanBefore item codeBlockSrcSpan)) False varWrites
@@ -457,7 +458,7 @@ getNonTempVars codeBlockSpan accessAnalysis = hangingReads ++ subroutineArgument
             subroutineArguments = (\(_,_, x, _) -> x) accessAnalysis
             readsAfterBlock = varAccessAnalysis_readsAfter codeBlockSpan localVarAccesses
             writesReadsAfterBlock = varAccessAnalysis_writesAfter codeBlockSpan readsAfterBlock
-            hangingReads = filter (checkHangingReads writesReadsAfterBlock) (DMap.keys writesReadsAfterBlock)                            
+            hangingReads = filter (checkHangingReads writesReadsAfterBlock) (DMap.keys writesReadsAfterBlock)
 
 varAccessAnalysis_writesAfter :: SrcSpan -> LocalVarAccessAnalysis -> LocalVarAccessAnalysis
 varAccessAnalysis_writesAfter codeBlockSpan accessAnalysis = foldl (varAccessAnalysis_writesAfter' codeBlockSpan accessAnalysis) DMap.empty (DMap.keys accessAnalysis)
@@ -487,7 +488,7 @@ checkHangingReads analysis varname = case earliestRead of
                                                                         Just w -> not (checkSrcSpanBefore_line w r)
                                                                         Nothing -> True
                                                         Nothing ->    False
-        where 
+        where
             (readSpans, writeSpans) = DMap.findWithDefault ([], []) varname analysis
             earliestRead = getEarliestSrcSpan readSpans
             earliestWrite = getEarliestSrcSpan writeSpans

@@ -1,4 +1,4 @@
-module F95IntrinsicFunctions 
+module F95IntrinsicFunctions
 where
 
 -- From the gfortran manual
