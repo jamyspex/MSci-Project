@@ -1,9 +1,0 @@
-[submodule "OpenCLIntegration"]
-	path = OpenCLIntegration
-	url = https://github.com/wimvanderbauwhede/OpenCLIntegration.git
-[submodule "AutoParallel-Fortran"]
-	path = AutoParallel-Fortran
-	url = https://github.com/wimvanderbauwhede/AutoParallel-Fortran.git
-[submodule "RefactorF4Acc"]
-	path = RefactorF4Acc
-	url = https://github.com/wimvanderbauwhede/RefactorF4Acc.git
