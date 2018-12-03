@@ -1,0 +1,67 @@
+
+==================== FINAL INTERFACE ====================
+2018-10-08 15:32:22.661305 UTC
+
+interface main@main:Warning 8002
+  interface hash: de74e2ad4f6df51ba15ba9cc1402d3aa
+  ABI hash: 37568988846bf7dc0ef160b198d03155
+  export-list hash: 66d1a373648e452607e9cbdbd4f3a821
+  orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
+  flag hash: 7c02f8b77a7db746ad4b6beb3be70535
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  Warning.warning
+module dependencies:
+package dependencies: base-4.9.1.0 ghc-prim-0.5.0.0
+                      integer-gmp-1.0.0.1
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Either base-4.9.1.0:Data.Functor.Const
+                         base-4.9.1.0:Data.Monoid base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:GHC.Generics base-4.9.1.0:GHC.IO.Exception
+                         base-4.9.1.0:GHC.TypeLits
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:GHC.IO.Unsafe 1c057c642b0e201f55a24585d3d94564
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  base-4.9.1.0:System.IO e4a64a8e3dce8616da54f0ee7104f7db
+import  -/  base-4.9.1.0:System.IO.Unsafe 1e3c5b8dd8cf6850ae43cce967bb46cd
+b188bde8b260fab1d3e9936fe0d82054
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   Warning.$trModule2
+                   Warning.$trModule1) -}
+06edca2b3e7313fa0f0bb7aeacdc5233
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "Warning"#) -}
+9dac49b809339a248cea2c565a7e7ce5
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "main"#) -}
+2d503229580d8b0284bd2609701ac214
+  warning :: a -> GHC.Base.String -> a
+  {- Arity: 2, Strictness: <L,U><L,1*U>,
+     Unfolding: (\ @ a (val :: a) (str :: GHC.Base.String) ->
+                 case GHC.Magic.runRW#
+                        @ 'GHC.Types.PtrRepLifted
+                        @ a
+                        (\ (s :: GHC.Prim.State# GHC.Prim.RealWorld)[OneShot] ->
+                         case GHC.Prim.noDuplicate# s of s' { DEFAULT ->
+                         case GHC.IO.Handle.Text.hPutStr2
+                                GHC.IO.Handle.FD.stdout
+                                str
+                                GHC.Types.True
+                                s' of ds1 { (#,#) ipv ipv1 ->
+                         (# ipv, val #) } }) of ds { (#,#) ipv ipv1 ->
+                 ipv1 }) -}
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

@@ -1,0 +1,502 @@
+
+==================== FINAL INTERFACE ====================
+2018-11-16 12:45:12.756814836 UTC
+
+interface main:Platform 8043
+  interface hash: 10e8abbe208f962e849e129926917745
+  ABI hash: f89bd200c7cba5fa5e54a4e955c967a6
+  export-list hash: 612c87f0d4dc6be168827153c73a5d6a
+  orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
+  flag hash: 7853c119b27f3f568e863cba4679c19c
+  opt_hash: 2c98c95d41c045ae9c2fb565ec8aabc6
+  hpc_hash: 93b885adfe0da089cdf634904fd59f71
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  Platform.Platform{Platform.CPU Platform.FPGA Platform.GPU Platform.MIC}
+module dependencies:
+package dependencies: base-4.11.1.0* ghc-prim-0.5.2.0
+                      integer-gmp-1.0.2.0
+orphans: base-4.11.1.0:GHC.Float base-4.11.1.0:GHC.Base
+family instance modules: base-4.11.1.0:Control.Applicative
+                         base-4.11.1.0:Data.Functor.Const
+                         base-4.11.1.0:Data.Functor.Identity base-4.11.1.0:Data.Monoid
+                         base-4.11.1.0:Data.Semigroup.Internal base-4.11.1.0:GHC.Generics
+                         base-4.11.1.0:GHC.IO.Exception
+import  -/  base-4.11.1.0:GHC.Base 604111500e81281298777e721c75643b
+import  -/  base-4.11.1.0:GHC.Read b9e6d20d40da8c8a12b566d22e1160e0
+import  -/  base-4.11.1.0:GHC.Show 73be67392447c974f19c3befd83c46c0
+import  -/  base-4.11.1.0:Prelude 0750c25585e2b797cd78291d423d39dd
+import  -/  ghc-prim-0.5.2.0:GHC.Classes 122abfcd7450c6c11602933c9ca5f80d
+bf96e413e1e314750414fc6f536fbeb9
+  $fEqPlatform :: GHC.Classes.Eq Platform.Platform
+  DFunId
+  {- HasNoCafRefs, Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ Platform.Platform
+                  Platform.$fEqPlatform_$c==
+                  Platform.$fEqPlatform_$c/= -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fEqPlatform_$c/= ::
+    Platform.Platform -> Platform.Platform -> GHC.Types.Bool
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U>,
+     Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Platform.Platform) (y :: Platform.Platform) ->
+                 case x of wild {
+                   Platform.CPU
+                   -> case y of wild1 {
+                        DEFAULT -> GHC.Types.True Platform.CPU -> GHC.Types.False }
+                   Platform.MIC
+                   -> case y of wild1 {
+                        DEFAULT -> GHC.Types.True Platform.MIC -> GHC.Types.False }
+                   Platform.GPU
+                   -> case y of wild1 {
+                        DEFAULT -> GHC.Types.True Platform.GPU -> GHC.Types.False }
+                   Platform.FPGA
+                   -> case y of wild1 {
+                        DEFAULT -> GHC.Types.True Platform.FPGA -> GHC.Types.False } }) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fEqPlatform_$c== ::
+    Platform.Platform -> Platform.Platform -> GHC.Types.Bool
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U>,
+     Unfolding: (\ (ds :: Platform.Platform)
+                   (ds1 :: Platform.Platform) ->
+                 case ds of wild {
+                   Platform.CPU
+                   -> case ds1 of wild1 {
+                        DEFAULT -> GHC.Types.False Platform.CPU -> GHC.Types.True }
+                   Platform.MIC
+                   -> case ds1 of wild1 {
+                        DEFAULT -> GHC.Types.False Platform.MIC -> GHC.Types.True }
+                   Platform.GPU
+                   -> case ds1 of wild1 {
+                        DEFAULT -> GHC.Types.False Platform.GPU -> GHC.Types.True }
+                   Platform.FPGA
+                   -> case ds1 of wild1 {
+                        DEFAULT -> GHC.Types.False Platform.FPGA -> GHC.Types.True } }) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform :: GHC.Read.Read Platform.Platform
+  DFunId
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ Platform.Platform
+                  Platform.$fReadPlatform_$creadsPrec
+                  Platform.$fReadPlatform_$creadList
+                  Platform.$fReadPlatform1
+                    `cast`
+                  ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                    ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                  <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                     <Platform.Platform>_R))
+                  Platform.$fReadPlatform_$creadListPrec -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform1 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> forall b.
+       (Platform.Platform -> Text.ParserCombinators.ReadP.P b)
+       -> Text.ParserCombinators.ReadP.P b
+  {- Arity: 2,
+     Unfolding: (GHC.Read.$fRead()6
+                   @ Platform.Platform
+                   Platform.$fReadPlatform2
+                     `cast`
+                   (Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                             <Platform.Platform>_R))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform10 ::
+    ([GHC.Types.Char],
+     Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+  {- Strictness: m,
+     Unfolding: ((Platform.$fReadPlatform12,
+                  Platform.$fReadPlatform11
+                    `cast`
+                  ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                    ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                  <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                     <Platform.Platform>_R)))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform11 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> forall b.
+       (Platform.Platform -> Text.ParserCombinators.ReadP.P b)
+       -> Text.ParserCombinators.ReadP.P b
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><C(S),1*C1(U)>,
+     Unfolding: InlineRule (2, True, True)
+                (\ (ds :: Text.ParserCombinators.ReadPrec.Prec)
+                   @ b
+                   (k :: Platform.Platform -> Text.ParserCombinators.ReadP.P b) ->
+                 k Platform.GPU) -}
+2d7a686a32d7ade2e20a50e649633826
+  $fReadPlatform12 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString#
+                   Platform.$fReadPlatform13) -}
+af128000b224d93e0d71eb543f62ce59
+  $fReadPlatform13 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("GPU"#) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform14 ::
+    ([GHC.Types.Char],
+     Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+  {- Strictness: m,
+     Unfolding: ((Platform.$fReadPlatform16,
+                  Platform.$fReadPlatform15
+                    `cast`
+                  ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                    ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                  <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                     <Platform.Platform>_R)))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform15 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> forall b.
+       (Platform.Platform -> Text.ParserCombinators.ReadP.P b)
+       -> Text.ParserCombinators.ReadP.P b
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><C(S),1*C1(U)>,
+     Unfolding: InlineRule (2, True, True)
+                (\ (ds :: Text.ParserCombinators.ReadPrec.Prec)
+                   @ b
+                   (k :: Platform.Platform -> Text.ParserCombinators.ReadP.P b) ->
+                 k Platform.MIC) -}
+3a2ec9bcbb1185bc2b0893d5042ef7d8
+  $fReadPlatform16 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString#
+                   Platform.$fReadPlatform17) -}
+ad6f9723e8a316e12b5432553c917e3b
+  $fReadPlatform17 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("MIC"#) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform18 ::
+    ([GHC.Types.Char],
+     Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+  {- Strictness: m,
+     Unfolding: ((Platform.$fReadPlatform20,
+                  Platform.$fReadPlatform19
+                    `cast`
+                  ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                    ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                  <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                     <Platform.Platform>_R)))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform19 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> forall b.
+       (Platform.Platform -> Text.ParserCombinators.ReadP.P b)
+       -> Text.ParserCombinators.ReadP.P b
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><C(S),1*C1(U)>,
+     Unfolding: InlineRule (2, True, True)
+                (\ (ds :: Text.ParserCombinators.ReadPrec.Prec)
+                   @ b
+                   (k :: Platform.Platform -> Text.ParserCombinators.ReadP.P b) ->
+                 k Platform.CPU) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform2 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> Text.ParserCombinators.ReadP.ReadP Platform.Platform
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (eta :: Text.ParserCombinators.ReadPrec.Prec) ->
+                 GHC.Read.choose2
+                   @ Platform.Platform
+                   Platform.$fReadPlatform_sps
+                   eta) -}
+b661cdd9406833fe2e6800b0f781dc1b
+  $fReadPlatform20 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString#
+                   Platform.$fReadPlatform21) -}
+eab116e2d824ffd1fc70e856b2d49d14
+  $fReadPlatform21 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("CPU"#) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform22 ::
+    Text.ParserCombinators.ReadP.P [Platform.Platform]
+  {- Unfolding: ((Platform.$fReadPlatform_$creadListPrec
+                    `cast`
+                  (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                       <[Platform.Platform]>_R)
+                    GHC.Read.$fRead()8)
+                   `cast`
+                 (Text.ParserCombinators.ReadP.N:ReadP[0] <[Platform.Platform]>_R)
+                   @ [Platform.Platform]
+                   (Text.ParserCombinators.ReadP.$fApplicativeP_$cpure
+                      @ [Platform.Platform])) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform3 ::
+    [(GHC.Base.String,
+      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)]
+  {- Strictness: m2,
+     Unfolding: (GHC.Types.:
+                   @ (GHC.Base.String,
+                      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+                   Platform.$fReadPlatform14
+                   Platform.$fReadPlatform4) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform4 ::
+    [(GHC.Base.String,
+      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)]
+  {- Strictness: m2,
+     Unfolding: (GHC.Types.:
+                   @ (GHC.Base.String,
+                      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+                   Platform.$fReadPlatform10
+                   Platform.$fReadPlatform5) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform5 ::
+    [(GHC.Base.String,
+      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)]
+  {- Strictness: m2,
+     Unfolding: (GHC.Types.:
+                   @ (GHC.Base.String,
+                      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+                   Platform.$fReadPlatform6
+                   (GHC.Types.[]
+                      @ (GHC.Base.String,
+                         Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform6 ::
+    ([GHC.Types.Char],
+     Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+  {- Strictness: m,
+     Unfolding: ((Platform.$fReadPlatform8,
+                  Platform.$fReadPlatform7
+                    `cast`
+                  ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                    ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                  <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                     <Platform.Platform>_R)))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform7 ::
+    Text.ParserCombinators.ReadPrec.Prec
+    -> forall b.
+       (Platform.Platform -> Text.ParserCombinators.ReadP.P b)
+       -> Text.ParserCombinators.ReadP.P b
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><C(S),1*C1(U)>,
+     Unfolding: InlineRule (2, True, True)
+                (\ (ds :: Text.ParserCombinators.ReadPrec.Prec)
+                   @ b
+                   (k :: Platform.Platform -> Text.ParserCombinators.ReadP.P b) ->
+                 k Platform.FPGA) -}
+d1541696f7565258084dd1eb3874721b
+  $fReadPlatform8 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString#
+                   Platform.$fReadPlatform9) -}
+0772da540a22345a985061ad750e04df
+  $fReadPlatform9 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("FPGA"#) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform_$creadList ::
+    Text.ParserCombinators.ReadP.ReadS [Platform.Platform]
+  {- Arity: 1,
+     Unfolding: (Text.ParserCombinators.ReadP.run
+                   @ [Platform.Platform]
+                   Platform.$fReadPlatform22) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform_$creadListPrec ::
+    Text.ParserCombinators.ReadPrec.ReadPrec [Platform.Platform]
+  {- Unfolding: (GHC.Read.list
+                   @ Platform.Platform
+                   Platform.$fReadPlatform1
+                     `cast`
+                   ((<Text.ParserCombinators.ReadPrec.Prec>_R
+                     ->_R Sym (Text.ParserCombinators.ReadP.N:ReadP[0]
+                                   <Platform.Platform>_R)) ; Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                                                      <Platform.Platform>_R))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform_$creadsPrec ::
+    GHC.Types.Int
+    -> Text.ParserCombinators.ReadP.ReadS Platform.Platform
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (n :: GHC.Types.Int) ->
+                 Text.ParserCombinators.ReadP.run
+                   @ Platform.Platform
+                   (GHC.Read.$fRead()6
+                      @ Platform.Platform
+                      Platform.$fReadPlatform2
+                        `cast`
+                      (Sym (Text.ParserCombinators.ReadPrec.N:ReadPrec[0]
+                                <Platform.Platform>_R))
+                      n
+                      @ Platform.Platform
+                      (Text.ParserCombinators.ReadP.$fApplicativeP_$cpure
+                         @ Platform.Platform))) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fReadPlatform_sps ::
+    [(GHC.Base.String,
+      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)]
+  {- Strictness: m2,
+     Unfolding: (GHC.Types.:
+                   @ (GHC.Base.String,
+                      Text.ParserCombinators.ReadPrec.ReadPrec Platform.Platform)
+                   Platform.$fReadPlatform18
+                   Platform.$fReadPlatform3) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fShowPlatform :: GHC.Show.Show Platform.Platform
+  DFunId
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ Platform.Platform
+                  Platform.$fShowPlatform_$cshowsPrec
+                  Platform.$fShowPlatform_$cshow
+                  Platform.$fShowPlatform_$cshowList -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fShowPlatform_$cshow :: Platform.Platform -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (x :: Platform.Platform) ->
+                 case x of wild {
+                   Platform.CPU -> Platform.$fReadPlatform20
+                   Platform.MIC -> Platform.$fReadPlatform16
+                   Platform.GPU -> Platform.$fReadPlatform12
+                   Platform.FPGA -> Platform.$fReadPlatform8 }) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fShowPlatform_$cshowList :: [Platform.Platform] -> GHC.Show.ShowS
+  {- Arity: 2, Strictness: <S,1*U><L,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (ls :: [Platform.Platform]) (s :: GHC.Base.String) ->
+                 GHC.Show.showList__
+                   @ Platform.Platform
+                   Platform.$w$cshowsPrec
+                   ls
+                   s) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $fShowPlatform_$cshowsPrec ::
+    GHC.Types.Int -> Platform.Platform -> GHC.Show.ShowS
+  {- Arity: 3, Strictness: <L,A><S,1*U><L,1*U>, Inline: [0],
+     Unfolding: InlineRule (3, True, True)
+                (\ (w :: GHC.Types.Int)
+                   (w1 :: Platform.Platform)
+                   (w2 :: GHC.Base.String) ->
+                 Platform.$w$cshowsPrec w1 w2) -}
+a60a076f638dd89dec8833df22f8b251
+  $tc'CPU :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   14712237905541671926##
+                   7488983449972498996##
+                   Platform.$trModule
+                   Platform.$tc'CPU2
+                   0#
+                   Platform.$tc'CPU1) -}
+4946c13f145387c24f3f068121ee9b37
+  $tc'CPU1 :: GHC.Types.KindRep
+  {- HasNoCafRefs, Strictness: m1, Inline: [~] -}
+80d29f66935973e33d89438e3252fd57
+  $tc'CPU2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$tc'CPU3) -}
+04019ac9f45f3823fdb0f9cef2f7c382
+  $tc'CPU3 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'CPU"#) -}
+a7cc3da5b84849c56e75a8bc755511f3
+  $tc'FPGA :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   404167338215217872##
+                   5338154053124001871##
+                   Platform.$trModule
+                   Platform.$tc'FPGA1
+                   0#
+                   Platform.$tc'CPU1) -}
+12581b402700e4e5e0aceebdd037778d
+  $tc'FPGA1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$tc'FPGA2) -}
+281850b8c5eef7ccd094fc7a6adadab1
+  $tc'FPGA2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'FPGA"#) -}
+4fdd7b03a68fe630bee362f18ac9c6c2
+  $tc'GPU :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   1193911158890355943##
+                   16680103055624825629##
+                   Platform.$trModule
+                   Platform.$tc'GPU1
+                   0#
+                   Platform.$tc'CPU1) -}
+8679d96f5c31447dba7048a532870a67
+  $tc'GPU1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$tc'GPU2) -}
+eb3d86f9b1a70e80be4276bdfb9469f8
+  $tc'GPU2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'GPU"#) -}
+662dadc91f9ddbb10a02e707747386fb
+  $tc'MIC :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   7133036735979081606##
+                   1185205841234327833##
+                   Platform.$trModule
+                   Platform.$tc'MIC1
+                   0#
+                   Platform.$tc'CPU1) -}
+f5e10faf57fb48bac10d736dfb8b0359
+  $tc'MIC1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$tc'MIC2) -}
+06b29e6c793170a2edd3712e6e24eec6
+  $tc'MIC2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'MIC"#) -}
+c205e70b98df207e928b14a5ea3ee44e
+  $tcPlatform :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   9685432375940652118##
+                   9767750020196665608##
+                   Platform.$trModule
+                   Platform.$trModule1
+                   0#
+                   GHC.Types.krep$*) -}
+5906cccc6af202e61c48aae980f441e4
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   Platform.$trModule3
+                   Platform.$trModule1) -}
+4f3a7cffe3199717e97f2f78520c014f
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$trModule2) -}
+4d6b253ca5fe51d64b373a7539e543a7
+  $trModule2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("Platform"#) -}
+70d24d58529ee4faf1f5d8e8f43ea1a9
+  $trModule3 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS Platform.$trModule4) -}
+41d48691fd38c049c1e922a8be0eabec
+  $trModule4 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("main"#) -}
+bf96e413e1e314750414fc6f536fbeb9
+  $w$cshowsPrec ::
+    Platform.Platform -> GHC.Base.String -> GHC.Base.String
+  {- Arity: 2, Strictness: <S,1*U><L,1*U>, Inline: [0],
+     Unfolding: (\ (w :: Platform.Platform) (w1 :: GHC.Base.String) ->
+                 case w of wild {
+                   Platform.CPU
+                   -> GHC.Base.++ @ GHC.Types.Char Platform.$fReadPlatform20 w1
+                   Platform.MIC
+                   -> GHC.Base.++ @ GHC.Types.Char Platform.$fReadPlatform16 w1
+                   Platform.GPU
+                   -> GHC.Base.++ @ GHC.Types.Char Platform.$fReadPlatform12 w1
+                   Platform.FPGA
+                   -> GHC.Base.++ @ GHC.Types.Char Platform.$fReadPlatform8 w1 }) -}
+bf96e413e1e314750414fc6f536fbeb9
+  data Platform = CPU | MIC | GPU | FPGA
+instance [safe] GHC.Classes.Eq [Platform.Platform]
+  = Platform.$fEqPlatform
+instance [safe] GHC.Read.Read [Platform.Platform]
+  = Platform.$fReadPlatform
+instance [safe] GHC.Show.Show [Platform.Platform]
+  = Platform.$fShowPlatform
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: safe
+require own pkg trusted: False
+

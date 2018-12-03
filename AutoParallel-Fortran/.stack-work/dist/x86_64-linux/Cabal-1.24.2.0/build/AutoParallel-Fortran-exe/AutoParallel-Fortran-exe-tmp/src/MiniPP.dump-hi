@@ -1,0 +1,439 @@
+
+==================== FINAL INTERFACE ====================
+2018-12-03 15:55:04.845139 UTC
+
+interface main@main:MiniPP 8002
+  interface hash: 8720ec2c6d43f58011171a91ac1af816
+  ABI hash: f16ed7e5a39853044388f8480999b1a1
+  export-list hash: 7578fb79964ca180f8c5942d9032d1f5
+  orphan hash: e2954b2a1d9c8cef6d6d4528cdf7de6c
+  flag hash: 7c02f8b77a7db746ad4b6beb3be70535
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  MiniPP.miniPP
+  MiniPP.miniPPD
+  MiniPP.miniPPF
+  MiniPP.miniPPO
+  MiniPP.miniPPP
+  MiniPP.miniPPProgUnit
+  MiniPP.miniPPProgram
+  MiniPP.showSubName
+  MiniPP.showVarLst
+module dependencies: F95IntrinsicFunctions Language.Fortran
+                     Language.Fortran.Lexer Language.Fortran.Parser
+                     Language.Fortran.PreProcess LanguageFortranTools PreProcessor
+                     Warning
+package dependencies: array-0.5.1.1@array-0.5.1.1 base-4.9.1.0
+                      binary-0.8.3.0@binary-0.8.3.0
+                      bytestring-0.10.8.1@bytestring-0.10.8.1
+                      containers-0.5.7.1@containers-0.5.7.1
+                      deepseq-1.4.2.0@deepseq-1.4.2.0 directory-1.3.0.0@directory-1.3.0.0
+                      filepath-1.4.1.1@filepath-1.4.1.1 ghc-prim-0.5.0.0
+                      haskell-src-1.0.2.0@haskell-src-1.0.2.0-3zoaErItXGVA1GHC7t3Glx
+                      integer-gmp-1.0.0.1 mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6
+                      parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw
+                      process-1.4.3.0@process-1.4.3.0
+                      syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS
+                      text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR
+                      time-1.6.0.1@time-1.6.0.1 transformers-0.5.2.0@transformers-0.5.2.0
+                      unix-2.7.2.1@unix-2.7.2.1
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+         binary-0.8.3.0@binary-0.8.3.0:Data.Binary.Generic
+         bytestring-0.10.8.1@bytestring-0.10.8.1:Data.ByteString.Builder
+         syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Instances
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Show
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Calendar.Gregorian
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Format.Parse
+         time-1.6.0.1@time-1.6.0.1:Data.Time.LocalTime.LocalTime
+         transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Error
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Complex base-4.9.1.0:Data.Either
+                         base-4.9.1.0:Data.Functor.Const base-4.9.1.0:Data.Functor.Identity
+                         base-4.9.1.0:Data.List.NonEmpty base-4.9.1.0:Data.Monoid
+                         base-4.9.1.0:Data.Semigroup base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:Data.Version base-4.9.1.0:Data.Void
+                         base-4.9.1.0:GHC.Exts base-4.9.1.0:GHC.Generics
+                         base-4.9.1.0:GHC.IO.Exception base-4.9.1.0:GHC.TypeLits
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntMap.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntSet.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Sequence
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Set.Base
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+import  -/  base-4.9.1.0:Data.Char 01433d23661edb6e5ef1536ef1e6774c
+import  -/  base-4.9.1.0:Data.Foldable 3e0b6967a1da89945d0e2d47266337a2
+import  -/  base-4.9.1.0:Data.List 07ae2acca6538aa0800bd0a993ac6ac1
+import  -/  base-4.9.1.0:Data.OldList 27987919d8da2f92e3f472ca81f730f8
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:GHC.List ab8c4e523e6c479c549d3bcd5fc4a439
+import  -/  base-4.9.1.0:GHC.Show a027f5ac24879eaba752f44aa90fe511
+import  -/  base-4.9.1.0:GHC.Unicode a175ecf20bf1272d9ae31337e7da43ab
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  ghc-prim-0.5.0.0:GHC.Classes 0bdf3d057a415ec1b84a7b1994efbe47
+import  -/  Language.Fortran c957d8f93581b3ce2cc521df25110d11
+  exports: cb4e2f808f933bd0493dcd95204741d0
+  ASeq fbeb9162a69bea5614e8719ae3686c45
+  Access 14bbe085aa5ce17b6f279ada59edb1f7
+  Action 8dcc275668e15799532817f97717a3b1
+  Advance 7d07fd005eda7313e157dc318fe6f722
+  Allocate 51b4d04565c91dd4e7687acf4d2642c5
+  And aef4f42907f720cfb3297c11e0aba2bb
+  Arg 98c8504d1f9b0c78639a79f23de8000d
+  ArgList cd4377d5409f1d69d31cc63bf9624407
+  ArgName b4db00709e962bb265fdd46af8204459
+  ArrayCon ee778ab7f8280f6d94edcd75396bf223
+  ArrayT 1071841314ea2748dea0af6459ed7756
+  Assg e4ff0447498349c3e2879e1af28dc289
+  AssgExpr d53fddbfcce9f1c005c39d5368bc93e5
+  BaseType ca5d7487fbe699d664f7837b2f094048
+  Bin 31bb1b9369e8820657f411d90ee9619c
+  Blank 76efa46196b85f9b44c9298d64233d06
+  Block 961f7c2c989b091b59c58c09a763b797
+  Block 00b5dcb26b4d8331f4d0a27afc418872
+  Bound a7e9d9367588a2936807387b6760ad5e
+  Call 5dc8fc6a52ca566d9c8f8635b11363e5
+  Close cf840fe8901965e43122f4827dc66c3e
+  Con e9784612770372502a12b479082c4a0e
+  ConL 83bd08f3384e6a972f163d009a14994f
+  ConS 760c3ffe0e9efc118649988f8a442866
+  Concat f22f1a8c98fc0643070588290f542ec2
+  Continue dccaf277569f2c4a99e06c0c14253c60
+  DSeq 772b67a42edbea3be62c0cc83a34765a
+  Decl d78489b6b11f87857f4ba3465cebf581
+  Decl c4465a5758b20b0d6387c4cda8774a94
+  Delim 224ca4d7e9cd813be0f7bd148a805aa9
+  Delimiter 84143f038cae28a732bd1fef6ee3172d
+  Dimension 80d338f2485dd9dba4658e44ba6c92c2
+  Direct b903c5355093a39a6163f351f434333c
+  Div ed67099c3b8ec7b7f48b784c091ff524
+  DoWhile 78d7bf775f7fc7da784d5f53830c5126
+  ESeq 61c466a4f3e2f7ae4bd9f94819dbe388
+  End 4bf56262d65ff285a9b327bd03854b0d
+  Eor 8f436fd012d12a1ba731d129d1040f70
+  Err 54d1ec3ccc9db60bdb4e2008723c726d
+  ExFile c51367728592466ef13e37c1216ec90b
+  Exist 744ba765d3ee32c9ea75c41f446a56c2
+  FMT 82cfdac564b7c3ba3789f055ee9261de
+  FSeq 66c58ad61465e02006618848a2dea986
+  File a829d8dc8563d73ed872868d5d5756a0
+  Floating ff926d911f3ddd77e8ff739a62f809f0
+  For 8eaaf1a59a9e6e9d8f36eff8caf7c991
+  Form ce7416037da596534fbeff7bdf17574f
+  Formatted 964791255b1526863ebc13d3d306ab55
+  Fortran 7ef8d1883356542a2e7829f1c3512bc2
+  Goto 2d5c8248c829d6acedbf679657fa2d3d
+  IOLength 250472eab25fe698dde8b24893dce3fa
+  IOStat 00e9b3f90c48540e8555b0af3bd62994
+  If 2ebe473c51363820c571e0150fe25882
+  In c3152ec7476c9052d5df452d36158bd3
+  InOut ba801df823599561aa4e02813d34ab30
+  Intent b995ba2ebcb7e909c60733562878a23e
+  Label 27811b244a89bd07c3919afb9a22a06a
+  Main 24417b8faf0e470d209fd162bfce3027
+  Minus 74fd79e66076db48c9d27b6cd0f2b01a
+  Module 31d7f44313bcc4246ea1edced284a19c
+  Mul 408f573b36ba1a21b1233ab02a2b76a6
+  NML afee7800352ab2e49a3443fffa1ab776
+  Name 077c438744b0565b5a0cf145f48f2f8c
+  Named 94bc15e5b6be0d0b15be024fc9a70a59
+  NextRec 15671a922215664051c9299fa473a6b3
+  NoSpec 24794a0a7f11335902c2ecda88dfc8cb
+  Null f9b4d2f804869f054752a44b06f43d80
+  NullArg 488ae66bce5738b3a6db77334d08ec4f
+  NullExpr d53181ba59030b4ed334d3840cb5eea1
+  NullStmt 4b8e91715bb30324591f7bab6148c0f6
+  NullSubName e5c0d3ce4812471ed7bf97cdc6b24bb7
+  Number 19c4f9a73fc989590ba8eea0fa27255a
+  Open cea56c366bf40323f27115be9800bd94
+  OpenCLBufferRead 7062856698f9bec8c015dbffd83f3cd0
+  OpenCLBufferWrite 4bb6fbfda0c948d2b7b329fa92eecc3b
+  OpenCLMap f735cdb4fcfce00b0cd641aaa6255a4b
+  OpenCLReduce 811a5024d542e78a43320fc6af66c91a
+  Opened e7d4ebfc41fd5d4a7d0f0230443d1198
+  Or 213d2e6b495d5f025e4a6b3f58e82a27
+  Out cec654c84d9ddc57389477346da890e9
+  Pad 3d488565c2705a91779600a259fd05f5
+  Parameter e57fc45f50a252e608f4c6688c7391dc
+  ParenthesizedExpr 752ffa915e0390d99a3d24e0ff87191f
+  Plus 2246ba64804dd1a40f56ff697ab3e419
+  Position 1d3ef7156c98e9692e100a77dd95ef34
+  Power 753f6c40069c6ea46ebd079a08a3e781
+  Print 0f1cd3f8b02200e514755e9538dfeaf0
+  ProgUnit dd0d2763607dbd5a6f6c1c5d85fe76dd
+  Program 61c057161e42f4aa29fb8dd8afb17b21
+  Read 5f9cb06c68c75ff1e766136a6755825f
+  ReadWrite 7d48d7c3473575c64dce7a98e4910b46
+  Rec 604472f05f77c782423dc5dbb0841800
+  Recl fe45c0a02bf540873edb918b56dbeecc
+  RelEQ e383106dcc01fdbdb318a2418931514b
+  RelGE a6976d1051d998d5b2d827b29c70a53e
+  RelGT 78f85566cdeecd7e16397ffbd97af6ea
+  RelLE 2cfacf5d401677794942ab69624e48fb
+  RelLT 4a6ed8a832e87679ad5328c766213c64
+  RelNE 1dbde836a3bb3ab52805a364d01adc7a
+  Return 8d9932f57d70e09e833f1cf9545a3a5d
+  Sequential edc0c5356c21b3f3d6dfff0355d54d2c
+  Size 9c3a46d398fd99dc6d3c64b632355d3f
+  Spec ba4cf92c8e04874adf9aa301c7b40b26
+  Sqrt 0b2315700604392a551b5cc7b7181282
+  Status fdee5b11e0b31f97d71910f7c37c178f
+  Stop ed8be02d7031c8377c8ba15bcf22018e
+  StringLit 65e42ff79a2c473b2cb67e29189b89d7
+  Sub 8f2551e4abe55f51167501d014d55bee
+  SubName ef668be18c70f035fc2c52ca19281445
+  Unary 9d829a97b22d5a23fc3b2ccddd0720fd
+  Unformatted 7144d338c458e133453f8e29429621e4
+  Unit 378859dfb80ffe732b8a1c9736a68166
+  Var 223ccce2fd2a845a28913e272a1a9b28
+  VarName 64af05f1c71bcd1dfd571ca0d5218f1b
+  Write a11dcf8b144ebb1c3d0b608865d1e04c
+  WriteSp 9d5c6ed68385dc9686f9261b87697e95
+import  -/  LanguageFortranTools 7890a5e96ab51325aa3603dbd4691bf4
+  exports: 83b35210801e0c6fe3fd2a2c2ff1ecd0
+  Anno e22809b44b97ccfdb28bfb19047d139f
+bdb4dd290b09ae955062ad7230ff1a40
+  $s$fShow(,)_$s$fShowMap ::
+    GHC.Show.Show
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Base.$fShowMap_$cshowsPrec
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Show.$fShow[]_$s$fShow[]1
+                     GHC.Show.$fShow[]_$s$fShow[]2)
+                  (Data.Map.Base.$fShowMap_$cshow
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Show.$fShow[]_$s$fShow[]1
+                     GHC.Show.$fShow[]_$s$fShow[]2)
+                  MiniPP.$s$fShow(,)_$s$fShowMap_$cshowList -}
+2b3559e33a26405a993590bbbb1d9da5
+  $s$fShow(,)_$s$fShowMap_$cshowList ::
+    [Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]]
+    -> GHC.Show.ShowS
+  {- Arity: 2, Strictness: <S,1*U><L,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (ls :: [Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]])
+                   (s :: GHC.Base.String) ->
+                 GHC.Show.showList__
+                   @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                   (Data.Map.Base.$fShowMap_$cshowsPrec
+                      @ [GHC.Types.Char]
+                      @ [GHC.Base.String]
+                      GHC.Show.$fShow[]_$s$fShow[]1
+                      GHC.Show.$fShow[]_$s$fShow[]2
+                      GHC.Show.shows22)
+                   ls
+                   s) -}
+a0f73e01cf03ad85ba2319bff3e48e1c
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   MiniPP.$trModule2
+                   MiniPP.$trModule1) -}
+297efaa895d42db5370b688bb0137178
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "MiniPP"#) -}
+df1e91e1376f76acc4fa09d802f98294
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "main"#) -}
+5b621549d30f13c49936a003adaf97ac
+  miniPP ::
+    GHC.Show.Show t => Language.Fortran.Expr t -> [GHC.Types.Char]
+  {- Arity: 2, Strictness: <L,U(C(C1(U)),A,A)><S,1*U> -}
+8c5e36707cbdd670e4f19cea6c9c67f1
+  miniPPD ::
+    Language.Fortran.Decl LanguageFortranTools.Anno -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U> -}
+a625f0c0ea8690bfb152bb76ebcc3a3e
+  miniPPF ::
+    Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (stmt :: Language.Fortran.Fortran LanguageFortranTools.Anno) ->
+                 MiniPP.miniPPFT stmt MiniPP.miniPPF1) -}
+12f8424d258c8f6bc4fe850591161790
+  miniPPF1 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "    "#) -}
+1a6d653d30df9d4266d4f558415cf5e9
+  miniPPFT ::
+    Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> GHC.Base.String -> GHC.Base.String
+  {- Arity: 2, Strictness: <S,1*U><L,U> -}
+97ae97dbb1f38e7630b3fcee9ce2c5c5
+  miniPPO :: Language.Fortran.BinOp t -> [GHC.Types.Char]
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ @ t (ds :: Language.Fortran.BinOp t) ->
+                 case ds of wild {
+                   Language.Fortran.Plus ds1 -> MiniPP.miniPPO14
+                   Language.Fortran.Minus ds1 -> MiniPP.miniPPO13
+                   Language.Fortran.Mul ds1 -> MiniPP.miniPPO12
+                   Language.Fortran.Div ds1 -> MiniPP.miniPPO11
+                   Language.Fortran.Or ds1 -> MiniPP.miniPPO10
+                   Language.Fortran.And ds1 -> MiniPP.miniPPO9
+                   Language.Fortran.Concat ds1 -> MiniPP.miniPPO8
+                   Language.Fortran.Power ds1 -> MiniPP.miniPPO7
+                   Language.Fortran.RelEQ ds1 -> MiniPP.miniPPO6
+                   Language.Fortran.RelNE ds1 -> MiniPP.miniPPO5
+                   Language.Fortran.RelLT ds1 -> MiniPP.miniPPO4
+                   Language.Fortran.RelLE ds1 -> MiniPP.miniPPO3
+                   Language.Fortran.RelGT ds1 -> MiniPP.miniPPO2
+                   Language.Fortran.RelGE ds1 -> MiniPP.miniPPO1 }) -}
+0f22eabe50265b10c4846bd84a74138c
+  miniPPO1 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# ">="#) -}
+49330b097ba798b03356bc6cf3d3ba9e
+  miniPPO10 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# " .or. "#) -}
+f796181f90d32acc794d848a7f6e0964
+  miniPPO11 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "/"#) -}
+4b84ea53005744f6920e77899c011f06
+  miniPPO12 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "*"#) -}
+969dcf3e213c0b3a3b948a3cac3afb5a
+  miniPPO13 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "-"#) -}
+88677e5c3d9efd2399a758547d9b199c
+  miniPPO14 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "+"#) -}
+5dd13b2a847256bbd9f9d6da0d3a6d10
+  miniPPO2 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# ">"#) -}
+7de3292cc1d1cd2724efa050cb9ce853
+  miniPPO3 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "<="#) -}
+260d4903d1ddcf05741b60d170fe9137
+  miniPPO4 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "<"#) -}
+72e58c13e3bd1574441ac3aef658a4d1
+  miniPPO5 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "/="#) -}
+12ccd72d4fa1ea59f8168a30b466aeb6
+  miniPPO6 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "=="#) -}
+ee9310cbf4530c3eb65fc74256b46e6f
+  miniPPO7 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "**"#) -}
+8ce8bd90e3b877685feac422129baf62
+  miniPPO8 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "//"#) -}
+3bb6ee1a6d33f61bff811be7fe7d7d50
+  miniPPO9 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# " .and. "#) -}
+b9ec92dd11488cf02f25a1e5cb11e957
+  miniPPP ::
+    Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U> -}
+fb5c50b2525b278402872210a07a271b
+  miniPPProgUnit ::
+    Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U> -}
+f60405c2117effbafbf53798dfd30d0c
+  miniPPProgram ::
+    Language.Fortran.Program LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ (prog :: Language.Fortran.Program
+                              LanguageFortranTools.Anno) ->
+                 MiniPP.miniPPProgram_go prog) -}
+80ec3daeefd628916c8debbd8a61ea93
+  miniPPProgram_go ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> [GHC.Types.Char]
+  {- Arity: 1, Strictness: <S,1*U> -}
+6f69a20e4c2cf80e6ab749c546d7b6a1
+  miniPP_$sminiPP ::
+    Language.Fortran.Expr LanguageFortranTools.Anno -> [GHC.Types.Char]
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, True)
+                (\ (eta :: Language.Fortran.Expr LanguageFortranTools.Anno) ->
+                 MiniPP.miniPP_miniPP eta) -}
+1019c1893ad860ce913770a872ae838d
+  miniPP_miniPP ::
+    Language.Fortran.Expr LanguageFortranTools.Anno -> [GHC.Types.Char]
+  {- Arity: 1, Strictness: <S,1*U> -}
+71ae792c89776f5d714d5671278bce8a
+  showSubName :: Language.Fortran.SubName t -> GHC.Base.String
+  {- Arity: 1, HasNoCafRefs, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ t (ds :: Language.Fortran.SubName t) ->
+                 case ds of wild {
+                   Language.Fortran.SubName ds1 s -> s
+                   Language.Fortran.NullSubName ds1
+                   -> GHC.Types.[] @ GHC.Types.Char }) -}
+777782c176bdd355707523558919e8f2
+  showVar :: Language.Fortran.VarName t -> Language.Fortran.Variable
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LS),1*U(A,1*U)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ t (ds :: Language.Fortran.VarName t) ->
+                 case ds of wild { Language.Fortran.VarName ds1 v -> v }) -}
+bc422ed967cf5d66279a6016026b9140
+  showVarLst :: [Language.Fortran.VarName t] -> GHC.Base.String
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ t (lst :: [Language.Fortran.VarName t]) ->
+                 GHC.Show.showList__
+                   @ [GHC.Types.Char]
+                   GHC.Show.shows_$cshowList1
+                   (GHC.Base.build
+                      @ [GHC.Types.Char]
+                      (\ @ b1
+                         (c :: [GHC.Types.Char] -> b1 -> b1)[OneShot]
+                         (n :: b1)[OneShot] ->
+                       GHC.Base.foldr
+                         @ (Language.Fortran.VarName t)
+                         @ b1
+                         (GHC.Base.mapFB
+                            @ [GHC.Types.Char]
+                            @ b1
+                            @ (Language.Fortran.VarName t)
+                            c
+                            (MiniPP.showVar @ t))
+                         n
+                         lst))
+                   (GHC.Types.[] @ GHC.Types.Char)) -}
+"SPEC miniPP @ Anno" [ALWAYS] forall ($dShow :: GHC.Show.Show
+                                                  LanguageFortranTools.Anno)
+  MiniPP.miniPP @ (Data.Map.Base.Map
+                     GHC.Base.String [GHC.Base.String])
+                $dShow
+  = MiniPP.miniPP_$sminiPP
+"SPEC/MiniPP $fShowMap @ [Char] @ [String]" [ALWAYS] forall ($dShow1 :: GHC.Show.Show
+                                                                          [GHC.Base.String])
+                                                            ($dShow :: GHC.Show.Show
+                                                                         [GHC.Types.Char])
+  Data.Map.Base.$fShowMap @ [GHC.Types.Char]
+                          @ [GHC.Base.String]
+                          $dShow
+                          $dShow1
+  = MiniPP.$s$fShow(,)_$s$fShowMap
+"SPEC/MiniPP $fShowMap_$cshowList @ [Char] @ [String]" [ALWAYS] forall ($dShow1 :: GHC.Show.Show
+                                                                                     [GHC.Base.String])
+                                                                       ($dShow :: GHC.Show.Show
+                                                                                    [GHC.Types.Char])
+  Data.Map.Base.$fShowMap_$cshowList @ [GHC.Types.Char]
+                                     @ [GHC.Base.String]
+                                     $dShow
+                                     $dShow1
+  = MiniPP.$s$fShow(,)_$s$fShowMap_$cshowList
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

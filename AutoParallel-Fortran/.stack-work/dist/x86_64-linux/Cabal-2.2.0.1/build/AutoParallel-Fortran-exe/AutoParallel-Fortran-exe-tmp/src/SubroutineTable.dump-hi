@@ -1,0 +1,3221 @@
+
+==================== FINAL INTERFACE ====================
+2018-11-16 12:45:17.350604299 UTC
+
+interface main:SubroutineTable 8043
+  interface hash: 62275cf38f35180f129ccb1402c216e5
+  ABI hash: 489825aeafffaefb2cc10b4978448116
+  export-list hash: 2909798395eea1f9c7c6a08b6d2a2760
+  orphan hash: bbd9bc9f18a12fc744309ea2fa073db5
+  flag hash: 7853c119b27f3f568e863cba4679c19c
+  opt_hash: 2c98c95d41c045ae9c2fb565ec8aabc6
+  hpc_hash: 93b885adfe0da089cdf634904fd59f71
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  SubroutineTable.addToSubroutineTable
+  SubroutineTable.constructSubroutineTable
+  SubroutineTable.emptyArgumentTranslation
+  SubroutineTable.extractAllCalls
+  SubroutineTable.extractCalls
+  SubroutineTable.extractProgUnitName
+  SubroutineTable.extractSubroutineArgumentTranslationMaps
+  SubroutineTable.extractSubroutines
+  SubroutineTable.generateArgumentTranslation
+  SubroutineTable.getSubroutineArgumentTranslation
+  SubroutineTable.replaceKernels_foldl
+  SubroutineTable.subroutineTable_ast
+  SubroutineTable.translateArguments
+  SubroutineTable.ArgumentTranslation
+  SubroutineTable.SrcName
+  SubroutineTable.SubNameStr
+  SubroutineTable.SubRec{SubroutineTable.MkSubRec subAst subSrcFile subSrcLines}
+  SubroutineTable.SubroutineArgumentTranslationMap
+  SubroutineTable.SubroutineTable
+module dependencies: F95IntrinsicFunctions Language.Fortran
+                     Language.Fortran.Lexer Language.Fortran.Parser
+                     Language.Fortran.PreProcess LanguageFortranTools PreProcessor
+                     Warning
+package dependencies: array-0.5.2.0 base-4.11.1.0 binary-0.8.5.1
+                      bytestring-0.10.8.2 containers-0.5.11.0 deepseq-1.4.3.0
+                      directory-1.3.1.5 filepath-1.4.2 ghc-prim-0.5.2.0
+                      haskell-src-1.0.3.0 integer-gmp-1.0.2.0 mtl-2.2.2 parsec-3.1.13.0
+                      process-1.6.3.0 syb-0.7 text-1.2.3.1 time-1.8.0.2
+                      transformers-0.5.5.0 unix-2.7.2.2
+orphans: time-1.8.0.2:Data.Time.Format.Parse
+         time-1.8.0.2:Data.Time.LocalTime.Internal.ZonedTime
+         time-1.8.0.2:Data.Time.LocalTime.Internal.LocalTime
+         time-1.8.0.2:Data.Time.Calendar.Gregorian
+         text-1.2.3.1:Data.Text.Lazy text-1.2.3.1:Data.Text
+         binary-0.8.5.1:Data.Binary.Generic
+         bytestring-0.10.8.2:Data.ByteString.Builder
+         text-1.2.3.1:Data.Text.Show
+         transformers-0.5.5.0:Control.Monad.Trans.Error
+         syb-0.7:Data.Generics.Instances base-4.11.1.0:GHC.Float
+         base-4.11.1.0:GHC.Base
+family instance modules: base-4.11.1.0:Control.Applicative
+                         base-4.11.1.0:Data.Complex base-4.11.1.0:Data.Functor.Compose
+                         base-4.11.1.0:Data.Functor.Const
+                         base-4.11.1.0:Data.Functor.Identity
+                         base-4.11.1.0:Data.Functor.Product base-4.11.1.0:Data.Functor.Sum
+                         base-4.11.1.0:Data.Monoid base-4.11.1.0:Data.Semigroup
+                         base-4.11.1.0:Data.Semigroup.Internal base-4.11.1.0:Data.Version
+                         base-4.11.1.0:Data.Void base-4.11.1.0:GHC.Exts
+                         base-4.11.1.0:GHC.Generics base-4.11.1.0:GHC.IO.Exception
+                         containers-0.5.11.0:Data.IntMap.Internal
+                         containers-0.5.11.0:Data.IntSet.Internal
+                         containers-0.5.11.0:Data.Map.Internal
+                         containers-0.5.11.0:Data.Sequence.Internal
+                         containers-0.5.11.0:Data.Set.Internal containers-0.5.11.0:Data.Tree
+                         text-1.2.3.1:Data.Text text-1.2.3.1:Data.Text.Lazy
+import  -/  base-4.11.1.0:Data.Foldable 8ed35c38958063956af33c935ea03444
+import  -/  base-4.11.1.0:GHC.Base 604111500e81281298777e721c75643b
+import  -/  base-4.11.1.0:GHC.Err 5e26aa744981f14e0f1e4d29c44ac52e
+import  -/  base-4.11.1.0:GHC.List 1e4357702d8d00cded0703bd293e50e8
+import  -/  base-4.11.1.0:GHC.Show 73be67392447c974f19c3befd83c46c0
+import  -/  base-4.11.1.0:Prelude 0750c25585e2b797cd78291d423d39dd
+import  -/  containers-0.5.11.0:Data.Map f51b9cf04edd738eb6d014be576b3403
+import  -/  containers-0.5.11.0:Data.Map.Internal e02d23495520de11b8e9f3c9c93a4d11
+import  -/  ghc-prim-0.5.2.0:GHC.Classes 122abfcd7450c6c11602933c9ca5f80d
+import  -/  Language.Fortran e2add56600673959dbdfe1ac093795c9
+  exports: 6ca1e7b188145fc0c602707ea4a1c428
+  ArgName 9acaf710a8bc920f63e26e943ae5d9fe
+  Call ecfba85593faf88229821091dac9ee3b
+  Fortran cab0cd6287333175c6b9d87427982518
+  NullProg 58df8365ea2747780fbe8b010d6c889f
+  ProgUnit 573fa2fe80c5713ab0c018712ac118d8
+  Program 607f4435fb994a8c5b83bd9f7709b3c3
+  Sub 5dc1ce79c5eeb19c143322b2405ae2c8
+  SubName 9b06404c654299d20e94c12ba761aaab
+  SubName 3c0e7e5e2ace2b7b36167e7f447bc3f1
+  VarName a39ab087efdb6eba24247b07097f591c
+  VarName 361ec85699986b0b7f4d68a05374d64d
+import  -/  LanguageFortranTools 737e8abc5de089abcd0ce62660f9d159
+  exports: a5a994dcb8ba92c93a8a354a063275b0
+  Anno 1420203ed9c39fcf982d2ff37c01ae68
+  extractArgName 20910af79192242a6c20a87676f19776
+  extractExpr_list 6dab979ee8b8d4ff63fc85e5d8625380
+  extractMaybeVarNames e0c9195a15f2d56092ef8ae31ebdf94d
+  extractVarNames 920113507cf2d36f1a1834c3a88c2c59
+  getSubNames 336426aad7da74b5bebc39b13f5e654a
+  nullAnno b5ec3f8914fec256ad2e53b761b9bd52
+  nullSrcLoc 70048daf19804e152496d0171ca45658
+  replaceFortran 97e3729215fcdf4e3ef68d08ede68a9d
+  varNameStr 4f55193896441ff99d96346c5aacd560
+import  -/  syb-0.7:Data.Generics 2ddc257f9ac35414fc37ff4d19b4d388
+import  -/  syb-0.7:Data.Generics.Aliases a5097c06261967df51d59247bf1d4958
+import  -/  syb-0.7:Data.Generics.Schemes 58bc96c8ed0bed4ad53424f237efe8b8
+821130a220f1b685d2e85d90a07983f6
+  $s$fData(,) ::
+    Data.Data.Data
+      ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+       [GHC.Base.String])
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                     [GHC.Base.String])
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ ((,) [Language.Fortran.ProgUnit LanguageFortranTools.Anno])
+                     @ [GHC.Base.String]
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ (* -> *)
+                        @ (,)
+                        @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                        Data.Data.$fData(,)10
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ Language.Fortran.ProgUnit
+                              @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                              Language.Fortran.$fDataProgUnit6
+                              (Data.Typeable.Internal.mkTrApp
+                                 @ *
+                                 @ *
+                                 @ (Data.Map.Internal.Map [GHC.Types.Char])
+                                 @ [GHC.Base.String]
+                                 (Data.Typeable.Internal.mkTrApp
+                                    @ *
+                                    @ (* -> *)
+                                    @ Data.Map.Internal.Map
+                                    @ [GHC.Types.Char]
+                                    Data.Map.Internal.$fDataMap17
+                                    (Data.Typeable.Internal.mkTrApp
+                                       @ *
+                                       @ *
+                                       @ []
+                                       @ GHC.Types.Char
+                                       Data.Data.$fData[]3
+                                       Data.Data.$fDataChar7))
+                                 (Data.Typeable.Internal.mkTrApp
+                                    @ *
+                                    @ *
+                                    @ []
+                                    @ [GHC.Types.Char]
+                                    Data.Data.$fData[]3
+                                    (Data.Typeable.Internal.mkTrApp
+                                       @ *
+                                       @ *
+                                       @ []
+                                       @ GHC.Types.Char
+                                       Data.Data.$fData[]3
+                                       Data.Data.$fDataChar7))))))
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ []
+                        @ [GHC.Types.Char]
+                        Data.Data.$fData[]3
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ GHC.Types.Char
+                           Data.Data.$fData[]3
+                           Data.Data.$fDataChar7)))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <([Language.Fortran.ProgUnit
+                                                                         LanguageFortranTools.Anno],
+                                                                      [GHC.Base.String])>_N)
+                  (\ @ c :: * -> *
+                     (k :: forall d b1. Data.Data.Data d => c (d -> b1) -> d -> c b1)
+                     (z :: forall g. g -> c g)
+                     (ds :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   case ds of wild { (,) a1 a2 ->
+                   k @ [GHC.Base.String]
+                     @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                        [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     (k @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                        @ ([GHC.Base.String]
+                           -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                               [GHC.Base.String]))
+                        SubroutineTable.$s$fData(,)1
+                        (z @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                              -> [GHC.Base.String]
+                              -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                                  [GHC.Base.String]))
+                           (GHC.Tuple.(,)
+                              @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                              @ [GHC.Base.String]))
+                        a1)
+                     a2 })
+                  (\ @ c :: * -> *
+                     (k :: forall b1 r. Data.Data.Data b1 => c (b1 -> r) -> c r)
+                     (z :: forall r. r -> c r)
+                     (ds :: Data.Data.Constr) ->
+                   k @ [GHC.Base.String]
+                     @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                        [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     (k @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                        @ ([GHC.Base.String]
+                           -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                               [GHC.Base.String]))
+                        SubroutineTable.$s$fData(,)1
+                        (z @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                              -> [GHC.Base.String]
+                              -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                                  [GHC.Base.String]))
+                           (GHC.Tuple.(,)
+                              @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                              @ [GHC.Base.String]))))
+                  (\ (ds :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   case ds of wild { (,) ds1 ds2 -> Data.Data.$c(,) })
+                  (\ (ds :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   Data.Data.$t(,))
+                  (\ @ t :: * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d. Data.Data.Data d => c (t d)) ->
+                   GHC.Base.Nothing
+                     @ (c ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                           [GHC.Base.String])))
+                  (Data.Data.$fData(,)_$cdataCast2
+                     @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                     @ [GHC.Base.String]
+                     SubroutineTable.$s$fData(,)1
+                     SubroutineTable.$s$fData(,)_$s$fData[])
+                  (\ (ds :: forall b1. Data.Data.Data b1 => b1 -> b1)
+                     (x0 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   case x0 of wild { (,) a1 a2 ->
+                   (ds
+                      @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                      SubroutineTable.$s$fData(,)1
+                      a1,
+                    ds @ [GHC.Base.String] SubroutineTable.$s$fData(,)_$s$fData[] a2)
+                     `cast`
+                   (Sym (Data.Functor.Identity.N:Identity[0]
+                             <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                               [GHC.Base.String])>_R)) })
+                    `cast`
+                  (<forall b1. Data.Data.Data b1 => b1 -> b1>_R
+                   ->_R <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                          [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                              [GHC.Base.String])>_R)
+                  (\ @ r
+                     @ r'
+                     (ds :: r -> r' -> r)
+                     (ds1 :: r)
+                     (ds2 :: forall d. Data.Data.Data d => d -> r')
+                     (eta :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                              [GHC.Base.String])) ->
+                   case eta of wild { (,) a1 a2 ->
+                   (ds
+                      (ds
+                         ds1
+                         (ds2
+                            @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                            SubroutineTable.$s$fData(,)1
+                            a1))
+                      (ds2
+                         @ [GHC.Base.String]
+                         SubroutineTable.$s$fData(,)_$s$fData[]
+                         a2))
+                     `cast`
+                   (Sym (Data.Functor.Const.N:Const[0]
+                             <*>_N
+                             <r>_R
+                             <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                               [GHC.Base.String])>_P)) })
+                    `cast`
+                  (forall (r :: <*>_N) (r' :: <*>_N).
+                   <r -> r' -> r>_R
+                   ->_R <r>_R
+                   ->_R <forall d. Data.Data.Data d => d -> r'>_R
+                   ->_R <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                          [GHC.Base.String])>_R
+                   ->_R Data.Functor.Const.N:Const[0]
+                            <*>_N
+                            <r>_R
+                            <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                              [GHC.Base.String])>_P)
+                  (\ @ r
+                     @ r'
+                     (ds :: r' -> r -> r)
+                     (ds1 :: r)
+                     (ds2 :: forall d. Data.Data.Data d => d -> r')
+                     (x0 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   case x0 of wild { (,) a1 a2 ->
+                   ds
+                     (ds2
+                        @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                        SubroutineTable.$s$fData(,)1
+                        a1)
+                     (ds
+                        (ds2 @ [GHC.Base.String] SubroutineTable.$s$fData(,)_$s$fData[] a2)
+                        ds1) })
+                  (\ @ u
+                     (ds :: forall d. Data.Data.Data d => d -> u)
+                     (x0 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])) ->
+                   case x0 of wild { (,) a1 a2 ->
+                   GHC.Types.:
+                     @ u
+                     (ds
+                        @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                        SubroutineTable.$s$fData(,)1
+                        a1)
+                     (GHC.Types.:
+                        @ u
+                        (ds @ [GHC.Base.String] SubroutineTable.$s$fData(,)_$s$fData[] a2)
+                        (GHC.Types.[] @ u)) })
+                  (\ @ u
+                     (ds :: GHC.Types.Int)
+                     (ds1 :: forall d. Data.Data.Data d => d -> u)
+                     (x :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                            [GHC.Base.String])) ->
+                   case x of wild { (,) a1 a2 ->
+                   case ds of wild1 { GHC.Types.I# x1 ->
+                   case x1 of wild2 {
+                     DEFAULT -> Data.Maybe.fromJust1 @ u
+                     0#
+                     -> ds1
+                          @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                          SubroutineTable.$s$fData(,)1
+                          a1
+                     1#
+                     -> ds1
+                          @ [GHC.Base.String]
+                          SubroutineTable.$s$fData(,)_$s$fData[]
+                          a2 } } })
+                  (Data.Data.$fData(,)_$cgmapM
+                     @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                     @ [GHC.Base.String]
+                     SubroutineTable.$s$fData(,)1
+                     SubroutineTable.$s$fData(,)_$s$fData[])
+                  (Data.Data.$fData(,)_$cgmapMp
+                     @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                     @ [GHC.Base.String]
+                     SubroutineTable.$s$fData(,)1
+                     SubroutineTable.$s$fData(,)_$s$fData[])
+                  (Data.Data.$fData(,)_$cgmapMo
+                     @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                     @ [GHC.Base.String]
+                     SubroutineTable.$s$fData(,)1
+                     SubroutineTable.$s$fData(,)_$s$fData[]) -}
+def2857fb609daa07da5f3bc66960e85
+  $s$fData(,)1 ::
+    Data.Data.Data (Language.Fortran.Program LanguageFortranTools.Anno)
+  {- Unfolding: (Data.Data.$fData[]
+                   @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                   SubroutineTable.$s$fData(,)_$s$fDataProgUnit) -}
+aaa10db879c6252f46d2c4ec0e91d87d
+  $s$fData(,)3 ::
+    (forall b1. Data.Data.Data b1 => b1 -> b1)
+    -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+        [GHC.Base.String])
+    -> Data.Functor.Identity.Identity
+         ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+          [GHC.Base.String])
+  {- Arity: 2, Strictness: <L,C(C1(U))><S,1*U(U,U)>m,
+     Unfolding: InlineRule (2, True, False)
+                (\ (ds :: forall b1. Data.Data.Data b1 => b1 -> b1)
+                   (x0 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                           [GHC.Base.String])) ->
+                 case x0 of wild { (,) a1 a2 ->
+                 (ds
+                    @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                    SubroutineTable.$s$fData(,)1
+                    a1,
+                  ds @ [GHC.Base.String] SubroutineTable.$s$fData(,)_$s$fData[] a2)
+                   `cast`
+                 (Sym (Data.Functor.Identity.N:Identity[0]
+                           <([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String])>_R)) }) -}
+09cfec322efae1571809296d8a27c4b4
+  $s$fData(,)_$cgmapM ::
+    GHC.Base.Monad m =>
+    (forall d. Data.Data.Data d => d -> m d)
+    -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+        [GHC.Base.String])
+    -> m ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+          [GHC.Base.String])
+  {- Arity: 3,
+     Strictness: <S(LC(C(S))LLL),U(A,C(C1(U)),A,C(U),A)><L,C(C1(U))><S,1*U(U,U)>,
+     Inline: [0],
+     Unfolding: InlineRule (3, True, False)
+                (\ @ m :: * -> *
+                   (w2 :: GHC.Base.Monad m)
+                   (w3 :: forall d. Data.Data.Data d => d -> m d)
+                   (w4 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                           [GHC.Base.String])) ->
+                 case w4 of ww { (,) ww1 ww2 ->
+                 Data.Data.$w$cgmapM
+                   @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                   @ [GHC.Base.String]
+                   SubroutineTable.$s$fData(,)1
+                   SubroutineTable.$s$fData(,)_$s$fData[]
+                   @ m
+                   w2
+                   w3
+                   ww1
+                   ww2 }) -}
+053c9450bb36f86ed6d02ec8c09004b3
+  $s$fData(,)_$cgmapQ ::
+    (forall d. Data.Data.Data d => d -> u)
+    -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+        [GHC.Base.String])
+    -> [u]
+  {- Arity: 2, Strictness: <L,C(C1(U))><S,1*U(U,U)>m2,
+     Unfolding: InlineRule (2, True, False)
+                (\ @ u
+                   (ds :: forall d. Data.Data.Data d => d -> u)
+                   (x0 :: ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                           [GHC.Base.String])) ->
+                 case x0 of wild { (,) a1 a2 ->
+                 GHC.Types.:
+                   @ u
+                   (ds
+                      @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                      SubroutineTable.$s$fData(,)1
+                      a1)
+                   (GHC.Types.:
+                      @ u
+                      (ds @ [GHC.Base.String] SubroutineTable.$s$fData(,)_$s$fData[] a2)
+                      (GHC.Types.[] @ u)) }) -}
+91d7b3f3b6e58e04ac067bfc8e50bd77
+  $s$fData(,)_$cgunfold ::
+    (forall b1 r. Data.Data.Data b1 => c (b1 -> r) -> c r)
+    -> (forall r. r -> c r)
+    -> Data.Data.Constr
+    -> c ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+          [GHC.Base.String])
+  {- Arity: 3, Strictness: <C(C(S)),C(C1(U))><L,1*C1(U)><L,A>,
+     Unfolding: InlineRule (3, True, False)
+                (\ @ c :: * -> *
+                   (k :: forall b1 r. Data.Data.Data b1 => c (b1 -> r) -> c r)
+                   (z :: forall r. r -> c r)
+                   (ds :: Data.Data.Constr) ->
+                 k @ [GHC.Base.String]
+                   @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                      [GHC.Base.String])
+                   SubroutineTable.$s$fData(,)_$s$fData[]
+                   (k @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                      @ ([GHC.Base.String]
+                         -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String]))
+                      SubroutineTable.$s$fData(,)1
+                      (z @ ([Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                            -> [GHC.Base.String]
+                            -> ([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                                [GHC.Base.String]))
+                         (GHC.Tuple.(,)
+                            @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                            @ [GHC.Base.String])))) -}
+38814ddedf190f54077d24c5d9276612
+  $s$fData(,)_$s$fDataMap ::
+    Data.Data.Data
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ (Data.Map.Internal.Map [GHC.Types.Char])
+                     @ [GHC.Base.String]
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ (* -> *)
+                        @ Data.Map.Internal.Map
+                        @ [GHC.Types.Char]
+                        Data.Map.Internal.$fDataMap17
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ GHC.Types.Char
+                           Data.Data.$fData[]3
+                           Data.Data.$fDataChar7))
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ []
+                        @ [GHC.Types.Char]
+                        Data.Data.$fData[]3
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ GHC.Types.Char
+                           Data.Data.$fData[]3
+                           Data.Data.$fDataChar7)))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Data.Map.Internal.Map
+                                                                       [GHC.Types.Char]
+                                                                       [GHC.Base.String]>_N)
+                  (Data.Map.Internal.$fDataMap_$cgfoldl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgunfold
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (\ (ds :: Data.Map.Internal.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                   Data.Map.Internal.fromListConstr)
+                  (\ (ds :: Data.Map.Internal.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                   Data.Map.Internal.mapDataType)
+                  (\ @ t :: * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d. Data.Data.Data d => c (t d)) ->
+                   GHC.Base.Nothing
+                     @ (c (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])))
+                  (Data.Map.Internal.$fDataMap_$cdataCast2
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap6
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]>_R)
+                  (Data.Map.Internal.$fDataMap_$cgmapQl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQr
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQ
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQi
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapM
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapMp
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapMo
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     SubroutineTable.$s$fData(,)_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1) -}
+c710e16ab7b7ffe25a8ee5e6878a6be0
+  $s$fData(,)_$s$fDataProgUnit ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ProgUnit
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.ProgUnit
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataProgUnit6
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.ProgUnit
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataProgUnit_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.ProgUnit
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case ds of wild {
+                     Language.Fortran.Main ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cMain
+                     Language.Fortran.Sub ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cSub
+                     Language.Fortran.Function ds1 ds2 ds3 ds4 ds5 ds6 ds7
+                     -> Language.Fortran.$cFunction
+                     Language.Fortran.Module ds1 ds2 ds3 ds4 ds5 ds6 ds7
+                     -> Language.Fortran.$cModule
+                     Language.Fortran.BlockData ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cBlockData
+                     Language.Fortran.PSeq ds1 ds2 ds3 ds4 -> Language.Fortran.$cPSeq
+                     Language.Fortran.Prog ds1 ds2 ds3 -> Language.Fortran.$cProg
+                     Language.Fortran.NullProg ds1 ds2 -> Language.Fortran.$cNullProg
+                     Language.Fortran.IncludeProg ds1 ds2 ds3 ds4
+                     -> Language.Fortran.$cIncludeProg })
+                  (\ (ds :: Language.Fortran.ProgUnit
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tProgUnit)
+                  (Language.Fortran.$fDataProgUnit_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.ProgUnit
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (Language.Fortran.$fDataProgUnit1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.ProgUnit
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.ProgUnit
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap) -}
+afb7d994bc76ba55533f3236c57ae4c0
+  $s$fData(,)_$s$fData[] :: Data.Data.Data [[GHC.Types.Char]]
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ [[GHC.Types.Char]]
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ []
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]3
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ []
+                        @ GHC.Types.Char
+                        Data.Data.$fData[]3
+                        Data.Data.$fDataChar7))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <[[GHC.Types.Char]]>_N)
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgunfold
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (\ (ds :: [[GHC.Types.Char]]) ->
+                   case ds of wild {
+                     [] -> Data.Data.nilConstr : ds1 ds2 -> Data.Data.consConstr })
+                  (\ (ds :: [[GHC.Types.Char]]) -> Data.Data.listDataType)
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing @ (c [[GHC.Types.Char]]))
+                  (Data.Data.$fData[]_$cgmapT
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapM
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[]) -}
+9b04acf257152d88b3bbe1dc924df0fb
+  $s$fDataArg ::
+    Data.Data.Data
+      (Language.Fortran.Arg
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Arg
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.Arg
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataArg15
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.Arg
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataArg_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.Arg
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case ds of wild { Language.Fortran.Arg ds1 ds2 ds3 ->
+                   Language.Fortran.$cArg })
+                  (\ (ds :: Language.Fortran.Arg
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tArg)
+                  (Language.Fortran.$fDataArg_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.Arg
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (Language.Fortran.$fDataArg6
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.Arg
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.Arg
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataArg_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArg_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap) -}
+50c078566496b0e3892a48d7c197d2ee
+  $s$fDataArgList ::
+    Data.Data.Data
+      (Language.Fortran.ArgList
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ArgList
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.ArgList
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataArgList9
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.ArgList
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataArgList_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case ds of wild { Language.Fortran.ArgList ds1 ds2 ->
+                   Language.Fortran.$cArgList })
+                  (\ (ds :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tArgList)
+                  (Language.Fortran.$fDataArgList_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.ArgList
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (\ (ds :: forall b. Data.Data.Data b => b -> b)
+                     (x0 :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case x0 of wild { Language.Fortran.ArgList a1 a2 ->
+                   (Language.Fortran.ArgList
+                      @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                      (ds
+                         @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                         SubroutineTable.$s$fData(,)_$s$fDataMap
+                         a1)
+                      (ds
+                         @ (Language.Fortran.Expr
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                         (Language.Fortran.$fDataExpr
+                            @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                            SubroutineTable.$s$fData(,)_$s$fDataMap)
+                         a2))
+                     `cast`
+                   (Sym (Data.Functor.Identity.N:Identity[0]
+                             <Language.Fortran.ArgList
+                                (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)) })
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.ArgList
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.ArgList
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataArgList_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fData(,)_$s$fDataMap) -}
+37b7acc934accd4bcb6b658d77dc5bb1
+  $s$fDataMap_$cdataCast2 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]))
+  {- Arity: 1, Strictness: <L,1*U>, Inline: [0],
+     Unfolding: InlineRule (1, True, False)
+                (\ @ t :: * -> * -> *
+                   @ c :: * -> *
+                   (w3 :: Data.Typeable.Internal.Typeable t) ->
+                 Data.Map.Internal.$w$cdataCast2
+                   @ [GHC.Types.Char]
+                   @ [GHC.Base.String]
+                   Data.Data.$fData[]_$s$fData[]
+                   SubroutineTable.$s$fData(,)_$s$fData[]
+                   @ t
+                   @ c
+                   w3) -}
+823cda1495c5bbde88dc374df734833c
+  $s$fDataProgUnit5 ::
+    Data.Typeable.Internal.TypeRep
+      (Language.Fortran.ProgUnit
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Unfolding: InlineRule (0, True, False)
+                (Data.Typeable.Internal.mkTrApp
+                   @ *
+                   @ *
+                   @ Language.Fortran.ProgUnit
+                   @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                   Language.Fortran.$fDataProgUnit6
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ (Data.Map.Internal.Map [GHC.Types.Char])
+                      @ [GHC.Base.String]
+                      (Data.Typeable.Internal.mkTrApp
+                         @ *
+                         @ (* -> *)
+                         @ Data.Map.Internal.Map
+                         @ [GHC.Types.Char]
+                         Data.Map.Internal.$fDataMap17
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ *
+                            @ []
+                            @ GHC.Types.Char
+                            Data.Data.$fData[]3
+                            Data.Data.$fDataChar7))
+                      (Data.Typeable.Internal.mkTrApp
+                         @ *
+                         @ *
+                         @ []
+                         @ [GHC.Types.Char]
+                         Data.Data.$fData[]3
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ *
+                            @ []
+                            @ GHC.Types.Char
+                            Data.Data.$fData[]3
+                            Data.Data.$fDataChar7)))) -}
+6b3ac73785943af02c8799c34634cb25
+  $s$fData[]7 :: Data.Typeable.Internal.TypeRep [[GHC.Types.Char]]
+  {- Unfolding: InlineRule (0, True, False)
+                (Data.Typeable.Internal.mkTrApp
+                   @ *
+                   @ *
+                   @ []
+                   @ [GHC.Types.Char]
+                   Data.Data.$fData[]3
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ []
+                      @ GHC.Types.Char
+                      Data.Data.$fData[]3
+                      Data.Data.$fDataChar7)) -}
+4d7166c5851d619893d82e5ed9a69b31
+  $s$fEqMap ::
+    GHC.Classes.Eq
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Internal.$fEqMap_$c==
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fEq[]_$s$fEq[]1
+                     GHC.Classes.$fEq[]_$s$fEq[]2)
+                  SubroutineTable.$s$fEqMap_$s$fEqMap_$c/= -}
+ab12a9962ba4fbbdd4e35fe3e0defa5b
+  $s$fEqMap_$s$fEqMap_$c/= ::
+    Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>, Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                   (y :: Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 case Data.Map.Internal.$fEqMap_$c==
+                        @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        GHC.Classes.$fEq[]_$s$fEq[]2
+                        x
+                        y of wild {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True -> GHC.Types.False }) -}
+214d3d0945b00744c8e7184370c5d041
+  $s$fEqSubName ::
+    GHC.Classes.Eq
+      (Language.Fortran.SubName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.SubName
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqBaseType_$c==1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fEqMap)
+                  SubroutineTable.$s$fEqSubName_$s$fEqSubName_$c/= -}
+eb0317474b9245af6a4caa8e4e462959
+  $s$fEqSubName_$s$fEqSubName_$c/= ::
+    Language.Fortran.SubName
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.SubName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <S,1*U><S,1*U>, Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Language.Fortran.SubName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                   (y :: Language.Fortran.SubName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                 case x of wild {
+                   Language.Fortran.SubName a1 a2
+                   -> case y of wild1 {
+                        Language.Fortran.SubName b1 b2
+                        -> case Data.Map.Internal.$fEqMap_$c==
+                                  @ [GHC.Types.Char]
+                                  @ [GHC.Base.String]
+                                  GHC.Classes.$fEq[]_$s$fEq[]1
+                                  GHC.Classes.$fEq[]_$s$fEq[]2
+                                  a1
+                                  b1 of wild2 {
+                             GHC.Types.False -> GHC.Types.True
+                             GHC.Types.True
+                             -> case GHC.Base.eqString a2 b2 of wild4 {
+                                  GHC.Types.False -> GHC.Types.True
+                                  GHC.Types.True -> GHC.Types.False } }
+                        Language.Fortran.NullSubName ipv -> GHC.Types.True }
+                   Language.Fortran.NullSubName a1
+                   -> case y of wild1 {
+                        Language.Fortran.SubName ipv ipv1 -> GHC.Types.True
+                        Language.Fortran.NullSubName b1
+                        -> case Data.Map.Internal.$fEqMap_$c==
+                                  @ [GHC.Types.Char]
+                                  @ [GHC.Base.String]
+                                  GHC.Classes.$fEq[]_$s$fEq[]1
+                                  GHC.Classes.$fEq[]_$s$fEq[]2
+                                  a1
+                                  b1 of wild2 {
+                             GHC.Types.False -> GHC.Types.True
+                             GHC.Types.True -> GHC.Types.False } } }) -}
+307b398f52b56c80435115753399dc8e
+  $s$fEqVarName ::
+    GHC.Classes.Eq
+      (Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqVarName_$c==
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fEqMap)
+                  SubroutineTable.$s$fEqVarName_$s$fEqVarName_$c/= -}
+099a6bce5f34ae7852311348e39145f5
+  $s$fEqVarName_$s$fEqVarName_$c/= ::
+    Language.Fortran.VarName
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <S,1*U(U,1*U)><S,1*U(U,1*U)>,
+     Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Language.Fortran.VarName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                   (y :: Language.Fortran.VarName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                 case x of wild { Language.Fortran.VarName a1 a2 ->
+                 case y of wild1 { Language.Fortran.VarName b1 b2 ->
+                 case Data.Map.Internal.$fEqMap_$c==
+                        @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        GHC.Classes.$fEq[]_$s$fEq[]2
+                        a1
+                        b1 of wild2 {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True
+                   -> case GHC.Base.eqString a2 b2 of wild3 {
+                        GHC.Types.False -> GHC.Types.True
+                        GHC.Types.True -> GHC.Types.False } } } }) -}
+0e7f06feccccca3f0995417ba31f9b77
+  $s$fOrdMap ::
+    GHC.Classes.Ord
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  SubroutineTable.$s$fEqMap
+                  (Data.Map.Internal.$fOrdMap_$ccompare
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$c<
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$c<=
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$c>
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$c>=
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$cmax
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Internal.$fOrdMap_$cmin
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2) -}
+d505bc67bf0af8814294c83e4789ee5e
+  $s$fOrdVarName ::
+    GHC.Classes.Ord
+      (Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  SubroutineTable.$s$fEqVarName
+                  (Language.Fortran.$fOrdVarName_$ccompare
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap)
+                  (Language.Fortran.$fOrdVarName_$c<
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap)
+                  (Language.Fortran.$fOrdVarName_$c<=
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap)
+                  (\ (a :: Language.Fortran.VarName
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                     (b :: Language.Fortran.VarName
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$fOrdVarName_$c<
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap
+                     b
+                     a)
+                  (Language.Fortran.$fOrdVarName_$c>=
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap)
+                  (Language.Fortran.$fOrdVarName_$cmax
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap)
+                  (Language.Fortran.$fOrdVarName_$cmin
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     SubroutineTable.$s$fOrdMap) -}
+65d62dbece95f5075a117027ecbf6282
+  $s$fOrdVarName_$cmax ::
+    Language.Fortran.VarName
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+  {- Arity: 2, Strictness: <S(SL),1*U(U,U)><S(SL),1*U(U,U)>m,
+     Inline: [0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w362 :: Language.Fortran.VarName
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                   (w363 :: Language.Fortran.VarName
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                 case w362 of ww { Language.Fortran.VarName ww1 ww2 ->
+                 case w363 of ww3 { Language.Fortran.VarName ww4 ww5 ->
+                 case GHC.Classes.$fOrd[]_$ccompare
+                        @ ([GHC.Types.Char], [GHC.Base.String])
+                        (GHC.Classes.$fOrd(,)
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           GHC.Classes.$fOrd[]_$s$fOrd[]1
+                           GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                        (Data.Map.Internal.$fDataMap_go
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                           ww4)
+                        (Data.Map.Internal.$fDataMap_go
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                           ww1) of wild {
+                   GHC.Types.LT
+                   -> Language.Fortran.VarName
+                        @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                        ww1
+                        ww2
+                   GHC.Types.EQ
+                   -> case GHC.Classes.$fOrd[]_$s$ccompare1 ww5 ww2 of wild1 {
+                        DEFAULT
+                        -> Language.Fortran.VarName
+                             @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                             ww4
+                             ww5
+                        GHC.Types.LT
+                        -> Language.Fortran.VarName
+                             @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                             ww1
+                             ww2 }
+                   GHC.Types.GT
+                   -> Language.Fortran.VarName
+                        @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                        ww4
+                        ww5 } } }) -}
+0178f6ae3b167033c784d62189a65fba
+  $s$fOrdVarName_$cmin ::
+    Language.Fortran.VarName
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+  {- Arity: 2, Strictness: <S(SL),1*U(U,U)><S(SL),1*U(U,U)>m,
+     Inline: [0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w362 :: Language.Fortran.VarName
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                   (w363 :: Language.Fortran.VarName
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                 case w362 of ww { Language.Fortran.VarName ww1 ww2 ->
+                 case w363 of ww3 { Language.Fortran.VarName ww4 ww5 ->
+                 case GHC.Classes.$fOrd[]_$ccompare
+                        @ ([GHC.Types.Char], [GHC.Base.String])
+                        (GHC.Classes.$fOrd(,)
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           GHC.Classes.$fOrd[]_$s$fOrd[]1
+                           GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                        (Data.Map.Internal.$fDataMap_go
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                           ww4)
+                        (Data.Map.Internal.$fDataMap_go
+                           @ [GHC.Types.Char]
+                           @ [GHC.Base.String]
+                           (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                           ww1) of wild {
+                   GHC.Types.LT
+                   -> Language.Fortran.VarName
+                        @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                        ww4
+                        ww5
+                   GHC.Types.EQ
+                   -> case GHC.Classes.$fOrd[]_$s$ccompare1 ww5 ww2 of wild1 {
+                        DEFAULT
+                        -> Language.Fortran.VarName
+                             @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                             ww1
+                             ww2
+                        GHC.Types.LT
+                        -> Language.Fortran.VarName
+                             @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                             ww4
+                             ww5 }
+                   GHC.Types.GT
+                   -> Language.Fortran.VarName
+                        @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                        ww1
+                        ww2 } } }) -}
+28c7cd813d567e4bf357ea659d14aa88
+  $s$fShowMap ::
+    GHC.Show.Show
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Internal.$fShowMap_$cshowsPrec
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Show.$fShow[]_$s$fShow[]1
+                     GHC.Show.$fShow[]_$s$fShow[]2)
+                  (\ (x :: Data.Map.Internal.Map
+                             [GHC.Types.Char] [GHC.Base.String]) ->
+                   Data.Map.Internal.$fShowMap_$cshowsPrec
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Show.$fShow[]_$s$fShow[]1
+                     GHC.Show.$fShow[]_$s$fShow[]2
+                     Data.Map.Internal.$fDataMap3
+                     x
+                     (GHC.Types.[] @ GHC.Types.Char))
+                  (\ (ls :: [Data.Map.Internal.Map
+                               [GHC.Types.Char] [GHC.Base.String]])
+                     (s :: GHC.Base.String) ->
+                   GHC.Show.showList__
+                     @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                     (Data.Map.Internal.$fShowMap_$cshowsPrec
+                        @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        GHC.Show.$fShow[]_$s$fShow[]1
+                        GHC.Show.$fShow[]_$s$fShow[]2
+                        Data.Map.Internal.$fDataMap3)
+                     ls
+                     s) -}
+7d5fe6b60ed200cb9ca1d819f177c595
+  $s$fShowMap_$cshow ::
+    Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <L,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (x :: Data.Map.Internal.Map
+                           [GHC.Types.Char] [GHC.Base.String]) ->
+                 Data.Map.Internal.$fShowMap_$cshowsPrec
+                   @ [GHC.Types.Char]
+                   @ [GHC.Base.String]
+                   GHC.Show.$fShow[]_$s$fShow[]1
+                   GHC.Show.$fShow[]_$s$fShow[]2
+                   Data.Map.Internal.$fDataMap3
+                   x
+                   (GHC.Types.[] @ GHC.Types.Char)) -}
+a67beda7a89e1f87ce2ccd1cfb99d7ca
+  $s$fShowMap_$cshowList ::
+    [Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]]
+    -> GHC.Show.ShowS
+  {- Arity: 2, Strictness: <S,1*U><L,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (ls :: [Data.Map.Internal.Map
+                             [GHC.Types.Char] [GHC.Base.String]])
+                   (s :: GHC.Base.String) ->
+                 GHC.Show.showList__
+                   @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                   (Data.Map.Internal.$fShowMap_$cshowsPrec
+                      @ [GHC.Types.Char]
+                      @ [GHC.Base.String]
+                      GHC.Show.$fShow[]_$s$fShow[]1
+                      GHC.Show.$fShow[]_$s$fShow[]2
+                      Data.Map.Internal.$fDataMap3)
+                   ls
+                   s) -}
+8f24483fcec22974cf335a3c5ec8e19a
+  $s$fShowMap_$cshowsPrec ::
+    GHC.Types.Int
+    -> Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Show.ShowS
+  {- Arity: 2, Strictness: <S(S),1*U(U)><L,1*U>, Inline: [0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w2 :: GHC.Types.Int)
+                   (w3 :: Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 case w2 of ww { GHC.Types.I# ww1 ->
+                 Data.Map.Internal.$w$cshowsPrec
+                   @ [GHC.Types.Char]
+                   @ [GHC.Base.String]
+                   GHC.Show.$fShow[]_$s$fShow[]1
+                   GHC.Show.$fShow[]_$s$fShow[]2
+                   ww1
+                   w3 }) -}
+25dbe73eba0b87409a8987eaf8dce313
+  $sfindWithDefault1 ::
+    a
+    -> SubroutineTable.SubNameStr
+    -> Data.Map.Internal.Map SubroutineTable.SubNameStr a
+    -> a
+  {- Arity: 3, HasNoCafRefs, Strictness: <L,1*U><S,1*U><S,1*U> -}
+5845327161a6fed6bea3560f9c62afb8
+  $sfindWithDefault3 ::
+    a
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+    -> a
+  {- Arity: 3, Strictness: <L,1*U><S,1*U(U,U)><S,1*U>, Inline: [0],
+     Unfolding: InlineRule (3, True, False)
+                (\ @ a
+                   (w :: a)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Data.Map.Internal.Map
+                            (Language.Fortran.VarName LanguageFortranTools.Anno) a) ->
+                 case w1 of ww { Language.Fortran.VarName ww1 ww2 ->
+                 SubroutineTable.$wpoly_go13 @ a w ww1 ww2 w2 }) -}
+d81ff30f44f8aaffabbe24703760f8c1
+  $sfromList ::
+    [(GHC.Base.String, a)] -> Data.Map.Internal.Map GHC.Base.String a
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ @ a (ds :: [(GHC.Base.String, a)]) ->
+                 case ds of wild {
+                   [] -> Data.Map.Internal.Tip @ GHC.Base.String @ a
+                   : ds1 ds2
+                   -> case ds1 of wild1 { (,) kx x ->
+                      case ds2 of wild2 {
+                        []
+                        -> case kx of dt { DEFAULT ->
+                           Data.Map.Internal.Bin
+                             @ GHC.Base.String
+                             @ a
+                             1#
+                             dt
+                             x
+                             (Data.Map.Internal.Tip @ GHC.Base.String @ a)
+                             (Data.Map.Internal.Tip @ GHC.Base.String @ a) }
+                        : ipv ipv1
+                        -> case ipv of wild3 { (,) ky ds3 ->
+                           case GHC.Classes.$fOrd[]_$s$ccompare1 kx ky of wild4 {
+                             DEFAULT
+                             -> case kx of dt { DEFAULT ->
+                                SubroutineTable.$sfromList_$spoly_go14
+                                  @ a
+                                  ky
+                                  ds3
+                                  ipv1
+                                  (Data.Map.Internal.Bin
+                                     @ GHC.Base.String
+                                     @ a
+                                     1#
+                                     dt
+                                     x
+                                     (Data.Map.Internal.Tip @ GHC.Base.String @ a)
+                                     (Data.Map.Internal.Tip @ GHC.Base.String @ a)) }
+                             GHC.Types.LT
+                             -> case kx of dt { DEFAULT ->
+                                SubroutineTable.$sfromList_$s$wpoly_go13
+                                  @ a
+                                  ky
+                                  ds3
+                                  ipv1
+                                  (Data.Map.Internal.Bin
+                                     @ GHC.Base.String
+                                     @ a
+                                     1#
+                                     dt
+                                     x
+                                     (Data.Map.Internal.Tip @ GHC.Base.String @ a)
+                                     (Data.Map.Internal.Tip @ GHC.Base.String @ a))
+                                  1# } } } } } }) -}
+31ae136433185e6d4f1d804e879c3103
+  $sfromList1 ::
+    [(Language.Fortran.VarName LanguageFortranTools.Anno, a)]
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ @ a
+                   (ds :: [(Language.Fortran.VarName LanguageFortranTools.Anno,
+                            a)]) ->
+                 case ds of wild {
+                   []
+                   -> Data.Map.Internal.Tip
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        @ a
+                   : ds1 ds2
+                   -> case ds1 of wild1 { (,) kx x ->
+                      case ds2 of wild2 {
+                        []
+                        -> case kx of dt { Language.Fortran.VarName ipv ipv1 ->
+                           Data.Map.Internal.Bin
+                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                             @ a
+                             1#
+                             dt
+                             x
+                             (Data.Map.Internal.Tip
+                                @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                @ a)
+                             (Data.Map.Internal.Tip
+                                @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                @ a) }
+                        : ipv ipv1
+                        -> case ipv of wild3 { (,) ky ds3 ->
+                           case kx of ww { Language.Fortran.VarName ww1 ww2 ->
+                           case ky of ww3 { Language.Fortran.VarName ww4 ww5 ->
+                           case GHC.Classes.$fOrd[]_$ccompare
+                                  @ ([GHC.Types.Char], [GHC.Base.String])
+                                  SubroutineTable.$sfromList2
+                                  (Data.Map.Internal.$fDataMap_go
+                                     @ [GHC.Types.Char]
+                                     @ [GHC.Base.String]
+                                     (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                                     ww1)
+                                  (Data.Map.Internal.$fDataMap_go
+                                     @ [GHC.Types.Char]
+                                     @ [GHC.Base.String]
+                                     (GHC.Types.[] @ ([GHC.Types.Char], [GHC.Base.String]))
+                                     ww4) of wild4 {
+                             GHC.Types.LT
+                             -> SubroutineTable.$sfromList_$s$wpoly_go1
+                                  @ a
+                                  ww4
+                                  ww5
+                                  ds3
+                                  ipv1
+                                  (Data.Map.Internal.Bin
+                                     @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                     @ a
+                                     1#
+                                     ww
+                                     x
+                                     (Data.Map.Internal.Tip
+                                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                        @ a)
+                                     (Data.Map.Internal.Tip
+                                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                        @ a))
+                                  1#
+                             GHC.Types.EQ
+                             -> case GHC.Classes.$fOrd[]_$s$ccompare1 ww2 ww5 of wild5 {
+                                  DEFAULT
+                                  -> SubroutineTable.$sfromList_$spoly_go1
+                                       @ a
+                                       ww3
+                                       ds3
+                                       ipv1
+                                       (Data.Map.Internal.Bin
+                                          @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                          @ a
+                                          1#
+                                          ww
+                                          x
+                                          (Data.Map.Internal.Tip
+                                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                             @ a)
+                                          (Data.Map.Internal.Tip
+                                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                             @ a))
+                                  GHC.Types.LT
+                                  -> SubroutineTable.$sfromList_$s$wpoly_go1
+                                       @ a
+                                       ww4
+                                       ww5
+                                       ds3
+                                       ipv1
+                                       (Data.Map.Internal.Bin
+                                          @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                          @ a
+                                          1#
+                                          ww
+                                          x
+                                          (Data.Map.Internal.Tip
+                                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                             @ a)
+                                          (Data.Map.Internal.Tip
+                                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                             @ a))
+                                       1# }
+                             GHC.Types.GT
+                             -> SubroutineTable.$sfromList_$spoly_go1
+                                  @ a
+                                  ww3
+                                  ds3
+                                  ipv1
+                                  (Data.Map.Internal.Bin
+                                     @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                     @ a
+                                     1#
+                                     ww
+                                     x
+                                     (Data.Map.Internal.Tip
+                                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                        @ a)
+                                     (Data.Map.Internal.Tip
+                                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                        @ a)) } } } } } } }) -}
+abe38b823358b6443b43d7ae073830fd
+  $sfromList2 ::
+    GHC.Classes.Ord ([GHC.Types.Char], [GHC.Base.String])
+  {- Unfolding: (GHC.Classes.$fOrd(,)
+                   @ [GHC.Types.Char]
+                   @ [GHC.Base.String]
+                   GHC.Classes.$fOrd[]_$s$fOrd[]1
+                   GHC.Classes.$fOrd[]_$s$fOrd[]2) -}
+13b5d849ea8b5b2fd9805273d9cfb904
+  $sfromList_$s$wpoly_go1 ::
+    Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]]
+    -> [GHC.Types.Char]
+    -> a
+    -> [(Language.Fortran.VarName
+           (Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]]),
+         a)]
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName
+            (Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]]))
+         a
+    -> GHC.Prim.Int#
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+  {- Arity: 6, Strictness: <L,U><L,U><L,U><S,1*U><S,1*U><L,U> -}
+2783c88148c7603ea5f38ebc336d06a8
+  $sfromList_$s$wpoly_go13 ::
+    [GHC.Types.Char]
+    -> a
+    -> [([GHC.Types.Char], a)]
+    -> Data.Map.Internal.Map [GHC.Types.Char] a
+    -> GHC.Prim.Int#
+    -> Data.Map.Internal.Map GHC.Base.String a
+  {- Arity: 5, Strictness: <S,U><L,U><S,1*U><S,1*U><L,U> -}
+7aa4eb0bcfa33ad13110932abe5528de
+  $sfromList_$spoly_go1 ::
+    Language.Fortran.VarName
+      (Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]])
+    -> a
+    -> [(Language.Fortran.VarName
+           (Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]]),
+         a)]
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName
+            (Data.Map.Internal.Map [GHC.Types.Char] [[GHC.Types.Char]]))
+         a
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+  {- Arity: 4, Strictness: <S,U><L,U><S,1*U><S,1*U> -}
+0bc041dfa1c52c9ef17ecf0940c30b43
+  $sfromList_$spoly_go14 ::
+    [GHC.Types.Char]
+    -> a
+    -> [([GHC.Types.Char], a)]
+    -> Data.Map.Internal.Map [GHC.Types.Char] a
+    -> Data.Map.Internal.Map GHC.Base.String a
+  {- Arity: 4, Strictness: <S,U><L,U><S,1*U><S,1*U> -}
+d7b4f55896b5970b66eb9ab27b765d4d
+  $sinsert_$sgo13 ::
+    SubroutineTable.SubNameStr
+    -> SubroutineTable.SubNameStr
+    -> a1
+    -> Data.Map.Internal.Map SubroutineTable.SubNameStr a1
+    -> Data.Map.Internal.Map SubroutineTable.SubNameStr a1
+  {- Arity: 4, Strictness: <L,U><S,1*U><L,U><S,1*U> -}
+3ec16d8e31893c2424c7c1ab98b282ec
+  $sinsert_go13 ::
+    GHC.Classes.Ord k1 =>
+    k1
+    -> k1
+    -> a1
+    -> Data.Map.Internal.Map k1 a1
+    -> Data.Map.Internal.Map k1 a1
+  {- Arity: 5,
+     Strictness: <L,U(A,C(C1(U)),A,A,A,A,A,A)><L,U><S,1*U><L,U><S,1*U> -}
+5df0ef345414afa839e96d1bb0f836f6
+  $slookup1 ::
+    GHC.Base.String
+    -> Data.Map.Internal.Map GHC.Base.String a -> GHC.Base.Maybe a
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U> -}
+b46e0b85ff79534284e1128565d23e28
+  $tc'MkSubRec :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   15729178410509926715##
+                   12738253328081382040##
+                   SubroutineTable.$trModule
+                   SubroutineTable.$tc'MkSubRec2
+                   0#
+                   SubroutineTable.$tc'MkSubRec1) -}
+75fd63312966e1ed3f71c9ca35062f35
+  $tc'MkSubRec1 :: GHC.Types.KindRep
+  {- HasNoCafRefs, Strictness: m4, Inline: [~] -}
+dbe83d83e2b3f749da55db997dc46ceb
+  $tc'MkSubRec2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS SubroutineTable.$tc'MkSubRec3) -}
+b7fc2a20496412137d8c9532fdbe7518
+  $tc'MkSubRec3 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'MkSubRec"#) -}
+eb20fa927806c49acc753449a2159bc6
+  $tcSubRec :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   10380148480022212764##
+                   11549510178121132540##
+                   SubroutineTable.$trModule
+                   SubroutineTable.$tcSubRec1
+                   0#
+                   GHC.Types.krep$*) -}
+b502e4c1af9e70b7f27a205e5f6cfadd
+  $tcSubRec1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS SubroutineTable.$tcSubRec2) -}
+98ab053c6ac98870b3cdc90b7492f45e
+  $tcSubRec2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("SubRec"#) -}
+a9462078eec472faee6b58078a4e070d
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   SubroutineTable.$trModule3
+                   SubroutineTable.$trModule1) -}
+c1c9b58ac17d9ce171d7bb038db05ac8
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS SubroutineTable.$trModule2) -}
+ff18ac77dfd345065cfc69dc9b53f91a
+  $trModule2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("SubroutineTable"#) -}
+f53a782b6c287ce9e049d7564d868a38
+  $trModule3 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS SubroutineTable.$trModule4) -}
+f3b724a08065d1a5be919bd80a0c552b
+  $trModule4 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("main"#) -}
+1755e2e36bd74e938f3c29c21c64e13a
+  $wpoly_go13 ::
+    a
+    -> LanguageFortranTools.Anno
+    -> Language.Fortran.Variable
+    -> Data.Map.Internal.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+    -> a
+  {- Arity: 4, Strictness: <L,1*U><L,U><L,U><S,1*U>, Inline: [0] -}
+8348e1a77786e26b1f7b22c18902f0b2
+  type ArgumentTranslation =
+    Data.Map.Internal.Map
+      (Language.Fortran.VarName LanguageFortranTools.Anno)
+      (Language.Fortran.VarName LanguageFortranTools.Anno)
+10ed9a7589041620ccc7fd9ec0feb148
+  type SrcName = GHC.Base.String
+3437708d091f3a97fae422f0eea04244
+  type SubNameStr = GHC.Base.String
+8e8730275a44d60a77f7af5bd3645916
+  data SubRec
+    = MkSubRec {subAst :: Language.Fortran.ProgUnit
+                            LanguageFortranTools.Anno,
+                subSrcFile :: GHC.Base.String,
+                subSrcLines :: [GHC.Base.String]}
+df561bf3ea00515057d6f613cca42ac5
+  type SubroutineArgumentTranslationMap =
+    Data.Map.Internal.Map
+      SubroutineTable.SubNameStr SubroutineTable.ArgumentTranslation
+5a91cdd7134da8dba28aec7592f36133
+  type SubroutineTable =
+    Data.Map.Internal.Map
+      SubroutineTable.SubNameStr SubroutineTable.SubRec
+34fce0035616385957440f4317bf447c
+  addToSubroutineTable ::
+    ((Language.Fortran.Program LanguageFortranTools.Anno,
+      [GHC.Base.String]),
+     SubroutineTable.SrcName)
+    -> SubroutineTable.SubroutineTable
+    -> SubroutineTable.SubroutineTable
+  {- Arity: 2, Strictness: <L,1*U(1*U(1*U,1*U),1*U)><S,1*U>,
+     Unfolding: (\ (code_unit :: ((Language.Fortran.Program
+                                     LanguageFortranTools.Anno,
+                                   [GHC.Base.String]),
+                                  SubroutineTable.SrcName))
+                   (subtable :: SubroutineTable.SubroutineTable) ->
+                 let {
+                   ds :: (Language.Fortran.Program LanguageFortranTools.Anno,
+                          [GHC.Base.String], SubroutineTable.SrcName)
+                   = case code_unit of wild { (,) ds1 filename ->
+                     case ds1 of wild1 { (,) ast orig_lines ->
+                     (ast, orig_lines, filename) } }
+                 } in
+                 let {
+                   ast :: Language.Fortran.Program LanguageFortranTools.Anno
+                   = case ds of ds1 { (,,) ast1 orig_lines filename -> ast1 }
+                 } in
+                 let {
+                   kx0 :: SubroutineTable.SubNameStr
+                   = SubroutineTable.extractProgUnitName
+                       (SubroutineTable.extractSubroutine ast)
+                 } in
+                 SubroutineTable.$sinsert_$sgo13
+                   @ SubroutineTable.SubRec
+                   kx0
+                   kx0
+                   (SubroutineTable.MkSubRec
+                      (SubroutineTable.extractSubroutine ast)
+                      (case ds of ds1 { (,,) ast1 orig_lines filename -> filename })
+                      (case ds of ds1 { (,,) ast1 orig_lines filename -> orig_lines }))
+                   subtable) -}
+90f54fc9613c408956d9023730974757
+  addToSubroutineTable1 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(SLLLLLLLLLLLLLL),1*U(1*U,A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a
+                   ($dData :: Data.Data.Data a)
+                   (a1 :: a)[OneShot] ->
+                 case Data.Typeable.Internal.typeRepFingerprint
+                        @ *
+                        @ a
+                        (Data.Data.$p1Data @ a $dData)
+                          `cast`
+                        (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                 case SubroutineTable.addToSubroutineTable2 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                 case GHC.Prim.eqWord# dt dt2 of lwild {
+                   DEFAULT
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                   1#
+                   -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                        DEFAULT
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                        1#
+                        -> case a1
+                                  `cast`
+                                (UnsafeCo representational a (Language.Fortran.ProgUnit
+                                                                LanguageFortranTools.Anno)) of wild2 {
+                             DEFAULT
+                             -> GHC.Types.[]
+                                  @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                             Language.Fortran.Sub ds ds1 ds2 ds3 ds4 ds5
+                             -> GHC.Types.:
+                                  @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                                  wild2
+                                  (GHC.Types.[]
+                                     @ (Language.Fortran.ProgUnit
+                                          LanguageFortranTools.Anno)) } } } } }) -}
+c9939ef5b0430605808bea2f8e057f2f
+  addToSubroutineTable2 :: GHC.Fingerprint.Type.Fingerprint
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.ProgUnit
+                        6479780727992239168##
+                        17397259944912469841##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataProgUnit3
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.typeRepFingerprint
+                   @ *
+                   @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ Language.Fortran.ProgUnit
+                      @ LanguageFortranTools.Anno
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> *)
+                         @ Language.Fortran.ProgUnit
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      SubroutineTable.addToSubroutineTable3) }) -}
+02cb1a18e93b43df079259cccc7fbd95
+  addToSubroutineTable3 ::
+    Data.Typeable.Internal.TypeRep
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> * -> *)
+                        @ Data.Map.Internal.Map
+                        11323335571407833487##
+                        2177232330301466659##
+                        Data.Map.Internal.$trModule
+                        Data.Map.Internal.$fDataMap9
+                        0#
+                        GHC.Types.krep$*->*->*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.mkTrApp
+                   @ *
+                   @ *
+                   @ (Data.Map.Internal.Map GHC.Base.String)
+                   @ [GHC.Base.String]
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ (* -> *)
+                      @ Data.Map.Internal.Map
+                      @ GHC.Base.String
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> * -> *)
+                         @ Data.Map.Internal.Map
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      SubroutineTable.addToSubroutineTable5)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ []
+                      @ GHC.Base.String
+                      SubroutineTable.addToSubroutineTable4
+                      SubroutineTable.addToSubroutineTable5) }) -}
+b689b464853f8bb7a481fd42f9130d34
+  addToSubroutineTable4 :: Data.Typeable.Internal.TypeRep []
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ []
+                        15300440589168157478##
+                        15016221815972113379##
+                        GHC.Types.$trModule
+                        GHC.Types.$tc[]1
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.TrTyCon
+                   @ (* -> *)
+                   @ []
+                   ww8
+                   ww9
+                   ww10
+                   ww11
+                   ww12 }) -}
+853b2658acc1de53e05c3e3b5d79945d
+  addToSubroutineTable5 ::
+    Data.Typeable.Internal.TypeRep [GHC.Types.Char]
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ *
+                        @ GHC.Types.Char
+                        8424092006618324671##
+                        2724268014499746065##
+                        GHC.Types.$trModule
+                        GHC.Types.$tcChar1
+                        0#
+                        GHC.Types.krep$*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.mkTrApp
+                   @ *
+                   @ *
+                   @ []
+                   @ GHC.Types.Char
+                   SubroutineTable.addToSubroutineTable4
+                   (Data.Typeable.Internal.TrTyCon
+                      @ *
+                      @ GHC.Types.Char
+                      ww8
+                      ww9
+                      ww10
+                      ww11
+                      ww12) }) -}
+8d6a08ec1aae66a6dd604989a9e6aa11
+  addToSubroutineTable6 ::
+    Language.Fortran.ProgUnit LanguageFortranTools.Anno
+  {- Strictness: m8,
+     Unfolding: (Language.Fortran.NullProg
+                   @ LanguageFortranTools.Anno
+                   (Data.Map.Internal.Tip @ GHC.Base.String @ [GHC.Base.String])
+                   SubroutineTable.addToSubroutineTable7) -}
+2633f4882441dc970b0b06b868f7d258
+  addToSubroutineTable7 ::
+    (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+  {- Strictness: m,
+     Unfolding: ((LanguageFortranTools.nullSrcLoc,
+                  LanguageFortranTools.nullSrcLoc)) -}
+81053ae3fb885bba20a960d522b4fd81
+  constructSubroutineTable ::
+    [((Language.Fortran.Program LanguageFortranTools.Anno,
+       [GHC.Base.String]),
+      SubroutineTable.SrcName)]
+    -> SubroutineTable.SubroutineTable
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (code_units :: [((Language.Fortran.Program
+                                       LanguageFortranTools.Anno,
+                                     [GHC.Base.String]),
+                                    SubroutineTable.SrcName)]) ->
+                 SubroutineTable.$sfromList
+                   @ SubroutineTable.SubRec
+                   (GHC.Base.build
+                      @ (GHC.Base.String, SubroutineTable.SubRec)
+                      (\ @ b1
+                         (c :: (GHC.Base.String, SubroutineTable.SubRec)
+                               -> b1 -> b1)[OneShot]
+                         (n :: b1)[OneShot] ->
+                       GHC.Base.foldr
+                         @ (([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                             [GHC.Base.String]),
+                            GHC.Base.String)
+                         @ b1
+                         (GHC.Base.mapFB
+                            @ (GHC.Base.String, SubroutineTable.SubRec)
+                            @ b1
+                            @ (([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                                [GHC.Base.String]),
+                               GHC.Base.String)
+                            c
+                            SubroutineTable.constructSubroutineTable1)
+                         n
+                         code_units))) -}
+9db86b51c1c1062613041681fa81eacf
+  constructSubroutineTable1 ::
+    (([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+      [GHC.Base.String]),
+     GHC.Base.String)
+    -> (GHC.Base.String, SubroutineTable.SubRec)
+  {- Arity: 1, Strictness: <S(SL),1*U(1*U(U,U),U)>m, Inline: [0],
+     Unfolding: InlineRule (1, True, False)
+                (\ (w :: (([Language.Fortran.ProgUnit LanguageFortranTools.Anno],
+                           [GHC.Base.String]),
+                          GHC.Base.String)) ->
+                 case w of ww { (,) ww1 ww2 ->
+                 case ww1 of ww3 { (,) ww4 ww5 ->
+                 (SubroutineTable.extractProgUnitName
+                    (SubroutineTable.extractSubroutine ww4),
+                  SubroutineTable.MkSubRec
+                    (SubroutineTable.extractSubroutine ww4)
+                    ww2
+                    ww5) } }) -}
+3e9b0463e44bc3bbfaf2a704af2cd611
+  emptyArgumentTranslation :: Data.Map.Internal.Map k a
+  {- HasNoCafRefs,
+     Unfolding: InlineRule (0, True, True) Data.Map.Internal.Tip -}
+d03e300943b4462a4b5e1feec268c531
+  extractAllCalls ::
+    (Data.Data.Data a, Data.Typeable.Internal.Typeable p) =>
+    a -> [Language.Fortran.Fortran p]
+  {- Arity: 3,
+     Strictness: <S(LLLLLLLLLLC(C(S))LLLL),U(U,U,U,U,U,U,U,U,U,U,U,U,U,U,U)><L,U><L,U>,
+     Unfolding: (\ @ a
+                   @ p
+                   ($dData :: Data.Data.Data a)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable p)
+                   (ast :: a) ->
+                 let {
+                   lvl127 :: GHC.Fingerprint.Type.Fingerprint
+                   = Data.Typeable.Internal.typeRepFingerprint
+                       @ *
+                       @ (Language.Fortran.Fortran p)
+                       (Data.Typeable.Internal.mkTrApp
+                          @ *
+                          @ *
+                          @ Language.Fortran.Fortran
+                          @ p
+                          SubroutineTable.extractAllCalls3
+                          $dTypeable
+                            `cast`
+                          (Data.Typeable.Internal.N:Typeable[0] <*>_N <p>_N))
+                 } in
+                 Data.Generics.Schemes.everything
+                   @ [Language.Fortran.Fortran p]
+                   (GHC.Base.++ @ (Language.Fortran.Fortran p))
+                   (\ @ a1 ($dData1 :: Data.Data.Data a1) (a2 :: a1)[OneShot] ->
+                    case Data.Typeable.Internal.typeRepFingerprint
+                           @ *
+                           @ a1
+                           (Data.Data.$p1Data @ a1 $dData1)
+                             `cast`
+                           (Data.Typeable.Internal.N:Typeable[0] <*>_N <a1>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                    case lvl127 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                    case GHC.Prim.eqWord# dt dt2 of lwild {
+                      DEFAULT -> GHC.Types.[] @ (Language.Fortran.Fortran p)
+                      1#
+                      -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                           DEFAULT -> GHC.Types.[] @ (Language.Fortran.Fortran p)
+                           1#
+                           -> SubroutineTable.extractCalls
+                                @ p
+                                a2
+                                  `cast`
+                                (UnsafeCo representational a1 (Language.Fortran.Fortran
+                                                                 p)) } } } })
+                   @ a
+                   $dData
+                   ast) -}
+33a388dc507cb173cd20e0c01b629371
+  extractAllCalls1 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.Fortran LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(SLLLLLLLLLLLLLL),1*U(1*U,A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a
+                   ($dData :: Data.Data.Data a)
+                   (a1 :: a)[OneShot] ->
+                 case Data.Typeable.Internal.typeRepFingerprint
+                        @ *
+                        @ a
+                        (Data.Data.$p1Data @ a $dData)
+                          `cast`
+                        (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                 case SubroutineTable.extractAllCalls2 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                 case GHC.Prim.eqWord# dt dt2 of lwild {
+                   DEFAULT
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.Fortran LanguageFortranTools.Anno)
+                   1#
+                   -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                        DEFAULT
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.Fortran LanguageFortranTools.Anno)
+                        1#
+                        -> SubroutineTable.extractCalls
+                             @ LanguageFortranTools.Anno
+                             a1
+                               `cast`
+                             (UnsafeCo representational a (Language.Fortran.Fortran
+                                                             LanguageFortranTools.Anno)) } } } }) -}
+16b6345042d22f916316a0a91ff30641
+  extractAllCalls2 :: GHC.Fingerprint.Type.Fingerprint
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.Fortran
+                        1898037638716600659##
+                        3599167482411011499##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataFortran3
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.typeRepFingerprint
+                   @ *
+                   @ (Language.Fortran.Fortran LanguageFortranTools.Anno)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ Language.Fortran.Fortran
+                      @ LanguageFortranTools.Anno
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> *)
+                         @ Language.Fortran.Fortran
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      SubroutineTable.addToSubroutineTable3) }) -}
+8084149eca1c52bb58b31ae578dc10ab
+  extractAllCalls3 ::
+    Data.Typeable.Internal.TypeRep Language.Fortran.Fortran
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.Fortran
+                        1898037638716600659##
+                        3599167482411011499##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataFortran3
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 Data.Typeable.Internal.TrTyCon
+                   @ (* -> *)
+                   @ Language.Fortran.Fortran
+                   ww8
+                   ww9
+                   ww10
+                   ww11
+                   ww12 }) -}
+4c8ede09737f33bad3f050a043da7cca
+  extractCalls ::
+    Language.Fortran.Fortran p -> [Language.Fortran.Fortran p]
+  {- Arity: 1, HasNoCafRefs, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ p (codeSeg :: Language.Fortran.Fortran p) ->
+                 case codeSeg of wild {
+                   DEFAULT -> GHC.Types.[] @ (Language.Fortran.Fortran p)
+                   Language.Fortran.Call ds ds1 ds2 ds3
+                   -> GHC.Types.:
+                        @ (Language.Fortran.Fortran p)
+                        wild
+                        (GHC.Types.[] @ (Language.Fortran.Fortran p)) }) -}
+08693d5ccf7edececf65ca1e0f0f4262
+  extractProgUnitName ::
+    Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: (\ (ast :: Language.Fortran.ProgUnit
+                             LanguageFortranTools.Anno) ->
+                 let {
+                   subNames :: [Language.Fortran.SubName LanguageFortranTools.Anno]
+                   = Data.Generics.Schemes.everything
+                       @ [Language.Fortran.SubName LanguageFortranTools.Anno]
+                       (GHC.Base.++
+                          @ (Language.Fortran.SubName LanguageFortranTools.Anno))
+                       SubroutineTable.extractProgUnitName3
+                       @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                       SubroutineTable.$s$fData(,)_$s$fDataProgUnit
+                       ast
+                 } in
+                 case GHC.Classes.$fEq[]_$c==
+                        @ (Language.Fortran.SubName LanguageFortranTools.Anno)
+                        SubroutineTable.$s$fEqSubName
+                        subNames
+                        (GHC.Types.[]
+                           @ (Language.Fortran.SubName LanguageFortranTools.Anno)) of wild {
+                   GHC.Types.False
+                   -> case subNames of wild1 {
+                        [] -> case GHC.List.badHead ret_ty GHC.Base.String of {}
+                        : x ds1
+                        -> case x of wild2 {
+                             Language.Fortran.SubName ds str -> str
+                             Language.Fortran.NullSubName ipv
+                             -> SubroutineTable.extractProgUnitName2 } }
+                   GHC.Types.True -> SubroutineTable.extractProgUnitName1 ast }) -}
+1b26c087a696290f4b698034a280fa72
+  extractProgUnitName1 ::
+    Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> GHC.Base.String
+  {- Arity: 1, Strictness: <B,U>x -}
+b98324c80fed36de507c461b4de68342
+  extractProgUnitName2 :: GHC.Base.String
+  {- Strictness: x -}
+3ce9bb8f763e843d815e11d505ba5ae1
+  extractProgUnitName3 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.SubName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(SLLLLLLLLLLLLLL),1*U(1*U,A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a
+                   ($dData :: Data.Data.Data a)
+                   (eta :: a)[OneShot] ->
+                 case Data.Typeable.Internal.typeRepFingerprint
+                        @ *
+                        @ a
+                        (Data.Data.$p1Data @ a $dData)
+                          `cast`
+                        (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                 case SubroutineTable.extractProgUnitName4 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                 case GHC.Prim.eqWord# dt dt2 of lwild {
+                   DEFAULT
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.SubName LanguageFortranTools.Anno)
+                   1#
+                   -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                        DEFAULT
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.SubName LanguageFortranTools.Anno)
+                        1#
+                        -> LanguageFortranTools.getSubNames
+                             eta
+                               `cast`
+                             (UnsafeCo representational a (Language.Fortran.SubName
+                                                             LanguageFortranTools.Anno)) } } } }) -}
+bd2a1b878a9443e61729c3a0ea3f2578
+  extractProgUnitName4 :: GHC.Fingerprint.Type.Fingerprint
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.SubName
+                        984225159571365899##
+                        8068956749520935535##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataSubName4
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> * -> *)
+                        @ Data.Map.Internal.Map
+                        11323335571407833487##
+                        2177232330301466659##
+                        Data.Map.Internal.$trModule
+                        Data.Map.Internal.$fDataMap9
+                        0#
+                        GHC.Types.krep$*->*->*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww1 { (#,,,,#) ww2 ww3 ww4 ww5 ww6 ->
+                 Data.Typeable.Internal.typeRepFingerprint
+                   @ *
+                   @ (Language.Fortran.SubName LanguageFortranTools.Anno)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ Language.Fortran.SubName
+                      @ LanguageFortranTools.Anno
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> *)
+                         @ Language.Fortran.SubName
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      (Data.Typeable.Internal.mkTrApp
+                         @ *
+                         @ *
+                         @ (Data.Map.Internal.Map GHC.Base.String)
+                         @ [GHC.Base.String]
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ (* -> *)
+                            @ Data.Map.Internal.Map
+                            @ GHC.Base.String
+                            (Data.Typeable.Internal.TrTyCon
+                               @ (* -> * -> *)
+                               @ Data.Map.Internal.Map
+                               ww2
+                               ww3
+                               ww4
+                               ww5
+                               ww6)
+                            SubroutineTable.addToSubroutineTable5)
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ *
+                            @ []
+                            @ GHC.Base.String
+                            SubroutineTable.addToSubroutineTable4
+                            SubroutineTable.addToSubroutineTable5))) } }) -}
+3e79772f3a9afa2072f709a36c0b54b1
+  extractSubroutine ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ (subs :: [Language.Fortran.ProgUnit
+                               LanguageFortranTools.Anno]) ->
+                 case subs of wild {
+                   [] -> SubroutineTable.addToSubroutineTable6
+                   : ds1 ds2
+                   -> case Data.Generics.Schemes.everything
+                             @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                             (GHC.Base.++
+                                @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno))
+                             SubroutineTable.addToSubroutineTable1
+                             @ (Language.Fortran.Program LanguageFortranTools.Anno)
+                             SubroutineTable.$s$fData(,)1
+                             wild of wild1 {
+                        []
+                        -> GHC.List.badHead
+                             @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                        : x ds4 -> x } }) -}
+c2c71f5229514436db21d71ad022b581
+  extractSubroutineArgumentTranslationMaps ::
+    SubroutineTable.SubroutineTable
+    -> (Language.Fortran.Program LanguageFortranTools.Anno,
+        [GHC.Base.String])
+    -> SubroutineTable.SubroutineArgumentTranslationMap
+  {- Arity: 2, Strictness: <L,U><L,U>,
+     Unfolding: (\ (subTable :: SubroutineTable.SubroutineTable)
+                   (ast :: (Language.Fortran.Program LanguageFortranTools.Anno,
+                            [GHC.Base.String])) ->
+                 letrec {
+                   go :: [Language.Fortran.Fortran LanguageFortranTools.Anno]
+                         -> SubroutineTable.SubroutineArgumentTranslationMap
+                         -> SubroutineTable.SubroutineArgumentTranslationMap
+                     <join 2> {- Arity: 2, Strictness: <S,1*U><S,1*U> -}
+                   = \ (ds :: [Language.Fortran.Fortran LanguageFortranTools.Anno])
+                       (eta :: SubroutineTable.SubroutineArgumentTranslationMap) ->
+                     case ds of wild {
+                       [] -> eta
+                       : y ys
+                       -> case y of wild1 {
+                            DEFAULT
+                            -> SubroutineTable.extractSubroutineArgumentTranslationMaps1
+                            Language.Fortran.Call anno src callExpr arglist
+                            -> case callExpr of wild2 {
+                                 DEFAULT
+                                 -> case GHC.List.badHead
+                                    ret_ty SubroutineTable.SubroutineArgumentTranslationMap
+                                    of {}
+                                 Language.Fortran.Var ds1 ds2 lst
+                                 -> case LanguageFortranTools.extractVarNames_go lst of wild3 {
+                                      []
+                                      -> case GHC.List.badHead
+                                         ret_ty SubroutineTable.SubroutineArgumentTranslationMap
+                                         of {}
+                                      : x ds4
+                                      -> case x of wild4 { Language.Fortran.VarName ds5 str ->
+                                         go
+                                           ys
+                                           (SubroutineTable.$sinsert_$sgo13
+                                              @ (Data.Map.Internal.Map
+                                                   (Language.Fortran.VarName
+                                                      LanguageFortranTools.Anno)
+                                                   (Language.Fortran.VarName
+                                                      LanguageFortranTools.Anno))
+                                              str
+                                              str
+                                              (SubroutineTable.generateArgumentTranslation
+                                                 subTable
+                                                 wild1)
+                                              eta) } } } } }
+                 } in
+                 go
+                   (Data.Generics.Schemes.everything
+                      @ [Language.Fortran.Fortran LanguageFortranTools.Anno]
+                      (GHC.Base.++
+                         @ (Language.Fortran.Fortran LanguageFortranTools.Anno))
+                      SubroutineTable.extractAllCalls1
+                      @ (Language.Fortran.Program LanguageFortranTools.Anno,
+                         [GHC.Base.String])
+                      SubroutineTable.$s$fData(,)
+                      ast)
+                   (Data.Map.Internal.Tip
+                      @ SubroutineTable.SubNameStr
+                      @ SubroutineTable.ArgumentTranslation)) -}
+7e2fc3cb2bf690e468bc25eb163bc833
+  extractSubroutineArgumentTranslationMaps1 ::
+    SubroutineTable.SubroutineArgumentTranslationMap
+  {- Strictness: x -}
+f854b3ebdcc0b473eecaa94fdd4aae62
+  extractSubroutines ::
+    Language.Fortran.Program LanguageFortranTools.Anno
+    -> [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ast :: Language.Fortran.Program LanguageFortranTools.Anno) ->
+                 Data.Generics.Schemes.everything
+                   @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                   (GHC.Base.++
+                      @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno))
+                   SubroutineTable.addToSubroutineTable1
+                   @ (Language.Fortran.Program LanguageFortranTools.Anno)
+                   SubroutineTable.$s$fData(,)1
+                   ast) -}
+2df9d4fb6db017668d476208bc842908
+  generateArgumentTranslation ::
+    SubroutineTable.SubroutineTable
+    -> Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> SubroutineTable.ArgumentTranslation
+  {- Arity: 2, Strictness: <L,1*U><S,1*U>,
+     Unfolding: (\ (subTable :: SubroutineTable.SubroutineTable)
+                   (ds :: Language.Fortran.Fortran LanguageFortranTools.Anno) ->
+                 case ds of wild {
+                   DEFAULT -> SubroutineTable.generateArgumentTranslation9
+                   Language.Fortran.Call anno src callExpr arglist
+                   -> SubroutineTable.$sfromList1
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        (SubroutineTable.generateArgumentTranslation_go
+                           (Data.Generics.Schemes.everything
+                              @ [Language.Fortran.ArgName LanguageFortranTools.Anno]
+                              (GHC.Base.++
+                                 @ (Language.Fortran.ArgName LanguageFortranTools.Anno))
+                              SubroutineTable.generateArgumentTranslation7
+                              @ (Language.Fortran.Arg LanguageFortranTools.Anno)
+                              SubroutineTable.$s$fDataArg
+                              (case callExpr of wild1 {
+                                 DEFAULT
+                                 -> case GHC.List.badHead
+                                    ret_ty (Language.Fortran.Arg LanguageFortranTools.Anno)
+                                    of {}
+                                 Language.Fortran.Var ds1 ds2 lst
+                                 -> case LanguageFortranTools.extractVarNames_go lst of wild2 {
+                                      []
+                                      -> case GHC.List.badHead
+                                         ret_ty (Language.Fortran.Arg LanguageFortranTools.Anno)
+                                         of {}
+                                      : x ds4
+                                      -> case x of wild3 { Language.Fortran.VarName ds5 str ->
+                                         case SubroutineTable.$slookup1
+                                                @ SubroutineTable.SubRec
+                                                str
+                                                subTable of wild4 {
+                                           GHC.Base.Nothing
+                                           -> case SubroutineTable.generateArgumentTranslation6 str
+                                              ret_ty (Language.Fortran.Arg
+                                                        LanguageFortranTools.Anno)
+                                              of {}
+                                           GHC.Base.Just sub
+                                           -> case sub of wild5 { SubroutineTable.MkSubRec ds6 ds7 ds8 ->
+                                              case ds6 of wild6 {
+                                                DEFAULT
+                                                -> case SubroutineTable.generateArgumentTranslation5
+                                                   ret_ty (Language.Fortran.Arg
+                                                             LanguageFortranTools.Anno)
+                                                   of {}
+                                                Language.Fortran.Sub ds9 ds10 ds11 ds12 arg ds13
+                                                -> arg } } } } } }))
+                           (let {
+                              lvl127 :: Language.Fortran.VarName LanguageFortranTools.Anno
+                              = Language.Fortran.VarName
+                                  @ LanguageFortranTools.Anno
+                                  anno
+                                  SubroutineTable.generateArgumentTranslation3
+                            } in
+                            GHC.Base.map
+                              @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                              @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                              (\ (x :: Language.Fortran.Expr LanguageFortranTools.Anno) ->
+                               case x of wild1 {
+                                 DEFAULT -> lvl127
+                                 Language.Fortran.Var ds1 ds2 lst
+                                 -> case LanguageFortranTools.extractVarNames_go lst of wild2 {
+                                      []
+                                      -> GHC.List.badHead
+                                           @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                      : x1 ds4 -> x1 } })
+                              (Data.Generics.Schemes.everything
+                                 @ [Language.Fortran.Expr LanguageFortranTools.Anno]
+                                 (GHC.Base.++ @ (Language.Fortran.Expr LanguageFortranTools.Anno))
+                                 SubroutineTable.generateArgumentTranslation1
+                                 @ (Language.Fortran.ArgList LanguageFortranTools.Anno)
+                                 SubroutineTable.$s$fDataArgList
+                                 arglist))) }) -}
+e96fa970aa620fa18ed62fc13beb7d0e
+  generateArgumentTranslation1 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.Expr LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(SLLLLLLLLLLLLLL),1*U(1*U,A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a
+                   ($dData :: Data.Data.Data a)
+                   (eta :: a)[OneShot] ->
+                 case Data.Typeable.Internal.typeRepFingerprint
+                        @ *
+                        @ a
+                        (Data.Data.$p1Data @ a $dData)
+                          `cast`
+                        (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                 case SubroutineTable.generateArgumentTranslation2 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                 case GHC.Prim.eqWord# dt dt2 of lwild {
+                   DEFAULT
+                   -> GHC.Types.[] @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                   1#
+                   -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                        DEFAULT
+                        -> GHC.Types.[] @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                        1#
+                        -> LanguageFortranTools.extractExpr_list
+                             eta
+                               `cast`
+                             (UnsafeCo representational a (Language.Fortran.Expr
+                                                             LanguageFortranTools.Anno)) } } } }) -}
+76480993a5516ecb1a6649c1c31435a6
+  generateArgumentTranslation2 :: GHC.Fingerprint.Type.Fingerprint
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.Expr
+                        17869853342830359556##
+                        1287957171183349453##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataExpr3
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> * -> *)
+                        @ Data.Map.Internal.Map
+                        11323335571407833487##
+                        2177232330301466659##
+                        Data.Map.Internal.$trModule
+                        Data.Map.Internal.$fDataMap9
+                        0#
+                        GHC.Types.krep$*->*->*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww1 { (#,,,,#) ww2 ww3 ww4 ww5 ww6 ->
+                 Data.Typeable.Internal.typeRepFingerprint
+                   @ *
+                   @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ Language.Fortran.Expr
+                      @ LanguageFortranTools.Anno
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> *)
+                         @ Language.Fortran.Expr
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      (Data.Typeable.Internal.mkTrApp
+                         @ *
+                         @ *
+                         @ (Data.Map.Internal.Map GHC.Base.String)
+                         @ [GHC.Base.String]
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ (* -> *)
+                            @ Data.Map.Internal.Map
+                            @ GHC.Base.String
+                            (Data.Typeable.Internal.TrTyCon
+                               @ (* -> * -> *)
+                               @ Data.Map.Internal.Map
+                               ww2
+                               ww3
+                               ww4
+                               ww5
+                               ww6)
+                            SubroutineTable.addToSubroutineTable5)
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ *
+                            @ []
+                            @ GHC.Base.String
+                            SubroutineTable.addToSubroutineTable4
+                            SubroutineTable.addToSubroutineTable5))) } }) -}
+dec325071a0b3e3fbef2f4902739ca55
+  generateArgumentTranslation3 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString#
+                   SubroutineTable.generateArgumentTranslation4) -}
+93d4cf51412827ffa64a12a598a5f1f4
+  generateArgumentTranslation4 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("BOOM!"#) -}
+57f312f624c42be5ff4a2d5f356a4d3f
+  generateArgumentTranslation5 ::
+    (Language.Fortran.Arg LanguageFortranTools.Anno)
+  {- Strictness: x -}
+4e6e72144b578365e4f582a77363b32c
+  generateArgumentTranslation6 ::
+    GHC.Base.String -> SubroutineTable.SubRec
+  {- Arity: 1, Strictness: <B,U>x -}
+6f68689bfc7185d93fbde9025b220ab0
+  generateArgumentTranslation7 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.ArgName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(SLLLLLLLLLLLLLL),1*U(1*U,A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a
+                   ($dData :: Data.Data.Data a)
+                   (eta :: a)[OneShot] ->
+                 case Data.Typeable.Internal.typeRepFingerprint
+                        @ *
+                        @ a
+                        (Data.Data.$p1Data @ a $dData)
+                          `cast`
+                        (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N) of wild { GHC.Fingerprint.Type.Fingerprint dt dt1 ->
+                 case SubroutineTable.generateArgumentTranslation8 of wild1 { GHC.Fingerprint.Type.Fingerprint dt2 dt3 ->
+                 case GHC.Prim.eqWord# dt dt2 of lwild {
+                   DEFAULT
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.ArgName LanguageFortranTools.Anno)
+                   1#
+                   -> case GHC.Prim.eqWord# dt1 dt3 of lwild1 {
+                        DEFAULT
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.ArgName LanguageFortranTools.Anno)
+                        1#
+                        -> LanguageFortranTools.extractArgName
+                             eta
+                               `cast`
+                             (UnsafeCo representational a (Language.Fortran.ArgName
+                                                             LanguageFortranTools.Anno)) } } } }) -}
+4302a30d50901a17b12e4ac566d74842
+  generateArgumentTranslation8 :: GHC.Fingerprint.Type.Fingerprint
+  {- Unfolding: (case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> *)
+                        @ Language.Fortran.ArgName
+                        4187460949675603402##
+                        17695948308021011151##
+                        Language.Fortran.$trModule
+                        Language.Fortran.$fDataArgName3
+                        0#
+                        GHC.Types.krep$*Arr*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww7 { (#,,,,#) ww8 ww9 ww10 ww11 ww12 ->
+                 case Data.Typeable.Internal.$wmkTrCon
+                        @ (* -> * -> *)
+                        @ Data.Map.Internal.Map
+                        11323335571407833487##
+                        2177232330301466659##
+                        Data.Map.Internal.$trModule
+                        Data.Map.Internal.$fDataMap9
+                        0#
+                        GHC.Types.krep$*->*->*
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.SomeTypeRep) of ww1 { (#,,,,#) ww2 ww3 ww4 ww5 ww6 ->
+                 Data.Typeable.Internal.typeRepFingerprint
+                   @ *
+                   @ (Language.Fortran.ArgName LanguageFortranTools.Anno)
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ Language.Fortran.ArgName
+                      @ LanguageFortranTools.Anno
+                      (Data.Typeable.Internal.TrTyCon
+                         @ (* -> *)
+                         @ Language.Fortran.ArgName
+                         ww8
+                         ww9
+                         ww10
+                         ww11
+                         ww12)
+                      (Data.Typeable.Internal.mkTrApp
+                         @ *
+                         @ *
+                         @ (Data.Map.Internal.Map GHC.Base.String)
+                         @ [GHC.Base.String]
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ (* -> *)
+                            @ Data.Map.Internal.Map
+                            @ GHC.Base.String
+                            (Data.Typeable.Internal.TrTyCon
+                               @ (* -> * -> *)
+                               @ Data.Map.Internal.Map
+                               ww2
+                               ww3
+                               ww4
+                               ww5
+                               ww6)
+                            SubroutineTable.addToSubroutineTable5)
+                         (Data.Typeable.Internal.mkTrApp
+                            @ *
+                            @ *
+                            @ []
+                            @ GHC.Base.String
+                            SubroutineTable.addToSubroutineTable4
+                            SubroutineTable.addToSubroutineTable5))) } }) -}
+8010a1be8d0d21c70b7cae58889c4037
+  generateArgumentTranslation9 :: SubroutineTable.ArgumentTranslation
+  {- Strictness: x -}
+4b3a1767c60d24f4213424354bc81519
+  generateArgumentTranslation_go ::
+    [Language.Fortran.ArgName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [(Language.Fortran.VarName LanguageFortranTools.Anno,
+         Language.Fortran.VarName LanguageFortranTools.Anno)]
+  {- Arity: 2, Strictness: <S,1*U><L,1*U> -}
+e63282a12c346d0a2b049af61157e4b2
+  getSubroutineArgumentTranslation ::
+    SubroutineTable.SubroutineArgumentTranslationMap
+    -> SubroutineTable.SubNameStr
+    -> SubroutineTable.ArgumentTranslation
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (argTranslation :: SubroutineTable.SubroutineArgumentTranslationMap)
+                   (subName :: SubroutineTable.SubNameStr) ->
+                 SubroutineTable.$sfindWithDefault1
+                   @ (Data.Map.Internal.Map
+                        (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        (Language.Fortran.VarName LanguageFortranTools.Anno))
+                   (Data.Map.Internal.Tip
+                      @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                      @ (Language.Fortran.VarName LanguageFortranTools.Anno))
+                   subName
+                   argTranslation) -}
+d130ea0ffe03a4ef3a11f4fb0b3d1729
+  replaceKernels_foldl ::
+    [(Language.Fortran.Fortran LanguageFortranTools.Anno,
+      Language.Fortran.Fortran LanguageFortranTools.Anno)]
+    -> SubroutineTable.SubroutineTable
+    -> SubroutineTable.SubNameStr
+    -> SubroutineTable.SubroutineTable
+  {- Arity: 3, Strictness: <L,1*U><S,U><S,U>,
+     Unfolding: (\ (kernelPairs :: [(Language.Fortran.Fortran
+                                       LanguageFortranTools.Anno,
+                                     Language.Fortran.Fortran LanguageFortranTools.Anno)])
+                   (subTable :: SubroutineTable.SubroutineTable)
+                   (subName :: SubroutineTable.SubNameStr) ->
+                 let {
+                   subroutine :: SubroutineTable.SubRec
+                   = SubroutineTable.$sfindWithDefault1
+                       @ SubroutineTable.SubRec
+                       SubroutineTable.replaceKernels_foldl1
+                       subName
+                       subTable
+                 } in
+                 SubroutineTable.$sinsert_$sgo13
+                   @ SubroutineTable.SubRec
+                   subName
+                   subName
+                   (SubroutineTable.MkSubRec
+                      (SubroutineTable.replaceKernels_foldl_go
+                         kernelPairs
+                         (case subroutine of wild { SubroutineTable.MkSubRec ds ds1 ds2 ->
+                          ds }))
+                      (case subroutine of wild { SubroutineTable.MkSubRec ds ds1 ds2 ->
+                       ds1 })
+                      (GHC.Types.[] @ GHC.Base.String))
+                   subTable) -}
+f9fb9542f1b3c70fa7232f09a088ce29
+  replaceKernels_foldl1 :: SubroutineTable.SubRec
+  {- Strictness: x -}
+d90fc0d2b19804ece80e4677262f3bfa
+  replaceKernels_foldl_go ::
+    [(Language.Fortran.Fortran LanguageFortranTools.Anno,
+      Language.Fortran.Fortran LanguageFortranTools.Anno)]
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+  {- Arity: 2, Strictness: <S,1*U><L,U> -}
+8e8730275a44d60a77f7af5bd3645916
+  subAst ::
+    SubroutineTable.SubRec
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+  RecSel Left SubroutineTable.SubRec
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(SLL),1*U(1*U,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: SubroutineTable.SubRec) ->
+                 case ds of wild { SubroutineTable.MkSubRec ds1 ds2 ds3 -> ds1 }) -}
+8e8730275a44d60a77f7af5bd3645916
+  subSrcFile :: SubroutineTable.SubRec -> GHC.Base.String
+  RecSel Left SubroutineTable.SubRec
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LSL),1*U(A,1*U,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: SubroutineTable.SubRec) ->
+                 case ds of wild { SubroutineTable.MkSubRec ds1 ds2 ds3 -> ds2 }) -}
+8e8730275a44d60a77f7af5bd3645916
+  subSrcLines :: SubroutineTable.SubRec -> [GHC.Base.String]
+  RecSel Left SubroutineTable.SubRec
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLS),1*U(A,A,1*U)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: SubroutineTable.SubRec) ->
+                 case ds of wild { SubroutineTable.MkSubRec ds1 ds2 ds3 -> ds3 }) -}
+8594d6e29a36b42c108a18e5539253ff
+  subroutineTable_ast ::
+    SubroutineTable.SubRec
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(SLL),1*U(1*U,A,A)>,
+     Unfolding: InlineRule (0, True, True) SubroutineTable.subAst -}
+31c40fcf4e74076c79a8ed17a0fdcb58
+  translateArguments ::
+    SubroutineTable.ArgumentTranslation
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2, Strictness: <L,U><S,1*U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (argTranslations :: SubroutineTable.ArgumentTranslation)
+                   (args :: [Language.Fortran.VarName LanguageFortranTools.Anno]) ->
+                 GHC.Base.build
+                   @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (\ @ b1
+                      (c :: Language.Fortran.VarName LanguageFortranTools.Anno
+                            -> b1 -> b1)[OneShot]
+                      (n :: b1)[OneShot] ->
+                    GHC.Base.foldr
+                      @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                      @ b1
+                      (GHC.Base.mapFB
+                         @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                         @ b1
+                         @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                         c
+                         (\ (var :: Language.Fortran.VarName LanguageFortranTools.Anno) ->
+                          SubroutineTable.$sfindWithDefault3
+                            @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                            var
+                            var
+                            argTranslations))
+                      n
+                      args)) -}
+"SPEC/SubroutineTable $fData(,) @ [ProgUnit Anno] @ [String]" [orphan] forall (v1 :: Data.Data.Data
+                                                                                       [GHC.Base.String])
+                                                                              (v :: Data.Data.Data
+                                                                                      [Language.Fortran.ProgUnit
+                                                                                         LanguageFortranTools.Anno])
+  Data.Data.$fData(,) @ [Language.Fortran.ProgUnit
+                           LanguageFortranTools.Anno]
+                      @ [GHC.Base.String]
+                      v
+                      v1
+  = SubroutineTable.$s$fData(,)
+"SPEC/SubroutineTable $fData(,)3 @ [ProgUnit Anno] @ [String]" [orphan] forall ($dData1 :: Data.Data.Data
+                                                                                             [GHC.Base.String])
+                                                                               ($dData :: Data.Data.Data
+                                                                                            [Language.Fortran.ProgUnit
+                                                                                               LanguageFortranTools.Anno])
+  Data.Data.$fData(,)3 @ [Language.Fortran.ProgUnit
+                            LanguageFortranTools.Anno]
+                       @ [GHC.Base.String]
+                       $dData
+                       $dData1
+  = SubroutineTable.$s$fData(,)3
+"SPEC/SubroutineTable $fData(,)_$cgmapM @ [ProgUnit Anno] @ [String]" [orphan] [0] forall (w1 :: Data.Data.Data
+                                                                                                   [GHC.Base.String])
+                                                                                          (w :: Data.Data.Data
+                                                                                                  [Language.Fortran.ProgUnit
+                                                                                                     LanguageFortranTools.Anno])
+  Data.Data.$fData(,)_$cgmapM @ [Language.Fortran.ProgUnit
+                                   LanguageFortranTools.Anno]
+                              @ [GHC.Base.String]
+                              w
+                              w1
+  = SubroutineTable.$s$fData(,)_$cgmapM
+"SPEC/SubroutineTable $fData(,)_$cgmapQ @ [ProgUnit Anno] @ [String]" [orphan] forall ($dData1 :: Data.Data.Data
+                                                                                                    [GHC.Base.String])
+                                                                                      ($dData :: Data.Data.Data
+                                                                                                   [Language.Fortran.ProgUnit
+                                                                                                      LanguageFortranTools.Anno])
+  Data.Data.$fData(,)_$cgmapQ @ [Language.Fortran.ProgUnit
+                                   LanguageFortranTools.Anno]
+                              @ [GHC.Base.String]
+                              $dData
+                              $dData1
+  = SubroutineTable.$s$fData(,)_$cgmapQ
+"SPEC/SubroutineTable $fData(,)_$cgunfold @ [ProgUnit
+                                              Anno] @ [String]" [orphan] forall ($dData1 :: Data.Data.Data
+                                                                                                                                                    [GHC.Base.String])
+                                                                                                                                      ($dData :: Data.Data.Data
+                                                                                                                                                   [Language.Fortran.ProgUnit
+                                                                                                                                                      LanguageFortranTools.Anno])
+  Data.Data.$fData(,)_$cgunfold @ [Language.Fortran.ProgUnit
+                                     LanguageFortranTools.Anno]
+                                @ [GHC.Base.String]
+                                $dData
+                                $dData1
+  = SubroutineTable.$s$fData(,)_$cgunfold
+"SPEC/SubroutineTable $fDataArg @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                                 (Data.Map.Internal.Map
+                                                                                    GHC.Base.String
+                                                                                    [GHC.Base.String]))
+  Language.Fortran.$fDataArg @ (Data.Map.Internal.Map
+                                  GHC.Base.String [GHC.Base.String])
+                             v
+  = SubroutineTable.$s$fDataArg
+"SPEC/SubroutineTable $fDataArgList @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                                     (Data.Map.Internal.Map
+                                                                                        GHC.Base.String
+                                                                                        [GHC.Base.String]))
+  Language.Fortran.$fDataArgList @ (Data.Map.Internal.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 v
+  = SubroutineTable.$s$fDataArgList
+"SPEC/SubroutineTable $fDataMap @ [Char] @ [String]" [orphan] forall (v2 :: GHC.Classes.Ord
+                                                                              [GHC.Types.Char])
+                                                                     (v1 :: Data.Data.Data
+                                                                              [GHC.Base.String])
+                                                                     (v :: Data.Data.Data
+                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fDataMap @ [GHC.Types.Char]
+                              @ [GHC.Base.String]
+                              v
+                              v1
+                              v2
+  = SubroutineTable.$s$fData(,)_$s$fDataMap
+"SPEC/SubroutineTable $fDataMap_$cdataCast2 @ [Char] @ [String]" [orphan] [0] forall (w2 :: GHC.Classes.Ord
+                                                                                              [GHC.Types.Char])
+                                                                                     (w1 :: Data.Data.Data
+                                                                                              [GHC.Base.String])
+                                                                                     (w :: Data.Data.Data
+                                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fDataMap_$cdataCast2 @ [GHC.Types.Char]
+                                          @ [GHC.Base.String]
+                                          w
+                                          w1
+                                          w2
+  = SubroutineTable.$s$fDataMap_$cdataCast2
+"SPEC/SubroutineTable $fDataProgUnit @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                                      (Data.Map.Internal.Map
+                                                                                         GHC.Base.String
+                                                                                         [GHC.Base.String]))
+  Language.Fortran.$fDataProgUnit @ (Data.Map.Internal.Map
+                                       GHC.Base.String [GHC.Base.String])
+                                  v
+  = SubroutineTable.$s$fData(,)_$s$fDataProgUnit
+"SPEC/SubroutineTable $fDataProgUnit5 @ (Map String [String])" [orphan] forall ($dData1 :: Data.Data.Data
+                                                                                             (Data.Map.Internal.Map
+                                                                                                GHC.Base.String
+                                                                                                [GHC.Base.String]))
+  Language.Fortran.$fDataProgUnit5 @ (Data.Map.Internal.Map
+                                        GHC.Base.String [GHC.Base.String])
+                                   $dData1
+  = SubroutineTable.$s$fDataProgUnit5
+"SPEC/SubroutineTable $fData[] @ [Char]" [orphan] forall (v :: Data.Data.Data
+                                                                 [GHC.Types.Char])
+  Data.Data.$fData[] @ [GHC.Types.Char] v
+  = SubroutineTable.$s$fData(,)_$s$fData[]
+"SPEC/SubroutineTable $fData[]7 @ [Char]" [orphan] forall ($dData :: Data.Data.Data
+                                                                       [GHC.Types.Char])
+  Data.Data.$fData[]7 @ [GHC.Types.Char] $dData
+  = SubroutineTable.$s$fData[]7
+"SPEC/SubroutineTable $fEqMap @ [Char] @ [String]" [orphan] forall (v1 :: GHC.Classes.Eq
+                                                                            [GHC.Base.String])
+                                                                   (v :: GHC.Classes.Eq
+                                                                           [GHC.Types.Char])
+  Data.Map.Internal.$fEqMap @ [GHC.Types.Char]
+                            @ [GHC.Base.String]
+                            v
+                            v1
+  = SubroutineTable.$s$fEqMap
+"SPEC/SubroutineTable $fEqMap_$c/= @ [Char] @ [String]" [orphan] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                    [GHC.Base.String])
+                                                                        ($dEq :: GHC.Classes.Eq
+                                                                                   [GHC.Types.Char])
+  Data.Map.Internal.$fEqMap_$c/= @ [GHC.Types.Char]
+                                 @ [GHC.Base.String]
+                                 $dEq
+                                 $dEq1
+  = SubroutineTable.$s$fEqMap_$s$fEqMap_$c/=
+"SPEC/SubroutineTable $fEqSubName @ (Map String [String])" [orphan] forall (v :: GHC.Classes.Eq
+                                                                                   (Data.Map.Internal.Map
+                                                                                      GHC.Base.String
+                                                                                      [GHC.Base.String]))
+  Language.Fortran.$fEqSubName @ (Data.Map.Internal.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               v
+  = SubroutineTable.$s$fEqSubName
+"SPEC/SubroutineTable $fEqSubName_$c/= @ (Map String [String])" [orphan] forall ($dEq :: GHC.Classes.Eq
+                                                                                           (Data.Map.Internal.Map
+                                                                                              GHC.Base.String
+                                                                                              [GHC.Base.String]))
+  Language.Fortran.$fEqSubName_$c/= @ (Data.Map.Internal.Map
+                                         GHC.Base.String [GHC.Base.String])
+                                    $dEq
+  = SubroutineTable.$s$fEqSubName_$s$fEqSubName_$c/=
+"SPEC/SubroutineTable $fEqVarName @ (Map String [String])" [orphan] forall (v :: GHC.Classes.Eq
+                                                                                   (Data.Map.Internal.Map
+                                                                                      GHC.Base.String
+                                                                                      [GHC.Base.String]))
+  Language.Fortran.$fEqVarName @ (Data.Map.Internal.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               v
+  = SubroutineTable.$s$fEqVarName
+"SPEC/SubroutineTable $fEqVarName_$c/= @ (Map String [String])" [orphan] forall ($dEq :: GHC.Classes.Eq
+                                                                                           (Data.Map.Internal.Map
+                                                                                              GHC.Base.String
+                                                                                              [GHC.Base.String]))
+  Language.Fortran.$fEqVarName_$c/= @ (Data.Map.Internal.Map
+                                         GHC.Base.String [GHC.Base.String])
+                                    $dEq
+  = SubroutineTable.$s$fEqVarName_$s$fEqVarName_$c/=
+"SPEC/SubroutineTable $fOrdMap @ [Char] @ [String]" [orphan] forall (v2 :: GHC.Classes.Ord
+                                                                             [GHC.Base.String])
+                                                                    (v1 :: GHC.Classes.Ord
+                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fOrdMap @ [GHC.Types.Char]
+                             @ [GHC.Base.String]
+                             v1
+                             v2
+  = SubroutineTable.$s$fOrdMap
+"SPEC/SubroutineTable $fOrdVarName @ (Map String [String])" [orphan] forall (v :: GHC.Classes.Ord
+                                                                                    (Data.Map.Internal.Map
+                                                                                       GHC.Base.String
+                                                                                       [GHC.Base.String]))
+  Language.Fortran.$fOrdVarName @ (Data.Map.Internal.Map
+                                     GHC.Base.String [GHC.Base.String])
+                                v
+  = SubroutineTable.$s$fOrdVarName
+"SPEC/SubroutineTable $fOrdVarName_$cmax @ (Map String [String])" [orphan] [0] forall (w :: GHC.Classes.Ord
+                                                                                              (Data.Map.Internal.Map
+                                                                                                 GHC.Base.String
+                                                                                                 [GHC.Base.String]))
+  Language.Fortran.$fOrdVarName_$cmax @ (Data.Map.Internal.Map
+                                           GHC.Base.String [GHC.Base.String])
+                                      w
+  = SubroutineTable.$s$fOrdVarName_$cmax
+"SPEC/SubroutineTable $fOrdVarName_$cmin @ (Map String [String])" [orphan] [0] forall (w :: GHC.Classes.Ord
+                                                                                              (Data.Map.Internal.Map
+                                                                                                 GHC.Base.String
+                                                                                                 [GHC.Base.String]))
+  Language.Fortran.$fOrdVarName_$cmin @ (Data.Map.Internal.Map
+                                           GHC.Base.String [GHC.Base.String])
+                                      w
+  = SubroutineTable.$s$fOrdVarName_$cmin
+"SPEC/SubroutineTable $fShowMap @ [Char] @ [String]" [orphan] forall (v1 :: GHC.Show.Show
+                                                                              [GHC.Base.String])
+                                                                     (v :: GHC.Show.Show
+                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fShowMap @ [GHC.Types.Char]
+                              @ [GHC.Base.String]
+                              v
+                              v1
+  = SubroutineTable.$s$fShowMap
+"SPEC/SubroutineTable $fShowMap_$cshow @ [Char] @ [String]" [orphan] forall ($dShow1 :: GHC.Show.Show
+                                                                                          [GHC.Base.String])
+                                                                            ($dShow :: GHC.Show.Show
+                                                                                         [GHC.Types.Char])
+  Data.Map.Internal.$fShowMap_$cshow @ [GHC.Types.Char]
+                                     @ [GHC.Base.String]
+                                     $dShow
+                                     $dShow1
+  = SubroutineTable.$s$fShowMap_$cshow
+"SPEC/SubroutineTable $fShowMap_$cshowList @ [Char] @ [String]" [orphan] forall ($dShow1 :: GHC.Show.Show
+                                                                                              [GHC.Base.String])
+                                                                                ($dShow :: GHC.Show.Show
+                                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fShowMap_$cshowList @ [GHC.Types.Char]
+                                         @ [GHC.Base.String]
+                                         $dShow
+                                         $dShow1
+  = SubroutineTable.$s$fShowMap_$cshowList
+"SPEC/SubroutineTable $fShowMap_$cshowsPrec @ [Char] @ [String]" [orphan] [0] forall (w1 :: GHC.Show.Show
+                                                                                              [GHC.Base.String])
+                                                                                     (w :: GHC.Show.Show
+                                                                                             [GHC.Types.Char])
+  Data.Map.Internal.$fShowMap_$cshowsPrec @ [GHC.Types.Char]
+                                          @ [GHC.Base.String]
+                                          w
+                                          w1
+  = SubroutineTable.$s$fShowMap_$cshowsPrec
+"SPEC/SubroutineTable fromList @ (VarName Anno) _" [orphan] forall @ a
+                                                                   ($dOrd :: GHC.Classes.Ord
+                                                                               (Language.Fortran.VarName
+                                                                                  LanguageFortranTools.Anno))
+  Data.Map.Internal.fromList @ (Language.Fortran.VarName
+                                  LanguageFortranTools.Anno)
+                             @ a
+                             $dOrd
+  = SubroutineTable.$sfromList1 @ a
+"SPEC/SubroutineTable fromList @ String _" [orphan] forall @ a
+                                                           ($dOrd :: GHC.Classes.Ord
+                                                                       GHC.Base.String)
+  Data.Map.Internal.fromList @ [GHC.Types.Char] @ a $dOrd
+  = SubroutineTable.$sfromList @ a
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

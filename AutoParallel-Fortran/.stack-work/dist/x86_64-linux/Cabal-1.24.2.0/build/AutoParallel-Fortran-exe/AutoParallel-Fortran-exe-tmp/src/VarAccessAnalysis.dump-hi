@@ -1,0 +1,2659 @@
+
+==================== FINAL INTERFACE ====================
+2018-12-03 15:55:07.051331 UTC
+
+interface main@main:VarAccessAnalysis 8002
+  interface hash: f9cb4d7a0c07563c02d3e18bb3885255
+  ABI hash: c1df2c318ff94db68fe9eac144e58579
+  export-list hash: 051e850c675aa14514a70f7a8b7a0582
+  orphan hash: e9c159947a55de96d35a697cb753a68a
+  flag hash: 7c02f8b77a7db746ad4b6beb3be70535
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  F95IntrinsicFunctions.f95IntrinsicFunctions
+  VarAccessAnalysis.analyseAllVarAccess
+  VarAccessAnalysis.analyseAllVarAccess_progUnit
+  VarAccessAnalysis.collectVarNames
+  VarAccessAnalysis.getAccessLocationsAfterSrcSpan
+  VarAccessAnalysis.getAccessLocationsBeforeSrcSpan
+  VarAccessAnalysis.getAccessLocationsInsideSrcSpan
+  VarAccessAnalysis.getAccessesBetweenSrcSpans
+  VarAccessAnalysis.getAccessesBetweenSrcSpansIgnore
+  VarAccessAnalysis.getArguments
+  VarAccessAnalysis.getDeclaredVarNames
+  VarAccessAnalysis.getNonTempVars
+  VarAccessAnalysis.getPrexistingVars
+  VarAccessAnalysis.getValueAtSrcSpan
+  VarAccessAnalysis.isFunctionCall
+  VarAccessAnalysis.VarAccessAnalysis
+module dependencies: F95IntrinsicFunctions Language.Fortran
+                     Language.Fortran.Lexer Language.Fortran.Parser
+                     Language.Fortran.PreProcess LanguageFortranTools PreProcessor
+                     Warning
+package dependencies: array-0.5.1.1@array-0.5.1.1 base-4.9.1.0
+                      binary-0.8.3.0@binary-0.8.3.0
+                      bytestring-0.10.8.1@bytestring-0.10.8.1
+                      containers-0.5.7.1@containers-0.5.7.1
+                      deepseq-1.4.2.0@deepseq-1.4.2.0 directory-1.3.0.0@directory-1.3.0.0
+                      filepath-1.4.1.1@filepath-1.4.1.1 ghc-prim-0.5.0.0
+                      haskell-src-1.0.2.0@haskell-src-1.0.2.0-3zoaErItXGVA1GHC7t3Glx
+                      integer-gmp-1.0.0.1 mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6
+                      parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw
+                      process-1.4.3.0@process-1.4.3.0
+                      syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS
+                      text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR
+                      time-1.6.0.1@time-1.6.0.1 transformers-0.5.2.0@transformers-0.5.2.0
+                      unix-2.7.2.1@unix-2.7.2.1
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+         binary-0.8.3.0@binary-0.8.3.0:Data.Binary.Generic
+         bytestring-0.10.8.1@bytestring-0.10.8.1:Data.ByteString.Builder
+         syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Instances
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Show
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Calendar.Gregorian
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Format.Parse
+         time-1.6.0.1@time-1.6.0.1:Data.Time.LocalTime.LocalTime
+         transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Error
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Complex base-4.9.1.0:Data.Either
+                         base-4.9.1.0:Data.Functor.Const base-4.9.1.0:Data.Functor.Identity
+                         base-4.9.1.0:Data.List.NonEmpty base-4.9.1.0:Data.Monoid
+                         base-4.9.1.0:Data.Semigroup base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:Data.Version base-4.9.1.0:Data.Void
+                         base-4.9.1.0:GHC.Exts base-4.9.1.0:GHC.Generics
+                         base-4.9.1.0:GHC.IO.Exception base-4.9.1.0:GHC.TypeLits
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntMap.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntSet.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Sequence
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Set.Base
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+import  -/  base-4.9.1.0:Data.Char 01433d23661edb6e5ef1536ef1e6774c
+import  -/  base-4.9.1.0:Data.Data da440c60016500822a3d4307ca5dea66
+import  -/  base-4.9.1.0:Data.Foldable 3e0b6967a1da89945d0e2d47266337a2
+import  -/  base-4.9.1.0:Data.List 07ae2acca6538aa0800bd0a993ac6ac1
+import  -/  base-4.9.1.0:Data.OldList 27987919d8da2f92e3f472ca81f730f8
+import  -/  base-4.9.1.0:Data.Tuple 7dc4bbb45d2e69c991ffac438beeca11
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:GHC.Err 3bba35a16538d33d424682ce66876cdd
+import  -/  base-4.9.1.0:GHC.List ab8c4e523e6c479c549d3bcd5fc4a439
+import  -/  base-4.9.1.0:GHC.Show a027f5ac24879eaba752f44aa90fe511
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  containers-0.5.7.1@containers-0.5.7.1:Data.Map 20d4ffbee41965d03d6a989425473dc4
+import  -/  containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base d432f6875983131473086af8cb290590
+import  -/  ghc-prim-0.5.0.0:GHC.Classes 0bdf3d057a415ec1b84a7b1994efbe47
+import  -/  ghc-prim-0.5.0.0:GHC.Types 89f8de4f08018c9177c98d979eae0e45
+import  -/  F95IntrinsicFunctions 1b7f8e2622be78a835577e1b6cb9c90b
+  exports: dc77bc6122892f669e7921a25fe21f4c
+  f95IntrinsicFunctions 2ee4e8be5b6033feb7926734889188a8
+import  -/  Language.Fortran c957d8f93581b3ce2cc521df25110d11
+  exports: cb4e2f808f933bd0493dcd95204741d0
+  Arg 6a578be33391db91b5fea0db543565f7
+  ArgName b4db00709e962bb265fdd46af8204459
+  ArgName dd55ce63dac1f7711c0f1fc53db78e0e
+  Assg e4ff0447498349c3e2879e1af28dc289
+  Block 961f7c2c989b091b59c58c09a763b797
+  Block 00b5dcb26b4d8331f4d0a27afc418872
+  Call 5dc8fc6a52ca566d9c8f8635b11363e5
+  Decl d78489b6b11f87857f4ba3465cebf581
+  Decl c4465a5758b20b0d6387c4cda8774a94
+  Expr fd45c3abbcc1cd23ca18c96ee1403b96
+  Fortran 7ef8d1883356542a2e7829f1c3512bc2
+  If 2ebe473c51363820c571e0150fe25882
+  Null f9b4d2f804869f054752a44b06f43d80
+  NullExpr d53181ba59030b4ed334d3840cb5eea1
+  ProgUnit dd0d2763607dbd5a6f6c1c5d85fe76dd
+  Program 61c057161e42f4aa29fb8dd8afb17b21
+  SrcLoc a58d61bb9404a2380d0de8c4177e198c
+  SrcLoc 43c2e4e6db773bb5ef99bf585d69acf2
+  SrcSpan a18da1424c2a105ac654e1e8b2930f03
+  VarName 64af05f1c71bcd1dfd571ca0d5218f1b
+  VarName d4d45769399fe3ed8e0615e3282cf5b7
+  srcSpan fbf339ac9b9eae31a89ba940dccb0289
+import  -/  Language.Fortran.Parser 59e506b7f9b623442ab6ce146631eefb
+  exports: 83a6073254db4377feeca61632e25716
+import  -/  LanguageFortranTools 7890a5e96ab51325aa3603dbd4691bf4
+  exports: 83b35210801e0c6fe3fd2a2c2ff1ecd0
+  Anno e22809b44b97ccfdb28bfb19047d139f
+  appendToMap dc2f60dee1c2c768663fa5922bc11748
+  checkSrcLocBefore 44a93ac0ce2939531e607f4ceb3bbfee
+  checkSrcSpanAfter 83822a4891ce742ba9bc58d3f7c76a5f
+  checkSrcSpanBefore 3265fed738c647c8f56797925ccfce8f
+  checkSrcSpanBefore_line 7d93eca39e9cb15af266b3c50e034551
+  combineMaps 36b30c1166f90ccbb57ffb59fe770f13
+  extractContainedVars 0331c35bcc1dc0d38694c0dba9afce40
+  extractExpr 97cf1ec599eecd56ac1929221fcc2a8f
+  extractExpr_list 90ec2eadeb0a2ed115fbe8bc2fb1ab33
+  extractOperands 4ddf57e446d8f47e8d5ca35eb2b33baf
+  extractVarNames 0c06747830f37e92c31e4dbe6aedfd6f
+  getEarliestSrcSpan 98f9b1b0a30d6978a0e6d8f7d74a2ecb
+  listConcatUnique 71a2194601dc95d4bf102289f5a59052
+  listRemoveDuplications 4378f4b10536dcf8634c95685ebad55d
+  nullAnno e3239ac8aba218af15f945a652936cc8
+  nullSrcSpan 088997d0b27116160aebfa68704495fa
+  srcSpanInSrcSpan a76610d0bc28bdaeb5568518f1316a4d
+  varNameStr 95ac032c44f5687eb820ca35335877d7
+import  -/  Warning 37568988846bf7dc0ef160b198d03155
+  exports: 66d1a373648e452607e9cbdbd4f3a821
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics ea99a8062a9608312218ffd7309b5391
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Aliases 09d594ec9a31e3c858478cc583771648
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Schemes 4b69980d384f37e61fe24ae708a71220
+a8c73f7c14598471c23317d514c09447
+  $s$fDataArgList ::
+    Data.Data.Data
+      (Language.Fortran.ArgList
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ArgList
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fDataArgList_$cp1Data
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgfoldl
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgunfold
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  VarAccessAnalysis.$s$fDataArgList3
+                  VarAccessAnalysis.$s$fDataArgList2
+                  (Language.Fortran.$fDataArgList_$cdataCast1
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  VarAccessAnalysis.$s$fDataArgList1
+                  (Language.Fortran.$fDataArgList_$cgmapT
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQl
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQr
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQ
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQi
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapM
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapMp
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapMo
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData) -}
+81ad428b32cc7a14e8920b7aaac157ad
+  $s$fDataArgList1 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c (Language.Fortran.ArgList
+               (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])))
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                   (ds8 :: forall d e.
+                           (Data.Data.Data d, Data.Data.Data e) =>
+                           c (t d e)) ->
+                 GHC.Base.Nothing
+                   @ (c (Language.Fortran.ArgList
+                           (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])))) -}
+d26252d87fd555ffeab376ac7f4ce7a3
+  $s$fDataArgList2 ::
+    Language.Fortran.ArgList
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: Language.Fortran.ArgList
+                             (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])) ->
+                 Language.Fortran.$ta2TTLH2iFC1qRliXzNZGA) -}
+84c0dfb69abd6fb55511b4cf8780f0c0
+  $s$fDataArgList3 ::
+    Language.Fortran.ArgList
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*H>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds8 :: Language.Fortran.ArgList
+                             (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])) ->
+                 case ds8 of wild { Language.Fortran.ArgList ds9 ds10 ->
+                 Language.Fortran.$ca2TTLH2iFC1qRliXzNZGA }) -}
+bffbbaeff43e385de4ec59dea7e723fc
+  $s$fDataArgList4 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d. Data.Data.Data d => c (t d))
+    -> GHC.Base.Maybe
+         (c (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]))
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                   (ds8 :: forall d. Data.Data.Data d => c (t d)) ->
+                 GHC.Base.Nothing
+                   @ (c (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]))) -}
+f307496789fcfd226caf772031c0f9fa
+  $s$fDataArgList5 ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 Data.Map.Base.mapDataType) -}
+251324b71095896c6e6e7d87ee69ecb7
+  $s$fDataArgList6 ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <L,A>,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 Data.Map.Base.fromListConstr) -}
+5a3722d007838ca5dcfaec159cff3cab
+  $s$fDataArgList_$dData ::
+    Data.Data.Data
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+  {- Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fDataArgList_$s$fDataMap -}
+8056ed68e2440aab017e5cbe559ab22a
+  $s$fDataArgList_$dData1 :: Data.Data.Data [GHC.Base.String]
+  {- Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fDataArgList_$s$fData[] -}
+b3345b75374fb7bce3c4fcf6e09a100b
+  $s$fDataArgList_$s$fDataMap ::
+    Data.Data.Data
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Base.$fDataMap_$cp1Data
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgfoldl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgunfold
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  VarAccessAnalysis.$s$fDataArgList6
+                  VarAccessAnalysis.$s$fDataArgList5
+                  VarAccessAnalysis.$s$fDataArgList4
+                  (Data.Map.Base.$fDataMap_$cdataCast2
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapT
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQr
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQ
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQi
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapM
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapMp
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapMo
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     VarAccessAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1) -}
+5e0b83d43840d947268ebf4180e4d4c6
+  $s$fDataArgList_$s$fData[] :: Data.Data.Data [[GHC.Types.Char]]
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ [[GHC.Types.Char]]
+                  (Data.Data.$fData[]_$cp1Data
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgunfold
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$ctoConstr
+                  VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$cdataTypeOf
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$cdataCast2
+                  (Data.Data.$fData[]_$cgmapT
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapM
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[]) -}
+fafe6200f4aa94f1a96ca8f0a1358b19
+  $s$fDataArgList_$s$fData[]_$cdataCast2 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe (c [[GHC.Types.Char]])
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                   (ds8 :: forall d e.
+                           (Data.Data.Data d, Data.Data.Data e) =>
+                           c (t d e)) ->
+                 GHC.Base.Nothing @ (c [[GHC.Types.Char]])) -}
+0b1cc6f5ac8482cac8bfb80297c3a0f7
+  $s$fDataArgList_$s$fData[]_$cdataTypeOf ::
+    [[GHC.Types.Char]] -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: [[GHC.Types.Char]]) -> Data.Data.listDataType) -}
+3aa34ada0bd758c19a8118824b88186d
+  $s$fDataArgList_$s$fData[]_$ctoConstr ::
+    [[GHC.Types.Char]] -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds8 :: [[GHC.Types.Char]]) ->
+                 case ds8 of wild {
+                   [] -> Data.Data.nilConstr : ds9 ds10 -> Data.Data.consConstr }) -}
+ef06a629d38f3cd3049e6f535de34f5c
+  $s$fDataProgUnit ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ProgUnit
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fDataProgUnit_$cp1Data
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgfoldl
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgunfold
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  VarAccessAnalysis.$s$fDataProgUnit3
+                  VarAccessAnalysis.$s$fDataProgUnit2
+                  (Language.Fortran.$fDataProgUnit_$cdataCast1
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  VarAccessAnalysis.$s$fDataProgUnit1
+                  (Language.Fortran.$fDataProgUnit_$cgmapT
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQl
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQr
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQ
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQi
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapM
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMp
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMo
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fDataArgList_$dData) -}
+203b5778dded78b32324a43e9f436f6d
+  $s$fDataProgUnit1 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c (Language.Fortran.ProgUnit
+               (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])))
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                   (ds8 :: forall d e.
+                           (Data.Data.Data d, Data.Data.Data e) =>
+                           c (t d e)) ->
+                 GHC.Base.Nothing
+                   @ (c (Language.Fortran.ProgUnit
+                           (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])))) -}
+69c7902ef7293650c2f8c85d5e66bc60
+  $s$fDataProgUnit2 ::
+    Language.Fortran.ProgUnit
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: Language.Fortran.ProgUnit
+                             (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])) ->
+                 Language.Fortran.$t7VQWdGSfPYu9Iisks7pSs4) -}
+900afe963a02dde738897655fd1bdf99
+  $s$fDataProgUnit3 ::
+    Language.Fortran.ProgUnit
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ (ds8 :: Language.Fortran.ProgUnit
+                             (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])) ->
+                 case ds8 of wild {
+                   Language.Fortran.Main ds9 ds10 ds11 ds12 ds13 ds14
+                   -> Language.Fortran.$c4xrtyfBJfgG9CdmZCyXplY
+                   Language.Fortran.Sub ds9 ds10 ds11 ds12 ds13 ds14
+                   -> Language.Fortran.$c7zjF0LiJYf2AdH4exyJgTk
+                   Language.Fortran.Function ds9 ds10 ds11 ds12 ds13 ds14 ds15
+                   -> Language.Fortran.$cHz24H293oUm0OxUULdlqBb
+                   Language.Fortran.Module ds9 ds10 ds11 ds12 ds13 ds14 ds15
+                   -> Language.Fortran.$cJF7ERNq7h76LqRZ36w7OdI
+                   Language.Fortran.BlockData ds9 ds10 ds11 ds12 ds13 ds14
+                   -> Language.Fortran.$cJMYppX9bYODKKluMTnLSGS
+                   Language.Fortran.PSeq ds9 ds10 ds11 ds12
+                   -> Language.Fortran.$cBhco6aZ1tyeC07hEtbJOeV
+                   Language.Fortran.Prog ds9 ds10 ds11
+                   -> Language.Fortran.$c1punZIYcQoU5BRBrTkMOur
+                   Language.Fortran.NullProg ds9 ds10
+                   -> Language.Fortran.$c4IpgnqT1fRXLxfwDHaby2z
+                   Language.Fortran.IncludeProg ds9 ds10 ds11 ds12
+                   -> Language.Fortran.$cCGFBodCaxL10tlXfi5MSfH }) -}
+ca41f8ab1a52f33e319363bf048cb7b2
+  $s$fData[] ::
+    Data.Data.Data
+      [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                  (Data.Data.$fData[]_$cp1Data
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgunfold
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  VarAccessAnalysis.$s$fData[]3
+                  VarAccessAnalysis.$s$fData[]2
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  VarAccessAnalysis.$s$fData[]1
+                  (Data.Data.$fData[]_$cgmapT
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapM
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     VarAccessAnalysis.$s$fData[]_$dData) -}
+bd0f9dee38e746341b36ccb41365e1a0
+  $s$fData[]1 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c [Language.Fortran.ProgUnit LanguageFortranTools.Anno])
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable :: Data.Typeable.Internal.Typeable t)
+                   (ds8 :: forall d e.
+                           (Data.Data.Data d, Data.Data.Data e) =>
+                           c (t d e)) ->
+                 GHC.Base.Nothing
+                   @ (c [Language.Fortran.ProgUnit LanguageFortranTools.Anno])) -}
+56498300a3890dfa7db924d28007888b
+  $s$fData[]2 ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds8 :: [Language.Fortran.ProgUnit
+                              LanguageFortranTools.Anno]) ->
+                 Data.Data.listDataType) -}
+e20b270e5514ab32a8d283b420ff03b4
+  $s$fData[]3 ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds8 :: [Language.Fortran.ProgUnit
+                              LanguageFortranTools.Anno]) ->
+                 case ds8 of wild {
+                   [] -> Data.Data.nilConstr : ds9 ds10 -> Data.Data.consConstr }) -}
+9995a556b03392d11c3b11f56ecd0c6d
+  $s$fData[]_$dData ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+  {- Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fDataProgUnit -}
+fde5cf87c3083a5ee4f03a1a18687c2b
+  $s$fEqExpr ::
+    GHC.Classes.Eq
+      (Language.Fortran.Expr
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Expr
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqExpr_$c==
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fEqExpr_$dEq)
+                  VarAccessAnalysis.$s$fEqExpr_$s$fEqExpr_$c/= -}
+1d7ca91579d281a543af1a87d2a068b9
+  $s$fEqExpr_$dEq ::
+    GHC.Classes.Eq
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fEqExpr_$s$fEqMap -}
+9397f456421c7a510a412b4d8f90b3b7
+  $s$fEqExpr_$s$fEqExpr_$c/= ::
+    Language.Fortran.Expr
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.Expr
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (a :: Language.Fortran.Expr
+                           (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                   (b :: Language.Fortran.Expr
+                           (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])) ->
+                 case Language.Fortran.$fEqExpr_$c==
+                        @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                        VarAccessAnalysis.$s$fEqExpr_$dEq
+                        a
+                        b of wild {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True -> GHC.Types.False }) -}
+2de6465d202729b875f3906228eab632
+  $s$fEqExpr_$s$fEqMap ::
+    GHC.Classes.Eq
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Base.$fEqMap_$c==
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fEq[]_$s$fEq[]1
+                     GHC.Classes.$fEq[]_$s$fEq[]2)
+                  VarAccessAnalysis.$s$fEqExpr_$s$fEqMap_$c/= -}
+a3f408eb07ea9d121c76a01c8e76f8b7
+  $s$fEqExpr_$s$fEqMap_$c/= ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>, Inline: INLINE (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                   (y :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 GHC.Classes.not
+                   (Data.Map.Base.$fEqMap_$c==
+                      @ [GHC.Types.Char]
+                      @ [GHC.Base.String]
+                      GHC.Classes.$fEq[]_$s$fEq[]1
+                      GHC.Classes.$fEq[]_$s$fEq[]2
+                      x
+                      y)) -}
+23eecf4d6cb8fb82b087323c54df4142
+  $s$fEqVarName ::
+    GHC.Classes.Eq
+      (Language.Fortran.VarName
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqVarName_$c==
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fEqExpr_$dEq)
+                  (Language.Fortran.$fEqVarName_$c/=
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fEqExpr_$dEq) -}
+466e2f247564c4e6e9ed95c6ed259a4c
+  $s$fOrdMap ::
+    GHC.Classes.Ord
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  VarAccessAnalysis.$s$fEqExpr_$dEq
+                  (Data.Map.Base.$fOrdMap_$ccompare
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$c<
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$c<=
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$c>
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$c>=
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$cmax
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2)
+                  (Data.Map.Base.$fOrdMap_$cmin
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]2) -}
+26f69d3578a412ce3d53a8f215a5957f
+  $s$fOrdVarName ::
+    GHC.Classes.Ord
+      (Language.Fortran.VarName
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  VarAccessAnalysis.$s$fOrdVarName_$s$fOrdVarName_$cp1Ord
+                  (Language.Fortran.$fOrdVarName_$ccompare
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$c<
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$c<=
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$c>
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$c>=
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$cmax
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd)
+                  (Language.Fortran.$fOrdVarName_$cmin
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     VarAccessAnalysis.$s$fOrdVarName_$dOrd) -}
+3e0752860f64fd641a74077771468d5a
+  $s$fOrdVarName_$dOrd ::
+    GHC.Classes.Ord
+      (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fOrdMap -}
+5fa5128ea9a17ef78db7d0bceca25cc1
+  $s$fOrdVarName_$s$fOrdVarName_$cp1Ord ::
+    GHC.Classes.Eq
+      (Language.Fortran.VarName
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                VarAccessAnalysis.$s$fEqVarName -}
+18f855b183bffbb4b65847420fef626b
+  $stypeRep#10 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#11
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   GHC.Types.$tcChar
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+bf7fccce705f4023c57938182e8ac036
+  $stypeRep#11 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   16781394633280494409##
+                   2520638044472077920##) -}
+629d26643b949735c26c215423112dad
+  $stypeRep#14 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#15
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   GHC.Types.$tc[]
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+105d6fb5cea13232457ebf639167b966
+  $stypeRep#15 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   17730107610217102821##
+                   9866972337190828755##) -}
+34203a90d001760d0fbad207f32ee7e8
+  $stypeRep#18 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#19
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+44bf7c038caa51c56c0fba520bec4cf4
+  $stypeRep#19 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#10
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+81a4265a73b33841825ceae62ac3d32a
+  $stypeRep#2 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Data.Map.Base.$tcMap
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+6c8dc7f6c07a570fa1955c3f76c87ca9
+  $stypeRep#22 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#2 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#23
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+1ef00d6b8a453ca5aa9ef2ee26698e45
+  $stypeRep#23 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#18
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+aa33b1e93ff2a14471926a80db6d24ad
+  $stypeRep#26 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#23
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+f40437d3e32f2cb079df7ae8334ed718
+  $stypeRep#29 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#22 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#30
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+9ec2d8eb40d6eadaaea1264a4ec5302b
+  $stypeRep#3 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   17306070887558246498##
+                   16032333906417739553##) -}
+0c97857810a8a6736bd7ca1613de2b89
+  $stypeRep#30 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#26
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+29bfbdc21762d9453b69733489c8c00f
+  $stypeRep#33 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#34
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcDecl
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+0143b192543977e7239fb72c0208c7fb
+  $stypeRep#34 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   1333565254055508066##
+                   2348454038217729491##) -}
+d674cef685f1ed4a6c0e3e051ab1166f
+  $stypeRep#37 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#38
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcProgUnit
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+82543a56ce1a798fc11b3dbd959f254d
+  $stypeRep#38 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   10056753431434216976##
+                   6055604396548152995##) -}
+614c8bbd484924bb5609875cc3655e13
+  $stypeRep#41 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#42
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcBlock
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+632a0dfe6aeb02982782cdf4ba942a1d
+  $stypeRep#42 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   8622183916436018781##
+                   7917166659374511045##) -}
+58bc1405fdd3b264fd69bf885674b6ad
+  $stypeRep#45 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#46
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcExpr
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+b4feb99bcaef2ca3f65d56a0b6174b3d
+  $stypeRep#46 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   13621902738272893592##
+                   4484539928315244892##) -}
+08e21e0c49550c5059532988ac0ee492
+  $stypeRep#49 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#37 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#50
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+7f78e819cdb87c4505243bd128c620e5
+  $stypeRep#50 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#51
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+cbbed514273d37442921c3b7381e02d0
+  $stypeRep#51 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.$stypeRep#_types1 of kt_fps1 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps1) of dt4 { GHC.Fingerprint.Type.Fingerprint dt3 dt5 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.$stypeRep#_types of kt_fps2 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps2) of dt6 { GHC.Fingerprint.Type.Fingerprint dt7 dt8 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt7
+                   dt8
+                   Data.Map.Base.$tcMap
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   VarAccessAnalysis.$stypeRep#_types } } } } } }) -}
+f34f3bb8f3988c063c4241526dc615bb
+  $stypeRep#52 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#53
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+003aa39c368a2d476c85a555428e5ee3
+  $stypeRep#53 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#_types1
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+5d3ac083a7ebb0b0d96c2dad2fa2a454
+  $stypeRep#54 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#19
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+bf320ddf80ba02e944b74e5bb0ab1ef3
+  $stypeRep#57 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#58
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcArgName
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+461b941260c24790b09115ae663f7301
+  $stypeRep#58 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   9242974714316311215##
+                   9957090134460514018##) -}
+8de620769660dae1faeffe058b810fdb
+  $stypeRep#6 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#7
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcFortran
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+4de08e96d120cf2761f5e72927076bb7
+  $stypeRep#7 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   6882220124880764793##
+                   15271875958298145102##) -}
+037dd0b513dd35c6168c750f17e8c0dd
+  $stypeRep#_types :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Base.++
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#_types1
+                   VarAccessAnalysis.$stypeRep#52) -}
+844b9c3685dc930cc28526dc0106e4f0
+  $stypeRep#_types1 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#54
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+ab0f9d797ec97d0a41aad452454b11a1
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   VarAccessAnalysis.$trModule2
+                   VarAccessAnalysis.$trModule1) -}
+a24ddcbd4efcec732d1feade2bef6fb9
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "VarAccessAnalysis"#) -}
+becaa48996323bae2c9002603ecc981a
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "main"#) -}
+2611fd3b2b8e484c0b5f773c16934c7d
+  $w$sgo10 ::
+    LanguageFortranTools.Anno
+    -> Language.Fortran.Variable
+    -> a1
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a1
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a1
+  {- Arity: 4, Strictness: <L,U><L,U><L,U><S,1*U>, Inline: [0] -}
+cd74f1a452bdae11e785547f3ff10dac
+  $wanalyseAllVarAccess ::
+    [GHC.Base.String]
+    -> Language.Fortran.Program LanguageFortranTools.Anno
+    -> (# [VarAccessAnalysis.LocalVarAccessAnalysis],
+          VarAccessAnalysis.LocalVarValueAnalysis,
+          [Language.Fortran.VarName LanguageFortranTools.Anno],
+          [Language.Fortran.VarName LanguageFortranTools.Anno] #)
+  {- Arity: 2, Strictness: <L,U><L,U>, Inline: [0],
+     Unfolding: (\ (w :: [GHC.Base.String])
+                   (w1 :: Language.Fortran.Program LanguageFortranTools.Anno) ->
+                 let {
+                   declarations :: [Language.Fortran.VarName
+                                      LanguageFortranTools.Anno]
+                   = Data.Generics.Schemes.everything
+                       @ [Language.Fortran.VarName LanguageFortranTools.Anno]
+                       (GHC.Base.++
+                          @ (Language.Fortran.VarName LanguageFortranTools.Anno))
+                       VarAccessAnalysis.analyseAllVarAccess5
+                       @ (Language.Fortran.Program LanguageFortranTools.Anno)
+                       VarAccessAnalysis.$s$fData[]
+                       w1
+                 } in
+                 let {
+                   ds8 :: (VarAccessAnalysis.LocalVarAccessAnalysis,
+                           VarAccessAnalysis.LocalVarAccessAnalysis)
+                   = case VarAccessAnalysis.$wanalyseLocalVarAccess
+                            w
+                            declarations
+                            w1 of ww { (#,#) ww1 ww2 ->
+                     (ww1, ww2) }
+                 } in
+                 (# GHC.Types.:
+                      @ VarAccessAnalysis.LocalVarAccessAnalysis
+                      (case ds8 of wild { (,) localVarAccesses ioRoutineAnalysis ->
+                       localVarAccesses })
+                      (GHC.Types.:
+                         @ VarAccessAnalysis.LocalVarAccessAnalysis
+                         (case ds8 of wild { (,) localVarAccesses ioRoutineAnalysis ->
+                          ioRoutineAnalysis })
+                         (GHC.Types.[] @ VarAccessAnalysis.LocalVarAccessAnalysis)),
+                    Data.Generics.Schemes.everything
+                      @ (Data.Map.Base.Map
+                           (Language.Fortran.VarName LanguageFortranTools.Anno)
+                           [(Language.Fortran.SrcSpan,
+                             Language.Fortran.Expr LanguageFortranTools.Anno)])
+                      VarAccessAnalysis.analyseAllVarAccess4
+                      VarAccessAnalysis.analyseAllVarAccess1
+                      @ (Language.Fortran.Program LanguageFortranTools.Anno)
+                      VarAccessAnalysis.$s$fData[]
+                      w1,
+                    VarAccessAnalysis.getArguments w1, declarations #)) -}
+04b7cc84f4d2948f03e05fad93c08ad0
+  $wanalyseLocalVarAccess ::
+    [GHC.Base.String]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> Language.Fortran.Program LanguageFortranTools.Anno
+    -> (# VarAccessAnalysis.LocalVarAccessAnalysis,
+          VarAccessAnalysis.LocalVarAccessAnalysis #)
+  {- Arity: 3, Strictness: <L,U><L,U><L,U>, Inline: [0] -}
+b2e6a270214faa08279af2f21c6d026a
+  $wgetAccessLocationsAfterSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> (# [Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan] #)
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(A,U(A,U(U),U(U)))>,
+     Inline: [0],
+     Unfolding: (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 let {
+                   ds8 :: ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                   = case w of wild { (,,,) ds9 ds10 ds11 ds12 ->
+                     case ds9 of wild1 {
+                       []
+                       -> case VarAccessAnalysis.getAccessLocationsAfterSrcSpan2
+                          ret_ty ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                          of {}
+                       : x xs
+                       -> case w1 of ww { Language.Fortran.VarName ww1 ww2 ->
+                          VarAccessAnalysis.$wpoly_go10
+                            @ ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                            VarAccessAnalysis.getAccessLocationsAfterSrcSpan1
+                            ww1
+                            ww2
+                            x } } }
+                 } in
+                 (# case ds8 of wild { (,) reads writes ->
+                    GHC.List.filter
+                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                      (\ (x :: Language.Fortran.SrcSpan) ->
+                       LanguageFortranTools.checkSrcSpanAfter x w2)
+                      reads },
+                    case ds8 of wild { (,) reads writes ->
+                    GHC.List.filter
+                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                      (\ (x :: Language.Fortran.SrcSpan) ->
+                       LanguageFortranTools.checkSrcSpanAfter x w2)
+                      writes } #)) -}
+4dcee04e31635ec23bae39ce7061c2b1
+  $wgetAccessLocationsBeforeSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> (# [Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan] #)
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(U(A,U(U),U(U)),A)>,
+     Inline: [0],
+     Unfolding: (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 let {
+                   ds8 :: ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                   = case w of wild { (,,,) ds9 ds10 ds11 ds12 ->
+                     case ds9 of wild1 {
+                       []
+                       -> case VarAccessAnalysis.getAccessLocationsBeforeSrcSpan1
+                          ret_ty ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                          of {}
+                       : x xs
+                       -> case w1 of ww { Language.Fortran.VarName ww1 ww2 ->
+                          VarAccessAnalysis.$wpoly_go10
+                            @ ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                            VarAccessAnalysis.getAccessLocationsAfterSrcSpan1
+                            ww1
+                            ww2
+                            x } } }
+                 } in
+                 (# case ds8 of wild { (,) reads writes ->
+                    GHC.List.filter
+                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                      (\ (x :: Language.Fortran.SrcSpan) ->
+                       LanguageFortranTools.checkSrcSpanBefore x w2)
+                      reads },
+                    case ds8 of wild { (,) reads writes ->
+                    GHC.List.filter
+                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                      (\ (x :: Language.Fortran.SrcSpan) ->
+                       LanguageFortranTools.checkSrcSpanBefore x w2)
+                      writes } #)) -}
+bf03272585165dbdeec6c938e835ba88
+  $wgetAccessLocationsInsideSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> (# [Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan] #)
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(U(A,U(U),U(U)),U(A,U(U),U(U)))>,
+     Inline: [0],
+     Unfolding: (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 let {
+                   ds8 :: ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                   = case w1 of ww { Language.Fortran.VarName ww1 ww2 ->
+                     case w of wild { (,,,) ds9 ds10 ds11 ds12 ->
+                     case ds9 of wild1 {
+                       []
+                       -> case VarAccessAnalysis.getAccessLocationsInsideSrcSpan1
+                          ret_ty ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                          of {}
+                       : x xs
+                       -> VarAccessAnalysis.$wpoly_go10
+                            @ ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                            VarAccessAnalysis.getAccessLocationsAfterSrcSpan1
+                            ww1
+                            ww2
+                            (VarAccessAnalysis.getAccessesInsideSrcSpan x w2) } } }
+                 } in
+                 (# case ds8 of wild { (,) readsInside writesInside ->
+                    readsInside },
+                    case ds8 of wild { (,) readsInside writesInside ->
+                    writesInside } #)) -}
+b8ae2d57c98246f50aef5fab23bf0cb3
+  $wgetAccessesBetweenManySrcSpans ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> [(Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)]
+    -> (# [Language.Fortran.VarName LanguageFortranTools.Anno],
+          [Language.Fortran.VarName LanguageFortranTools.Anno] #)
+  {- Arity: 2, Strictness: <L,U(U,A,A,A)><S,1*U>, Inline: [0] -}
+a9ff6bcedc32adc663ab4af722f54eb5
+  $wgetAccessesBetweenSrcSpans ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.SrcLoc
+    -> Language.Fortran.SrcLoc
+    -> (# [Language.Fortran.VarName LanguageFortranTools.Anno],
+          [Language.Fortran.VarName LanguageFortranTools.Anno] #)
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,U(A,U(U),U(U))><L,U(A,U(U),U(U))>,
+     Inline: [0] -}
+a4ddf058e1e0f015f406432db60a7615
+  $wgetAccessesBetweenSrcSpansIgnoreBuildSrcSpans ::
+    Language.Fortran.SrcLoc
+    -> Language.Fortran.SrcLoc
+    -> [Language.Fortran.SrcSpan]
+    -> (# (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc),
+          [(Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)] #)
+  {- Arity: 3, HasNoCafRefs, Strictness: <L,U><L,U><S,1*U>,
+     Inline: [0] -}
+ec3601ec01c87382e85b2d065ce10c6e
+  $wgetNonTempVars ::
+    Language.Fortran.SrcSpan
+    -> [VarAccessAnalysis.LocalVarAccessAnalysis]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 3, Strictness: <L,U(A,U(A,U(U),A))><S,1*U><L,1*U>,
+     Inline: [0] -}
+35382ae1e6c2a1c92c19fb25d79f3e6a
+  $wgetPrexistingVars ::
+    Language.Fortran.SrcSpan
+    -> [VarAccessAnalysis.LocalVarAccessAnalysis]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 3,
+     Strictness: <L,U(U(A,U(U),U(U)),U(A,U(U),U(U)))><S,1*U><L,1*U>,
+     Inline: [0] -}
+fe5067f3417ba213c1f10a6d65e2f4bf
+  $wgetValueAtSrcSpan ::
+    LanguageFortranTools.Anno
+    -> Language.Fortran.Variable
+    -> Language.Fortran.SrcSpan
+    -> VarAccessAnalysis.LocalVarValueAnalysis
+    -> Language.Fortran.Expr LanguageFortranTools.Anno
+  {- Arity: 4, Strictness: <L,U><L,U><L,U(U(A,U(U),U(U)),A)><S,1*U>,
+     Inline: [0],
+     Unfolding: (\ (ww :: LanguageFortranTools.Anno)
+                   (ww1 :: Language.Fortran.Variable)
+                   (w :: Language.Fortran.SrcSpan)
+                   (ww2 :: VarAccessAnalysis.LocalVarValueAnalysis) ->
+                 letrec {
+                   go8 :: [(Language.Fortran.SrcSpan,
+                            Language.Fortran.Expr LanguageFortranTools.Anno)]
+                          -> Language.Fortran.Expr LanguageFortranTools.Anno
+                          -> Language.Fortran.Expr LanguageFortranTools.Anno
+                     {- Arity: 2, Strictness: <S,1*U><L,1*U> -}
+                   = \ (ds8 :: [(Language.Fortran.SrcSpan,
+                                 Language.Fortran.Expr LanguageFortranTools.Anno)])
+                       (eta :: Language.Fortran.Expr LanguageFortranTools.Anno) ->
+                     case ds8 of wild {
+                       [] -> eta
+                       : y ys
+                       -> go8
+                            ys
+                            (case y of wild1 { (,) item_src expr ->
+                             case item_src of ww3 { (,) ww4 ww5 ->
+                             case ww5 of ww6 { Language.Fortran.SrcLoc ww7 ww8 ww9 ->
+                             case ww8 of ww10 { GHC.Types.I# ww11 ->
+                             case w of ww12 { (,) ww13 ww14 ->
+                             case ww13 of ww15 { Language.Fortran.SrcLoc ww16 ww17 ww18 ->
+                             case ww17 of ww19 { GHC.Types.I# ww20 ->
+                             case GHC.Prim.tagToEnum#
+                                    @ GHC.Types.Bool
+                                    (GHC.Prim.<# ww11 ww20) of wild2 {
+                               GHC.Types.False
+                               -> case GHC.Prim.tagToEnum#
+                                         @ GHC.Types.Bool
+                                         (GHC.Prim.==# ww11 ww20) of wild3 {
+                                    GHC.Types.False -> eta
+                                    GHC.Types.True
+                                    -> case ww9 of wild4 { GHC.Types.I# x ->
+                                       case ww18 of wild5 { GHC.Types.I# y1 ->
+                                       case GHC.Prim.tagToEnum#
+                                              @ GHC.Types.Bool
+                                              (GHC.Prim.<# x y1) of wild6 {
+                                         GHC.Types.False -> eta GHC.Types.True -> expr } } } }
+                               GHC.Types.True -> expr } } } } } } } }) }
+                 } in
+                 go8
+                   (VarAccessAnalysis.$wpoly_go10
+                      @ [(Language.Fortran.SrcSpan,
+                          Language.Fortran.Expr LanguageFortranTools.Anno)]
+                      (GHC.Types.[]
+                         @ (Language.Fortran.SrcSpan,
+                            Language.Fortran.Expr LanguageFortranTools.Anno))
+                      ww
+                      ww1
+                      ww2)
+                   VarAccessAnalysis.getValueAtSrcSpan1) -}
+7cd07657271fdb8b0440215138176f48
+  $wpoly_go10 ::
+    a
+    -> LanguageFortranTools.Anno
+    -> Language.Fortran.Variable
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+    -> a
+  {- Arity: 4, Strictness: <L,1*U><L,U><L,U><S,1*U>, Inline: [0] -}
+1f2aea5693a65d31035858028d6ca1d5
+  type LocalVarAccessAnalysis =
+    Data.Map.Base.Map
+      (Language.Fortran.VarName LanguageFortranTools.Anno)
+      VarAccessAnalysis.VarAccessRecord
+687b3b8e29a60e738ae2f3e897710926
+  type LocalVarValueAnalysis =
+    Data.Map.Base.Map
+      (Language.Fortran.VarName LanguageFortranTools.Anno)
+      [(Language.Fortran.SrcSpan,
+        Language.Fortran.Expr LanguageFortranTools.Anno)]
+e08531c66c90e73f54dbd5e70c7e78e1
+  type VarAccessAnalysis =
+    ([VarAccessAnalysis.LocalVarAccessAnalysis],
+     VarAccessAnalysis.LocalVarValueAnalysis,
+     [Language.Fortran.VarName LanguageFortranTools.Anno],
+     [Language.Fortran.VarName LanguageFortranTools.Anno])
+5728ce08a289a44c36a1bc2453e8d3a7
+  type VarAccessRecord =
+    ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+aa100b26787dde7da781369426673db6
+  type VarAccessRecordWV =
+    ([(Language.Fortran.SrcSpan,
+       Language.Fortran.Expr LanguageFortranTools.Anno)],
+     [(Language.Fortran.SrcSpan,
+       Language.Fortran.Expr LanguageFortranTools.Anno)])
+429efafcffdcb6ac0785012d5b89c59d
+  analyseAllVarAccess ::
+    [GHC.Base.String]
+    -> Language.Fortran.Program LanguageFortranTools.Anno
+    -> VarAccessAnalysis.VarAccessAnalysis
+  {- Arity: 2, Strictness: <L,U><L,U>m, Inline: INLINE[0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w :: [GHC.Base.String])
+                   (w1 :: Language.Fortran.Program LanguageFortranTools.Anno) ->
+                 case VarAccessAnalysis.$wanalyseAllVarAccess
+                        w
+                        w1 of ww { (#,,,#) ww1 ww2 ww3 ww4 ->
+                 (ww1, ww2, ww3, ww4) }) -}
+ae8914c653509ca0e093d363920f2d2d
+  analyseAllVarAccess1 ::
+    Data.Data.Data a =>
+    a
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno)
+         [(Language.Fortran.SrcSpan,
+           Language.Fortran.Expr LanguageFortranTools.Anno)]
+  {- Arity: 2,
+     Strictness: <S(C(S(SLLLL))LLLLLLLLLLLLLL),1*U(1*C1(U(U,U,A,A,A)),A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a ($dData :: Data.Data.Data a) (eta :: a) ->
+                 case (Data.Data.$p1Data @ a $dData)
+                        `cast`
+                      (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N)
+                        (GHC.Prim.proxy#
+                           @ *
+                           @ a) of wild { Data.Typeable.Internal.TypeRep dt dt1 ds8 ds9 ds10 ->
+                 case VarAccessAnalysis.analyseAllVarAccess2 of wild1 { Data.Typeable.Internal.TypeRep dt2 dt3 ds11 ds12 ds13 ->
+                 case GHC.Prim.tagToEnum#
+                        @ GHC.Types.Bool
+                        (GHC.Prim.eqWord# dt dt2) of wild2 {
+                   GHC.Types.False
+                   -> Data.Map.Base.Tip
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        @ [(Language.Fortran.SrcSpan,
+                            Language.Fortran.Expr LanguageFortranTools.Anno)]
+                   GHC.Types.True
+                   -> case GHC.Prim.tagToEnum#
+                             @ GHC.Types.Bool
+                             (GHC.Prim.eqWord# dt1 dt3) of wild4 {
+                        GHC.Types.False
+                        -> Data.Map.Base.Tip
+                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                             @ [(Language.Fortran.SrcSpan,
+                                 Language.Fortran.Expr LanguageFortranTools.Anno)]
+                        GHC.Types.True
+                        -> case eta
+                                  `cast`
+                                (UnsafeCo representational a (Language.Fortran.Fortran
+                                                                LanguageFortranTools.Anno)) of wild7 {
+                             DEFAULT
+                             -> Data.Map.Base.Tip
+                                  @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                  @ [(Language.Fortran.SrcSpan,
+                                      Language.Fortran.Expr LanguageFortranTools.Anno)]
+                             Language.Fortran.Assg ds14 src expr1 expr2
+                             -> case expr1 of wild8 {
+                                  DEFAULT
+                                  -> Data.Map.Base.Tip
+                                       @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                       @ [(Language.Fortran.SrcSpan,
+                                           Language.Fortran.Expr LanguageFortranTools.Anno)]
+                                  Language.Fortran.Var ds15 ds16 lst
+                                  -> let {
+                                       lvl108 :: (Language.Fortran.SrcSpan,
+                                                  Language.Fortran.Expr LanguageFortranTools.Anno)
+                                         {- Strictness: m -}
+                                       = (src, expr2)
+                                     } in
+                                     letrec {
+                                       go8 :: [Language.Fortran.VarName LanguageFortranTools.Anno]
+                                              -> Data.Map.Base.Map
+                                                   (Language.Fortran.VarName
+                                                      LanguageFortranTools.Anno)
+                                                   [(Language.Fortran.SrcSpan,
+                                                     Language.Fortran.Expr
+                                                       LanguageFortranTools.Anno)]
+                                              -> Data.Map.Base.Map
+                                                   (Language.Fortran.VarName
+                                                      LanguageFortranTools.Anno)
+                                                   [(Language.Fortran.SrcSpan,
+                                                     Language.Fortran.Expr
+                                                       LanguageFortranTools.Anno)]
+                                         {- Arity: 2, Strictness: <S,1*U><S,U> -}
+                                       = \ (ds17 :: [Language.Fortran.VarName
+                                                       LanguageFortranTools.Anno])
+                                           (eta1 :: Data.Map.Base.Map
+                                                      (Language.Fortran.VarName
+                                                         LanguageFortranTools.Anno)
+                                                      [(Language.Fortran.SrcSpan,
+                                                        Language.Fortran.Expr
+                                                          LanguageFortranTools.Anno)]) ->
+                                         case ds17 of wild9 {
+                                           [] -> eta1
+                                           : y ys
+                                           -> go8
+                                                ys
+                                                (LanguageFortranTools.appendToMap
+                                                   @ (Language.Fortran.VarName
+                                                        LanguageFortranTools.Anno)
+                                                   @ (Language.Fortran.SrcSpan,
+                                                      Language.Fortran.Expr
+                                                        LanguageFortranTools.Anno)
+                                                   VarAccessAnalysis.$s$fOrdVarName
+                                                   y
+                                                   lvl108
+                                                   eta1) }
+                                     } in
+                                     go8
+                                       (LanguageFortranTools.extractVarNames_go lst)
+                                       (Data.Map.Base.Tip
+                                          @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                          @ [(Language.Fortran.SrcSpan,
+                                              Language.Fortran.Expr
+                                                LanguageFortranTools.Anno)]) } } } } } }) -}
+c8d1c5d6462dc24a688e82f3f608992f
+  analyseAllVarAccess10 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.analyseAllVarAccess_types1
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+9250061e86cfdb036cdd26be18f69250
+  analyseAllVarAccess11 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#19
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+2348dfe8e769535e3a90ef6f896a25e2
+  analyseAllVarAccess2 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#6 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.analyseAllVarAccess3
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+96c9750c920509f57d0659b6765bc89b
+  analyseAllVarAccess3 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.$stypeRep#29
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+f750d7cc252c3b49a9e05bb8390804a5
+  analyseAllVarAccess4 ::
+    Data.Map.Base.Map
+      (Language.Fortran.VarName LanguageFortranTools.Anno)
+      [(Language.Fortran.SrcSpan,
+        Language.Fortran.Expr LanguageFortranTools.Anno)]
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno)
+         [(Language.Fortran.SrcSpan,
+           Language.Fortran.Expr LanguageFortranTools.Anno)]
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno)
+         [(Language.Fortran.SrcSpan,
+           Language.Fortran.Expr LanguageFortranTools.Anno)]
+  {- Arity: 2,
+     Unfolding: (LanguageFortranTools.combineMaps
+                   @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                   @ (Language.Fortran.SrcSpan,
+                      Language.Fortran.Expr LanguageFortranTools.Anno)
+                   VarAccessAnalysis.$s$fOrdVarName) -}
+01b95aa303b6ee02a502f2e33fb4d7cf
+  analyseAllVarAccess5 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(C(S(SLLLL))LLLLLLLLLLLLLL),1*U(1*C1(U(U,U,A,A,A)),A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a ($dData :: Data.Data.Data a) (eta :: a) ->
+                 case (Data.Data.$p1Data @ a $dData)
+                        `cast`
+                      (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N)
+                        (GHC.Prim.proxy#
+                           @ *
+                           @ a) of wild { Data.Typeable.Internal.TypeRep dt dt1 ds8 ds9 ds10 ->
+                 case VarAccessAnalysis.analyseAllVarAccess6 of wild1 { Data.Typeable.Internal.TypeRep dt2 dt3 ds11 ds12 ds13 ->
+                 case GHC.Prim.tagToEnum#
+                        @ GHC.Types.Bool
+                        (GHC.Prim.eqWord# dt dt2) of wild2 {
+                   GHC.Types.False
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                   GHC.Types.True
+                   -> case GHC.Prim.tagToEnum#
+                             @ GHC.Types.Bool
+                             (GHC.Prim.eqWord# dt1 dt3) of wild4 {
+                        GHC.Types.False
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        GHC.Types.True
+                        -> VarAccessAnalysis.getDeclaredVarNames
+                             eta
+                               `cast`
+                             (UnsafeCo representational a (Language.Fortran.Decl
+                                                             LanguageFortranTools.Anno)) } } } }) -}
+e951ff843935d58c47995f289fe37624
+  analyseAllVarAccess6 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#33 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.analyseAllVarAccess7
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+30d14e905c3153a1205b6d2dccb8c242
+  analyseAllVarAccess7 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.analyseAllVarAccess8
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+0c23bd489c2e26872fb142be2f70b011
+  analyseAllVarAccess8 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.analyseAllVarAccess_types1 of kt_fps1 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps1) of dt4 { GHC.Fingerprint.Type.Fingerprint dt3 dt5 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.analyseAllVarAccess_types of kt_fps2 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps2) of dt6 { GHC.Fingerprint.Type.Fingerprint dt7 dt8 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt7
+                   dt8
+                   Data.Map.Base.$tcMap
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   VarAccessAnalysis.analyseAllVarAccess_types } } } } } }) -}
+abadda3a2b669daa10c62fd32b169f37
+  analyseAllVarAccess9 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.analyseAllVarAccess10
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+22aac08bcdb3ae0527082324a03c6e56
+  analyseAllVarAccess_progUnit ::
+    [GHC.Base.String]
+    -> Language.Fortran.ProgUnit LanguageFortranTools.Anno
+    -> VarAccessAnalysis.VarAccessAnalysis
+  {- Arity: 2, Strictness: <L,U><L,U>m,
+     Unfolding: InlineRule (2, True, False)
+                (\ (ioWriteSubroutineNames :: [GHC.Base.String])
+                   (progUnit :: Language.Fortran.ProgUnit
+                                  LanguageFortranTools.Anno) ->
+                 VarAccessAnalysis.analyseAllVarAccess
+                   ioWriteSubroutineNames
+                   (GHC.Types.:
+                      @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                      progUnit
+                      (GHC.Types.[]
+                         @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)))) -}
+7471a6997de32d60673e9fa5efd8521b
+  analyseAllVarAccess_types :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Base.++
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.analyseAllVarAccess_types1
+                   VarAccessAnalysis.analyseAllVarAccess9) -}
+c3e15efe1dd9aba92c61b9e8533fc1cb
+  analyseAllVarAccess_types1 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.analyseAllVarAccess11
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+2ae23918fdc97c523eca6f7663a69084
+  collectVarNames ::
+    [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> Language.Fortran.Expr LanguageFortranTools.Anno
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2, Strictness: <L,U><S,U>,
+     Unfolding: (\ (declarations :: [Language.Fortran.VarName
+                                       LanguageFortranTools.Anno])
+                   (item :: Language.Fortran.Expr LanguageFortranTools.Anno) ->
+                 let {
+                   exprVarNames :: [Language.Fortran.VarName
+                                      LanguageFortranTools.Anno]
+                   = case item of wild {
+                       DEFAULT
+                       -> GHC.Types.[]
+                            @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                       Language.Fortran.Var ds8 ds9 lst
+                       -> LanguageFortranTools.extractVarNames_go lst }
+                 } in
+                 case GHC.List.elem
+                        @ Language.Fortran.Variable
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        (case GHC.List.$wlenAcc
+                                @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                exprVarNames
+                                0# of ww2 { DEFAULT ->
+                         case GHC.Prim.tagToEnum#
+                                @ GHC.Types.Bool
+                                (GHC.Prim.># ww2 0#) of wild {
+                           GHC.Types.False -> GHC.Types.[] @ GHC.Types.Char
+                           GHC.Types.True
+                           -> case exprVarNames of wild1 {
+                                [] -> case GHC.List.badHead ret_ty Language.Fortran.Variable of {}
+                                : x ds8
+                                -> case x of wild2 { Language.Fortran.VarName ds9 exprVarNameStr ->
+                                   exprVarNameStr } } } })
+                        F95IntrinsicFunctions.f95IntrinsicFunctions of wild {
+                   GHC.Types.False
+                   -> letrec {
+                        go8 :: [Language.Fortran.VarName LanguageFortranTools.Anno]
+                               -> Data.Monoid.All
+                          {- Arity: 1, Strictness: <S,1*U> -}
+                        = \ (ds8 :: [Language.Fortran.VarName
+                                       LanguageFortranTools.Anno]) ->
+                          case ds8 of wild1 {
+                            [] -> GHC.Types.True `cast` (Sym (Data.Monoid.N:All[0]))
+                            : y ys
+                            -> case GHC.List.elem
+                                      @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                      VarAccessAnalysis.$s$fEqVarName
+                                      y
+                                      declarations of wild2 {
+                                 GHC.Types.False -> go8 ys
+                                 GHC.Types.True
+                                 -> GHC.Types.False `cast` (Sym (Data.Monoid.N:All[0])) } }
+                      } in
+                      case (go8 exprVarNames) `cast` (Data.Monoid.N:All[0]) of wild1 {
+                        GHC.Types.False -> LanguageFortranTools.extractVarNames item
+                        GHC.Types.True
+                        -> case item of wild2 {
+                             DEFAULT
+                             -> case VarAccessAnalysis.collectVarNames1 of wild3 { DEFAULT ->
+                                GHC.Types.[]
+                                  @ (Language.Fortran.VarName LanguageFortranTools.Anno) }
+                             Language.Fortran.Var ds8 ds9 lst
+                             -> case GHC.Classes.$fEq[]_$c==
+                                       @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                                       VarAccessAnalysis.$s$fEqExpr
+                                       (LanguageFortranTools.extractContainedOperands1
+                                          @ LanguageFortranTools.Anno
+                                          lst
+                                          (GHC.Types.[]
+                                             @ (Language.Fortran.Expr LanguageFortranTools.Anno)))
+                                       (GHC.Types.[]
+                                          @ (Language.Fortran.Expr
+                                               LanguageFortranTools.Anno)) of wild3 {
+                                  GHC.Types.False
+                                  -> VarAccessAnalysis.collectVarNames_go
+                                       (LanguageFortranTools.extractContainedOperands1
+                                          @ LanguageFortranTools.Anno
+                                          lst
+                                          (GHC.Types.[]
+                                             @ (Language.Fortran.Expr LanguageFortranTools.Anno)))
+                                       (GHC.Types.[]
+                                          @ (Language.Fortran.VarName LanguageFortranTools.Anno))
+                                  GHC.Types.True
+                                  -> LanguageFortranTools.extractVarNames_go lst } } }
+                   GHC.Types.True
+                   -> case item of wild1 {
+                        DEFAULT
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        Language.Fortran.Var ds8 ds9 lst
+                        -> VarAccessAnalysis.collectVarNames_go
+                             (LanguageFortranTools.extractContainedOperands1
+                                @ LanguageFortranTools.Anno
+                                lst
+                                (GHC.Types.[] @ (Language.Fortran.Expr LanguageFortranTools.Anno)))
+                             (GHC.Types.[]
+                                @ (Language.Fortran.VarName LanguageFortranTools.Anno)) } }) -}
+c32c704023090aef2335c0261a37edee
+  collectVarNames1 :: GHC.Types.Bool
+  {- Unfolding: (GHC.Classes.$fEq[]_$c==
+                   @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                   VarAccessAnalysis.$s$fEqExpr
+                   (GHC.Types.[] @ (Language.Fortran.Expr LanguageFortranTools.Anno))
+                   (GHC.Types.[]
+                      @ (Language.Fortran.Expr LanguageFortranTools.Anno))) -}
+20d29c8bd2a455bd8b9a3c098afe3234
+  collectVarNames_go ::
+    [Language.Fortran.Expr LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2, Strictness: <S,1*U><S,1*U> -}
+2b6e6cbbd6db63fa5e46041c64a08a08
+  getAccessLocationsAfterSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(A,U(A,U(U),U(U)))>m,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 case VarAccessAnalysis.$wgetAccessLocationsAfterSrcSpan
+                        w
+                        w1
+                        w2 of ww { (#,#) ww1 ww2 ->
+                 (ww1, ww2) }) -}
+eb97b23a5681704c28a97e68464dae20
+  getAccessLocationsAfterSrcSpan1 ::
+    ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: ((GHC.Types.[] @ Language.Fortran.SrcSpan,
+                  GHC.Types.[] @ Language.Fortran.SrcSpan)) -}
+8c279d1b34c16ea38542727f7873497e
+  getAccessLocationsAfterSrcSpan2 ::
+    VarAccessAnalysis.LocalVarAccessAnalysis
+  {- Strictness: x -}
+acc5b6aaac5bc71fe62b81f024922406
+  getAccessLocationsBeforeSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(U(A,U(U),U(U)),A)>m,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 case VarAccessAnalysis.$wgetAccessLocationsBeforeSrcSpan
+                        w
+                        w1
+                        w2 of ww { (#,#) ww1 ww2 ->
+                 (ww1, ww2) }) -}
+187840321b2e78a95258ebe0c1932719
+  getAccessLocationsBeforeSrcSpan1 ::
+    VarAccessAnalysis.LocalVarAccessAnalysis
+  {- Strictness: x -}
+fdd34ef2c735feb56b2f3aad7e8c105b
+  getAccessLocationsInsideSrcSpan ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,1*U(U,U)><L,U(U(A,U(U),U(U)),U(A,U(U),U(U)))>m,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Language.Fortran.SrcSpan) ->
+                 case VarAccessAnalysis.$wgetAccessLocationsInsideSrcSpan
+                        w
+                        w1
+                        w2 of ww { (#,#) ww1 ww2 ->
+                 (ww1, ww2) }) -}
+7ed365af432081d0baba686088dec47b
+  getAccessLocationsInsideSrcSpan1 ::
+    VarAccessAnalysis.LocalVarAccessAnalysis
+  {- Strictness: x -}
+f85bfdbbda06a79546440a740a912f96
+  getAccessesBetweenManySrcSpans ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> [(Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)]
+    -> ([Language.Fortran.VarName LanguageFortranTools.Anno],
+        [Language.Fortran.VarName LanguageFortranTools.Anno])
+  {- Arity: 2, Strictness: <L,U(U,A,A,A)><S,1*U>m, Inline: INLINE[0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: [(Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)]) ->
+                 case VarAccessAnalysis.$wgetAccessesBetweenManySrcSpans
+                        w
+                        w1 of ww { (#,#) ww1 ww2 ->
+                 (ww1, ww2) }) -}
+df205739d8ca9b517789f8a1e58cac71
+  getAccessesBetweenSrcSpans ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.SrcLoc
+    -> Language.Fortran.SrcLoc
+    -> ([Language.Fortran.VarName LanguageFortranTools.Anno],
+        [Language.Fortran.VarName LanguageFortranTools.Anno])
+  {- Arity: 3,
+     Strictness: <L,1*U(1*U,A,A,A)><L,U(A,U(U),U(U))><L,U(A,U(U),U(U))>m,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w1 :: Language.Fortran.SrcLoc)
+                   (w2 :: Language.Fortran.SrcLoc) ->
+                 case VarAccessAnalysis.$wgetAccessesBetweenSrcSpans
+                        w
+                        w1
+                        w2 of ww { (#,#) ww1 ww2 ->
+                 (ww1, ww2) }) -}
+294978b5c1f522e8f683ea10bb79d92c
+  getAccessesBetweenSrcSpansIgnore ::
+    VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.SrcSpan
+    -> Language.Fortran.SrcSpan
+    -> [Language.Fortran.SrcSpan]
+    -> ([Language.Fortran.VarName LanguageFortranTools.Anno],
+        [Language.Fortran.VarName LanguageFortranTools.Anno])
+  {- Arity: 4,
+     Strictness: <L,U(U,A,A,A)><S,1*U(A,U)><S,1*U(U,A)><S,1*U>m,
+     Unfolding: InlineRule (4, True, False)
+                (\ (accessAnalysis :: VarAccessAnalysis.VarAccessAnalysis)
+                   (ds8 :: (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc))
+                   (ds9 :: (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc))
+                   (skipSrcs :: [Language.Fortran.SrcSpan]) ->
+                 case ds8 of wild { (,) ds10 startLoc ->
+                 case ds9 of wild1 { (,) endLoc ds11 ->
+                 VarAccessAnalysis.getAccessesBetweenManySrcSpans
+                   accessAnalysis
+                   (VarAccessAnalysis.getAccessesBetweenSrcSpansIgnoreBuildSrcSpans
+                      startLoc
+                      endLoc
+                      skipSrcs) } }) -}
+4a04d6491e0036d565399ed51a260d1d
+  getAccessesBetweenSrcSpansIgnoreBuildSrcSpans ::
+    Language.Fortran.SrcLoc
+    -> Language.Fortran.SrcLoc
+    -> [Language.Fortran.SrcSpan]
+    -> [(Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)]
+  {- Arity: 3, HasNoCafRefs, Strictness: <L,U><L,U><S,1*U>m2,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: Language.Fortran.SrcLoc)
+                   (w1 :: Language.Fortran.SrcLoc)
+                   (w2 :: [Language.Fortran.SrcSpan]) ->
+                 case VarAccessAnalysis.$wgetAccessesBetweenSrcSpansIgnoreBuildSrcSpans
+                        w
+                        w1
+                        w2 of ww { (#,#) ww1 ww2 ->
+                 GHC.Types.:
+                   @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                   ww1
+                   ww2 }) -}
+4f9b1d2c251f1fbf2707d3c013cb3737
+  getAccessesInsideSrcSpan ::
+    VarAccessAnalysis.LocalVarAccessAnalysis
+    -> Language.Fortran.SrcSpan
+    -> VarAccessAnalysis.LocalVarAccessAnalysis
+  {- Arity: 2, Strictness: <S,U><L,U(U(A,U(U),U(U)),U(A,U(U),U(U)))>,
+     Unfolding: (\ (localVarAccesses :: VarAccessAnalysis.LocalVarAccessAnalysis)
+                   (src :: Language.Fortran.SrcSpan) ->
+                 let {
+                   lvl108 :: Language.Fortran.SrcSpan -> GHC.Types.Bool {- Arity: 1 -}
+                   = LanguageFortranTools.srcSpanInSrcSpan src
+                 } in
+                 letrec {
+                   go8 :: (VarAccessAnalysis.LocalVarAccessAnalysis
+                           -> VarAccessAnalysis.LocalVarAccessAnalysis)
+                          -> Data.Map.Base.Map
+                               (Language.Fortran.VarName LanguageFortranTools.Anno)
+                               ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                          -> VarAccessAnalysis.LocalVarAccessAnalysis
+                          -> VarAccessAnalysis.LocalVarAccessAnalysis
+                     {- Arity: 2, Strictness: <L,1*U><S,1*U> -}
+                   = \ (z' :: VarAccessAnalysis.LocalVarAccessAnalysis
+                              -> VarAccessAnalysis.LocalVarAccessAnalysis)
+                       (ds8 :: Data.Map.Base.Map
+                                 (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                 ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])) ->
+                     case ds8 of wild {
+                       Data.Map.Base.Bin dt kx x l r
+                       -> case kx of ww { Language.Fortran.VarName ww1 ww2 ->
+                          go8
+                            (let {
+                               xs :: VarAccessAnalysis.LocalVarAccessAnalysis
+                                     -> VarAccessAnalysis.LocalVarAccessAnalysis
+                               = go8 z' r
+                             } in
+                             \ (eta :: VarAccessAnalysis.LocalVarAccessAnalysis) ->
+                             xs
+                               (VarAccessAnalysis.$w$sgo10
+                                  @ ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                                  ww1
+                                  ww2
+                                  (let {
+                                     ds9 :: ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                                     = VarAccessAnalysis.$wpoly_go10
+                                         @ ([Language.Fortran.SrcSpan], [Language.Fortran.SrcSpan])
+                                         VarAccessAnalysis.getAccessLocationsAfterSrcSpan1
+                                         ww1
+                                         ww2
+                                         eta
+                                   } in
+                                   (case ds9 of wild1 { (,) reads writes ->
+                                    GHC.List.filter
+                                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                                      lvl108
+                                      reads },
+                                    case ds9 of wild1 { (,) reads writes ->
+                                    GHC.List.filter
+                                      @ (Language.Fortran.SrcLoc, Language.Fortran.SrcLoc)
+                                      lvl108
+                                      writes }))
+                                  eta))
+                            l }
+                       Data.Map.Base.Tip -> z' }
+                 } in
+                 go8
+                   (GHC.Base.id @ VarAccessAnalysis.LocalVarAccessAnalysis)
+                   localVarAccesses
+                   localVarAccesses) -}
+852f0ba133c9e71ae355031db2264ead
+  getArguments ::
+    Language.Fortran.Program LanguageFortranTools.Anno
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (prog :: Language.Fortran.Program LanguageFortranTools.Anno) ->
+                 Data.Generics.Schemes.everything
+                   @ [Language.Fortran.VarName LanguageFortranTools.Anno]
+                   (GHC.Base.++
+                      @ (Language.Fortran.VarName LanguageFortranTools.Anno))
+                   VarAccessAnalysis.getArguments1
+                   @ (Language.Fortran.Program LanguageFortranTools.Anno)
+                   VarAccessAnalysis.$s$fData[]
+                   prog) -}
+d51ac20a61c750cea83217f1baf6694d
+  getArguments1 ::
+    Data.Data.Data a =>
+    a -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <S(C(S(SLLLL))LLLLLLLLLLLLLL),1*U(1*C1(U(U,U,A,A,A)),A,A,A,A,A,A,A,A,A,A,A,A,A,A)><L,1*U>,
+     Unfolding: (\ @ a ($dData :: Data.Data.Data a) (eta :: a) ->
+                 case (Data.Data.$p1Data @ a $dData)
+                        `cast`
+                      (Data.Typeable.Internal.N:Typeable[0] <*>_N <a>_N)
+                        (GHC.Prim.proxy#
+                           @ *
+                           @ a) of wild { Data.Typeable.Internal.TypeRep dt dt1 ds8 ds9 ds10 ->
+                 case VarAccessAnalysis.getArguments2 of wild1 { Data.Typeable.Internal.TypeRep dt2 dt3 ds11 ds12 ds13 ->
+                 case GHC.Prim.tagToEnum#
+                        @ GHC.Types.Bool
+                        (GHC.Prim.eqWord# dt dt2) of wild2 {
+                   GHC.Types.False
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                   GHC.Types.True
+                   -> case GHC.Prim.tagToEnum#
+                             @ GHC.Types.Bool
+                             (GHC.Prim.eqWord# dt1 dt3) of wild4 {
+                        GHC.Types.False
+                        -> GHC.Types.[]
+                             @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                        GHC.Types.True
+                        -> case eta
+                                  `cast`
+                                (UnsafeCo representational a (Language.Fortran.ArgName
+                                                                LanguageFortranTools.Anno)) of wild7 {
+                             DEFAULT
+                             -> GHC.Types.[]
+                                  @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                             Language.Fortran.ArgName ds14 str
+                             -> GHC.Types.:
+                                  @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                  (Language.Fortran.VarName
+                                     @ LanguageFortranTools.Anno
+                                     (Data.Map.Base.Tip @ GHC.Base.String @ [GHC.Base.String])
+                                     str)
+                                  (GHC.Types.[]
+                                     @ (Language.Fortran.VarName
+                                          LanguageFortranTools.Anno)) } } } } }) -}
+26e6274db38bc16f3a8d4ac4bb2415b2
+  getArguments2 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#57 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.getArguments3
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+244420643295531af5c0e4756cce70f0
+  getArguments3 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.getArguments4
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+629ed98280fab595cc66d370c82ab034
+  getArguments4 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.getArguments_types1 of kt_fps1 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps1) of dt4 { GHC.Fingerprint.Type.Fingerprint dt3 dt5 ->
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        VarAccessAnalysis.getArguments_types of kt_fps2 { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           VarAccessAnalysis.$stypeRep#3
+                           kt_fps2) of dt6 { GHC.Fingerprint.Type.Fingerprint dt7 dt8 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt7
+                   dt8
+                   Data.Map.Base.$tcMap
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   VarAccessAnalysis.getArguments_types } } } } } }) -}
+cf6416127cf20d9c032e391666663215
+  getArguments5 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.getArguments6
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+c339fffa5fcb88fae5ead39761231099
+  getArguments6 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.getArguments_types1
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+0746b2527978162342f5d72dd625c92c
+  getArguments7 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case VarAccessAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types10 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       VarAccessAnalysis.$stypeRep#19
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types10 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types10 } } }) -}
+b6e209050bcd0b5825b46761920a2f6d
+  getArguments_types :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Base.++
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.getArguments_types1
+                   VarAccessAnalysis.getArguments5) -}
+bead4ee1eac7eb9ae10952743ded93ca
+  getArguments_types1 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   VarAccessAnalysis.getArguments7
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+69be9cfb8d9a5c2d8db548166fe8de74
+  getDeclaredVarNames ::
+    Language.Fortran.Decl LanguageFortranTools.Anno
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: (\ (ds8 :: Language.Fortran.Decl
+                             LanguageFortranTools.Anno) ->
+                 case ds8 of wild {
+                   DEFAULT
+                   -> GHC.Types.[]
+                        @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                   Language.Fortran.Decl ds9 ds10 lst ds11
+                   -> VarAccessAnalysis.getDeclaredVarNames_go
+                        lst
+                        (GHC.Types.[]
+                           @ (Language.Fortran.VarName LanguageFortranTools.Anno)) }) -}
+815772d5c65df4187089622bbf88de34
+  getDeclaredVarNames_go ::
+    [(Language.Fortran.Expr LanguageFortranTools.Anno,
+      Language.Fortran.Expr LanguageFortranTools.Anno,
+      GHC.Base.Maybe GHC.Types.Int)]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2, Strictness: <S,1*U><S,1*U> -}
+40b9298c31f2cec1076ba702a83cf1b5
+  getNonTempVars ::
+    Language.Fortran.SrcSpan
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <L,U(A,U(A,U(U),A))><S(SLLL),U(1*U,A,1*U,A)>,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w :: Language.Fortran.SrcSpan)
+                   (w1 :: VarAccessAnalysis.VarAccessAnalysis) ->
+                 case w1 of ww { (,,,) ww1 ww2 ww3 ww4 ->
+                 VarAccessAnalysis.$wgetNonTempVars w ww1 ww3 }) -}
+a4b88a51baab3c3b5cfa48a4a4b3029c
+  getPrexistingVars ::
+    Language.Fortran.SrcSpan
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+  {- Arity: 2,
+     Strictness: <L,U(U(A,U(U),U(U)),U(A,U(U),U(U)))><S(SLLL),U(1*U,A,1*U,A)>,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (2, True, False)
+                (\ (w :: Language.Fortran.SrcSpan)
+                   (w1 :: VarAccessAnalysis.VarAccessAnalysis) ->
+                 case w1 of ww { (,,,) ww1 ww2 ww3 ww4 ->
+                 VarAccessAnalysis.$wgetPrexistingVars w ww1 ww3 }) -}
+f8891a4444df96c0e1177805c06b2a25
+  getValueAtSrcSpan ::
+    Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Language.Fortran.SrcSpan
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.Expr LanguageFortranTools.Anno
+  {- Arity: 3,
+     Strictness: <S,1*U(U,U)><L,U(U(A,U(U),U(U)),A)><S(LSLL),1*U(A,1*U,A,A)>,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ (w :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w1 :: Language.Fortran.SrcSpan)
+                   (w2 :: VarAccessAnalysis.VarAccessAnalysis) ->
+                 case w of ww { Language.Fortran.VarName ww1 ww2 ->
+                 case w2 of ww3 { (,,,) ww4 ww5 ww6 ww7 ->
+                 VarAccessAnalysis.$wgetValueAtSrcSpan ww1 ww2 w1 ww5 } }) -}
+6f2c12dba1d3cc3123f27487e671604e
+  getValueAtSrcSpan1 ::
+    Language.Fortran.Expr LanguageFortranTools.Anno
+  {- Strictness: m9,
+     Unfolding: (Language.Fortran.NullExpr
+                   @ LanguageFortranTools.Anno
+                   (Data.Map.Base.Tip @ GHC.Base.String @ [GHC.Base.String])
+                   LanguageFortranTools.nullSrcSpan) -}
+1afc5a377b5b112c8daa139382274b4d
+  isFunctionCall ::
+    [GHC.Base.String]
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.Expr LanguageFortranTools.Anno
+    -> GHC.Types.Bool
+  {- Arity: 3, Strictness: <S,1*U><L,1*U(A,A,A,1*U)><L,U>,
+     Unfolding: (\ (intrinsics :: [GHC.Base.String])
+                   (accessAnalysis :: VarAccessAnalysis.VarAccessAnalysis)
+                   (expr :: Language.Fortran.Expr LanguageFortranTools.Anno) ->
+                 let {
+                   exprVarNames :: [Language.Fortran.VarName
+                                      LanguageFortranTools.Anno]
+                   = case expr of wild {
+                       DEFAULT
+                       -> GHC.Types.[]
+                            @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                       Language.Fortran.Var ds8 ds9 lst
+                       -> LanguageFortranTools.extractVarNames_go lst }
+                 } in
+                 case GHC.List.elem
+                        @ Language.Fortran.Variable
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        (case GHC.List.$wlenAcc
+                                @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                exprVarNames
+                                0# of ww2 { DEFAULT ->
+                         case GHC.Prim.tagToEnum#
+                                @ GHC.Types.Bool
+                                (GHC.Prim.># ww2 0#) of wild {
+                           GHC.Types.False -> GHC.Types.[] @ GHC.Types.Char
+                           GHC.Types.True
+                           -> case exprVarNames of wild1 {
+                                [] -> case GHC.List.badHead ret_ty Language.Fortran.Variable of {}
+                                : x ds8
+                                -> case x of wild2 { Language.Fortran.VarName ds9 exprVarNameStr ->
+                                   exprVarNameStr } } } })
+                        intrinsics of wild {
+                   GHC.Types.False
+                   -> let {
+                        declaredVarNames :: [Language.Fortran.VarName
+                                               LanguageFortranTools.Anno]
+                        = case accessAnalysis of wild1 { (,,,) ds8 ds9 ds10 x -> x }
+                      } in
+                      letrec {
+                        go8 :: [Language.Fortran.VarName LanguageFortranTools.Anno]
+                               -> Data.Monoid.All
+                          {- Arity: 1, Strictness: <S,1*U> -}
+                        = \ (ds8 :: [Language.Fortran.VarName
+                                       LanguageFortranTools.Anno]) ->
+                          case ds8 of wild1 {
+                            [] -> GHC.Types.True `cast` (Sym (Data.Monoid.N:All[0]))
+                            : y ys
+                            -> case GHC.List.elem
+                                      @ (Language.Fortran.VarName LanguageFortranTools.Anno)
+                                      VarAccessAnalysis.$s$fEqVarName
+                                      y
+                                      declaredVarNames of wild2 {
+                                 GHC.Types.False -> go8 ys
+                                 GHC.Types.True
+                                 -> GHC.Types.False `cast` (Sym (Data.Monoid.N:All[0])) } }
+                      } in
+                      case (go8 exprVarNames) `cast` (Data.Monoid.N:All[0]) of wild1 {
+                        GHC.Types.False -> GHC.Types.False
+                        GHC.Types.True
+                        -> case expr of wild2 {
+                             DEFAULT
+                             -> case VarAccessAnalysis.collectVarNames1 of wild3 {
+                                  GHC.Types.False -> GHC.Types.True
+                                  GHC.Types.True -> GHC.Types.False }
+                             Language.Fortran.Var ds8 ds9 lst
+                             -> case GHC.Classes.$fEq[]_$c==
+                                       @ (Language.Fortran.Expr LanguageFortranTools.Anno)
+                                       VarAccessAnalysis.$s$fEqExpr
+                                       (LanguageFortranTools.extractContainedOperands1
+                                          @ LanguageFortranTools.Anno
+                                          lst
+                                          (GHC.Types.[]
+                                             @ (Language.Fortran.Expr LanguageFortranTools.Anno)))
+                                       (GHC.Types.[]
+                                          @ (Language.Fortran.Expr
+                                               LanguageFortranTools.Anno)) of wild3 {
+                                  GHC.Types.False -> GHC.Types.True
+                                  GHC.Types.True -> GHC.Types.False } } }
+                   GHC.Types.True -> GHC.Types.True }) -}
+"SPEC/VarAccessAnalysis $fDataArgList @ (Map String [String])" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                            (Data.Map.Base.Map
+                                                                                               GHC.Base.String
+                                                                                               [GHC.Base.String]))
+  Language.Fortran.$fDataArgList @ (Data.Map.Base.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 $dData
+  = VarAccessAnalysis.$s$fDataArgList
+"SPEC/VarAccessAnalysis $fDataMap @ [Char] @ [String]" [ALWAYS] forall ($dOrd :: GHC.Classes.Ord
+                                                                                   [GHC.Types.Char])
+                                                                       ($dData1 :: Data.Data.Data
+                                                                                     [GHC.Base.String])
+                                                                       ($dData :: Data.Data.Data
+                                                                                    [GHC.Types.Char])
+  Data.Map.Base.$fDataMap @ [GHC.Types.Char]
+                          @ [GHC.Base.String]
+                          $dData
+                          $dData1
+                          $dOrd
+  = VarAccessAnalysis.$s$fDataArgList_$s$fDataMap
+"SPEC/VarAccessAnalysis $fDataProgUnit @ (Map String [String])" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                             (Data.Map.Base.Map
+                                                                                                GHC.Base.String
+                                                                                                [GHC.Base.String]))
+  Language.Fortran.$fDataProgUnit @ (Data.Map.Base.Map
+                                       GHC.Base.String [GHC.Base.String])
+                                  $dData
+  = VarAccessAnalysis.$s$fDataProgUnit
+"SPEC/VarAccessAnalysis $fData[] @ (ProgUnit Anno)" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                 (Language.Fortran.ProgUnit
+                                                                                    LanguageFortranTools.Anno))
+  Data.Data.$fData[] @ (Language.Fortran.ProgUnit
+                          LanguageFortranTools.Anno)
+                     $dData
+  = VarAccessAnalysis.$s$fData[]
+"SPEC/VarAccessAnalysis $fData[] @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                        [GHC.Types.Char])
+  Data.Data.$fData[] @ [GHC.Types.Char] $dData
+  = VarAccessAnalysis.$s$fDataArgList_$s$fData[]
+"SPEC/VarAccessAnalysis $fData[]_$cdataCast2 @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                    [GHC.Types.Char])
+  Data.Data.$fData[]_$cdataCast2 @ [GHC.Types.Char] $dData
+  = VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$cdataCast2
+"SPEC/VarAccessAnalysis $fData[]_$cdataTypeOf @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                     [GHC.Types.Char])
+  Data.Data.$fData[]_$cdataTypeOf @ [GHC.Types.Char] $dData
+  = VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$cdataTypeOf
+"SPEC/VarAccessAnalysis $fData[]_$ctoConstr @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                   [GHC.Types.Char])
+  Data.Data.$fData[]_$ctoConstr @ [GHC.Types.Char] $dData
+  = VarAccessAnalysis.$s$fDataArgList_$s$fData[]_$ctoConstr
+"SPEC/VarAccessAnalysis $fEqExpr @ (Map String [String])" [ALWAYS] forall ($dEq :: GHC.Classes.Eq
+                                                                                     (Data.Map.Base.Map
+                                                                                        GHC.Base.String
+                                                                                        [GHC.Base.String]))
+  Language.Fortran.$fEqExpr @ (Data.Map.Base.Map
+                                 GHC.Base.String [GHC.Base.String])
+                            $dEq
+  = VarAccessAnalysis.$s$fEqExpr
+"SPEC/VarAccessAnalysis $fEqExpr_$c/= @ (Map String [String])" [ALWAYS] forall ($dEq :: GHC.Classes.Eq
+                                                                                          (Data.Map.Base.Map
+                                                                                             GHC.Base.String
+                                                                                             [GHC.Base.String]))
+  Language.Fortran.$fEqExpr_$c/= @ (Data.Map.Base.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 $dEq
+  = VarAccessAnalysis.$s$fEqExpr_$s$fEqExpr_$c/=
+"SPEC/VarAccessAnalysis $fEqMap @ [Char] @ [String]" [ALWAYS] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                 [GHC.Base.String])
+                                                                     ($dEq :: GHC.Classes.Eq
+                                                                                [GHC.Types.Char])
+  Data.Map.Base.$fEqMap @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        $dEq
+                        $dEq1
+  = VarAccessAnalysis.$s$fEqExpr_$s$fEqMap
+"SPEC/VarAccessAnalysis $fEqMap_$c/= @ [Char] @ [String]" [ALWAYS] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                      [GHC.Base.String])
+                                                                          ($dEq :: GHC.Classes.Eq
+                                                                                     [GHC.Types.Char])
+  Data.Map.Base.$fEqMap_$c/= @ [GHC.Types.Char]
+                             @ [GHC.Base.String]
+                             $dEq
+                             $dEq1
+  = VarAccessAnalysis.$s$fEqExpr_$s$fEqMap_$c/=
+"SPEC/VarAccessAnalysis $fEqVarName @ (Map String [String])" [ALWAYS] forall ($dEq :: GHC.Classes.Eq
+                                                                                        (Data.Map.Base.Map
+                                                                                           GHC.Base.String
+                                                                                           [GHC.Base.String]))
+  Language.Fortran.$fEqVarName @ (Data.Map.Base.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               $dEq
+  = VarAccessAnalysis.$s$fEqVarName
+"SPEC/VarAccessAnalysis $fOrdMap @ [Char] @ [String]" [ALWAYS] forall ($dOrd1 :: GHC.Classes.Ord
+                                                                                   [GHC.Base.String])
+                                                                      ($dOrd :: GHC.Classes.Ord
+                                                                                  [GHC.Types.Char])
+  Data.Map.Base.$fOrdMap @ [GHC.Types.Char]
+                         @ [GHC.Base.String]
+                         $dOrd
+                         $dOrd1
+  = VarAccessAnalysis.$s$fOrdMap
+"SPEC/VarAccessAnalysis $fOrdVarName @ (Map String [String])" [ALWAYS] forall ($dOrd :: GHC.Classes.Ord
+                                                                                          (Data.Map.Base.Map
+                                                                                             GHC.Base.String
+                                                                                             [GHC.Base.String]))
+  Language.Fortran.$fOrdVarName @ (Data.Map.Base.Map
+                                     GHC.Base.String [GHC.Base.String])
+                                $dOrd
+  = VarAccessAnalysis.$s$fOrdVarName
+"SPEC/VarAccessAnalysis $fOrdVarName_$cp1Ord @ (Map String [String])" [ALWAYS] forall ($dOrd :: GHC.Classes.Ord
+                                                                                                  (Data.Map.Base.Map
+                                                                                                     GHC.Base.String
+                                                                                                     [GHC.Base.String]))
+  Language.Fortran.$fOrdVarName_$cp1Ord @ (Data.Map.Base.Map
+                                             GHC.Base.String [GHC.Base.String])
+                                        $dOrd
+  = VarAccessAnalysis.$s$fOrdVarName_$s$fOrdVarName_$cp1Ord
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

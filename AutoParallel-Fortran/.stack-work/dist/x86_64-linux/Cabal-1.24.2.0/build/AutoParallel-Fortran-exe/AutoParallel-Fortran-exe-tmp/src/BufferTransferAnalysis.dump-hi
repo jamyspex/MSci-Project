@@ -1,0 +1,1189 @@
+
+==================== FINAL INTERFACE ====================
+2018-12-03 15:55:15.710451 UTC
+
+interface main@main:BufferTransferAnalysis 8002
+  interface hash: 2650206a393e15b36f376c0e6ddc2450
+  ABI hash: e8e3977d7b8c803e6f7edec72c62228d
+  export-list hash: 02240d1d3fc82640d6cb57182c119895
+  orphan hash: d933c3fff658c27d7343f38f0bbec88d
+  flag hash: 7c02f8b77a7db746ad4b6beb3be70535
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  BufferTransferAnalysis.optimiseBufferTransfers
+  BufferTransferAnalysis.replaceSubroutineAppearances
+module dependencies: F95IntrinsicFunctions Language.Fortran
+                     Language.Fortran.Lexer Language.Fortran.Parser
+                     Language.Fortran.PreProcess LanguageFortranTools MiniPP
+                     PreProcessor SubroutineTable VarAccessAnalysis Warning
+package dependencies: array-0.5.1.1@array-0.5.1.1 base-4.9.1.0
+                      binary-0.8.3.0@binary-0.8.3.0
+                      bytestring-0.10.8.1@bytestring-0.10.8.1
+                      containers-0.5.7.1@containers-0.5.7.1
+                      deepseq-1.4.2.0@deepseq-1.4.2.0 directory-1.3.0.0@directory-1.3.0.0
+                      filepath-1.4.1.1@filepath-1.4.1.1 ghc-prim-0.5.0.0
+                      haskell-src-1.0.2.0@haskell-src-1.0.2.0-3zoaErItXGVA1GHC7t3Glx
+                      integer-gmp-1.0.0.1 mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6
+                      parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw
+                      process-1.4.3.0@process-1.4.3.0
+                      syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS
+                      text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR
+                      time-1.6.0.1@time-1.6.0.1 transformers-0.5.2.0@transformers-0.5.2.0
+                      unix-2.7.2.1@unix-2.7.2.1
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+         binary-0.8.3.0@binary-0.8.3.0:Data.Binary.Generic
+         bytestring-0.10.8.1@bytestring-0.10.8.1:Data.ByteString.Builder
+         syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Instances
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Show
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Calendar.Gregorian
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Format.Parse
+         time-1.6.0.1@time-1.6.0.1:Data.Time.LocalTime.LocalTime
+         transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Error
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Complex base-4.9.1.0:Data.Either
+                         base-4.9.1.0:Data.Functor.Const base-4.9.1.0:Data.Functor.Identity
+                         base-4.9.1.0:Data.List.NonEmpty base-4.9.1.0:Data.Monoid
+                         base-4.9.1.0:Data.Semigroup base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:Data.Version base-4.9.1.0:Data.Void
+                         base-4.9.1.0:GHC.Exts base-4.9.1.0:GHC.Generics
+                         base-4.9.1.0:GHC.IO.Exception base-4.9.1.0:GHC.TypeLits
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntMap.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntSet.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Sequence
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Set.Base
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+import  -/  base-4.9.1.0:Data.Data da440c60016500822a3d4307ca5dea66
+import  -/  base-4.9.1.0:Data.Foldable 3e0b6967a1da89945d0e2d47266337a2
+import  -/  base-4.9.1.0:Data.List 07ae2acca6538aa0800bd0a993ac6ac1
+import  -/  base-4.9.1.0:Data.Maybe d876c4ffe4b3c43755a781e8ad860d88
+import  -/  base-4.9.1.0:Data.OldList 27987919d8da2f92e3f472ca81f730f8
+import  -/  base-4.9.1.0:Data.Tuple 7dc4bbb45d2e69c991ffac438beeca11
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:GHC.Err 3bba35a16538d33d424682ce66876cdd
+import  -/  base-4.9.1.0:GHC.List ab8c4e523e6c479c549d3bcd5fc4a439
+import  -/  base-4.9.1.0:GHC.Num 00bfaa7b2f9d6084913c0697a8a49ec8
+import  -/  base-4.9.1.0:GHC.Show a027f5ac24879eaba752f44aa90fe511
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  containers-0.5.7.1@containers-0.5.7.1:Data.Map 20d4ffbee41965d03d6a989425473dc4
+import  -/  containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base d432f6875983131473086af8cb290590
+import  -/  ghc-prim-0.5.0.0:GHC.Classes 0bdf3d057a415ec1b84a7b1994efbe47
+import  -/  Language.Fortran c957d8f93581b3ce2cc521df25110d11
+  exports: cb4e2f808f933bd0493dcd95204741d0
+  Assg e4ff0447498349c3e2879e1af28dc289
+  Block 961f7c2c989b091b59c58c09a763b797
+  Block 00b5dcb26b4d8331f4d0a27afc418872
+  Call 5dc8fc6a52ca566d9c8f8635b11363e5
+  Expr fd45c3abbcc1cd23ca18c96ee1403b96
+  FSeq 66c58ad61465e02006618848a2dea986
+  For 8eaaf1a59a9e6e9d8f36eff8caf7c991
+  Fortran 7ef8d1883356542a2e7829f1c3512bc2
+  Main 24417b8faf0e470d209fd162bfce3027
+  NullStmt 4b8e91715bb30324591f7bab6148c0f6
+  OpenCLBufferRead 7062856698f9bec8c015dbffd83f3cd0
+  OpenCLBufferWrite 4bb6fbfda0c948d2b7b329fa92eecc3b
+  OpenCLMap f735cdb4fcfce00b0cd641aaa6255a4b
+  OpenCLReduce 811a5024d542e78a43320fc6af66c91a
+  ProgUnit dd0d2763607dbd5a6f6c1c5d85fe76dd
+  Program 61c057161e42f4aa29fb8dd8afb17b21
+  SrcLoc a58d61bb9404a2380d0de8c4177e198c
+  SrcLoc 43c2e4e6db773bb5ef99bf585d69acf2
+  SrcSpan a18da1424c2a105ac654e1e8b2930f03
+  Sub 8f2551e4abe55f51167501d014d55bee
+  SubName ef668be18c70f035fc2c52ca19281445
+  VarName 64af05f1c71bcd1dfd571ca0d5218f1b
+  VarName d4d45769399fe3ed8e0615e3282cf5b7
+  srcSpan fbf339ac9b9eae31a89ba940dccb0289
+import  -/  LanguageFortranTools 7890a5e96ab51325aa3603dbd4691bf4
+  exports: 83b35210801e0c6fe3fd2a2c2ff1ecd0
+  Anno e22809b44b97ccfdb28bfb19047d139f
+  checkSrcLocBefore 44a93ac0ce2939531e607f4ceb3bbfee
+  checkSrcLocEqualLines 98fbc29b8d9a27e7e16c5ca3321ff967
+  checkSrcSpanBefore 3265fed738c647c8f56797925ccfce8f
+  errorLocationFormatting ade5e4011267f0b3e68f4c6bf90cd5b5
+  extractAllVarNames 86e7bb58fcd61ba1c9214f48532a0256
+  extractContainedVars 0331c35bcc1dc0d38694c0dba9afce40
+  extractExpr_list 90ec2eadeb0a2ed115fbe8bc2fb1ab33
+  extractFirstFortran 21ac384425554ea549e1f4507ad7a908
+  extractKernels c6339b05bbe16f67d59f5f4f7d0b4085
+  extractOperands 4ddf57e446d8f47e8d5ca35eb2b33baf
+  extractVarNames 0c06747830f37e92c31e4dbe6aedfd6f
+  getEarliestSrcLoc e6fd096b3bb3185df19347177d4025a7
+  getEarliestSrcSpan 98f9b1b0a30d6978a0e6d8f7d74a2ecb
+  getIterLoopVars 30a19f11b480a46d089b7eb958c51f6d
+  getLatestSrcSpan da55b8d6804e41a444f3277ca7efba3a
+  getReadArgs bdf521d0abb825e5f9aeb0c80ed064a1
+  getWrittenArgs 916280d09000cad2a01ca3637435fe3e
+  isVar 8f3347a5fcc2aec5fa7520695a0bb710
+  listIntersection ea4660c5c67b37d7a94bfd3c2305858a
+  listRemoveDuplications 4378f4b10536dcf8634c95685ebad55d
+  listSubtract b3c64f9bf63909177406c8d10e99ecef
+  listSubtractWithExemption c472655611d4f6598fe30728f5bac490
+  listUnion 9ffb291803aa9d557d9e2af65774e97f
+  nullAnno e3239ac8aba218af15f945a652936cc8
+  nullSrcLoc ce3c0fbb364fe2546b6c1cb8c644fe79
+  nullSrcSpan 088997d0b27116160aebfa68704495fa
+  replaceFortran 4c12d76ec2dd7c2dec2ea9f9e624f978
+  shiftSrcSpanLineGlobal f3bb6ddad689a1082cfa412efe7c1f58
+  srcSpanInSrcSpanRange 3a14ebe60f289e89484117d7ad3df711
+  srcSpanLineCount 1bf200763aefcb3660c331cf450e8f6e
+  varNameStr 95ac032c44f5687eb820ca35335877d7
+import  -/  MiniPP f16ed7e5a39853044388f8480999b1a1
+  exports: 7578fb79964ca180f8c5942d9032d1f5
+  miniPPF a625f0c0ea8690bfb152bb76ebcc3a3e
+import  -/  SubroutineTable 478a2d1f7dd1c241949a1b63a72c1af8
+  exports: 36e92c4145b6d54c4036b21148e09ac1
+  ArgumentTranslation 95f628b4ba32577003f1cb86af696189
+  MkSubRec a39ac213c8876cd1d6e64acd45b9c276
+  SubroutineArgumentTranslationMap cfad5044b89ccfb7a793ac7497738c50
+  SubroutineTable 875efe6d79ce808ce2e029d4077f36df
+  extractCalls c2ddb2c9f1182d197e914fe9b38af602
+  replaceKernels_foldl e286175adf425f6e01b36a13360d1c6b
+  subAst ffc672553e5614ff97f91fc9495e2abb
+  subroutineTable_ast 2d5aaaf22f57e0ecf7860f465469436a
+import  -/  VarAccessAnalysis c1df2c318ff94db68fe9eac144e58579
+  exports: 051e850c675aa14514a70f7a8b7a0582
+  VarAccessAnalysis e08531c66c90e73f54dbd5e70c7e78e1
+  analyseAllVarAccess 429efafcffdcb6ac0785012d5b89c59d
+  collectVarNames 2ae23918fdc97c523eca6f7663a69084
+  getAccessLocationsAfterSrcSpan 2b6e6cbbd6db63fa5e46041c64a08a08
+  getAccessLocationsBeforeSrcSpan acc5b6aaac5bc71fe62b81f024922406
+  getAccessLocationsInsideSrcSpan fdd34ef2c735feb56b2f3aad7e8c105b
+  getAccessesBetweenSrcSpans df205739d8ca9b517789f8a1e58cac71
+  getAccessesBetweenSrcSpansIgnore 294978b5c1f522e8f683ea10bb79d92c
+  getArguments 852f0ba133c9e71ae355031db2264ead
+  getDeclaredVarNames 69be9cfb8d9a5c2d8db548166fe8de74
+import  -/  Warning 37568988846bf7dc0ef160b198d03155
+  exports: 66d1a373648e452607e9cbdbd4f3a821
+  warning 2d503229580d8b0284bd2609701ac214
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics ea99a8062a9608312218ffd7309b5391
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Aliases 09d594ec9a31e3c858478cc583771648
+import  -/  syb-0.6@syb-0.6-IcoSwlPi2Nx4zSqMmorFPS:Data.Generics.Schemes 4b69980d384f37e61fe24ae708a71220
+9e574176fa68107dd3ac4da3f090975e
+  $s$fDataArgList ::
+    Data.Data.Data (Language.Fortran.ArgList LanguageFortranTools.Anno)
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ArgList LanguageFortranTools.Anno)
+                  (Language.Fortran.$fDataArgList_$cp1Data
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgfoldl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgunfold
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  BufferTransferAnalysis.$s$fDataArgList3
+                  BufferTransferAnalysis.$s$fDataArgList2
+                  (Language.Fortran.$fDataArgList_$cdataCast1
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  BufferTransferAnalysis.$s$fDataArgList1
+                  (Language.Fortran.$fDataArgList_$cgmapT
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQr
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQ
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapQi
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapM
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapMp
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataArgList_$cgmapMo
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData) -}
+73d74abc49a169071c3261647916304e
+  $s$fDataArgList1 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c (Language.Fortran.ArgList LanguageFortranTools.Anno))
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable1 :: Data.Typeable.Internal.Typeable t)
+                   (ds22 :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                 GHC.Base.Nothing
+                   @ (c (Language.Fortran.ArgList LanguageFortranTools.Anno))) -}
+5f9328ae7eaac10934d7fc9625bdef46
+  $s$fDataArgList2 ::
+    Language.Fortran.ArgList LanguageFortranTools.Anno
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds22 :: Language.Fortran.ArgList LanguageFortranTools.Anno) ->
+                 Language.Fortran.$ta2TTLH2iFC1qRliXzNZGA) -}
+88874b16f40974b71e3082e0f72304a0
+  $s$fDataArgList3 ::
+    Language.Fortran.ArgList LanguageFortranTools.Anno
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*H>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds22 :: Language.Fortran.ArgList LanguageFortranTools.Anno) ->
+                 case ds22 of wild { Language.Fortran.ArgList ds23 ds24 ->
+                 Language.Fortran.$ca2TTLH2iFC1qRliXzNZGA }) -}
+0247a68a844a74cab6881bf6fb160612
+  $s$fDataArgList4 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d. Data.Data.Data d => c (t d))
+    -> GHC.Base.Maybe
+         (c (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]))
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable1 :: Data.Typeable.Internal.Typeable t)
+                   (ds22 :: forall d. Data.Data.Data d => c (t d)) ->
+                 GHC.Base.Nothing
+                   @ (c (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]))) -}
+3ea60cf4fa69d2ca0cf443850a3b326e
+  $s$fDataArgList5 ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds22 :: Data.Map.Base.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                 Data.Map.Base.mapDataType) -}
+af4d5fd6c0736c0e49c6a83bcddff385
+  $s$fDataArgList6 ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <L,A>,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds22 :: Data.Map.Base.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                 Data.Map.Base.fromListConstr) -}
+a7416dc83a51490fb09542395ee089f8
+  $s$fDataArgList_$dData :: Data.Data.Data LanguageFortranTools.Anno
+  {- Unfolding: InlineRule (0, True, True)
+                BufferTransferAnalysis.$s$fDataArgList_$s$fDataMap -}
+3bb068e2a77b188a1331f74049d1801d
+  $s$fDataArgList_$dData1 :: Data.Data.Data [GHC.Base.String]
+  {- Unfolding: InlineRule (0, True, True)
+                BufferTransferAnalysis.$s$fDataArgList_$s$fData[] -}
+c5bcd9aecefa4ae9a51f6b75d6fb80ab
+  $s$fDataArgList_$s$fDataMap ::
+    Data.Data.Data
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Base.$fDataMap_$cp1Data
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgfoldl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgunfold
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  BufferTransferAnalysis.$s$fDataArgList6
+                  BufferTransferAnalysis.$s$fDataArgList5
+                  BufferTransferAnalysis.$s$fDataArgList4
+                  (Data.Map.Base.$fDataMap_$cdataCast2
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapT
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQr
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQ
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapQi
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapM
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapMp
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Base.$fDataMap_$cgmapMo
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     BufferTransferAnalysis.$s$fDataArgList_$dData1
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1) -}
+aeafde6e8a23ef2b3257499662dc242c
+  $s$fDataArgList_$s$fData[] :: Data.Data.Data [[GHC.Types.Char]]
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ [[GHC.Types.Char]]
+                  (Data.Data.$fData[]_$cp1Data
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgunfold
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$ctoConstr
+                  BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$cdataTypeOf
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$cdataCast2
+                  (Data.Data.$fData[]_$cgmapT
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapM
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[]) -}
+817ce948840c80a458e4c3d8c9bfc970
+  $s$fDataArgList_$s$fData[]_$cdataCast2 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe (c [[GHC.Types.Char]])
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable1 :: Data.Typeable.Internal.Typeable t)
+                   (ds22 :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                 GHC.Base.Nothing @ (c [[GHC.Types.Char]])) -}
+435baebc5a4e04195c8c60cd7baebb50
+  $s$fDataArgList_$s$fData[]_$cdataTypeOf ::
+    [[GHC.Types.Char]] -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds22 :: [[GHC.Types.Char]]) -> Data.Data.listDataType) -}
+be318f301ca1604b7c67b70af6d105f9
+  $s$fDataArgList_$s$fData[]_$ctoConstr ::
+    [[GHC.Types.Char]] -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds22 :: [[GHC.Types.Char]]) ->
+                 case ds22 of wild {
+                   [] -> Data.Data.nilConstr : ds23 ds24 -> Data.Data.consConstr }) -}
+9f84b0c1534c5dc2c136aa0454e9f202
+  $s$fDataFortran ::
+    Data.Data.Data (Language.Fortran.Fortran LanguageFortranTools.Anno)
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Fortran LanguageFortranTools.Anno)
+                  (Language.Fortran.$fDataFortran_$cp1Data
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgfoldl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgunfold
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$ctoConstr
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cdataTypeOf
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cdataCast1
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cdataCast2
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapT
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapQl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapQr
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapQ
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapQi
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapM
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapMp
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataFortran_$cgmapMo
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData) -}
+da055d32caa3c256dc34f4061141b557
+  $s$fDataProgUnit ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                  (Language.Fortran.$fDataProgUnit_$cp1Data
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgfoldl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgunfold
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$ctoConstr
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cdataTypeOf
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cdataCast1
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cdataCast2
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapT
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQl
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQr
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQ
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQi
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapM
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMp
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMo
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fDataArgList_$dData) -}
+1b27e26291581762760c2f4121f962f8
+  $s$fData[] ::
+    Data.Data.Data
+      [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+  {- Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+                  (Data.Data.$fData[]_$cp1Data
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgunfold
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  BufferTransferAnalysis.$s$fData[]3
+                  BufferTransferAnalysis.$s$fData[]2
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  BufferTransferAnalysis.$s$fData[]1
+                  (Data.Data.$fData[]_$cgmapT
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapM
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData)
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+                     BufferTransferAnalysis.$s$fData[]_$dData) -}
+205332912d829391cfa5d5fd81a0f177
+  $s$fData[]1 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c [Language.Fortran.ProgUnit LanguageFortranTools.Anno])
+  {- Arity: 2, HasNoCafRefs, Strictness: <L,A><L,A>,
+     Unfolding: InlineRule (2, True, True)
+                (\ @ (t :: * -> * -> *)
+                   @ (c :: * -> *)
+                   ($dTypeable1 :: Data.Typeable.Internal.Typeable t)
+                   (ds22 :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                 GHC.Base.Nothing
+                   @ (c [Language.Fortran.ProgUnit LanguageFortranTools.Anno])) -}
+de48e3a5d664f9fc513a937ed08edad6
+  $s$fData[]2 ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> Data.Data.DataType
+  {- Arity: 1, Strictness: <L,A>m,
+     Unfolding: InlineRule (1, True, True)
+                (\ (ds22 :: [Language.Fortran.ProgUnit
+                               LanguageFortranTools.Anno]) ->
+                 Data.Data.listDataType) -}
+3a4909da242d0697ace29c64f1242b9d
+  $s$fData[]3 ::
+    [Language.Fortran.ProgUnit LanguageFortranTools.Anno]
+    -> Data.Data.Constr
+  {- Arity: 1, Strictness: <S,1*U>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds22 :: [Language.Fortran.ProgUnit
+                               LanguageFortranTools.Anno]) ->
+                 case ds22 of wild {
+                   [] -> Data.Data.nilConstr : ds23 ds24 -> Data.Data.consConstr }) -}
+f6c287d74478fcb0577c6ae179c688f9
+  $s$fData[]_$dData ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit LanguageFortranTools.Anno)
+  {- Unfolding: InlineRule (0, True, True)
+                BufferTransferAnalysis.$s$fDataProgUnit -}
+ae8ee2cbd1353369d94d0c20b4d7cdb0
+  $s$fEqFortran ::
+    GHC.Classes.Eq (Language.Fortran.Fortran LanguageFortranTools.Anno)
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Fortran LanguageFortranTools.Anno)
+                  (Language.Fortran.$fEqBlock_$c==1
+                     @ LanguageFortranTools.Anno
+                     BufferTransferAnalysis.$s$fEqFortran_$s$fOrdMap_$cp1Ord)
+                  BufferTransferAnalysis.$s$fEqFortran1 -}
+2920ae8bd089fccb81e406a7b610b7de
+  $s$fEqFortran1 ::
+    Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ (a :: Language.Fortran.Fortran LanguageFortranTools.Anno)
+                   (b :: Language.Fortran.Fortran LanguageFortranTools.Anno) ->
+                 case Language.Fortran.$fEqBlock_$c==1
+                        @ LanguageFortranTools.Anno
+                        BufferTransferAnalysis.$s$fEqFortran_$s$fEqMap
+                        a
+                        b of wild {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True -> GHC.Types.False }) -}
+73f34d9555a4cd46f0fb1c4a028f9737
+  $s$fEqFortran_$dEq :: GHC.Classes.Eq [GHC.Types.Char]
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                GHC.Classes.$fEq[]_$s$fEq[]1 -}
+dce92f9f844ba9c380a70e1c134dfdfe
+  $s$fEqFortran_$dEq1 :: GHC.Classes.Eq [GHC.Base.String]
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                GHC.Classes.$fEq[]_$s$fEq[]2 -}
+00e266baa89def348ff9a4d98f7150ee
+  $s$fEqFortran_$s$fEqMap ::
+    GHC.Classes.Eq
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Base.$fEqMap_$c==
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     BufferTransferAnalysis.$s$fEqFortran_$dEq
+                     BufferTransferAnalysis.$s$fEqFortran_$dEq1)
+                  BufferTransferAnalysis.$s$fEqFortran_$s$fEqMap_$c/= -}
+d418b4b8fdd66f35ca52c1afd8d84842
+  $s$fEqFortran_$s$fEqMap_$c/= ::
+    Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>, Inline: INLINE (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+                   (y :: Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 GHC.Classes.not
+                   (Data.Map.Base.$fEqMap_$c==
+                      @ [GHC.Types.Char]
+                      @ [GHC.Base.String]
+                      BufferTransferAnalysis.$s$fEqFortran_$dEq
+                      BufferTransferAnalysis.$s$fEqFortran_$dEq1
+                      x
+                      y)) -}
+a38c3f9176dfabf366282dd0032fa884
+  $s$fEqFortran_$s$fOrdMap_$cp1Ord ::
+    GHC.Classes.Eq
+      (Data.Map.Base.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                BufferTransferAnalysis.$s$fEqFortran_$s$fEqMap -}
+5a1ee958a93ff96d060e43ccbcb8d49d
+  $s$fEqVarName ::
+    GHC.Classes.Eq
+      (Language.Fortran.VarName
+         (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Base.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqVarName_$c==
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     BufferTransferAnalysis.$s$fEqFortran_$s$fOrdMap_$cp1Ord)
+                  (Language.Fortran.$fEqVarName_$c/=
+                     @ (Data.Map.Base.Map GHC.Base.String [GHC.Base.String])
+                     BufferTransferAnalysis.$s$fEqFortran_$s$fOrdMap_$cp1Ord) -}
+1c8d29aab90fe20ad29cdba0b621e3af
+  $sfindWithDefault1 ::
+    a
+    -> Language.Fortran.VarName LanguageFortranTools.Anno
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+    -> a
+  {- Arity: 3, Strictness: <L,1*U><S,1*U(U,U)><S,1*U>,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (3, True, False)
+                (\ @ a
+                   (w :: a)
+                   (w1 :: Language.Fortran.VarName LanguageFortranTools.Anno)
+                   (w2 :: Data.Map.Base.Map
+                            (Language.Fortran.VarName LanguageFortranTools.Anno) a) ->
+                 case w1 of ww { Language.Fortran.VarName ww1 ww2 ->
+                 BufferTransferAnalysis.$wpoly_go10 @ a w ww1 ww2 w2 }) -}
+3c7376e1b525563451a0a626c096b076
+  $sfindWithDefault3 ::
+    a -> [GHC.Types.Char] -> Data.Map.Base.Map [GHC.Types.Char] a -> a
+  {- Arity: 3, HasNoCafRefs, Strictness: <L,1*U><S,1*U><S,1*U> -}
+bb7915911884dd5d63f2cb218a909c68
+  $slookup1 ::
+    [GHC.Types.Char]
+    -> Data.Map.Base.Map [GHC.Types.Char] a -> GHC.Base.Maybe a
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U> -}
+9343b3e68d91cee49c9f5b744af873a9
+  $stypeRep#10 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#11
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   GHC.Types.$tcChar
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+86c80042a1a8f6864b55db1fa6f7f1cd
+  $stypeRep#11 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   16781394633280494409##
+                   2520638044472077920##) -}
+f1396a4aaf6c26fb96be08ebe3492a3c
+  $stypeRep#14 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#15
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   GHC.Types.$tc[]
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+eb2245a4dbc2496fed021d9f7e1921b3
+  $stypeRep#15 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   17730107610217102821##
+                   9866972337190828755##) -}
+6ae1b4d3acb5cde25166cf55a91ce958
+  $stypeRep#18 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case BufferTransferAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types37 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       BufferTransferAnalysis.$stypeRep#19
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types37 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types37 } } }) -}
+266e756c2e91cb78b43b741dd1abcb36
+  $stypeRep#19 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   BufferTransferAnalysis.$stypeRep#10
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+5ac31c4388d93332f6516f301aa5594d
+  $stypeRep#2 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#3
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Data.Map.Base.$tcMap
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+d0662977422fa472584c77dc518e3d2c
+  $stypeRep#22 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case BufferTransferAnalysis.$stypeRep#2 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types37 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       BufferTransferAnalysis.$stypeRep#23
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types37 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types37 } } }) -}
+f3c53ff09d52b65b9aaa111e5c14a644
+  $stypeRep#23 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   BufferTransferAnalysis.$stypeRep#18
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+1bdd2504a8d8d9ec1dfcb0aca5941937
+  $stypeRep#26 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case BufferTransferAnalysis.$stypeRep#14 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types37 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       BufferTransferAnalysis.$stypeRep#23
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types37 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types37 } } }) -}
+f5f723c94e1dfc28df629a8f7e7cbb49
+  $stypeRep#29 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case BufferTransferAnalysis.$stypeRep#22 of wild { Data.Typeable.Internal.TypeRep dt dt1 tc ks trs ->
+                 let {
+                   types37 :: [Data.Typeable.Internal.TypeRep]
+                   = GHC.Base.++
+                       @ Data.Typeable.Internal.TypeRep
+                       trs
+                       BufferTransferAnalysis.$stypeRep#30
+                 } in
+                 case Data.Typeable.Internal.typeRepFingerprints
+                        ks
+                        types37 of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           (Data.Typeable.Internal.tyConFingerprint tc)
+                           kt_fps) of dt2 { GHC.Fingerprint.Type.Fingerprint dt3 dt4 ->
+                 Data.Typeable.Internal.TypeRep dt3 dt4 tc ks types37 } } }) -}
+13cd62062c2eb6f4faaaabcf80110dc6
+  $stypeRep#3 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   17306070887558246498##
+                   16032333906417739553##) -}
+25a60b06d43418359b526af7ebdffabe
+  $stypeRep#30 :: [Data.Typeable.Internal.TypeRep]
+  {- Unfolding: (GHC.Types.:
+                   @ Data.Typeable.Internal.TypeRep
+                   BufferTransferAnalysis.$stypeRep#26
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)) -}
+2861eaabbbb4ff13892284b3dba87c1b
+  $stypeRep#33 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#34
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcFortran
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+d496f65f8e825d3b6dd7a762972e7290
+  $stypeRep#34 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   6882220124880764793##
+                   15271875958298145102##) -}
+e84ccfd445d1c9dd1607a45be217d935
+  $stypeRep#37 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#38
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcDecl
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+aedf2a24ef9998808e5922da7c3ec344
+  $stypeRep#38 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   1333565254055508066##
+                   2348454038217729491##) -}
+eae17d869906f5a745e8dcb01d2b4dce
+  $stypeRep#41 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#42
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcVarName
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+328ae91fc67d32346750a80322cb44f6
+  $stypeRep#42 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   1672502290831751764##
+                   46662296866082288##) -}
+847b7c07eb8235492495d7c310b77e74
+  $stypeRep#45 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#46
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcProgUnit
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+77a330a196c8f7f8d85cbbcafc8aacaf
+  $stypeRep#46 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   10056753431434216976##
+                   6055604396548152995##) -}
+41a36c726b3dac05873abb4e354b8ba1
+  $stypeRep#6 :: Data.Typeable.Internal.TypeRep
+  {- Unfolding: (case Data.Typeable.Internal.typeRepFingerprints
+                        (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                        (GHC.Types.[]
+                           @ Data.Typeable.Internal.TypeRep) of kt_fps { DEFAULT ->
+                 case GHC.Fingerprint.fingerprintFingerprints
+                        (GHC.Types.:
+                           @ GHC.Fingerprint.Type.Fingerprint
+                           BufferTransferAnalysis.$stypeRep#7
+                           kt_fps) of dt { GHC.Fingerprint.Type.Fingerprint dt1 dt2 ->
+                 Data.Typeable.Internal.TypeRep
+                   dt1
+                   dt2
+                   Language.Fortran.$tcExpr
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep)
+                   (GHC.Types.[] @ Data.Typeable.Internal.TypeRep) } }) -}
+9721aed7107b5f4ad10fc60984a58044
+  $stypeRep#7 :: GHC.Fingerprint.Type.Fingerprint
+  {- HasNoCafRefs,
+     Unfolding: (GHC.Fingerprint.Type.Fingerprint
+                   13621902738272893592##
+                   4484539928315244892##) -}
+5d5c44cbec2583b3dfa345c10c03aba1
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   BufferTransferAnalysis.$trModule2
+                   BufferTransferAnalysis.$trModule1) -}
+78200054909d870d4c6ead75248de8c6
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "BufferTransferAnalysis"#) -}
+35057682fa4956cc978ce5d9d7b28773
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "main"#) -}
+8735cb55939781470ee08b2965d23963
+  $woptimiseBufferTransfers ::
+    [GHC.Base.String]
+    -> [GHC.Base.String]
+    -> SubroutineTable.SubroutineTable
+    -> SubroutineTable.SubroutineArgumentTranslationMap
+    -> Language.Fortran.Program LanguageFortranTools.Anno
+    -> (# SubroutineTable.SubroutineTable,
+          Language.Fortran.Program LanguageFortranTools.Anno #)
+  {- Arity: 5, Strictness: <L,U><L,U><L,U><L,U><L,U>, Inline: [0] -}
+2ff08d44acba2c94112ad3bfab739183
+  $wpoly_go10 ::
+    a
+    -> LanguageFortranTools.Anno
+    -> Language.Fortran.Variable
+    -> Data.Map.Base.Map
+         (Language.Fortran.VarName LanguageFortranTools.Anno) a
+    -> a
+  {- Arity: 4, Strictness: <L,1*U><L,U><L,U><S,1*U>, Inline: [0] -}
+404a3c583e8ca468f4cc33e16fad8ff7
+  optimiseBufferTransfers ::
+    ([GHC.Base.String], [GHC.Base.String])
+    -> SubroutineTable.SubroutineTable
+    -> SubroutineTable.SubroutineArgumentTranslationMap
+    -> (Language.Fortran.Program LanguageFortranTools.Anno,
+        [GHC.Base.String])
+    -> (SubroutineTable.SubroutineTable,
+        Language.Fortran.Program LanguageFortranTools.Anno)
+  {- Arity: 4, Strictness: <S,1*U(U,U)><L,U><L,U><S,1*U(U,A)>m,
+     Inline: INLINE[0],
+     Unfolding: InlineRule (4, True, False)
+                (\ (w :: ([GHC.Base.String], [GHC.Base.String]))
+                   (w1 :: SubroutineTable.SubroutineTable)
+                   (w2 :: SubroutineTable.SubroutineArgumentTranslationMap)
+                   (w3 :: (Language.Fortran.Program LanguageFortranTools.Anno,
+                           [GHC.Base.String])) ->
+                 case w of ww { (,) ww1 ww2 ->
+                 case w3 of ww3 { (,) ww4 ww5 ->
+                 case BufferTransferAnalysis.$woptimiseBufferTransfers
+                        ww1
+                        ww2
+                        w1
+                        w2
+                        ww4 of ww6 { (#,#) ww7 ww8 ->
+                 (ww7, ww8) } } }) -}
+ebf7efe4b897b548b0dd7f5ec61ec94d
+  replaceSubroutineAppearances ::
+    SubroutineTable.SubroutineTable
+    -> [(Language.Fortran.Program LanguageFortranTools.Anno,
+         [GHC.Base.String])]
+    -> [(Language.Fortran.Program LanguageFortranTools.Anno,
+         [GHC.Base.String])]
+  {- Arity: 2, Strictness: <L,U><S,1*U> -}
+"SPEC/BufferTransferAnalysis $fDataArgList @ Anno" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                LanguageFortranTools.Anno)
+  Language.Fortran.$fDataArgList @ (Data.Map.Base.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 $dData
+  = BufferTransferAnalysis.$s$fDataArgList
+"SPEC/BufferTransferAnalysis $fDataFortran @ Anno" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                LanguageFortranTools.Anno)
+  Language.Fortran.$fDataFortran @ (Data.Map.Base.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 $dData
+  = BufferTransferAnalysis.$s$fDataFortran
+"SPEC/BufferTransferAnalysis $fDataMap @ [Char] @ [String]" [ALWAYS] forall ($dOrd :: GHC.Classes.Ord
+                                                                                        [GHC.Types.Char])
+                                                                            ($dData1 :: Data.Data.Data
+                                                                                          [GHC.Base.String])
+                                                                            ($dData :: Data.Data.Data
+                                                                                         [GHC.Types.Char])
+  Data.Map.Base.$fDataMap @ [GHC.Types.Char]
+                          @ [GHC.Base.String]
+                          $dData
+                          $dData1
+                          $dOrd
+  = BufferTransferAnalysis.$s$fDataArgList_$s$fDataMap
+"SPEC/BufferTransferAnalysis $fDataProgUnit @ Anno" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                 LanguageFortranTools.Anno)
+  Language.Fortran.$fDataProgUnit @ (Data.Map.Base.Map
+                                       GHC.Base.String [GHC.Base.String])
+                                  $dData
+  = BufferTransferAnalysis.$s$fDataProgUnit
+"SPEC/BufferTransferAnalysis $fData[] @ (ProgUnit Anno)" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                      (Language.Fortran.ProgUnit
+                                                                                         LanguageFortranTools.Anno))
+  Data.Data.$fData[] @ (Language.Fortran.ProgUnit
+                          LanguageFortranTools.Anno)
+                     $dData
+  = BufferTransferAnalysis.$s$fData[]
+"SPEC/BufferTransferAnalysis $fData[] @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                             [GHC.Types.Char])
+  Data.Data.$fData[] @ [GHC.Types.Char] $dData
+  = BufferTransferAnalysis.$s$fDataArgList_$s$fData[]
+"SPEC/BufferTransferAnalysis $fData[]_$cdataCast2 @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                         [GHC.Types.Char])
+  Data.Data.$fData[]_$cdataCast2 @ [GHC.Types.Char] $dData
+  = BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$cdataCast2
+"SPEC/BufferTransferAnalysis $fData[]_$cdataTypeOf @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                          [GHC.Types.Char])
+  Data.Data.$fData[]_$cdataTypeOf @ [GHC.Types.Char] $dData
+  = BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$cdataTypeOf
+"SPEC/BufferTransferAnalysis $fData[]_$ctoConstr @ [Char]" [ALWAYS] forall ($dData :: Data.Data.Data
+                                                                                        [GHC.Types.Char])
+  Data.Data.$fData[]_$ctoConstr @ [GHC.Types.Char] $dData
+  = BufferTransferAnalysis.$s$fDataArgList_$s$fData[]_$ctoConstr
+"SPEC/BufferTransferAnalysis $fEqFortran @ Anno" [ALWAYS] forall ($dEq :: GHC.Classes.Eq
+                                                                            LanguageFortranTools.Anno)
+  Language.Fortran.$fEqFortran @ (Data.Map.Base.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               $dEq
+  = BufferTransferAnalysis.$s$fEqFortran
+"SPEC/BufferTransferAnalysis $fEqMap @ [Char] @ [String]" [ALWAYS] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                      [GHC.Base.String])
+                                                                          ($dEq :: GHC.Classes.Eq
+                                                                                     [GHC.Types.Char])
+  Data.Map.Base.$fEqMap @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        $dEq
+                        $dEq1
+  = BufferTransferAnalysis.$s$fEqFortran_$s$fEqMap
+"SPEC/BufferTransferAnalysis $fEqMap_$c/= @ [Char] @ [String]" [ALWAYS] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                           [GHC.Base.String])
+                                                                               ($dEq :: GHC.Classes.Eq
+                                                                                          [GHC.Types.Char])
+  Data.Map.Base.$fEqMap_$c/= @ [GHC.Types.Char]
+                             @ [GHC.Base.String]
+                             $dEq
+                             $dEq1
+  = BufferTransferAnalysis.$s$fEqFortran_$s$fEqMap_$c/=
+"SPEC/BufferTransferAnalysis $fEqVarName @ (Map String [String])" [ALWAYS] forall ($dEq :: GHC.Classes.Eq
+                                                                                             (Data.Map.Base.Map
+                                                                                                GHC.Base.String
+                                                                                                [GHC.Base.String]))
+  Language.Fortran.$fEqVarName @ (Data.Map.Base.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               $dEq
+  = BufferTransferAnalysis.$s$fEqVarName
+"SPEC/BufferTransferAnalysis $fOrdMap_$cp1Ord @ [Char] @ [String]" [ALWAYS] forall ($dOrd1 :: GHC.Classes.Ord
+                                                                                                [GHC.Base.String])
+                                                                                   ($dOrd :: GHC.Classes.Ord
+                                                                                               [GHC.Types.Char])
+  Data.Map.Base.$fOrdMap_$cp1Ord @ [GHC.Types.Char]
+                                 @ [GHC.Base.String]
+                                 $dOrd
+                                 $dOrd1
+  = BufferTransferAnalysis.$s$fEqFortran_$s$fOrdMap_$cp1Ord
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

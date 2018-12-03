@@ -1,0 +1,786 @@
+
+==================== FINAL INTERFACE ====================
+2018-12-03 14:13:29.209162598 UTC
+
+interface language-fortran-0.3-DnTmLOXLSgMntUzwJ6Kf9:Language.Fortran.Parser 8043
+  interface hash: 7a33052b7d61b9512566be7df0316d78
+  ABI hash: 54e6a6e87d44fee02259ecf7bad83b08
+  export-list hash: 7f83129f3986b3f50d5ad2ede4290862
+  orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
+  flag hash: 7225d38e56fdf9876cc1afdf92d1c58e
+  opt_hash: 14e536840aca4e889cad654e6f9b79c1
+  hpc_hash: 93b885adfe0da089cdf634904fd59f71
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  Language.Fortran.Parser.context_parse
+  Language.Fortran.Parser.frh4
+  Language.Fortran.Parser.fst3
+  Language.Fortran.Parser.fst4
+  Language.Fortran.Parser.include_parser
+  Language.Fortran.Parser.parse
+  Language.Fortran.Parser.parser
+  Language.Fortran.Parser.snd3
+  Language.Fortran.Parser.snd4
+  Language.Fortran.Parser.statement_parse
+  Language.Fortran.Parser.trd3
+  Language.Fortran.Parser.trd4
+module dependencies: Language.Fortran Language.Fortran.Lexer
+                     Language.Fortran.PreProcess
+package dependencies: array-0.5.2.0 base-4.11.1.0 binary-0.8.5.1
+                      bytestring-0.10.8.2 containers-0.5.11.0 deepseq-1.4.3.0
+                      ghc-prim-0.5.2.0 haskell-src-1.0.3.0 integer-gmp-1.0.2.0 mtl-2.2.2
+                      parsec-3.1.13.0 syb-0.7 text-1.2.3.1 transformers-0.5.5.0
+orphans: text-1.2.3.1:Data.Text.Lazy text-1.2.3.1:Data.Text
+         binary-0.8.5.1:Data.Binary.Generic
+         bytestring-0.10.8.2:Data.ByteString.Builder
+         text-1.2.3.1:Data.Text.Show
+         transformers-0.5.5.0:Control.Monad.Trans.Error
+         syb-0.7:Data.Generics.Instances base-4.11.1.0:GHC.Float
+         base-4.11.1.0:GHC.Base
+family instance modules: base-4.11.1.0:Control.Applicative
+                         base-4.11.1.0:Data.Complex base-4.11.1.0:Data.Functor.Compose
+                         base-4.11.1.0:Data.Functor.Const
+                         base-4.11.1.0:Data.Functor.Identity
+                         base-4.11.1.0:Data.Functor.Product base-4.11.1.0:Data.Functor.Sum
+                         base-4.11.1.0:Data.Monoid base-4.11.1.0:Data.Semigroup
+                         base-4.11.1.0:Data.Semigroup.Internal base-4.11.1.0:Data.Version
+                         base-4.11.1.0:Data.Void base-4.11.1.0:GHC.Exts
+                         base-4.11.1.0:GHC.Generics base-4.11.1.0:GHC.IO.Exception
+                         containers-0.5.11.0:Data.IntMap.Internal
+                         containers-0.5.11.0:Data.IntSet.Internal
+                         containers-0.5.11.0:Data.Map.Internal
+                         containers-0.5.11.0:Data.Sequence.Internal
+                         containers-0.5.11.0:Data.Set.Internal containers-0.5.11.0:Data.Tree
+                         text-1.2.3.1:Data.Text text-1.2.3.1:Data.Text.Lazy
+import  -/  array-0.5.2.0:Data.Array bfee801ad06ff76eb68c9cfdd261cdd6
+import  -/  base-4.11.1.0:Control.Applicative 55d9b3a7491623b0362290e162d67308
+import  -/  base-4.11.1.0:Control.Monad c5f960c67d822497578bffbd3e4c01cf
+import  -/  base-4.11.1.0:Data.Bits bbb4ac3d5246b98befe8bd31900b1c2f
+import  -/  base-4.11.1.0:Data.Char 3e89818e2b8ef1a2cc5393163484da72
+import  -/  base-4.11.1.0:Data.Foldable 8ed35c38958063956af33c935ea03444
+import  -/  base-4.11.1.0:Data.Tuple 3af66f3ac61ed95ba8a3a3f68ebc5003
+import  -/  base-4.11.1.0:Debug.Trace 7d99b5cfd8ae9f4b50938e4fedeaadef
+import  -/  base-4.11.1.0:GHC.Arr d23cf0c05ccc71fede1c7a517b85126a
+import  -/  base-4.11.1.0:GHC.Base 604111500e81281298777e721c75643b
+import  -/  base-4.11.1.0:GHC.Err 5e26aa744981f14e0f1e4d29c44ac52e
+import  -/  base-4.11.1.0:GHC.Exts 7199528d266b07eb217e45473fc18c9d
+import  -/  base-4.11.1.0:GHC.List 1e4357702d8d00cded0703bd293e50e8
+import  -/  base-4.11.1.0:GHC.Num 8e54b26dce4495382dc4b50cf36ab754
+import  -/  base-4.11.1.0:GHC.Real b4beb0389ba1ad5d9640aae67848c5d3
+import  -/  base-4.11.1.0:GHC.Show 73be67392447c974f19c3befd83c46c0
+import  -/  base-4.11.1.0:GHC.Unicode 8234c40b59f035e845832a42e8725a00
+import  -/  base-4.11.1.0:Prelude 0750c25585e2b797cd78291d423d39dd
+import  -/  base-4.11.1.0:System.IO 1c239be44126f7b1ba512ea61300f4dc
+import  -/  base-4.11.1.0:Text.Read 6c02630607b565ffcb34e8127673989b
+import  -/  containers-0.5.11.0:Data.Map f51b9cf04edd738eb6d014be576b3403
+import  -/  containers-0.5.11.0:Data.Map.Internal e02d23495520de11b8e9f3c9c93a4d11
+import  -/  ghc-prim-0.5.2.0:GHC.Classes 122abfcd7450c6c11602933c9ca5f80d
+import  -/  ghc-prim-0.5.2.0:GHC.Types d9b3023de7feae4a5308d643da5543f7
+import  -/  haskell-src-1.0.3.0:Language.Haskell.ParseMonad fb79fdaf30916df7a0604f7ab7b1c360
+import  -/  haskell-src-1.0.3.0:Language.Haskell.Syntax 823962f4ec8fa53bfc130d180e12a321
+import  -/  Language.Fortran 2fddde2e56a583fa28fd1ab9f2c137e9
+  exports: 0ab59dfb1ee2e86f4f94b247f95a7e61
+  ASeq 6ff0ec063aadfbc11bee5db34e7712df
+  Access 75fe774158f02b1f83127ed8fa58c934
+  AccessStmt bda68ca6bb19834f8d0599f8577e0173
+  Action 5d8dcbe9a2fc9d3dd6d6b3a35fc55014
+  Allocatable b4c493a052aa96ad79130d01da1db671
+  Allocate 960edd1bf81cd1c41906f3bfbe0d9da3
+  And 0b8240376f26be9a9c03b77ba047e2a8
+  Arg ec9c7b7527845203b247eea4a69002cf
+  Arg bd018f90b97562255b87a4df59d0b8ff
+  ArgList bb4bd4d6188b1c6bac53701fdbe279ca
+  ArgName 4b14095a10030e563e1b53f189263589
+  ArgName be6adf5f27c081e5e81ca1cf786c5c4e
+  ArrayCon 8ab8c1413bc6f468d0ce0a152d464ffb
+  ArrayT c57f600b4a7ded64e92c3f36bdb15e99
+  Assg ac7bc3c4913f10c4e92730edc0188a74
+  AssgExpr 03b0214d2ff2b1fc06a50cb4a13a7bdc
+  Attr 51f88274fa114a05e64e368073d7d967
+  AttrStmt 47e0e201e7334174b046fcd169d857b8
+  Backspace d6555f9a519c9e32f05d380db940ca37
+  BaseType 67adc6049329903ce26ae289a9f33958
+  BaseType aa88ffb66de72a23cf77590eafdaaa1d
+  Bin fe8eee0ac4a5494151a62a60b4dc47d2
+  BinOp dbc9212b2d4a153830ca8124fdf820a2
+  Blank b4c6b844888c64ce0e143567fb80d22a
+  Block 0a9e261251dd4e6a0ec432dc326cfd12
+  BlockData 3a5f6a6c697bdd240330a20400629fd9
+  Bound 9596187657314befcbb24900403f5d48
+  Call 6301042b8b4552bd9db1615c2f6779e0
+  Character f8727e1a7b63c12ce01f44628f960112
+  Close b201c908c4ec26275d3d5dacb7d43e26
+  Common 08a3c2143f0453f9aa8a3fe2c381c31e
+  Complex 7d623a06be82189c60efb2ba86d0f4d3
+  Con a5787bcce0973bff2a509945896202df
+  ConL 16353f8137e88d999e93b0ab72625989
+  ConS c105163b69703313f0892362f849c074
+  Concat 213b51fefc94926e925f88f6260d2108
+  Continue d0531bfa83ca0232f39e3f5604b8119c
+  Cycle 5899b66a1b2dcfd3d8c0f2886140a7f3
+  DSeq 112767b1af7c88a46dfbf2f3c2980c6b
+  Data 785249bc9ff0ddaf603cf85633a47bf2
+  DataDecl bc75665ecfd31320f957000c6cd54ca8
+  DataForm e3467c6449d2e00a1661edc3157f07e4
+  DataStmt ce32419f177602f5cdaf38fd22906f16
+  Deallocate 427a8ef2df1d0a88e30ec7c19f2b8bc1
+  Decl dd14b6fc53a0cb3cd4e56dd5ea2ffb5a
+  Decl 7ece643e5a8b068c6e933cb3bafeb231
+  Delim 960e486fde1c20b268d419fb3c1e770a
+  Delimiter 1a622ac54cba3c91e3556fd8e4ff71aa
+  DerivedType 65dbe25bbf776847486563b09b087dde
+  DerivedTypeDef f28e6107ec9f705d5b7ecfe43a868e7e
+  Dimension 5f2c4845d2a061138e516bc06292d35d
+  Direct 0e16e21252ccb84497299821d5c13a8a
+  Div 3d284199d0b0c4cb12a4c4debd1bf9c4
+  ESeq 3889fc75ada5aa03da425f9880f3c87f
+  Elemental 5db665a87806caeb3f676c67ccc0200c
+  End 8bb77d3fc0c1ec18ca80b37b63c110df
+  Endfile bf9ff94241edf4a9202c48c385c2a551
+  Equivalence acf05144431f1b7f663d1a1b5cb3d910
+  Exist a7e1365bd3a5fce4a67d32c80bc7ad48
+  Exit f16479808e80038053e7b0fab2cdd601
+  Expr dde1822d48cf08f443c01f56f66525c4
+  External b974ffe4fd703a99de0eb075baa2c8f1
+  ExternalStmt 76bbf12449681feb98c2f903782f2a4d
+  FSeq a2197e1510040f021ffd50a979035903
+  File e351523e5f0e9da44af36742c22843ab
+  Floating 1dccf866ad870c7a6ad965a365bbb958
+  For ffc3bc0b33c7be3e212928865ae9efd6
+  Forall aa67bf1e8b493de81f961618c272865f
+  Form 065eb7a27d2a51f94e183ce2d2c30589
+  Format e737a81ebc3b0489f039d7b0b1562e89
+  Formatted 061d7cd86a7ff8e4466f65b090c37a42
+  Fortran a5aa3a801fd3738b14349f5a78efceec
+  Fraction f084003d1e65777f323835262cca41d2
+  FractionConst 8cfd602428a08e37348f6f408ba934de
+  Function f66108aa4159c47f6ab74e586ed1b515
+  FunctionInterface f2386a5f1290c8571c58883f1cd7040a
+  GAssg 9654b85528d0dfeea2ffe37e25eba833
+  GName 17276d6181d64f719bcbe49ae4a7ae46
+  GOper ab2b119b961d8e8c968fb4f1e6317492
+  GSpec 6438d29fb27f02f07fd808f2bd754579
+  Goto 403c6e149395bfaecc29272de89e805f
+  IOLength f17ac7c1017f246f868cfff3061ae3c7
+  IOStat 53fbe6bd886dc70c3619b44d8e66d991
+  If d5d5bd51acf0b2ad56a436e5d866e935
+  Implicit a927111d29d31bd6ec8d853bd75658ee
+  ImplicitNone 5fb826e53654e09427db63465bf94d7d
+  ImplicitNull b194a34840ae1f752d8ae638799e297d
+  In bff11d47ac150b1b97b3434f22d9567f
+  InOut 846ce8766cc631e30e410c4a44d854b7
+  Include 235fd2d778120ef432d5db663388aa8e
+  IncludeProg 31ae2b00538e489100103a8ddb2c6dd8
+  Inquire 791fa25efc56a3ff6027b207e633eebf
+  Integer b033a758db7537ee5221b77301f76fb9
+  IntegerConst ff3af629910f99cd90e64a4956a6f981
+  Intent 3188ccfad7679c831cfe7b4bed5aaa49
+  IntentAttr 2747599b28ae2d96ba34ba75ab85a002
+  Interface eed57b000cfdd0cdf50cb0fe91ee3188
+  InterfaceSpec 7ece643e5a8b068c6e933cb3bafeb231
+  Intrinsic a2bc386947e2c013d63d31b97e3efb29
+  Label de9ba65d4c14006510badb7ae4454b50
+  Logical 9f5b83b4df13ffb72ec2e99ac0d787cd
+  Main 8ab61e4700828765b3ad0b2cbfc72154
+  MeasureUnit 6e034fe4b28be193bccf5f57c31d2159
+  MeasureUnit 5699565f5f448bb936900abdc739855a
+  MeasureUnitDef 4876f06d57dbd2bdf6fb41c145ed0465
+  MeasureUnitSpec 2acb0488b05249becf8cd484d5c16866
+  Minus c3e7ef16bc5e2e58f399c1d985d9b64e
+  Module 84ee8800c7df1901dfa6ad9341999c25
+  ModuleProcedure a0009f39739cc71dabc6debda36d2d66
+  Mul fcbb1070c5d0b9687bebf54413f29c21
+  Name 1a89926f1251ed770cd066e0f607d4ac
+  Named 22641de688a3dec42134741fdb889d8a
+  Namelist 3c867a071bea9cb2277417cf863e9f1f
+  NextRec 56af0cb5305a07141d1d5a43036084db
+  NoSpec ae671ed80fe45fb5657e8a0386f1a8a2
+  Not c84439884004373a05763f08873a969b
+  NullArg 4ab68a239c3c7c1321123267a63571a4
+  NullDecl e688960ce8386cd0d9be1eac1fa84e0b
+  NullExpr 0d8b53a34ea5432f73d17ada7cf30e0a
+  NullFraction b52372824d4710162a61a14b48bfa09e
+  NullStmt e61d0d6f11885a9f5bf01382860ef9ff
+  NullSubName 5f2f2832c3cea998953c309fb59b5580
+  Nullify 59cbdfc54899b2dc7c79a046867345fa
+  Number b75ca0075aa9cd28997fe83375d21227
+  Open 01b6ce71e3d07f1e25e986c3737acdc2
+  Opened 90f77d7049da1c4d143599e5c1e18a65
+  Optional fc750a39b6c497f3057868f805454203
+  Or ca19ffdca1c26504725184139e7ea043
+  Out 8f6e38d30ecbec6e8c476dc556a0f216
+  Pad 60a28218144aa8250daf7ed0cab5a418
+  Parameter 4544eb9eb4685a6f3f29999c9313b9a4
+  ParenthesizedExpr 5bceaee0cb4a9cf7681a4ecf9f13172d
+  Pause 8d3669f855331f9db1a077749965cf55
+  Plus 7af649a2e8e8b8ed78bbe028a9c6ad25
+  Pointer ee12f8f9718e7d1dd8449d3d32d06698
+  PointerAssg e14204d71067dbd5d8b77396c6864e6f
+  Position 4da43753c7f9a3cf92e6017240149f89
+  Power 70582a0f187b87b149fdffc3afdb3dd7
+  Print 5e02a9ca139805682f5be346ad48f7c6
+  Private 96a804fe3b8cf3b883a1e68c5b66592c
+  ProgUnit 6bf32305ada4219a019f914e9849b46e
+  Program 261e673b4c718903b09aaee6b5dc83db
+  Public f9678647fa44948a3c44074ddcc0c792
+  Pure bb8ba29187a35a20cbd33816008816f9
+  Read 50a912689f2377218d49cd1f04a26548
+  ReadS d173742862d1db7ca1dc7f7deea89614
+  ReadWrite 3df17649de913511072f060eb473bcfe
+  Real dd73ae931c151179b8a3badf933ffcc5
+  Recl 4ca78cb5958f395a15c872fdd8902d66
+  Recursive 485719d6c0b36a9d0bf26697319a9c8b
+  RelEQ fd909d2d4ce0942906350ee34b478482
+  RelGE 1fc2e2cb8305e9d93e40095cf7c4453c
+  RelGT 87f8abc916274b4695f550038b38c960
+  RelLE 7d339f692503941696979b6739c246f6
+  RelLT 5968dae00f8c24813f7c3e32d8466256
+  RelNE 93c4e43d2b9fb83259ca69f11ce71575
+  Renames b3d56ed0dce90d4125dd487071ae5799
+  Return ff34d58fe521bbca55d50ced19fc8fe3
+  Rewind 3de296dbe07cfd164b5aa0baaba2ffa0
+  Save 6262e414317e0b11d6f2ec29406ea181
+  SelectStmt d32866ca59285c730c4c1311fc0ab6eb
+  Sequence 790c69c612155ee0338abcc4086ab0e5
+  Sequential 30241fc4d6c33ed34db2404ed1ccd575
+  SomeType 7a675f79a1742b086c6e0a972f87f76e
+  Spec 14704e7f898e4314ef50fdf7a23e80c5
+  Sqrt 0ee9227df01a8033594d87beaaa88109
+  SrcLoc 7270433a54887a397c484a07738ebab9
+  SrcLoc 9c22d22566b567519611f27b2ba2763b
+  SrcSpan 9ab5d8a97ababadd84065d617b2cc833
+  Status 91e6724cb8828d404f872485ef2d0ac2
+  Stop 9ef8a3d95c655e21ea25ee3448c105e0
+  StringLit b0f676463ee4d3ad47ee9acf5723fafa
+  Sub 67e71e1a3442b9c51385585399a1e5b5
+  SubName e1d832eaabcd1142841a37a3530ef5cc
+  SubName 668b1d2de935a872813ac07676ecfaa9
+  SubroutineInterface 80f2ae374194efc9961b713ccd851678
+  Target b8fcd8eebe27acbf689bd12abb63367b
+  TextDecl 08e7be8e3ae389091b604f67b042d5bc
+  TextStmt f87f35718886044bdc0f3947e295de35
+  UMinus fefbad818f0570d69fcb7ca84ca7f9a6
+  Unary bef8d0c0cde01a5ca9e0055ffffa89e7
+  Unformatted 6d2daa5f0513bc188906f1f08cdce160
+  Unit 3cbcce6c0a862eb97912c2b45701901e
+  UnitNone 35a384218b72fd2fee03e97a69f84787
+  UnitProduct 14a899c42e9a347d63bddec29ccb3347
+  UnitQuotient 603e4bb3448cd4787805ee69395aaa49
+  Use cc301b79d5736426c724a7ad0f0f59d2
+  UseBlock 24fbfa89611c2a154239bbe61c862d05
+  UseNil 86f2c5e1aab4c00eb9b4b6312a7082a0
+  Uses 269ca50531a76be4856d27dff05f3e7d
+  Var 11f3119893937d559bc8c1a0fd9fc8e3
+  VarName a42b84c67b8d2bdc1fba4a319c4053ef
+  VarName fedb9c38b7fb4b440ed4cd946a951b02
+  Variable c70925c2105fe5462903fb2ce340f326
+  Volatile 9bdf230191e58685f2d91d2b4344f167
+  Where 5b712618fe7a280a4af9d72cf4278ff4
+  Write c8d1581d5c62cac8e1c00444dc782561
+  WriteSp b66ef456a3760f5fb24626a2dd620477
+  srcColumn 9c22d22566b567519611f27b2ba2763b
+  srcFilename 9c22d22566b567519611f27b2ba2763b
+  srcLine 9c22d22566b567519611f27b2ba2763b
+  srcSpan 1563fafcb7f0848eedf85f77acf5d014
+import  -/  Language.Fortran.Lexer 52c3054c306c8bdeb0942d8fac46e470
+  exports: 92ae9479ef46ef47a16059b3f42425f7
+  AlexEOF a65f0187ab2fb9dfbcbde24e893bc737
+  AlexError ccfbb65738e3c21f78b16c30316fcbf4
+  AlexSkip a5a3e0e4b2ee232d20ee54c7b986fb2a
+  AlexToken 422e639a099223d2d1469836b2735596
+  Arrow 16587e10e7dc50867684665db63c2def
+  Colon f02f4592f591fa3dd8d8124fd4430b62
+  ColonColon 30ed2d85133b2ee7d6458f6039064d7c
+  Comma cddd38fcb681ce15ea8f0ae2db0f1fea
+  DataEditDest f1109230e0d188794ca8d7dba27d99f1
+  Dollar 236baf02018ae910908944705317b575
+  FalseConst 38a61597be492d2b0d55c80d668a4838
+  Hash 5cdfb520caf7e5796c42dfb19fb398a8
+  ID 5590d8d59da94f915afea520567a0b4a
+  Key c7abb999f8088f82bcf2a95649251905
+  LArrCon 2de3fe7305a6e88b74e79d9027b683c7
+  LBrace fd96c828469c9864fb9525cdd518cd97
+  LParen 2d39feed3457cfc9f1552daf16bdca33
+  LitConst bed63632ed101f9d59def937f7ee44fe
+  NewLine 90e5ee487fd3ecc84e0cb334fc78b7d6
+  Num 995d06cc0e88aee2ef55359d5b27c455
+  OpAND 0809f31f365daba83c1b9b3115220702
+  OpAdd bd92dd586fd7389f3e845d1fca04b09f
+  OpConcat 8eb7bd8e5989d036d656ddd8eb748362
+  OpDiv 882b17d67340f8fb22cc40e2d9de21a3
+  OpEQ 2310dbbecd6f8ab9a801bdaaa2d4302c
+  OpEquals 06db06a7690d420bc9257f6c50abc919
+  OpGE bbf460f502490e42dcd1b3194ac86189
+  OpGT f042a4b94849d72c30f170d460f3dd40
+  OpLE 7a5cc1f5117013ef22a6969c2ac77af1
+  OpLT 1649b52ab79edaa8ab097a26da66fe78
+  OpMul c4a60d412589de04c12ebc25079cb6d5
+  OpNE 417f2f7bd0ed04e9f1e8f632cce1251a
+  OpNOT 87d2eb225e8b8ad4504200a704148dfa
+  OpOR b27dcaac201f35f45208226e947ea49f
+  OpPower 7f3cb924e334734b3ccf72df4dd87b25
+  OpSub d4e3b269110def8dbac1bcbeb68a5a2f
+  Percent acadd5eb23e6c332dcc8e699d874a2e3
+  Period 447f660e6fb15ebfbe15ffdc95409a8d
+  RArrCon 0ab942f8c9e942770cc510614398d4fe
+  RBrace cea78d57ba8adfd3dcf1ecafc487fd35
+  RParen fe61fc71a03c3c78e97495e4c12285ab
+  SemiColon 825d1fad5e26072cf20300de5e2dc79c
+  StrConst e8caaf16abb355435345a5e32ac6e5e6
+  Text 9cad27067a830b68e332ea72a0eee533
+  TokEOF 84dd03e0c9db9580a60131683955a1ca
+  Token a9d8b2c19a2fa71ff2638e7b0012af87
+  TrueConst c78b3722e818dbab5c979085df7ffa46
+  alexScan d526d68c706c2f763f5f7ba5d3a11875
+  lexer 24b4bbacff392ce75aefda4525f75253
+import  -/  Language.Fortran.PreProcess b76c8713a953cb7f78c5e60c26b27dd0
+  exports: 43e7e9abb13dc03506eec68a49699a4b
+  pre_process 2088dfb062c4d68174fd47de79761b5c
+addDependentFile "/home/james/.stack/programs/x86_64-linux/ghc-8.4.3/lib/ghc-8.4.3/include/ghcversion.h" 61cc4580d32de09862d412848a79cd26
+addDependentFile "/usr/include/stdc-predef.h" 64086a4476ea583071277345b423d741
+addDependentFile ".stack-work/dist/x86_64-linux/Cabal-2.2.0.1/build/autogen/cabal_macros.h" cc8d4e3a6dee243b1d92981962ed76a3
+fixities infixr 9 HappyStk, infixr 9 HappyStk
+109ca3797c50ceec76f2d60b2f8636a7
+  $tc'HappyA# :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   10154515412985337144##
+                   6094257037613040988##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tc'HappyA#2
+                   0#
+                   Language.Fortran.Parser.$tc'HappyA#1) -}
+a7b7623a26e48a1a7536e15516412bf0
+  $tc'HappyA#1 :: GHC.Types.KindRep
+  {- HasNoCafRefs, Strictness: m4, Inline: [~] -}
+ec0b33fa2360ddcfccf45f59136bcbb5
+  $tc'HappyA#2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tc'HappyA#3) -}
+0dd91d814e16aebc48d9dd7492598465
+  $tc'HappyA#3 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'HappyA#"#) -}
+98ae5ad69e92010312d95ec5fd886943
+  $tc'HappyCons :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   18162329236834997149##
+                   485457590382915619##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tc'HappyCons2
+                   0#
+                   Language.Fortran.Parser.$tc'HappyCons1) -}
+ff08118a780f5e7bd6bb6b30382f22c6
+  $tc'HappyCons1 :: GHC.Types.KindRep
+  {- HasNoCafRefs, Strictness: m4, Inline: [~] -}
+9fafbf43fbdf6c121209494cd70ebbe5
+  $tc'HappyCons2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tc'HappyCons3) -}
+81bd8c9a05f41462dddb8732e3b73d08
+  $tc'HappyCons3 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'HappyCons"#) -}
+a40dfcda4e3b481c1894f3436d385339
+  $tc'HappyStk :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   13560508652223281842##
+                   5138424680221052114##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tc'HappyStk2
+                   1#
+                   Language.Fortran.Parser.$tc'HappyStk1) -}
+f4d13acbee5ff446b3257bc1d5c4529a
+  $tc'HappyStk1 :: GHC.Types.KindRep
+  {- HasNoCafRefs, Strictness: m4, Inline: [~] -}
+593fb0c478134df25b6ba7cabedd5d0b
+  $tc'HappyStk2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tc'HappyStk3) -}
+e36d87019b6bb03224da5f3638049aee
+  $tc'HappyStk3 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("'HappyStk"#) -}
+374f9c175b140f8fbf79c74674ba15f4
+  $tcHappyAbsSyn :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   8882550683937277925##
+                   14000345443225024809##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tcHappyAbsSyn1
+                   0#
+                   GHC.Types.krep$*) -}
+56e2ea22b981a40b9648b22f7f15afc5
+  $tcHappyAbsSyn1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tcHappyAbsSyn2) -}
+ed221e3310c2a3c38d671b02b4fa1ff0
+  $tcHappyAbsSyn2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("HappyAbsSyn"#) -}
+60109bc245526d1f002cf6cace982ec8
+  $tcHappyAddr :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   12013677149152684496##
+                   5445981914458105223##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tcHappyAddr1
+                   0#
+                   GHC.Types.krep$*) -}
+0100f14037e21e92a1c05f72abc663d4
+  $tcHappyAddr1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tcHappyAddr2) -}
+5e53185860be188e1e25379da1a60eca
+  $tcHappyAddr2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("HappyAddr"#) -}
+195409a5de469498cdc420b46420e030
+  $tcHappyStk :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   9227023748181333553##
+                   1392444312421269649##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tcHappyStk1
+                   0#
+                   GHC.Types.krep$*Arr*) -}
+3fd2771bcfb39a08244eefbce1d896df
+  $tcHappyStk1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tcHappyStk2) -}
+0fab021492b91d1310ebe8411e078ad8
+  $tcHappyStk2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("HappyStk"#) -}
+087c7ae4390f8c43eae166856bb00117
+  $tcHappy_IntList :: GHC.Types.TyCon
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.TyCon
+                   12939874620330265615##
+                   4475297528952961531##
+                   Language.Fortran.Parser.$trModule
+                   Language.Fortran.Parser.$tcHappy_IntList1
+                   0#
+                   GHC.Types.krep$*) -}
+b7bdd2b8171b0088175eae3995516592
+  $tcHappy_IntList1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$tcHappy_IntList2) -}
+b1e9080624df1cc013829ed276a4b24a
+  $tcHappy_IntList2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("Happy_IntList"#) -}
+84032fa7686becc04cf5507cae9ed72c
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   Language.Fortran.Parser.$trModule3
+                   Language.Fortran.Parser.$trModule1) -}
+0e5f19751b8c7b2a33761092c85ffab6
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$trModule2) -}
+cd3402437add841d6473c705aff88db4
+  $trModule2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("Language.Fortran.Parser"#) -}
+6ba184f960f3557cede927e942281d42
+  $trModule3 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   Language.Fortran.Parser.$trModule4) -}
+96051ec1a85e4af03dcb6037b2f45bd5
+  $trModule4 :: GHC.Prim.Addr#
+  {- HasNoCafRefs,
+     Unfolding: ("language-fortran-0.3-DnTmLOXLSgMntUzwJ6Kf9"#) -}
+580ecf3c26efb8b785039504b525981a
+  type A0 = Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]
+152659c8b8e425de9299a847d591a7d8
+  newtype HappyAbsSyn = HappyAbsSyn Language.Fortran.Parser.HappyAny
+49c5ac07369ad6291bfeb847f54b2a15
+  data HappyAddr = HappyA# GHC.Prim.Addr#
+1b57832baa2448ce6afa6da1bf8d33e8
+  type HappyAny = GHC.Types.Any
+90718c0c786f354718421cb3b935ee7f
+  data HappyStk a = HappyStk a (Language.Fortran.Parser.HappyStk a)
+14896da45ec289b21fc73df55b9b270e
+  data Happy_IntList
+    = HappyCons GHC.Prim.Int# Language.Fortran.Parser.Happy_IntList
+8619a3cd5180d06aa97826f58e602427
+  context_parse ::
+    GHC.Base.String -> Language.Fortran.Decl Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: (\ (p :: GHC.Base.String) ->
+                 case Language.Fortran.Parser.context_parse2
+                        3#
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ Language.Fortran.Parser.Happy_IntList)
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ (Language.Fortran.Parser.HappyStk
+                                Language.Fortran.Parser.HappyAbsSyn))
+                        (Language.Fortran.PreProcess.parseExpr
+                           (GHC.Types.[] @ GHC.Types.Char)
+                           p)
+                        Language.Haskell.ParseMonad.$fShowLexContext2
+                        Language.Haskell.ParseMonad.lexNewline2
+                        Language.Haskell.ParseMonad.runParser1
+                        (GHC.Types.[] @ Language.Haskell.ParseMonad.LexContext)
+                        Language.Haskell.ParseMonad.defaultParseMode of wild {
+                   Language.Haskell.ParseMonad.Ok s' a1
+                   -> a1
+                        `cast`
+                      (UnsafeCo representational Language.Fortran.Parser.HappyAbsSyn (Language.Fortran.Decl
+                                                                                        Language.Fortran.Parser.A0))
+                   Language.Haskell.ParseMonad.Failed loc7 msg
+                   -> Language.Fortran.Parser.context_parse1 msg }) -}
+b82fae6a921517135a0f7cd1eedef06f
+  context_parse1 ::
+    GHC.Base.String -> Language.Fortran.Decl Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <B,U>x -}
+719658a47b9e51e0941c3dfbb744c625
+  context_parse2 ::
+    GHC.Prim.Int#
+    -> Language.Fortran.Parser.Happy_IntList
+    -> Language.Fortran.Parser.HappyStk
+         Language.Fortran.Parser.HappyAbsSyn
+    -> GHC.Base.String
+    -> GHC.Types.Int
+    -> GHC.Types.Int
+    -> Language.Haskell.Syntax.SrcLoc
+    -> Language.Haskell.ParseMonad.ParseState
+    -> Language.Haskell.ParseMonad.ParseMode
+    -> Language.Haskell.ParseMonad.ParseStatus
+         Language.Fortran.Parser.HappyAbsSyn
+  {- Arity: 4, Strictness: <L,U><L,U><L,U(U,U(U,U))><L,U> -}
+de32afa566ec6bfadfce309186e9521e
+  frh4 :: (a, b, c, d) -> d
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLLS),1*U(A,A,A,1*U)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c @ d (ds :: (a, b, c, d)) ->
+                 case ds of wild { (,,,) a1 b1 c1 d1 -> d1 }) -}
+a300d3ceb08bd4f1dfdc7c26e693318a
+  fst3 :: (a, b, c) -> a
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(SLL),1*U(1*U,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c (ds :: (a, b, c)) ->
+                 case ds of wild { (,,) a1 b1 c1 -> a1 }) -}
+dd55de5d69e1141cebff5a2607b06165
+  fst4 :: (a, b, c, d) -> a
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(SLLL),1*U(1*U,A,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c @ d (ds :: (a, b, c, d)) ->
+                 case ds of wild { (,,,) a1 b1 c1 d1 -> a1 }) -}
+0000c47d99b357577aba13ec792355af
+  include_parser ::
+    Language.Haskell.ParseMonad.P
+      (Language.Fortran.Program Language.Fortran.Parser.A0)
+  {- Arity: 6, Strictness: <L,U><L,U><L,U><L,U><L,U><L,U>,
+     Unfolding: InlineRule (0, True, True)
+                Language.Fortran.Parser.include_parser1
+                  `cast`
+                (Sym (Language.Haskell.ParseMonad.N:P[0]
+                          <Language.Fortran.Program Language.Fortran.Parser.A0>_R)) -}
+0ab90453a7d291fe176d155a142eb489
+  include_parser1 ::
+    GHC.Base.String
+    -> GHC.Types.Int
+    -> GHC.Types.Int
+    -> Language.Haskell.Syntax.SrcLoc
+    -> Language.Haskell.ParseMonad.ParseState
+    -> Language.Haskell.ParseMonad.ParseMode
+    -> Language.Haskell.ParseMonad.ParseStatus
+         (Language.Fortran.Program Language.Fortran.Parser.A0)
+  {- Arity: 6, Strictness: <L,U><L,U><L,U><L,U><L,U><L,U>,
+     Unfolding: (\ (i :: GHC.Base.String)
+                   (x :: GHC.Types.Int)
+                   (y :: GHC.Types.Int)
+                   (l1 :: Language.Haskell.Syntax.SrcLoc)
+                   (s :: Language.Haskell.ParseMonad.ParseState)
+                   (mode :: Language.Haskell.ParseMonad.ParseMode) ->
+                 case Language.Fortran.Parser.context_parse2
+                        1#
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ Language.Fortran.Parser.Happy_IntList)
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ (Language.Fortran.Parser.HappyStk
+                                Language.Fortran.Parser.HappyAbsSyn))
+                        i
+                        x
+                        y
+                        l1
+                        s
+                        mode of wild {
+                   Language.Haskell.ParseMonad.Ok s' a1
+                   -> Language.Haskell.ParseMonad.Ok
+                        @ (Language.Fortran.Program Language.Fortran.Parser.A0)
+                        s'
+                        a1
+                          `cast`
+                        (UnsafeCo representational Language.Fortran.Parser.HappyAbsSyn (Language.Fortran.Program
+                                                                                          Language.Fortran.Parser.A0))
+                   Language.Haskell.ParseMonad.Failed loc7 msg
+                   -> Language.Haskell.ParseMonad.Failed
+                        @ (Language.Fortran.Program Language.Fortran.Parser.A0)
+                        loc7
+                        msg }) -}
+3a4a517ac5f64a6aba0d1fa6fb1c7fb2
+  notHappyAtAll :: a
+  {- Strictness: x -}
+b2d13c597e2d79081619ed18ec472ae4
+  parse ::
+    GHC.Base.String
+    -> Language.Fortran.Program Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: (\ (p :: GHC.Base.String) ->
+                 case Language.Fortran.Parser.context_parse2
+                        0#
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ Language.Fortran.Parser.Happy_IntList)
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ (Language.Fortran.Parser.HappyStk
+                                Language.Fortran.Parser.HappyAbsSyn))
+                        (Language.Fortran.PreProcess.parseExpr
+                           (GHC.Types.[] @ GHC.Types.Char)
+                           p)
+                        Language.Haskell.ParseMonad.$fShowLexContext2
+                        Language.Haskell.ParseMonad.lexNewline2
+                        Language.Haskell.ParseMonad.runParser1
+                        (GHC.Types.[] @ Language.Haskell.ParseMonad.LexContext)
+                        Language.Haskell.ParseMonad.defaultParseMode of wild {
+                   Language.Haskell.ParseMonad.Ok s' a1
+                   -> a1
+                        `cast`
+                      (UnsafeCo representational Language.Fortran.Parser.HappyAbsSyn (Language.Fortran.Program
+                                                                                        Language.Fortran.Parser.A0))
+                   Language.Haskell.ParseMonad.Failed loc7 msg
+                   -> Language.Fortran.Parser.parse1 msg }) -}
+8913f98b08a72760d5b0cc36129dacbf
+  parse1 ::
+    GHC.Base.String
+    -> Language.Fortran.Program Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <B,U>x -}
+a67a488f6069e1dbc4076eb2f5067ce4
+  parser ::
+    Language.Haskell.ParseMonad.P
+      (Language.Fortran.Program Language.Fortran.Parser.A0)
+  {- Arity: 6, Strictness: <L,U><L,U><L,U><L,U><L,U><L,U>,
+     Unfolding: InlineRule (0, True, True)
+                Language.Fortran.Parser.parser1
+                  `cast`
+                (Sym (Language.Haskell.ParseMonad.N:P[0]
+                          <Language.Fortran.Program Language.Fortran.Parser.A0>_R)) -}
+ecfbe15a5b1059c2a1eea190b4c07cb9
+  parser1 ::
+    GHC.Base.String
+    -> GHC.Types.Int
+    -> GHC.Types.Int
+    -> Language.Haskell.Syntax.SrcLoc
+    -> Language.Haskell.ParseMonad.ParseState
+    -> Language.Haskell.ParseMonad.ParseMode
+    -> Language.Haskell.ParseMonad.ParseStatus
+         (Language.Fortran.Program Language.Fortran.Parser.A0)
+  {- Arity: 6, Strictness: <L,U><L,U><L,U><L,U><L,U><L,U>,
+     Unfolding: (\ (i :: GHC.Base.String)
+                   (x :: GHC.Types.Int)
+                   (y :: GHC.Types.Int)
+                   (l1 :: Language.Haskell.Syntax.SrcLoc)
+                   (s :: Language.Haskell.ParseMonad.ParseState)
+                   (mode :: Language.Haskell.ParseMonad.ParseMode) ->
+                 case Language.Fortran.Parser.context_parse2
+                        0#
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ Language.Fortran.Parser.Happy_IntList)
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ (Language.Fortran.Parser.HappyStk
+                                Language.Fortran.Parser.HappyAbsSyn))
+                        i
+                        x
+                        y
+                        l1
+                        s
+                        mode of wild {
+                   Language.Haskell.ParseMonad.Ok s' a1
+                   -> Language.Haskell.ParseMonad.Ok
+                        @ (Language.Fortran.Program Language.Fortran.Parser.A0)
+                        s'
+                        a1
+                          `cast`
+                        (UnsafeCo representational Language.Fortran.Parser.HappyAbsSyn (Language.Fortran.Program
+                                                                                          Language.Fortran.Parser.A0))
+                   Language.Haskell.ParseMonad.Failed loc7 msg
+                   -> Language.Haskell.ParseMonad.Failed
+                        @ (Language.Fortran.Program Language.Fortran.Parser.A0)
+                        loc7
+                        msg }) -}
+b7efd1dc5655bf411a239261a6ece0bf
+  snd3 :: (a, b, c) -> b
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LSL),1*U(A,1*U,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c (ds :: (a, b, c)) ->
+                 case ds of wild { (,,) a1 b1 c1 -> b1 }) -}
+6ddc14a09c695fdfa5189c78e911dea3
+  snd4 :: (a, b, c, d) -> b
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LSLL),1*U(A,1*U,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c @ d (ds :: (a, b, c, d)) ->
+                 case ds of wild { (,,,) a1 b1 c1 d1 -> b1 }) -}
+bf314154fa8d0ba407e3209401b402c6
+  statement_parse ::
+    GHC.Base.String
+    -> Language.Fortran.Fortran Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <L,U>,
+     Unfolding: (\ (p :: GHC.Base.String) ->
+                 case Language.Fortran.Parser.context_parse2
+                        2#
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ Language.Fortran.Parser.Happy_IntList)
+                        (Language.Fortran.Parser.notHappyAtAll
+                           @ (Language.Fortran.Parser.HappyStk
+                                Language.Fortran.Parser.HappyAbsSyn))
+                        (Language.Fortran.PreProcess.parseExpr
+                           (GHC.Types.[] @ GHC.Types.Char)
+                           p)
+                        Language.Haskell.ParseMonad.$fShowLexContext2
+                        Language.Haskell.ParseMonad.lexNewline2
+                        Language.Haskell.ParseMonad.runParser1
+                        (GHC.Types.[] @ Language.Haskell.ParseMonad.LexContext)
+                        Language.Haskell.ParseMonad.defaultParseMode of wild {
+                   Language.Haskell.ParseMonad.Ok s' a1
+                   -> a1
+                        `cast`
+                      (UnsafeCo representational Language.Fortran.Parser.HappyAbsSyn (Language.Fortran.Fortran
+                                                                                        Language.Fortran.Parser.A0))
+                   Language.Haskell.ParseMonad.Failed loc7 msg
+                   -> Language.Fortran.Parser.statement_parse1 msg }) -}
+79c74250fe956222e34b50280ef3a633
+  statement_parse1 ::
+    GHC.Base.String
+    -> Language.Fortran.Fortran Language.Fortran.Parser.A0
+  {- Arity: 1, Strictness: <B,U>x -}
+6f1c5da9e26d81c12b4095b2f480bc5b
+  trd3 :: (a, b, c) -> c
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLS),1*U(A,A,1*U)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c (ds :: (a, b, c)) ->
+                 case ds of wild { (,,) a1 b1 c1 -> c1 }) -}
+5276c7b1cf8c272b8b04cad106f88fd8
+  trd4 :: (a, b, c, d) -> c
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLSL),1*U(A,A,1*U,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ @ a @ b @ c @ d (ds :: (a, b, c, d)) ->
+                 case ds of wild { (,,,) a1 b1 c1 d1 -> c1 }) -}
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

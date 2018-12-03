@@ -1,0 +1,1043 @@
+
+==================== FINAL INTERFACE ====================
+2018-11-16 12:45:18.248091683 UTC
+
+interface main:LoopAnalysis 8043
+  interface hash: c2e7c87d218bd02762b0425108b8a6c0
+  ABI hash: 69ef6e86dc526123f4bf1eb83c17a1da
+  export-list hash: 81917bb7213edf4585c056611b705767
+  orphan hash: 4497640b8d310d86eda2fe5acf542a51
+  flag hash: 7853c119b27f3f568e863cba4679c19c
+  opt_hash: 2c98c95d41c045ae9c2fb565ec8aabc6
+  hpc_hash: 93b885adfe0da089cdf634904fd59f71
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  LoopAnalysis.analyseLoop_map
+  LoopAnalysis.analyseLoop_reduce
+  LoopAnalysis.getErrorAnnotations
+  LoopAnalysis.getReads
+  LoopAnalysis.getReductionVarNames
+  LoopAnalysis.getWrites
+module dependencies: F95IntrinsicFunctions Language.Fortran
+                     Language.Fortran.Lexer Language.Fortran.Parser
+                     Language.Fortran.PreProcess LanguageFortranTools MiniPP
+                     PreProcessor SubroutineTable TupleTable VarAccessAnalysis
+                     VarDependencyAnalysis Warning
+package dependencies: array-0.5.2.0 base-4.11.1.0 binary-0.8.5.1
+                      bytestring-0.10.8.2 containers-0.5.11.0 deepseq-1.4.3.0
+                      directory-1.3.1.5 filepath-1.4.2 ghc-prim-0.5.2.0
+                      haskell-src-1.0.3.0 integer-gmp-1.0.2.0 mtl-2.2.2 parsec-3.1.13.0
+                      process-1.6.3.0 syb-0.7 text-1.2.3.1 time-1.8.0.2
+                      transformers-0.5.5.0 unix-2.7.2.2
+orphans: time-1.8.0.2:Data.Time.Format.Parse
+         time-1.8.0.2:Data.Time.LocalTime.Internal.ZonedTime
+         time-1.8.0.2:Data.Time.LocalTime.Internal.LocalTime
+         time-1.8.0.2:Data.Time.Calendar.Gregorian
+         text-1.2.3.1:Data.Text.Lazy text-1.2.3.1:Data.Text
+         binary-0.8.5.1:Data.Binary.Generic
+         bytestring-0.10.8.2:Data.ByteString.Builder
+         text-1.2.3.1:Data.Text.Show
+         transformers-0.5.5.0:Control.Monad.Trans.Error
+         syb-0.7:Data.Generics.Instances base-4.11.1.0:GHC.Float
+         base-4.11.1.0:GHC.Base
+family instance modules: base-4.11.1.0:Control.Applicative
+                         base-4.11.1.0:Data.Complex base-4.11.1.0:Data.Functor.Compose
+                         base-4.11.1.0:Data.Functor.Const
+                         base-4.11.1.0:Data.Functor.Identity
+                         base-4.11.1.0:Data.Functor.Product base-4.11.1.0:Data.Functor.Sum
+                         base-4.11.1.0:Data.Monoid base-4.11.1.0:Data.Semigroup
+                         base-4.11.1.0:Data.Semigroup.Internal base-4.11.1.0:Data.Version
+                         base-4.11.1.0:Data.Void base-4.11.1.0:GHC.Exts
+                         base-4.11.1.0:GHC.Generics base-4.11.1.0:GHC.IO.Exception
+                         containers-0.5.11.0:Data.IntMap.Internal
+                         containers-0.5.11.0:Data.IntSet.Internal
+                         containers-0.5.11.0:Data.Map.Internal
+                         containers-0.5.11.0:Data.Sequence.Internal
+                         containers-0.5.11.0:Data.Set.Internal containers-0.5.11.0:Data.Tree
+                         text-1.2.3.1:Data.Text text-1.2.3.1:Data.Text.Lazy
+import  -/  base-4.11.1.0:Data.Char 3e89818e2b8ef1a2cc5393163484da72
+import  -/  base-4.11.1.0:Data.Data b150502d549600eff3202c16ff6cf22d
+import  -/  base-4.11.1.0:Data.Foldable 8ed35c38958063956af33c935ea03444
+import  -/  base-4.11.1.0:Data.List 83dc843e47bfc0c5af51e19c6f3476d5
+import  -/  base-4.11.1.0:GHC.Base 604111500e81281298777e721c75643b
+import  -/  base-4.11.1.0:GHC.Err 5e26aa744981f14e0f1e4d29c44ac52e
+import  -/  base-4.11.1.0:GHC.List 1e4357702d8d00cded0703bd293e50e8
+import  -/  base-4.11.1.0:GHC.Show 73be67392447c974f19c3befd83c46c0
+import  -/  base-4.11.1.0:GHC.Unicode 8234c40b59f035e845832a42e8725a00
+import  -/  base-4.11.1.0:Prelude 0750c25585e2b797cd78291d423d39dd
+import  -/  containers-0.5.11.0:Data.Map f51b9cf04edd738eb6d014be576b3403
+import  -/  containers-0.5.11.0:Data.Map.Internal e02d23495520de11b8e9f3c9c93a4d11
+import  -/  ghc-prim-0.5.2.0:GHC.Classes 122abfcd7450c6c11602933c9ca5f80d
+import  -/  F95IntrinsicFunctions 2a2dc1d4915ed7b9c5e736fba48a3676
+  exports: a9e028fabd4d7137fc009fef93c07a09
+  f95IntrinsicFunctions 79f039953e6ee977de902fe8df3b89c4
+import  -/  Language.Fortran e2add56600673959dbdfe1ac093795c9
+  exports: 6ca1e7b188145fc0c602707ea4a1c428
+  Assg c3a5a5c7c0380c697e6a5cda4cc060bd
+  Bin ce8c88108b295f664e1eddaeffc220f4
+  BinOp 64bb8ea1ee9f5a8f0460e13355fb6f83
+  Call ecfba85593faf88229821091dac9ee3b
+  Con a93b732ad49402af2de80d19cc1ec61c
+  Expr 6304956f2901eead56a8fac1e90d4904
+  FSeq 779df6dd417159b80814ee837ce7e2c0
+  For 5816e0af6d8df16d1771d2006bcf3abf
+  Fortran cab0cd6287333175c6b9d87427982518
+  If 70f325448a0ac0d3e601c0f9e1e99ec6
+  Mul d78a38debaadbefa8faf16070429adab
+  Null 1580fcfff05ff5fc8ac22a76d8ac4e12
+  Or e5382b608079e3dd86ef71ac28c83530
+  Plus 18a4412d61780e28c85d747ab521c561
+  VarName a39ab087efdb6eba24247b07097f591c
+  VarName 361ec85699986b0b7f4d68a05374d64d
+  srcSpan c13b4efea655d094fcf2aa6fb6fdfaaf
+import  -/  LanguageFortranTools 737e8abc5de089abcd0ce62660f9d159
+  exports: a5a994dcb8ba92c93a8a354a063275b0
+  Anno 1420203ed9c39fcf982d2ff37c01ae68
+  applyGeneratedSrcSpans c887472fe8f7b8f174b1bbcd7a24b63d
+  combineMaps 7a416190dd312c66ab0c5e1e6c977d9b
+  errorLocationFormatting 9c9c0273432833def2860c2509392832
+  extractAllVarNames ee05f387e04b6558115e3d72c09a12c7
+  extractContainedOperands d361b930fecbdcf85fd16030b6f74596
+  extractContainedVars 767cae289da3c9031018929f0cd15574
+  extractExpr_list 6dab979ee8b8d4ff63fc85e5d8625380
+  extractFirstFortran 46fb79c22780fed40c23fd1c2c3d4d82
+  extractOperands 8fb945abeb65fded10e8824b0c525de5
+  extractPrimaryReductionFunction 107a7a029ec017d3ccd919d45a4fe468
+  extractPrimaryReductionOp f88551446462666ca9682d051c5513da
+  extractVarNames 920113507cf2d36f1a1834c3a88c2c59
+  generateVar 15f2fb62881f8fb31d49eabe4798345c
+  hasOperand 59b9a0f4ba8529cd3f2c57589290752d
+  listRemoveDuplications cc90c431c334b3429c5de18c32c0abd0
+  listSubtract 40ed5a52f1d2f2210a51ecab157379fd
+  nullAnno b5ec3f8914fec256ad2e53b761b9bd52
+  nullSrcSpan d9f6701836bf1a31425d57566b44db7b
+  outputExprFormatting 071110acbe7f8df82378c3e15acadb0d
+  outputTab e52db0602fff64fd09a0948045bb72a5
+  usesVarName_list 7c75ad65f572a2cb7160776fea4e5c98
+  varNameStr 4f55193896441ff99d96346c5aacd560
+import  -/  MiniPP a097deb7cf80506ea342d468c387cbc7
+  exports: 333d60b501b5f68150299a62b5d71c5d
+import  -/  SubroutineTable 489825aeafffaefb2cc10b4978448116
+  exports: 2909798395eea1f9c7c6a08b6d2a2760
+  SubroutineTable 5a91cdd7134da8dba28aec7592f36133
+  generateArgumentTranslation 2df9d4fb6db017668d476208bc842908
+  subroutineTable_ast 8594d6e29a36b42c108a18e5539253ff
+import  -/  VarAccessAnalysis 53752df4324502d602d68f0512d6b3c9
+  exports: 7d36a7dfcc704fd9b4303a1ab3c7be89
+  VarAccessAnalysis 6eba2d91974ef76d532f7c235d4d961a
+  isFunctionCall 3044e5e5d7ee49158fef87ee8f392329
+import  -/  VarDependencyAnalysis 396f6429b909c284662b818c101482ab
+  exports: 9e709a7a646c79ec724f173b4bb12fe5
+  VarDependencyAnalysis f3229ce6e96b539cda21a3387a751730
+  isIndirectlyDependentOn d46d030d355e4b3f4fa73b3611802fbe
+import  -/  Warning b5ec059e95d91647264308e84d2ed3ea
+  exports: d9b5419f40dd7650497f479a7fe0214a
+import  -/  syb-0.7:Data.Generics 2ddc257f9ac35414fc37ff4d19b4d388
+import  -/  syb-0.7:Data.Generics.Aliases a5097c06261967df51d59247bf1d4958
+import  -/  syb-0.7:Data.Generics.Schemes 58bc96c8ed0bed4ad53424f237efe8b8
+78b4d24f73f5738dcbbe82f4a6e1a562
+  $s$fDataArgList ::
+    Data.Data.Data
+      (Language.Fortran.ArgList
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ArgList
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.ArgList
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataArgList9
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.ArgList
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataArgList_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case ds of wild { Language.Fortran.ArgList ds1 ds2 ->
+                   Language.Fortran.$cArgList })
+                  (\ (ds :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tArgList)
+                  (Language.Fortran.$fDataArgList_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable2 :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.ArgList
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (\ (ds :: forall b. Data.Data.Data b => b -> b)
+                     (x0 :: Language.Fortran.ArgList
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case x0 of wild { Language.Fortran.ArgList a1 a2 ->
+                   (Language.Fortran.ArgList
+                      @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                      (ds
+                         @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                         LoopAnalysis.$s$fDataArgList_$s$fDataMap
+                         a1)
+                      (ds
+                         @ (Language.Fortran.Expr
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                         LoopAnalysis.$s$fDataArgList_$s$fDataExpr
+                         a2))
+                     `cast`
+                   (Sym (Data.Functor.Identity.N:Identity[0]
+                             <Language.Fortran.ArgList
+                                (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)) })
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.ArgList
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.ArgList
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataArgList_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataArgList_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap) -}
+d667f59f01ea4781f044df9419fbb8b5
+  $s$fDataArgList_$s$fDataExpr ::
+    Data.Data.Data
+      (Language.Fortran.Expr
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Expr
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.Expr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataExpr6
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.Expr
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataExpr_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$ctoConstr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.Expr
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tExpr)
+                  (Language.Fortran.$fDataExpr_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable2 :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.Expr
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (Language.Fortran.$fDataExpr1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.Expr
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.Expr
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataExpr_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataExpr_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap) -}
+ad4bbbb868b1eb104a4c91de4455676b
+  $s$fDataArgList_$s$fDataMap ::
+    Data.Data.Data
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ (Data.Map.Internal.Map [GHC.Types.Char])
+                     @ [GHC.Base.String]
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ (* -> *)
+                        @ Data.Map.Internal.Map
+                        @ [GHC.Types.Char]
+                        Data.Map.Internal.$fDataMap17
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ GHC.Types.Char
+                           Data.Data.$fData[]3
+                           Data.Data.$fDataChar7))
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ []
+                        @ [GHC.Types.Char]
+                        Data.Data.$fData[]3
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ GHC.Types.Char
+                           Data.Data.$fData[]3
+                           Data.Data.$fDataChar7)))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Data.Map.Internal.Map
+                                                                       [GHC.Types.Char]
+                                                                       [GHC.Base.String]>_N)
+                  (Data.Map.Internal.$fDataMap_$cgfoldl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgunfold
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (\ (ds :: Data.Map.Internal.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                   Data.Map.Internal.fromListConstr)
+                  (\ (ds :: Data.Map.Internal.Map
+                              [GHC.Types.Char] [GHC.Base.String]) ->
+                   Data.Map.Internal.mapDataType)
+                  (\ @ t :: * -> *
+                     @ c :: * -> *
+                     ($dTypeable2 :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d. Data.Data.Data d => c (t d)) ->
+                   GHC.Base.Nothing
+                     @ (c (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])))
+                  (Data.Map.Internal.$fDataMap_$cdataCast2
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap6
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]>_R)
+                  (Data.Map.Internal.$fDataMap_$cgmapQl
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQr
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQ
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapQi
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapM
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapMp
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1)
+                  (Data.Map.Internal.$fDataMap_$cgmapMo
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     Data.Data.$fData[]_$s$fData[]
+                     LoopAnalysis.$s$fDataArgList_$s$fData[]
+                     GHC.Classes.$fOrd[]_$s$fOrd[]1) -}
+9a74676bc6f58b5f66630f3276aef6ee
+  $s$fDataArgList_$s$fData[] :: Data.Data.Data [[GHC.Types.Char]]
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ [[GHC.Types.Char]]
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ []
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]3
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ []
+                        @ GHC.Types.Char
+                        Data.Data.$fData[]3
+                        Data.Data.$fDataChar7))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <[[GHC.Types.Char]]>_N)
+                  (Data.Data.$fData[]_$cgfoldl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgunfold
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (\ (ds :: [[GHC.Types.Char]]) ->
+                   case ds of wild {
+                     [] -> Data.Data.nilConstr : ds1 ds2 -> Data.Data.consConstr })
+                  (\ (ds :: [[GHC.Types.Char]]) -> Data.Data.listDataType)
+                  (Data.Data.$fData[]_$cdataCast1
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable2 :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing @ (c [[GHC.Types.Char]]))
+                  (Data.Data.$fData[]_$cgmapT
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQl
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQr
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQ
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapQi
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapM
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMp
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[])
+                  (Data.Data.$fData[]_$cgmapMo
+                     @ [GHC.Types.Char]
+                     Data.Data.$fData[]_$s$fData[]) -}
+acc842c5218c8ace70f820399b8a0935
+  $s$fDataMap_$cdataCast2 ::
+    Data.Typeable.Internal.Typeable t =>
+    (forall d e. (Data.Data.Data d, Data.Data.Data e) => c (t d e))
+    -> GHC.Base.Maybe
+         (c (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]))
+  {- Arity: 1, Strictness: <L,1*U>, Inline: [0],
+     Unfolding: InlineRule (1, True, False)
+                (\ @ t :: * -> * -> *
+                   @ c :: * -> *
+                   (w3 :: Data.Typeable.Internal.Typeable t) ->
+                 Data.Map.Internal.$w$cdataCast2
+                   @ [GHC.Types.Char]
+                   @ [GHC.Base.String]
+                   Data.Data.$fData[]_$s$fData[]
+                   LoopAnalysis.$s$fDataArgList_$s$fData[]
+                   @ t
+                   @ c
+                   w3) -}
+e94232bc3aa12be4a06957166c521d93
+  $s$fDataProgUnit ::
+    Data.Data.Data
+      (Language.Fortran.ProgUnit
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.ProgUnit
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Data.Typeable.Internal.mkTrApp
+                     @ *
+                     @ *
+                     @ Language.Fortran.ProgUnit
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     Language.Fortran.$fDataProgUnit6
+                     (Data.Typeable.Internal.mkTrApp
+                        @ *
+                        @ *
+                        @ (Data.Map.Internal.Map [GHC.Types.Char])
+                        @ [GHC.Base.String]
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ (* -> *)
+                           @ Data.Map.Internal.Map
+                           @ [GHC.Types.Char]
+                           Data.Map.Internal.$fDataMap17
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))
+                        (Data.Typeable.Internal.mkTrApp
+                           @ *
+                           @ *
+                           @ []
+                           @ [GHC.Types.Char]
+                           Data.Data.$fData[]3
+                           (Data.Typeable.Internal.mkTrApp
+                              @ *
+                              @ *
+                              @ []
+                              @ GHC.Types.Char
+                              Data.Data.$fData[]3
+                              Data.Data.$fDataChar7))))
+                    `cast`
+                  (Sym (Data.Typeable.Internal.N:Typeable[0]) <*>_N <Language.Fortran.ProgUnit
+                                                                       (Data.Map.Internal.Map
+                                                                          GHC.Base.String
+                                                                          [GHC.Base.String])>_N)
+                  (Language.Fortran.$fDataProgUnit_$cgfoldl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgunfold
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ (ds :: Language.Fortran.ProgUnit
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   case ds of wild {
+                     Language.Fortran.Main ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cMain
+                     Language.Fortran.Sub ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cSub
+                     Language.Fortran.Function ds1 ds2 ds3 ds4 ds5 ds6 ds7
+                     -> Language.Fortran.$cFunction
+                     Language.Fortran.Module ds1 ds2 ds3 ds4 ds5 ds6 ds7
+                     -> Language.Fortran.$cModule
+                     Language.Fortran.BlockData ds1 ds2 ds3 ds4 ds5 ds6
+                     -> Language.Fortran.$cBlockData
+                     Language.Fortran.PSeq ds1 ds2 ds3 ds4 -> Language.Fortran.$cPSeq
+                     Language.Fortran.Prog ds1 ds2 ds3 -> Language.Fortran.$cProg
+                     Language.Fortran.NullProg ds1 ds2 -> Language.Fortran.$cNullProg
+                     Language.Fortran.IncludeProg ds1 ds2 ds3 ds4
+                     -> Language.Fortran.$cIncludeProg })
+                  (\ (ds :: Language.Fortran.ProgUnit
+                              (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                   Language.Fortran.$tProgUnit)
+                  (Language.Fortran.$fDataProgUnit_$cdataCast1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (\ @ t :: * -> * -> *
+                     @ c :: * -> *
+                     ($dTypeable2 :: Data.Typeable.Internal.Typeable t)
+                     (ds :: forall d e.
+                            (Data.Data.Data d, Data.Data.Data e) =>
+                            c (t d e)) ->
+                   GHC.Base.Nothing
+                     @ (c (Language.Fortran.ProgUnit
+                             (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))))
+                  (Language.Fortran.$fDataProgUnit1
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                    `cast`
+                  (<forall b. Data.Data.Data b => b -> b>_R
+                   ->_R <Language.Fortran.ProgUnit
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R
+                   ->_R Data.Functor.Identity.N:Identity[0]
+                            <Language.Fortran.ProgUnit
+                               (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])>_R)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQl
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQr
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQ
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapQi
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapM
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMp
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap)
+                  (Language.Fortran.$fDataProgUnit_$cgmapMo
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fDataArgList_$s$fDataMap) -}
+46afd11ca6eb2d59411de76496ea9861
+  $s$fData[]7 :: Data.Typeable.Internal.TypeRep [[GHC.Types.Char]]
+  {- Unfolding: InlineRule (0, True, False)
+                (Data.Typeable.Internal.mkTrApp
+                   @ *
+                   @ *
+                   @ []
+                   @ [GHC.Types.Char]
+                   Data.Data.$fData[]3
+                   (Data.Typeable.Internal.mkTrApp
+                      @ *
+                      @ *
+                      @ []
+                      @ GHC.Types.Char
+                      Data.Data.$fData[]3
+                      Data.Data.$fDataChar7)) -}
+6576fa09c22a31809fcfeadc33a5b47f
+  $s$fEqExpr ::
+    GHC.Classes.Eq
+      (Language.Fortran.Expr
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.Expr
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqArgList_$c==
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fEqExpr_$s$fEqMap)
+                  (Language.Fortran.$fEqExpr_$c/=
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fEqExpr_$s$fEqMap) -}
+4c90ae4ed1816c3c4ec910614943beed
+  $s$fEqExpr_$s$fEqMap ::
+    GHC.Classes.Eq
+      (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                  (Data.Map.Internal.$fEqMap_$c==
+                     @ [GHC.Types.Char]
+                     @ [GHC.Base.String]
+                     GHC.Classes.$fEq[]_$s$fEq[]1
+                     GHC.Classes.$fEq[]_$s$fEq[]2)
+                  LoopAnalysis.$s$fEqExpr_$s$fEqMap_$c/= -}
+533168e69043d926360ed1e620a9a2d2
+  $s$fEqExpr_$s$fEqMap_$c/= ::
+    Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <L,U><L,U>, Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String])
+                   (y :: Data.Map.Internal.Map [GHC.Types.Char] [GHC.Base.String]) ->
+                 case Data.Map.Internal.$fEqMap_$c==
+                        @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        GHC.Classes.$fEq[]_$s$fEq[]2
+                        x
+                        y of wild {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True -> GHC.Types.False }) -}
+14edb67fa779a77657b1ab019cffa93d
+  $s$fEqVarName ::
+    GHC.Classes.Eq
+      (Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+  {- Strictness: m, Inline: CONLIKE,
+     Unfolding: DFun:.
+                  @ (Language.Fortran.VarName
+                       (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                  (Language.Fortran.$fEqVarName_$c==
+                     @ (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+                     LoopAnalysis.$s$fEqExpr_$s$fEqMap)
+                  LoopAnalysis.$s$fEqVarName_$s$fEqVarName_$c/= -}
+5be782a554d0876d6619d963b1e336a7
+  $s$fEqVarName_$s$fEqVarName_$c/= ::
+    Language.Fortran.VarName
+      (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> Language.Fortran.VarName
+         (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])
+    -> GHC.Types.Bool
+  {- Arity: 2, Strictness: <S,1*U(U,1*U)><S,1*U(U,1*U)>,
+     Inline: (sat-args=2),
+     Unfolding: InlineRule (2, False, False)
+                (\ (x :: Language.Fortran.VarName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String]))
+                   (y :: Language.Fortran.VarName
+                           (Data.Map.Internal.Map GHC.Base.String [GHC.Base.String])) ->
+                 case x of wild { Language.Fortran.VarName a1 a2 ->
+                 case y of wild1 { Language.Fortran.VarName b1 b2 ->
+                 case Data.Map.Internal.$fEqMap_$c==
+                        @ [GHC.Types.Char]
+                        @ [GHC.Base.String]
+                        GHC.Classes.$fEq[]_$s$fEq[]1
+                        GHC.Classes.$fEq[]_$s$fEq[]2
+                        a1
+                        b1 of wild2 {
+                   GHC.Types.False -> GHC.Types.True
+                   GHC.Types.True
+                   -> case GHC.Base.eqString a2 b2 of wild3 {
+                        GHC.Types.False -> GHC.Types.True
+                        GHC.Types.True -> GHC.Types.False } } } }) -}
+dc6796d6b10cedfe50545bc1b1d28e1f
+  $sinsert_$sgo13 ::
+    [GHC.Types.Char]
+    -> [GHC.Types.Char]
+    -> a1
+    -> Data.Map.Internal.Map [GHC.Types.Char] a1
+    -> Data.Map.Internal.Map [GHC.Types.Char] a1
+  {- Arity: 4, Strictness: <L,U><S,1*U><L,U><S,1*U> -}
+3dc0aed9c83fbcba8b2b91c542e72264
+  $slookup1 ::
+    [GHC.Types.Char]
+    -> Data.Map.Internal.Map [GHC.Types.Char] a -> GHC.Base.Maybe a
+  {- Arity: 2, HasNoCafRefs, Strictness: <S,1*U><S,1*U> -}
+13e60fe4d2fed917936f27844122fb4c
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module
+                   LoopAnalysis.$trModule3
+                   LoopAnalysis.$trModule1) -}
+7723890f585bbfb4d50842de502bfe96
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS LoopAnalysis.$trModule2) -}
+95b97ba3240e93377f95856233990b81
+  $trModule2 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("LoopAnalysis"#) -}
+210a093268eac946db53c4d7f2efe444
+  $trModule3 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS LoopAnalysis.$trModule4) -}
+51f7cca33807da61ff54edb1f8cac591
+  $trModule4 :: GHC.Prim.Addr#
+  {- HasNoCafRefs, Unfolding: ("main"#) -}
+36a96f67bfe2326a0f32ab5b396cd482
+  $wanalyseLoop_map ::
+    GHC.Base.String
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> SubroutineTable.SubroutineTable
+    -> Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> LoopAnalysis.AnalysisInfo
+  {- Arity: 8,
+     Strictness: <L,U><L,U><L,U><L,U><L,U><L,U(A,A,A,U)><L,U><S,1*U>,
+     Inline: [0] -}
+1c1acd58d8dbe8c984d1544000b7336a
+  type AnalysisInfo =
+    (LanguageFortranTools.Anno,
+     [Language.Fortran.Expr LanguageFortranTools.Anno],
+     [Language.Fortran.Expr LanguageFortranTools.Anno],
+     [Language.Fortran.Expr LanguageFortranTools.Anno])
+ababe2d42161e460226c2fabd5e9c946
+  analyseLoop_map ::
+    GHC.Base.String
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> VarDependencyAnalysis.VarDependencyAnalysis
+    -> SubroutineTable.SubroutineTable
+    -> Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> LoopAnalysis.AnalysisInfo
+  {- Arity: 9,
+     Strictness: <L,U><L,U><L,U><L,U><L,U><L,U(A,A,A,U)><L,A><L,U><S,1*U>,
+     Inline: [0],
+     Unfolding: InlineRule (9, True, True)
+                (\ (w :: GHC.Base.String)
+                   (w1 :: [Language.Fortran.VarName LanguageFortranTools.Anno])
+                   (w2 :: [Language.Fortran.VarName LanguageFortranTools.Anno])
+                   (w3 :: [Language.Fortran.VarName LanguageFortranTools.Anno])
+                   (w4 :: [Language.Fortran.VarName LanguageFortranTools.Anno])
+                   (w5 :: VarAccessAnalysis.VarAccessAnalysis)
+                   (w6 :: VarDependencyAnalysis.VarDependencyAnalysis)
+                   (w7 :: SubroutineTable.SubroutineTable)
+                   (w8 :: Language.Fortran.Fortran LanguageFortranTools.Anno) ->
+                 LoopAnalysis.$wanalyseLoop_map w w1 w2 w3 w4 w5 w7 w8) -}
+613fa8cb6bcbbab2979d6951bbc6551d
+  analyseLoop_reduce ::
+    GHC.Base.String
+    -> [Language.Fortran.Expr LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> [Language.Fortran.VarName LanguageFortranTools.Anno]
+    -> VarDependencyAnalysis.VarDependencyAnalysis
+    -> VarAccessAnalysis.VarAccessAnalysis
+    -> Language.Fortran.Fortran LanguageFortranTools.Anno
+    -> LoopAnalysis.AnalysisInfo
+  {- Arity: 9,
+     Strictness: <L,U><L,U><L,U><L,U><L,U><L,U><L,U><L,U(A,A,A,U)><S,1*U> -}
+d0a07e24994ddb82d6d6048559c7aa99
+  getErrorAnnotations ::
+    LoopAnalysis.AnalysisInfo -> LanguageFortranTools.Anno
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(SLLL),1*U(1*U,A,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: (LanguageFortranTools.Anno,
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno])) ->
+                 case ds of wild { (,,,) errors ds1 ds2 ds3 -> errors }) -}
+a7be1a230a2b411e0fd874ee78b017bb
+  getReads ::
+    LoopAnalysis.AnalysisInfo
+    -> [Language.Fortran.Expr LanguageFortranTools.Anno]
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLSL),1*U(A,A,1*U,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: (LanguageFortranTools.Anno,
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno])) ->
+                 case ds of wild { (,,,) ds1 ds2 reads ds3 -> reads }) -}
+d08c389d967ae1b3aa7efd3ff97b2256
+  getReductionVarNames ::
+    LoopAnalysis.AnalysisInfo
+    -> [Language.Fortran.Expr LanguageFortranTools.Anno]
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LSLL),1*U(A,1*U,A,A)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: (LanguageFortranTools.Anno,
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno])) ->
+                 case ds of wild { (,,,) ds1 reductionVars ds2 ds3 ->
+                 reductionVars }) -}
+081b9a02e0bdc143064bca7a14aed08a
+  getWrites ::
+    LoopAnalysis.AnalysisInfo
+    -> [Language.Fortran.Expr LanguageFortranTools.Anno]
+  {- Arity: 1, HasNoCafRefs, Strictness: <S(LLLS),1*U(A,A,A,1*U)>,
+     Unfolding: InlineRule (1, True, False)
+                (\ (ds :: (LanguageFortranTools.Anno,
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno],
+                           [Language.Fortran.Expr LanguageFortranTools.Anno])) ->
+                 case ds of wild { (,,,) ds1 ds2 ds3 writes -> writes }) -}
+"SPEC/LoopAnalysis $fDataArgList @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                                  (Data.Map.Internal.Map
+                                                                                     GHC.Base.String
+                                                                                     [GHC.Base.String]))
+  Language.Fortran.$fDataArgList @ (Data.Map.Internal.Map
+                                      GHC.Base.String [GHC.Base.String])
+                                 v
+  = LoopAnalysis.$s$fDataArgList
+"SPEC/LoopAnalysis $fDataExpr @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                               (Data.Map.Internal.Map
+                                                                                  GHC.Base.String
+                                                                                  [GHC.Base.String]))
+  Language.Fortran.$fDataExpr @ (Data.Map.Internal.Map
+                                   GHC.Base.String [GHC.Base.String])
+                              v
+  = LoopAnalysis.$s$fDataArgList_$s$fDataExpr
+"SPEC/LoopAnalysis $fDataMap @ [Char] @ [String]" [orphan] forall (v2 :: GHC.Classes.Ord
+                                                                           [GHC.Types.Char])
+                                                                  (v1 :: Data.Data.Data
+                                                                           [GHC.Base.String])
+                                                                  (v :: Data.Data.Data
+                                                                          [GHC.Types.Char])
+  Data.Map.Internal.$fDataMap @ [GHC.Types.Char]
+                              @ [GHC.Base.String]
+                              v
+                              v1
+                              v2
+  = LoopAnalysis.$s$fDataArgList_$s$fDataMap
+"SPEC/LoopAnalysis $fDataMap_$cdataCast2 @ [Char] @ [String]" [orphan] [0] forall (w2 :: GHC.Classes.Ord
+                                                                                           [GHC.Types.Char])
+                                                                                  (w1 :: Data.Data.Data
+                                                                                           [GHC.Base.String])
+                                                                                  (w :: Data.Data.Data
+                                                                                          [GHC.Types.Char])
+  Data.Map.Internal.$fDataMap_$cdataCast2 @ [GHC.Types.Char]
+                                          @ [GHC.Base.String]
+                                          w
+                                          w1
+                                          w2
+  = LoopAnalysis.$s$fDataMap_$cdataCast2
+"SPEC/LoopAnalysis $fDataProgUnit @ (Map String [String])" [orphan] forall (v :: Data.Data.Data
+                                                                                   (Data.Map.Internal.Map
+                                                                                      GHC.Base.String
+                                                                                      [GHC.Base.String]))
+  Language.Fortran.$fDataProgUnit @ (Data.Map.Internal.Map
+                                       GHC.Base.String [GHC.Base.String])
+                                  v
+  = LoopAnalysis.$s$fDataProgUnit
+"SPEC/LoopAnalysis $fData[] @ [Char]" [orphan] forall (v :: Data.Data.Data
+                                                              [GHC.Types.Char])
+  Data.Data.$fData[] @ [GHC.Types.Char] v
+  = LoopAnalysis.$s$fDataArgList_$s$fData[]
+"SPEC/LoopAnalysis $fData[]7 @ [Char]" [orphan] forall ($dData :: Data.Data.Data
+                                                                    [GHC.Types.Char])
+  Data.Data.$fData[]7 @ [GHC.Types.Char] $dData
+  = LoopAnalysis.$s$fData[]7
+"SPEC/LoopAnalysis $fEqExpr @ (Map String [String])" [orphan] forall (v :: GHC.Classes.Eq
+                                                                             (Data.Map.Internal.Map
+                                                                                GHC.Base.String
+                                                                                [GHC.Base.String]))
+  Language.Fortran.$fEqExpr @ (Data.Map.Internal.Map
+                                 GHC.Base.String [GHC.Base.String])
+                            v
+  = LoopAnalysis.$s$fEqExpr
+"SPEC/LoopAnalysis $fEqMap @ [Char] @ [String]" [orphan] forall (v1 :: GHC.Classes.Eq
+                                                                         [GHC.Base.String])
+                                                                (v :: GHC.Classes.Eq
+                                                                        [GHC.Types.Char])
+  Data.Map.Internal.$fEqMap @ [GHC.Types.Char]
+                            @ [GHC.Base.String]
+                            v
+                            v1
+  = LoopAnalysis.$s$fEqExpr_$s$fEqMap
+"SPEC/LoopAnalysis $fEqMap_$c/= @ [Char] @ [String]" [orphan] forall ($dEq1 :: GHC.Classes.Eq
+                                                                                 [GHC.Base.String])
+                                                                     ($dEq :: GHC.Classes.Eq
+                                                                                [GHC.Types.Char])
+  Data.Map.Internal.$fEqMap_$c/= @ [GHC.Types.Char]
+                                 @ [GHC.Base.String]
+                                 $dEq
+                                 $dEq1
+  = LoopAnalysis.$s$fEqExpr_$s$fEqMap_$c/=
+"SPEC/LoopAnalysis $fEqVarName @ (Map String [String])" [orphan] forall (v :: GHC.Classes.Eq
+                                                                                (Data.Map.Internal.Map
+                                                                                   GHC.Base.String
+                                                                                   [GHC.Base.String]))
+  Language.Fortran.$fEqVarName @ (Data.Map.Internal.Map
+                                    GHC.Base.String [GHC.Base.String])
+                               v
+  = LoopAnalysis.$s$fEqVarName
+"SPEC/LoopAnalysis $fEqVarName_$c/= @ (Map String [String])" [orphan] forall ($dEq :: GHC.Classes.Eq
+                                                                                        (Data.Map.Internal.Map
+                                                                                           GHC.Base.String
+                                                                                           [GHC.Base.String]))
+  Language.Fortran.$fEqVarName_$c/= @ (Data.Map.Internal.Map
+                                         GHC.Base.String [GHC.Base.String])
+                                    $dEq
+  = LoopAnalysis.$s$fEqVarName_$s$fEqVarName_$c/=
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+
