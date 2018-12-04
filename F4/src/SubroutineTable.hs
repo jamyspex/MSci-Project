@@ -27,7 +27,7 @@ data SubRec = MkSubRec {
        subSrcLines     :: [String],
        subsCalled      :: [SubRec],
        subName         :: String,
-       argTranslations :: ArgumentTranslation
+       argTranslations :: SubroutineArgumentTranslationMap
 }
 
 subroutineTable_ast = subAst
@@ -45,15 +45,23 @@ emptyArgumentTranslation = DMap.empty
 
 -- WV: What this does is go from Program Anno to ProgUnit Anno, assuming that there is only one subroutine in the file. Program is a misnomer, code_unit would be a better name.
 constructSubroutineTable :: [((Program Anno, [String]), SrcName)] -> SubroutineTable
--- constructSubroutineTable programs = foldl (\accum (ast, filename) -> DMap.insert (extractProgUnitName ast) (MkSubRec ast filename []) accum) DMap.empty parsedSubroutines
---        where
---            parsedSubroutines = foldl (\accum ((ast, orig_lines), filename) -> accum ++ (map (\sub_ast -> (MkSubRec sub_ast filename orig_lines)) (extractSubroutines ast))) [] programs
---            parsedSubroutines =
 constructSubroutineTable code_units =
     DMap.fromList $
         map (\((ast, orig_lines),filename) ->
                 (subname, -- key
-                (MkSubRec (extractSubroutine ast) filename orig_lines subname))) -- value
+                (MkSubRec (extractSubroutine ast) filename orig_lines subname ))) -- value
+        code_units
+    where
+
+        subname = extractProgUnitName $ extractSubroutine ast
+
+-- JM: Previous implementation to be used constructing SubroutineTable to be used for ArgTranslation
+constructSubroutineTable' :: [((Program Anno, [String]), SrcName)] -> SubroutineTable
+constructSubroutineTable code_units =
+    DMap.fromList $
+        map (\((ast, orig_lines),filename) ->
+                (subname, -- key
+                (MkSubRec (extractSubroutine ast) filename orig_lines subname DMap.empty))) -- value
         code_units
     where
         subname = extractProgUnitName $ extractSubroutine ast
@@ -107,7 +115,7 @@ generateArgumentTranslation subTable (Call anno src callExpr arglist) = varNameR
 --            callArgs_varNames = map (\x -> if extractVarNames x == [] then error ("substituteArguments: " ++ (show x)++" ; "++(show callArgs)) else  head (extractVarNames x)) callArgs
             callArgs_varNames = map (\x -> case extractMaybeVarNames x of
                     Just vs -> head vs
-                    Nothing -> VarName anno "BOOM!"
+                    Nothing -> error "SubroutineTable line" -- VarName anno "BOOM!"
                     ) callArgs
 --                    if extractVarNames x == [] then error ("substituteArguments: " ++ (show x)++" ; "++(show callArgs)) else  head (extractVarNames x)) callArgs
             bodyArgs_varNames = map (\(ArgName _ str) -> VarName nullAnno str) bodyArgs
