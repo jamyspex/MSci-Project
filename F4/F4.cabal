@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a52254a4c93c1c1b3b1f91a59f032a3f0aaceb9a3d27560fb6bee62eac0b7339
+-- hash: 7766d686ca9240f4bd40e8e1f165d76f3b3b90f2f7be74ccf4b4e081e51e32e1
 
 name:           F4
 version:        0.1.0.0
@@ -26,17 +26,11 @@ source-repository head
 
 library
   exposed-modules:
-      BufferTransferAnalysis
-      CodeEmitter
-      CodeEmitterUtils
       CombineKernels
       CommandLineProcessor
       ConstantFolding
       F4
       F95IntrinsicFunctions
-      F95StatementParser
-      FortranGenerator
-      FortranSynthesiser
       LanguageFortranTools
       LoopAnalysis
       Main
@@ -44,6 +38,7 @@ library
       Parser
       Platform
       PreProcessor
+      SanityChecks
       SubroutineTable
       Transformer
       TupleTable
