@@ -1,10 +1,8 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.31.0.
+-- This file has been generated from package.yaml by hpack version 0.28.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b1b9331f90973af9a038148314c75d877d760b47bfef71ede442bbcf8c12f472
+-- hash: a52254a4c93c1c1b3b1f91a59f032a3f0aaceb9a3d27560fb6bee62eac0b7339
 
 name:           F4
 version:        0.1.0.0
@@ -17,9 +15,10 @@ copyright:      2018 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
+cabal-version:  >= 1.10
 extra-source-files:
-    README.md
     ChangeLog.md
+    README.md
 
 source-repository head
   type: git
@@ -31,6 +30,7 @@ library
       CodeEmitter
       CodeEmitterUtils
       CombineKernels
+      CommandLineProcessor
       ConstantFolding
       F4
       F95IntrinsicFunctions
@@ -55,12 +55,14 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
-    , cmdargs
+      attoparsec
+    , base >=4.7 && <5
     , containers
     , directory
     , language-fortran
+    , optparse-applicative
     , process
+    , split
     , syb
   default-language: Haskell2010
 
@@ -73,12 +75,14 @@ executable F4-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , attoparsec
     , base >=4.7 && <5
-    , cmdargs
     , containers
     , directory
     , language-fortran
+    , optparse-applicative
     , process
+    , split
     , syb
   default-language: Haskell2010
 
@@ -92,11 +96,13 @@ test-suite F4-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , attoparsec
     , base >=4.7 && <5
-    , cmdargs
     , containers
     , directory
     , language-fortran
+    , optparse-applicative
     , process
+    , split
     , syb
   default-language: Haskell2010

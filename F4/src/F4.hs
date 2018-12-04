@@ -5,6 +5,7 @@ module F4 where
 
 import           Parser
 
+import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
 import           Data.Generics           (everything, everywhere, everywhereM,
                                           gmapQ, gmapT, mkM, mkQ, mkT)
@@ -13,11 +14,14 @@ import           Language.Fortran
 import           Language.Fortran.Pretty
 import qualified LanguageFortranTools    as LFT
 import           MiniPP
-import           System.Console.CmdArgs
+import           Options.Applicative
 
 
 processArgs :: IO ()
-processArgs = compilerMain =<< cmdArgs f4Opts
+processArgs = do
+    opts <- execParser f4CmdParser
+    print opts
+    compilerMain opts
 
 compilerMain:: F4Opts -> IO ()
 compilerMain args = do
@@ -25,7 +29,7 @@ compilerMain args = do
         mapM (\filename -> do
             putStrLn $ "Parsing " ++ filename
             parseFile (cppDefines args) (cppExcludes args) (fixedForm args) filename)
-        $ subsToParallelise args
+        $ subsForFPGA args
     putStrLn ((show $ length filesToBeParallelised) ++ " files parsed!")
 
 
@@ -145,24 +149,25 @@ parseTestFile = do
 --     formattedEntries = foldl (\acc cur -> acc ++ "\n\t" ++ cur) "\t" entries
 --     formattedItem = keyText ++ formattedEntries
 
-data F4Opts =
-    F4Opts {
-        subsToParallelise :: [FilePath],
-        cppDefines        :: [String],
-        cppExcludes       :: [String],
-        fixedForm         :: Bool,
-        mainSub           :: FilePath
-    }
-    deriving (Data,Typeable,Show,Eq)
+-- data F4Opts =
+--     F4Opts {
+--         subsToParallelise :: [FilePath],
+--         cppDefines        :: [String],
+--         cppExcludes       :: [String],
+--         fixedForm         :: Bool,
+--         mainSub           :: FilePath
+--     }
+--     -- deriving (Data,Typeable,Show,Eq)
 
-f4Opts = F4Opts {
-        subsToParallelise = def &= args &= typFile,  -- &= help "Files to offload to FPGA",
-        cppDefines = def &= opt "cppDefine" &= typ "NAME[=VALUE]" &= help "CPP #define",
-        cppExcludes = def &= opt "cppExcludes" &= typ "NAME[=VALUE]" &= help "CPP include path",
-        fixedForm = def &= help "Fixed form: limit input file lines to 72 columns",
-        mainSub = def &= name "m" &= typFile &= help "Main file with time step loop"
-    } &=
-    verbosity &=
-    help "Compiler to convert FORTRAN finite element codes to be executed on FPGA devices" &=
-    summary "F4 v0.0.0, (C) James Macdonald" &=
-    details ["F4 is a source-to-source compiler that allows FORTRAN finite element codes to be compiled to OpenCL optimsed for execution on FPGAs."]
+
+-- f4Opts = F4Opts {
+--         mainSub = def &= argPos 0 &= typFile &= help "Main file with time step loop",
+--         subsToParallelise = def &= args &= typFile,  -- &= help "Files to offload to FPGA",
+--         cppDefines = def &= opt "cppDefine" &= typ "NAME[=VALUE]" &= help "CPP #define",
+--         cppExcludes = def &= opt "cppExcludes" &= typ "NAME[=VALUE]" &= help "CPP include path",
+--         fixedForm = def &= help "Fixed form: limit input file lines to 72 columns"
+--     } &=
+--     verbosity &=
+--     help "Compiler to convert FORTRAN finite element codes to be executed on FPGA devices" &=
+--     summary "F4 v0.0.0, (C) James Macdonald" &=
+--     details ["F4 is a source-to-source compiler that allows FORTRAN finite element codes to be compiled to OpenCL optimsed for execution on FPGAs."]

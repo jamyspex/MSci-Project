@@ -1,6 +1,6 @@
-name:                F4
+name:                PlayAbout
 version:             0.1.0.0
-github:              "githubuser/F4"
+github:              "githubuser/PlayAbout"
 license:             BSD3
 author:              "Author name here"
 maintainer:          "example@example.com"
@@ -17,24 +17,17 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/F4#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/PlayAbout#readme>
 
 dependencies:
 - base >= 4.7 && < 5
-- containers
-- directory
-- syb
-- process
-- language-fortran
-- optparse-applicative
 - attoparsec
-- split
- 
+
 library:
   source-dirs: src
 
 executables:
-  F4-exe:
+  PlayAbout-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -42,10 +35,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - F4
+    - PlayAbout
 
 tests:
-  F4-test:
+  PlayAbout-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -53,4 +46,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - F4
+    - PlayAbout
