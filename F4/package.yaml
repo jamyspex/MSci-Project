@@ -29,6 +29,7 @@ dependencies:
 - optparse-applicative
 - attoparsec
 - split
+- filepath
  
 library:
   source-dirs: src

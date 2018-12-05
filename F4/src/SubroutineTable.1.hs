@@ -45,8 +45,6 @@ where
 -- emptyArgumentTranslation = DMap.empty
 
 
-
-
 -- -- WV: What this does is go from Program Anno to ProgUnit Anno, assuming that there is only one subroutine in the file. Program is a misnomer, code_unit would be a better name.
 -- constructSubroutineTable :: [(Program Anno, SrcName)] -> SrcName -> SubroutineTable
 -- constructSubroutineTable code_units main =

@@ -14,7 +14,7 @@ data F4Opts = F4Opts {
         fixedForm   :: Bool,
         mainSub     :: String,
         ioSubs      :: [String],
-        otherSubs   :: [String]
+        sourceDir   ::  String
     }
 
 instance Show F4Opts where
@@ -22,13 +22,20 @@ instance Show F4Opts where
         "The following command line values were parsed:\n\n" ++
         "Files with subroutines to be parallelised:\n" ++
         (concatMap (\file -> "\t" ++ file ++ "\n") (subsForFPGA opts)) ++
-        "Main Subroutine: \n\t" ++ (mainSub opts) ++ "\n" ++
-        "Other files containing subroutines used by program:\n" ++
-        (concatMap (\file -> "\t" ++ file ++ "\n") (otherSubs opts)) ++
+        "File containing main subroutine: \n\t" ++ (mainSub opts) ++ "\n" ++
+        "Source directory:\n\t" ++ (sourceDir opts) ++ "\n" ++
         "Fixed form: " ++ (show $ fixedForm opts) ++ "\n" ++
         "CPP Defines: " ++ (concatMap (\def -> def ++ ", ") (cppDefines opts)) ++ "\n" ++
         "CPP Excludes:\n" ++
         (concatMap (\file -> "\t" ++ file ++ "\n") (cppExcludes opts))
+
+sourceDirParser :: Parser String
+sourceDirParser = strOption
+    ( long "sourceDir"
+    <> short 's'
+    <> value "./"
+    <> metavar "<MAIN SRC DIR>"
+    <> help "Directory containing the FORTRAN code" )
 
 mainSubParser :: Parser String
 mainSubParser = strOption
@@ -89,7 +96,7 @@ f4Opts = F4Opts
     <*> fixedFormParser
     <*> mainSubParser
     <*> ioSubsParser
-    <*> otherSubsParser
+    <*> sourceDirParser
 
 f4CmdParser :: ParserInfo F4Opts
 f4CmdParser = info (f4Opts <**> helper)
