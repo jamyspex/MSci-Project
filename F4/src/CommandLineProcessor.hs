@@ -8,12 +8,13 @@ import           Data.Semigroup        ((<>))
 import           Options.Applicative
 
 data F4Opts = F4Opts {
-        subsForFPGA   :: [String],
-        cppDefines    :: [String],
-        cppExcludes   :: [String],
-        fixedForm     :: Bool,
-        mainSub       :: String,
-        ioSubroutines :: [String]
+        subsForFPGA :: [String],
+        cppDefines  :: [String],
+        cppExcludes :: [String],
+        fixedForm   :: Bool,
+        mainSub     :: String,
+        ioSubs      :: [String],
+        otherSubs   :: [String]
     }
 
 instance Show F4Opts where
@@ -21,7 +22,9 @@ instance Show F4Opts where
         "The following command line values were parsed:\n\n" ++
         "Files with subroutines to be parallelised:\n" ++
         (concatMap (\file -> "\t" ++ file ++ "\n") (subsForFPGA opts)) ++
-        "Main Subroutine: " ++ (mainSub opts) ++ "\n" ++
+        "Main Subroutine: \n\t" ++ (mainSub opts) ++ "\n" ++
+        "Other files containing subroutines used by program:\n" ++
+        (concatMap (\file -> "\t" ++ file ++ "\n") (otherSubs opts)) ++
         "Fixed form: " ++ (show $ fixedForm opts) ++ "\n" ++
         "CPP Defines: " ++ (concatMap (\def -> def ++ ", ") (cppDefines opts)) ++ "\n" ++
         "CPP Excludes:\n" ++
@@ -41,6 +44,13 @@ subsForFPGAParser = many ( strOption
     <> metavar "<FILE FOR OFFLOAD>"
     <> help "Files to offload to FPGA"))
 
+otherSubsParser :: Parser [String]
+otherSubsParser = many ( strOption
+    ( long "othersub"
+    <> short 's'
+    <> metavar "<FILE CONTAINING SUBROUTINE>"
+    <> help "Files containing subroutines used by program"))
+
 cppDefinesParser :: Parser [String]
 cppDefinesParser = option cppNameValueReader
     ( long "cppDefine"
@@ -59,8 +69,8 @@ cppExcludesParser = many ( strOption
     <> metavar "<CPP EXCLUDES>"
     <> help "CPP excludes" ))
 
-ioSubroutinesParser :: Parser [String]
-ioSubroutinesParser = pure []
+ioSubsParser :: Parser [String]
+ioSubsParser = pure []
     -- many ( strOption
     -- (  long "ioSubroutines"
     -- <> metavar "<IO SUBROUTINES>"
@@ -78,7 +88,8 @@ f4Opts = F4Opts
     <*> cppExcludesParser
     <*> fixedFormParser
     <*> mainSubParser
-    <*> ioSubroutinesParser
+    <*> ioSubsParser
+    <*> otherSubsParser
 
 f4CmdParser :: ParserInfo F4Opts
 f4CmdParser = info (f4Opts <**> helper)

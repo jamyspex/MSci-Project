@@ -1,15 +1,14 @@
-module SubroutineTable                 (SubroutineTable, SubRec(..),SubNameStr, SrcName, SubroutineArgumentTranslationMap, ArgumentTranslation, extractSubroutineArgumentTranslationMaps, emptyArgumentTranslation,
-                                    generateArgumentTranslation, getSubroutineArgumentTranslation, constructSubroutineTable, replaceKernels_foldl, subroutineTable_ast,
+module SubroutineTable                 (SubroutineTable, SubRec(..),SubNameStr, SrcName, SubroutineArgumentTranslationMap, ArgumentTranslation, extractSubroutineArgumentTranslationMaps, emptyArgumentTranslation, 
+                                    generateArgumentTranslation, getSubroutineArgumentTranslation, constructSubroutineTable, replaceKernels_foldl, subroutineTable_ast, 
                                     extractCalls, extractAllCalls, translateArguments, extractSubroutines, extractProgUnitName, addToSubroutineTable)
 
 where
 
-import           Data.Generics        (Data, Typeable, everything, everywhere,
-                                       gmapQ, gmapT, mkQ, mkT)
-import qualified Data.Map             as DMap
-import           Language.Fortran
+import Data.Generics                 (Data, Typeable, mkQ, mkT, gmapQ, gmapT, everything, everywhere)
+import qualified Data.Map as DMap
+import Language.Fortran
 
-import           LanguageFortranTools
+import LanguageFortranTools 
 
 
 --     This datastructure holds subroutines, with the names of the subroutines as the key. The stored item is the AST of the subroutine
@@ -22,15 +21,12 @@ type SubroutineTable = DMap.Map SubNameStr SubRec -- (ProgUnit Anno, String)
 
 type SrcName = String
 data SubRec = MkSubRec {
-       subAst          :: ProgUnit Anno,
-       subSrcFile      :: String,
-       subSrcLines     :: [String],
-       subsCalled      :: [SubRec],
-       subName         :: String,
-       argTranslations :: SubroutineArgumentTranslationMap
+       subAst :: ProgUnit Anno,
+       subSrcFile :: String,
+       subSrcLines :: [String]    
 }
 
-subroutineTable_ast = subAst
+subroutineTable_ast = subAst 
 subroutineTable_filename = subSrcFile
 
 --    These datastructures facilitate argument/variable translation. For each subroutine there is an 'ArgumentTranslation' structure
@@ -45,26 +41,11 @@ emptyArgumentTranslation = DMap.empty
 
 -- WV: What this does is go from Program Anno to ProgUnit Anno, assuming that there is only one subroutine in the file. Program is a misnomer, code_unit would be a better name.
 constructSubroutineTable :: [((Program Anno, [String]), SrcName)] -> SubroutineTable
-constructSubroutineTable code_units =
-    DMap.fromList $
-        map (\((ast, orig_lines),filename) ->
-                (subname, -- key
-                (MkSubRec (extractSubroutine ast) filename orig_lines subname ))) -- value
-        code_units
-    where
-
-        subname = extractProgUnitName $ extractSubroutine ast
-
--- JM: Previous implementation to be used constructing SubroutineTable to be used for ArgTranslation
-constructSubroutineTable' :: [((Program Anno, [String]), SrcName)] -> SubroutineTable
-constructSubroutineTable code_units =
-    DMap.fromList $
-        map (\((ast, orig_lines),filename) ->
-                (subname, -- key
-                (MkSubRec (extractSubroutine ast) filename orig_lines subname DMap.empty))) -- value
-        code_units
-    where
-        subname = extractProgUnitName $ extractSubroutine ast
+-- constructSubroutineTable programs = foldl (\accum (ast, filename) -> DMap.insert (extractProgUnitName ast) (MkSubRec ast filename []) accum) DMap.empty parsedSubroutines
+--        where
+--            parsedSubroutines = foldl (\accum ((ast, orig_lines), filename) -> accum ++ (map (\sub_ast -> (MkSubRec sub_ast filename orig_lines)) (extractSubroutines ast))) [] programs
+--            parsedSubroutines =
+constructSubroutineTable code_units = DMap.fromList $ map (\((ast, orig_lines),filename) -> ((extractProgUnitName (extractSubroutine ast)),   (MkSubRec (extractSubroutine ast) filename orig_lines))) code_units
 
 addToSubroutineTable ::  ((Program Anno, [String]), SrcName) -> SubroutineTable -> SubroutineTable
 addToSubroutineTable code_unit subtable = let
@@ -97,7 +78,7 @@ generateSubroutineArgumentTranslationMaps :: SubroutineTable -> SubroutineArgume
 generateSubroutineArgumentTranslationMaps subTable argTable (Call anno src callExpr arglist) = DMap.insert subroutineName varNameReplacements argTable
         where
             varNameReplacements = generateArgumentTranslation subTable (Call anno src callExpr arglist)
-            subroutineName = varNameStr (head ((extractVarNames callExpr) ))-- ++[VarName nullAnno "DUMMY9"]))
+            subroutineName = varNameStr (head ((extractVarNames callExpr) ))-- ++[VarName nullAnno "DUMMY9"]))   
 --
 generateArgumentTranslation :: SubroutineTable -> Fortran Anno -> ArgumentTranslation
 generateArgumentTranslation subTable (Call anno src callExpr arglist) = varNameReplacements
@@ -111,11 +92,11 @@ generateArgumentTranslation subTable (Call anno src callExpr arglist) = varNameR
 
             callArgs = everything (++) (mkQ [] extractExpr_list) arglist
             bodyArgs = everything (++) (mkQ [] extractArgName) arg
-            -- WV: FIXME: if a sub call has const or expr args this will always return an error.
+            -- WV: FIXME: if a sub call has const or expr args this will always return an error. 
 --            callArgs_varNames = map (\x -> if extractVarNames x == [] then error ("substituteArguments: " ++ (show x)++" ; "++(show callArgs)) else  head (extractVarNames x)) callArgs
             callArgs_varNames = map (\x -> case extractMaybeVarNames x of
                     Just vs -> head vs
-                    Nothing -> error "SubroutineTable line" -- VarName anno "BOOM!"
+                    Nothing -> VarName anno "BOOM!" 
                     ) callArgs
 --                    if extractVarNames x == [] then error ("substituteArguments: " ++ (show x)++" ; "++(show callArgs)) else  head (extractVarNames x)) callArgs
             bodyArgs_varNames = map (\(ArgName _ str) -> VarName nullAnno str) bodyArgs
@@ -163,7 +144,7 @@ extractSubroutines ast = everything (++) (mkQ [] extractSubroutines') ast
 extractSubroutines' :: ProgUnit Anno -> [ProgUnit Anno]
 extractSubroutines' codeSeg = case codeSeg of
                                 (Sub _ _ _ _ _ _) -> [codeSeg]
-                                _                 -> []
+                                _ -> []
 
 replaceKernels :: [(Fortran Anno, Fortran Anno)] -> ProgUnit Anno -> ProgUnit Anno
 replaceKernels kernelPairs subroutine = foldl (\accumSub (old, optim) -> replaceFortran accumSub old optim) subroutine kernelPairs
@@ -172,7 +153,7 @@ extractAllCalls ast = everything (++) (mkQ [] extractCalls) ast
 
 extractCalls codeSeg = case codeSeg of
                             Call _ _ _ _ -> [codeSeg]
-                            _            -> []
+                            _ -> []
 
 extractStringFromSubName :: SubName Anno -> String
 extractStringFromSubName (SubName _ str) = str

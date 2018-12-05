@@ -3,7 +3,7 @@
 
 module F4 where
 
-import           Parser
+import           Parser                  (parseProgramData)
 
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
@@ -27,12 +27,14 @@ processArgs = do
 
 compilerMain :: F4Opts -> IO ()
 compilerMain args = do
-    filesToBeParallelised <- mapM (parseFile (cppDefines args) (cppExcludes args) (fixedForm args)) $ subsForFPGA args
-    putStrLn ((show $ length filesToBeParallelised) ++ " files to be parallelised parsed!\n")
-    -- Check the files
-    mapM_ validateInputFiles filesToBeParallelised
-    main <- parseFile (cppDefines args) (cppExcludes args) (fixedForm args) (mainSub args)
-    putStrLn "Parsed main file!"
+    parseProgramData args
+    -- filesToBeParallelised <- mapM (parseFile (cppDefines args) (cppExcludes args) (fixedForm args)) $ subsForFPGA args
+    -- putStrLn ((show $ length filesToBeParallelised) ++ " files to be parallelised parsed!\n")
+    -- -- Check the files
+    -- mapM_ validateInputFiles filesToBeParallelised
+    -- main <- parseFile (cppDefines args) (cppExcludes args) (fixedForm args) (mainSub args)
+    -- putStrLn "Parsed main file!"
+
 
 
 

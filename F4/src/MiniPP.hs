@@ -4,6 +4,7 @@ module MiniPP (
     miniPPO,
     miniPPD,
     miniPPProgram,
+    miniPPProgUnit,
     miniPPP,
     showVarLst,
     showSubName

@@ -2,7 +2,7 @@ module module_vernieuw
 
 contains
 
-      subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
+subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
  ! === Original code from wave2d starts here ===
 integer(4), parameter :: nx=500
 integer(4), parameter :: ny=500
@@ -32,7 +32,7 @@ do k = 0,nx+1
   v(j,k) = vn(j,k)
 end do
 end do
-      end subroutine vernieuw
+end subroutine vernieuw
 
 end module module_vernieuw
 
