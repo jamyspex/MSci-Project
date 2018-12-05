@@ -43,10 +43,10 @@ parseProgramData opts = do
     filesToBeParallelised <- mapM parseCurried $ subsForFPGA opts
     mapM_ (validateInputFile . getAst) (filesToBeParallelised)
     main <- parseCurried $ mainSub opts
-    let sra = createSubMap $ InitialProgramData main filesToBeParallelised -- otherSubroutines
+    let sra = createInitialSubMap $ InitialProgramData main filesToBeParallelised -- otherSubroutines
     let sra' = populateSubCalls sra
-    -- otherSubroutines <- mapM parseCurried $ otherSubs opts
-    debug_displaySubRecAnalysis sra'
+    parseOtherRequiredFiles parseCurried sra'
+    -- debug_displaySubRecAnalysis sra'
     return ()
     where
         -- otherSubroutines =
@@ -55,6 +55,17 @@ parseProgramData opts = do
         fixF = fixedForm opts
         dir = sourceDir opts
         parseCurried = Parser.parseFile cppD cppX fixF dir
+
+parseOtherRequiredFiles :: (String -> IO (Program Anno, [String], String)) -> SubRecAnalysis -> IO (SubRecAnalysis)
+parseOtherRequiredFiles parse sra = do
+    -- foundSubRoutines = sra
+    -- otherRequiredSubs =
+    putStrLn $ concatMap (\s -> s ++ ", ") subNames
+    return (sra)
+    where
+        -- parseCurried =
+        subNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
+            $ DMap.toList (subroutineToCalls sra)
 
 debug_displaySubRecAnalysis :: SubRecAnalysis -> IO ()
 debug_displaySubRecAnalysis sra = do
@@ -84,8 +95,8 @@ parseFile cppDArgs cppXArgs fixedForm dir filename = do
 
 
 
-createSubMap :: InitialProgramData -> SubRecAnalysis
-createSubMap input = SRA (DMap.fromList toFileMap) (DMap.fromList toSubAstMap) DMap.empty
+createInitialSubMap :: InitialProgramData -> SubRecAnalysis
+createInitialSubMap input = SRA (DMap.fromList toFileMap) (DMap.fromList toSubAstMap) DMap.empty
     where
         toSubAstMap =
             -- (zip otherSubNames otherAsts) ++
@@ -150,6 +161,13 @@ extractCalls codeSeg = case codeSeg of
 
 extractStringFromSubName :: SubName Anno -> String
 extractStringFromSubName (SubName _ str) = str
+
+extractCallSubName (Call _ _ expr _ ) = everything (++) (mkQ [] extractCallSubName') expr
+
+extractCallSubName' :: VarName Anno -> [String]
+extractCallSubName' call = case call of
+                            VarName _ name -> [name]
+                            -- _              -> []
 
 validateInputFile :: Program LFT.Anno -> IO ()
 validateInputFile fileAst = do

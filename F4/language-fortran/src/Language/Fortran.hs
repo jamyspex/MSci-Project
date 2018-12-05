@@ -1,4 +1,5 @@
-{-# LANGUAGE DeriveFunctor, DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveFunctor      #-}
 -- |
 -- Based on FortranP.hs from Parameterized Fortran by Martin Erwig.
 --
@@ -7,7 +8,7 @@
 -- The AST is parameterised by type variable p which allows all nodes
 -- of the AST to be annotated. The default annotation is (). This is
 -- useful for analysis.  The 'Tagged' type class provides the function
--- @tag :: d a -> a@ to extract these annotations. 
+-- @tag :: d a -> a@ to extract these annotations.
 -- EDIT: In this version annotations are lists of Strings.
 --
 -- Furthermore, many nodes of the tree have a 'SrcSpan' which is the
@@ -21,7 +22,7 @@ module Language.Fortran where
 -- IMPORTS
 ---------------------------------------------------------------------------
 
-import Data.Generics
+import           Data.Generics
                     -- Typeable class and boilerplate generic functions
                      -- All AST nodes are members of 'Data' and 'Typeable' so that
                      -- data type generic programming can be done with the AST
@@ -32,8 +33,8 @@ import Data.Generics
 
 data SrcLoc = SrcLoc {
                 srcFilename :: String,
-                srcLine :: Int,
-                srcColumn :: Int
+                srcLine     :: Int,
+                srcColumn   :: Int
                 }
             deriving (Eq, Typeable, Data)
 
@@ -54,8 +55,8 @@ type ProgName = String
 data SubName p  = SubName p String
                  | NullSubName p
                  deriving (Show, Functor, Typeable, Data, Eq)
- 
-data VarName  p = VarName p Variable 
+
+data VarName  p = VarName p Variable
                   deriving (Show, Functor, Typeable, Data, Eq, Read, Ord)
 
 data ArgName  p = ArgName p String
@@ -75,7 +76,7 @@ data ArgList  p = ArgList p (Expr p)
 
 type Program p = [ProgUnit p]
 
-               -- Prog type            (type of result)      name         args     (result)            body     use's  
+               -- Prog type            (type of result)      name         args     (result)            body     use's
 data ProgUnit  p = Main      p SrcSpan                      (SubName p)  (Arg p)                      (Block p) [ProgUnit p]
                 | Sub        p SrcSpan (Maybe (BaseType p)) (SubName p)  (Arg p)                      (Block p)
                 | Function   p SrcSpan (Maybe (BaseType p)) (SubName p)  (Arg p)  (Maybe (VarName p)) (Block p)
@@ -87,12 +88,12 @@ data ProgUnit  p = Main      p SrcSpan                      (SubName p)  (Arg p)
                 | IncludeProg p SrcSpan (Decl p) (Maybe (Fortran p))
                 deriving (Show, Functor, Typeable, Data, Eq)
 
--- | Implicit none or no implicit 
+-- | Implicit none or no implicit
 -- WV: TODO: Does not support IMPLICIT definition list
-data Implicit p = ImplicitNone p | ImplicitNull p 
+data Implicit p = ImplicitNone p | ImplicitNull p
                 deriving (Show, Functor, Typeable, Data, Eq)
 
--- | renames for "use"s 
+-- | renames for "use"s
 type Renames = [(Variable, Variable)]
 
 data UseBlock p = UseBlock (Uses p) SrcLoc deriving (Show, Functor, Typeable, Data, Eq)
@@ -110,7 +111,7 @@ data Decl     p = Decl           p SrcSpan [(Expr p, Expr p, Maybe Int)] (Type p
                 | Namelist       p [(Expr p, [Expr p])]                     -- namelist declaration
                 | DataDecl       p (DataForm p)
                 | Equivalence    p SrcSpan [(Expr p)]
-                | AttrStmt       p (Attr p) [(Expr p, Expr p, Maybe Int)] 
+                | AttrStmt       p (Attr p) [(Expr p, Expr p, Maybe Int)]
                 | AccessStmt     p (Attr p) [GSpec p]                       -- access stmt
                 | ExternalStmt   p [String]                                 -- external stmt
                 | Interface      p (Maybe (GSpec p)) [InterfaceSpec p]      -- interface declaration
@@ -124,7 +125,7 @@ data Decl     p = Decl           p SrcSpan [(Expr p, Expr p, Maybe Int)] (Type p
                 | MeasureUnitDef p SrcSpan [(MeasureUnit, MeasureUnitSpec p)]
                   deriving (Show, Functor, Typeable, Data, Eq)
 
-                -- BaseType  dimensions         type        Attributes   kind   len 
+                -- BaseType  dimensions         type        Attributes   kind   len
 data Type     p = BaseType p                    (BaseType p) [Attr p] (Expr p) (Expr p)
                 | ArrayT   p [(Expr p, Expr p)] (BaseType p) [Attr p] (Expr p) (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
@@ -136,7 +137,7 @@ data BaseType p = Integer p | Real p | Character p | SomeType p | DerivedType p 
 data Attr     p = Parameter p
                 | Allocatable p
                 | External p
-                | Intent p (IntentAttr p) 
+                | Intent p (IntentAttr p)
                 | Intrinsic p
                 | Optional p
                 | Pointer p
@@ -150,7 +151,7 @@ data Attr     p = Parameter p
                 -- units-of-measure extension
                 | MeasureUnit p (MeasureUnitSpec p)
               deriving (Show, Functor, Typeable, Data, Eq)
-              
+
 
 {- start: units-of-measure extension -}
 type MeasureUnit = String
@@ -169,20 +170,20 @@ data Fraction p = IntegerConst p String
 
 data GSpec   p = GName p (Expr p) | GOper p (BinOp p) | GAssg p
                  deriving (Show, Functor, Typeable, Data, Eq)
-              
+
 data InterfaceSpec p = FunctionInterface   p (SubName p) (Arg p) (Uses p) (Implicit p) (Decl p)
                      | SubroutineInterface p (SubName p) (Arg p) (Uses p) (Implicit p) (Decl p)
                      | ModuleProcedure     p [(SubName p)]
                        deriving (Show, Functor, Typeable, Data, Eq)
-        
+
 data DataForm p = Data p [(Expr p, Expr p)] deriving (Show, Functor, Typeable, Data, Eq) -- data declaration
-           
+
 data IntentAttr p = In p
                   | Out p
                   | InOut p
                     deriving (Show, Functor, Typeable, Data, Eq)
-                
-data Fortran  p = Assg p SrcSpan (Expr p) (Expr p) 
+
+data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                 | For  p SrcSpan (VarName p) (Expr p) (Expr p) (Expr p) (Fortran p)
                 | DoWhile  p SrcSpan (Expr p) (Fortran p)
                 | FSeq p SrcSpan (Fortran p) (Fortran p)
@@ -192,7 +193,7 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                 | Call p SrcSpan (Expr p) (ArgList p)
                 | Open p SrcSpan [Spec p]
                 | Close p SrcSpan [Spec p]
-                | Continue p SrcSpan 
+                | Continue p SrcSpan
                 | Cycle p SrcSpan String
                 | DataStmt p SrcSpan (DataForm p)
                 | Deallocate p SrcSpan [(Expr p)] (Expr p)
@@ -251,7 +252,7 @@ data Expr  p = Con p SrcSpan String
              | Unary p SrcSpan (UnaryOp p) (Expr p)
              | CallExpr p SrcSpan (Expr p) (ArgList p) -- WV: UNUSED
              | NullExpr p SrcSpan
-             | Null p SrcSpan 
+             | Null p SrcSpan
              | ESeq p SrcSpan (Expr p) (Expr p)
              | Bound p SrcSpan (Expr p) (Expr p)
              | Sqrt p SrcSpan (Expr p) -- WV: This is silly, should be handled either for all intrinsics or none
@@ -289,7 +290,7 @@ data Spec     p = Access   p (Expr p)
               | ExFile     p (Expr p)
               | Exist      p (Expr p)
               | Eor        p (Expr p)
-              | File       p (Expr p)  
+              | File       p (Expr p)
               | FMT        p (Expr p)
               | Form       p (Expr p)
               | Formatted  p (Expr p)
@@ -303,20 +304,20 @@ data Spec     p = Access   p (Expr p)
               | Floating   p (Expr p) (Expr p)
               | NextRec    p (Expr p)
               | NML        p (Expr p)
-              | Opened     p (Expr p) 
+              | Opened     p (Expr p)
               | Pad        p (Expr p)
               | Position   p (Expr p)
               | Read       p (Expr p)
               | ReadWrite  p (Expr p)
-              | Rec        p (Expr p) 
-              | Recl       p (Expr p) 
+              | Rec        p (Expr p)
+              | Recl       p (Expr p)
               | Sequential p (Expr p)
               | Size       p (Expr p)
               | Status     p (Expr p)
-              | StringLit     p String 
+              | StringLit     p String
               | Unit       p (Expr p)
               | WriteSp    p (Expr p)
-              | Delimiter  p 
+              | Delimiter  p
                 deriving (Show, Functor,Typeable,Data, Eq)
 
 -- Extract span information from the source tree
@@ -360,52 +361,52 @@ instance Span (Expr a) where
     srcSpan (Sqrt x sp _)              = sp
     srcSpan (ArrayCon x sp _)          = sp
     srcSpan (AssgExpr x sp _ _)        = sp
-    srcSpan (ParenthesizedExpr x sp _) = sp 
+    srcSpan (ParenthesizedExpr x sp _) = sp
 
 instance Span (Fortran a) where
-    srcSpan (Assg x sp e1 e2)        = sp
-    srcSpan (For x sp v e1 e2 e3 fs) = sp
-    srcSpan (DoWhile x sp e fs)      = sp
-    srcSpan (FSeq x sp f1 f2)        = sp
-    srcSpan (If x sp e f1 fes f3)    = sp
-    srcSpan (Allocate x sp e1 e2)    = sp
-    srcSpan (Backspace x sp _)       = sp
-    srcSpan (Call x sp e as)         = sp
-    srcSpan (Open x sp s)            = sp
-    srcSpan (Close x sp s)           = sp 
-    srcSpan (Continue x sp)          = sp
-    srcSpan (Cycle x sp s)           = sp
-    srcSpan (DataStmt x sp _)        = sp
-    srcSpan (Deallocate x sp es e)   = sp
-    srcSpan (Endfile x sp s)         = sp
-    srcSpan (Exit x sp s)            = sp
-    srcSpan (Format x sp _)          = sp
-    srcSpan (Forall x sp es f)       = sp
-    srcSpan (Goto x sp s)            = sp
-    srcSpan (Nullify x sp e)         = sp
-    srcSpan (Inquire x sp s e)       = sp
-    srcSpan (Pause x sp _)           = sp
-    srcSpan (Rewind x sp s)          = sp 
-    srcSpan (Stop x sp e)            = sp
-    srcSpan (Where x sp e f _)       = sp 
-    srcSpan (Write x sp s e)         = sp
-    srcSpan (PointerAssg x sp e1 e2) = sp
-    srcSpan (Return x sp e)          = sp
-    srcSpan (Label x sp s f)         = sp
-    srcSpan (Print x sp e es)        = sp
-    srcSpan (ReadS x sp s e)         = sp
-    srcSpan (TextStmt x sp s)        = sp
-    srcSpan (NullStmt x sp)          = sp
-    srcSpan (SelectStmt x sp e fes _)         = sp        -- GAV ADDED
+    srcSpan (Assg x sp e1 e2)                   = sp
+    srcSpan (For x sp v e1 e2 e3 fs)            = sp
+    srcSpan (DoWhile x sp e fs)                 = sp
+    srcSpan (FSeq x sp f1 f2)                   = sp
+    srcSpan (If x sp e f1 fes f3)               = sp
+    srcSpan (Allocate x sp e1 e2)               = sp
+    srcSpan (Backspace x sp _)                  = sp
+    srcSpan (Call x sp e as)                    = sp
+    srcSpan (Open x sp s)                       = sp
+    srcSpan (Close x sp s)                      = sp
+    srcSpan (Continue x sp)                     = sp
+    srcSpan (Cycle x sp s)                      = sp
+    srcSpan (DataStmt x sp _)                   = sp
+    srcSpan (Deallocate x sp es e)              = sp
+    srcSpan (Endfile x sp s)                    = sp
+    srcSpan (Exit x sp s)                       = sp
+    srcSpan (Format x sp _)                     = sp
+    srcSpan (Forall x sp es f)                  = sp
+    srcSpan (Goto x sp s)                       = sp
+    srcSpan (Nullify x sp e)                    = sp
+    srcSpan (Inquire x sp s e)                  = sp
+    srcSpan (Pause x sp _)                      = sp
+    srcSpan (Rewind x sp s)                     = sp
+    srcSpan (Stop x sp e)                       = sp
+    srcSpan (Where x sp e f _)                  = sp
+    srcSpan (Write x sp s e)                    = sp
+    srcSpan (PointerAssg x sp e1 e2)            = sp
+    srcSpan (Return x sp e)                     = sp
+    srcSpan (Label x sp s f)                    = sp
+    srcSpan (Print x sp e es)                   = sp
+    srcSpan (ReadS x sp s e)                    = sp
+    srcSpan (TextStmt x sp s)                   = sp
+    srcSpan (NullStmt x sp)                     = sp
+    srcSpan (SelectStmt x sp e fes _)           = sp        -- GAV ADDED
     srcSpan (OpenCLMap x sp e1 e2 _ _ f2)       = sp        -- GAV ADDED -- WV20170426 extra arg
     srcSpan (OpenCLReduce x sp e1 e2 _ _ e3 f2) = sp        -- GAV ADDED -- WV20170426 extra arg
-    srcSpan (OpenCLBufferRead _ sp _)         = sp        -- GAV ADDED
-    srcSpan (OpenCLBufferWrite _ sp _)        = sp        -- GAV ADDED
+    srcSpan (OpenCLBufferRead _ sp _)           = sp        -- GAV ADDED
+    srcSpan (OpenCLBufferWrite _ sp _)          = sp        -- GAV ADDED
 
--- Extract the tag 
+-- Extract the tag
 
 class Tagged d where
-    tag :: d a -> a 
+    tag :: d a -> a
 
 instance Tagged Attr where
     tag (Parameter x)   = x
@@ -424,19 +425,19 @@ instance Tagged Attr where
     tag (Dimension x _) = x
 
 instance Tagged BaseType where
-    tag (Integer x)    = x
-    tag (Real x)       = x
-    tag (Character x)   = x
-    tag (SomeType x)   = x
+    tag (Integer x)       = x
+    tag (Real x)          = x
+    tag (Character x)     = x
+    tag (SomeType x)      = x
     tag (DerivedType x _) = x
-    tag (Recursive x)  = x
-    tag (Pure x)       = x
-    tag (Elemental x)  = x
-    tag (Logical x)    = x
-    tag (Complex x)    = x
+    tag (Recursive x)     = x
+    tag (Pure x)          = x
+    tag (Elemental x)     = x
+    tag (Logical x)       = x
+    tag (Complex x)       = x
 
 instance Tagged SubName where
-    tag (SubName x _)  = x
+    tag (SubName x _)   = x
     tag (NullSubName x) = x
 
 instance Tagged VarName where
@@ -446,89 +447,89 @@ instance Tagged Implicit where
     tag (ImplicitNone x) = x
     tag (ImplicitNull x) = x
 
-instance Tagged Uses where 
+instance Tagged Uses where
     tag (Use x _ _ _) = x
-    tag (UseNil x) = x
+    tag (UseNil x)    = x
 
 instance Tagged Arg where
     tag (Arg x _ _) = x
 
-instance Tagged ArgList where 
+instance Tagged ArgList where
     tag (ArgList x _) = x
 
 instance Tagged ArgName where
-    tag (ASeq x _ _) = x
-    tag (NullArg x) = x
+    tag (ASeq x _ _)  = x
+    tag (NullArg x)   = x
     tag (ArgName x _) = x
 
 instance Tagged ProgUnit where
-    tag (Main x sp _ _ _ _)      = x
-    tag (Sub x sp _ _ _ _)       = x
-    tag (Function x sp _ _ _ _ _)= x
-    tag (Module x sp _ _ _ _ _ ) = x
-    tag (BlockData x sp _ _ _ _) = x
-    tag (PSeq x sp _ _)          = x
-    tag (Prog x sp _)            = x
-    tag (NullProg x sp)          = x
+    tag (Main x sp _ _ _ _)       = x
+    tag (Sub x sp _ _ _ _)        = x
+    tag (Function x sp _ _ _ _ _)=x
+    tag (Module x sp _ _ _ _ _ )  = x
+    tag (BlockData x sp _ _ _ _)  = x
+    tag (PSeq x sp _ _)           = x
+    tag (Prog x sp _)             = x
+    tag (NullProg x sp)           = x
 
 instance Tagged Decl where
-    tag (Decl x _ _ _)          = x
-    tag (Namelist x _)        = x
-    tag (DataDecl x _)        = x
-    tag (Equivalence x sp _)    = x
-    tag (AttrStmt x _ _)    = x
-    tag (AccessStmt x _ _)    = x
-    tag (ExternalStmt x _)    = x
-    tag (Interface x _ _)     = x
-    tag (Common x _ _ _)        = x
+    tag (Decl x _ _ _)                = x
+    tag (Namelist x _)                = x
+    tag (DataDecl x _)                = x
+    tag (Equivalence x sp _)          = x
+    tag (AttrStmt x _ _)              = x
+    tag (AccessStmt x _ _)            = x
+    tag (ExternalStmt x _)            = x
+    tag (Interface x _ _)             = x
+    tag (Common x _ _ _)              = x
     tag (DerivedTypeDef x sp _ _ _ _) = x
-    tag (Include x _)         = x
-    tag (DSeq x _ _)          = x
-    tag (TextDecl x _)        = x
-    tag (NullDecl x _)        = x
+    tag (Include x _)                 = x
+    tag (DSeq x _ _)                  = x
+    tag (TextDecl x _)                = x
+    tag (NullDecl x _)                = x
     tag (MeasureUnitDef x _ _)        = x
 
 instance Tagged DataForm where
     tag (Data x _)         = x
 
 instance Tagged Fortran where
-    tag (Assg x s e1 e2)        = x
-    tag (For x s v e1 e2 e3 fs) = x
-    tag (DoWhile x sp e fs)        = x
-    tag (FSeq x sp f1 f2)       = x
-    tag (If x sp e f1 fes f3)   = x
-    tag (Allocate x sp e1 e2)   = x
-    tag (Backspace x sp _)      = x
-    tag (Call x sp e as)        = x
-    tag (Open x sp s)           = x
-    tag (Close x sp s)          = x 
-    tag (Continue x sp)         = x
-    tag (Cycle x sp s)          = x
-    tag (DataStmt x sp _)       = x
-    tag (Deallocate x sp es e)  = x
-    tag (Endfile x sp s)        = x
-    tag (Exit x sp s)           = x
-    tag (Format x sp _)         = x
-    tag (Forall x sp es f)      = x
-    tag (Goto x sp s)           = x
-    tag (Nullify x sp e)        = x
-    tag (Inquire x sp s e)      = x
-    tag (Pause x sp _)          = x
-    tag (Rewind x sp s)         = x 
-    tag (Stop x sp e)           = x
-    tag (Where x sp e f _)      = x 
-    tag (Write x sp s e)        = x
-    tag (PointerAssg x sp e1 e2) = x
-    tag (Return x sp e)         = x
-    tag (Label x sp s f)        = x
-    tag (Print x sp e es)       = x
-    tag (ReadS x sp s e)        = x
-    tag (TextStmt x sp s)       = x
-    tag (NullStmt x sp)         = x
-    tag (SelectStmt x sp e fes _)         = x   -- GAV ADDED
+    tag (Assg x s e1 e2)                    = x
+    tag (For x s v e1 e2 e3 fs)             = x
+    tag (DoWhile x sp e fs)                 = x
+    tag (FSeq x sp f1 f2)                   = x
+    tag (If x sp e f1 fes f3)               = x
+    tag (Allocate x sp e1 e2)               = x
+    tag (Backspace x sp _)                  = x
+    tag (Call x sp e as)                    = x
+    tag (Open x sp s)                       = x
+    tag (Close x sp s)                      = x
+    tag (Continue x sp)                     = x
+    tag (Cycle x sp s)                      = x
+    tag (DataStmt x sp _)                   = x
+    tag (Deallocate x sp es e)              = x
+    tag (Endfile x sp s)                    = x
+    tag (Exit x sp s)                       = x
+    tag (Format x sp _)                     = x
+    tag (Forall x sp es f)                  = x
+    tag (Goto x sp s)                       = x
+    tag (Nullify x sp e)                    = x
+    tag (Inquire x sp s e)                  = x
+    tag (Pause x sp _)                      = x
+    tag (Rewind x sp s)                     = x
+    tag (Stop x sp e)                       = x
+    tag (Where x sp e f _)                  = x
+    tag (Write x sp s e)                    = x
+    tag (PointerAssg x sp e1 e2)            = x
+    tag (Return x sp e)                     = x
+    tag (Label x sp s f)                    = x
+    tag (Print x sp e es)                   = x
+    tag (ReadS x sp s e)                    = x
+    tag (TextStmt x sp s)                   = x
+    tag (NullStmt x sp)                     = x
+    tag (SelectStmt x sp e fes _)           = x   -- GAV ADDED
     tag (OpenCLMap x sp e1 e2 _ _ f2)       = x   -- GAV ADDED -- WV20170426 extra arg
     tag (OpenCLReduce x sp e1 e2 _ _ e3 f2) = x   -- GAV ADDED -- WV20170426 extra arg
-    tag (OpenCLBufferRead x _ _)          = x   -- GAV ADDED
+    tag (OpenCLBufferRead x _ _)            = x   -- GAV ADDED
 
 
 instance Tagged Expr where
