@@ -8,12 +8,14 @@ import           CommandLineProcessor
 -- import           Control.Monad.State.Lazy
 import           Data.Generics        (everything, everywhere, everywhereM,
                                        gmapQ, gmapT, mkM, mkQ, mkT)
+import           Data.List
 import qualified Data.Map             as DMap
 import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
 import           SanityChecks
 import           System.FilePath      (FilePath, (</>))
+import           System.IO.Unsafe
 
 -- data ParsedProgram = ParsedProgram {
 --     main       :: SubRec,
@@ -28,6 +30,8 @@ data InitialProgramData = InitialProgramData {
     -- otherSubsParseResult  :: [(Program Anno, [String], String)]
 }
 
+type ParseResult = (Program Anno, [String], String)
+
 data SubRecAnalysis = SRA {
     subroutineToFileMap    :: DMap.Map String FilePath,
     subroutineNameToAstMap :: DMap.Map String (ProgUnit Anno),
@@ -40,31 +44,43 @@ getFileName (_, _, filename) = filename
 
 parseProgramData :: F4Opts -> IO ()
 parseProgramData opts = do
-    filesToBeParallelised <- mapM parseCurried $ subsForFPGA opts
-    mapM_ (validateInputFile . getAst) (filesToBeParallelised)
     main <- parseCurried $ mainSub opts
-    let sra = createInitialSubMap $ InitialProgramData main filesToBeParallelised -- otherSubroutines
-    let sra' = populateSubCalls sra
-    parseOtherRequiredFiles parseCurried sra'
-    -- debug_displaySubRecAnalysis sra'
+    let mainParseResult = main
+    let (mainAstMapItem, mainFileMapItem) = getMapEntries mainParseResult
+    let mainOnlySra = SRA (DMap.fromList [mainFileMapItem]) (DMap.fromList [mainAstMapItem]) DMap.empty
+    fullSra <- searchForSubCalls mainOnlySra 1
+    debug_displaySubRecAnalysis fullSra
     return ()
     where
-        -- otherSubroutines =
         cppD = cppDefines opts
         cppX = cppExcludes opts
         fixF = fixedForm opts
         dir = sourceDir opts
         parseCurried = Parser.parseFile cppD cppX fixF dir
+        searchForSubCalls :: SubRecAnalysis -> Int -> IO (SubRecAnalysis)
+        searchForSubCalls sra foundLastItr =
+            if foundLastItr == 0 then
+                return (sra)
+            else do
+                let sraWithSubCalls = populateSubCalls sra
+                otherSubsParseResults <- findOtherRequiredSubs parseCurried sraWithSubCalls
+                let (otherAstMapItems, otherFileMapItems) = unzip $ map getMapEntries otherSubsParseResults
+                let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
+                                            (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
+                                            DMap.empty
+                searchForSubCalls sra' (length otherAstMapItems)
+                where
+                    previousAstMapItems = DMap.toList $ subroutineNameToAstMap sra
+                    previousFileMapItems = DMap.toList $ subroutineToFileMap sra
 
-parseOtherRequiredFiles :: (String -> IO (Program Anno, [String], String)) -> SubRecAnalysis -> IO (SubRecAnalysis)
-parseOtherRequiredFiles parse sra = do
-    -- foundSubRoutines = sra
-    -- otherRequiredSubs =
-    putStrLn $ concatMap (\s -> s ++ ", ") subNames
-    return (sra)
+findOtherRequiredSubs ::  (String -> IO (ParseResult)) -> SubRecAnalysis -> IO ([ParseResult])
+findOtherRequiredSubs parse sra = do
+    otherSubs <- mapM parse $ map (\subname -> subname ++ ".f95") otherUsedSubs
+    return (otherSubs)
     where
-        -- parseCurried =
-        subNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
+        otherUsedSubs = filter (not . (flip elem) previouslyFound) allUsedSubNames
+        previouslyFound = (map (\(subname, _) -> subname) $ DMap.toList (subroutineNameToAstMap sra))
+        allUsedSubNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
             $ DMap.toList (subroutineToCalls sra)
 
 debug_displaySubRecAnalysis :: SubRecAnalysis -> IO ()
@@ -86,33 +102,14 @@ parseFile cppDArgs cppXArgs fixedForm dir filename = do
     where
         path = dir </> filename
 
--- getFilePath filename dir = case dir of
---                             Nothing -> filename
---                             Just s  -> s </> filename
-
--- processParsed :: InitialProgramData -> ParsedProgram
--- processParsed input =
-
-
-
-createInitialSubMap :: InitialProgramData -> SubRecAnalysis
-createInitialSubMap input = SRA (DMap.fromList toFileMap) (DMap.fromList toSubAstMap) DMap.empty
+getMapEntries :: ParseResult -> ((String, ProgUnit Anno), (String, String))
+getMapEntries (ast, lines, filename) = ((subname, subAst), (subname, filename))
     where
-        toSubAstMap =
-            -- (zip otherSubNames otherAsts) ++
-                [(mainSubName, mainAst)] ++
-                (zip forOffloadNames forOffloadAsts)
-        mainAst = (getFileAst . getAst . mainParseResult) input
-        mainSubName = getSubName mainAst
-        -- otherAsts = map (getFileAst . getAst) (otherSubsParseResult input)
-        -- otherSubNames = map getSubName otherAsts
-        forOffloadAsts = map (getFileAst . getAst) (forOffloadParseResult input)
-        forOffloadNames = map getSubName forOffloadAsts
-        getFileAst = head . extractMainProgUnit
-        getSubName = extractProgUnitName
-        toFileMap = map (\(filename, ast) -> ((getSubName. getFileAst) ast, filename)) (forOffloadFiles ++ [(mainFileName, (getAst . mainParseResult) input)])
-        forOffloadFiles = map (\(ast, _, filename) -> (filename, ast)) (forOffloadParseResult input)
-        mainFileName = (getFileName . mainParseResult) input
+        subAst = getFileAst ast
+        subname = getSubName subAst
+
+getFileAst = head . extractMainProgUnit
+getSubName = extractProgUnitName
 
 populateSubCalls :: SubRecAnalysis -> SubRecAnalysis
 populateSubCalls sra = sra { subroutineToCalls = DMap.fromList callsInFiles}
@@ -120,26 +117,11 @@ populateSubCalls sra = sra { subroutineToCalls = DMap.fromList callsInFiles}
         fileAstsList = DMap.toList $ subroutineNameToAstMap sra
         callsInFiles = map (\(subname, ast) -> (subname, extractAllCalls ast)) fileAstsList
 
--- getSubCallsInAst :: (String, ProgUnit Anno) -> (String, [Fortran Anno])
--- getSubCallsInAst (subname, ast) = (subname, extractAllCalls ast)
-
 extractProgUnitName :: ProgUnit Anno -> String
 extractProgUnitName ast     |    subNames == [] = error ((show ast) ++ "\n\nextractProgUnitName: no subNames")
                             |    otherwise = extractStringFromSubName (head subNames)
         where
             subNames = everything (++) (mkQ [] getSubNames) ast
-
--- -- WV: a list of all subroutines in the code unit, but actually assuming there is just one
--- extractSubroutine subs
---     | null subs = NullProg nullAnno (nullSrcLoc,nullSrcLoc)
---     | otherwise = head $ extractSubroutines subs
--- extractSubroutines :: Program Anno -> [ProgUnit Anno]
--- extractSubroutines ast = everything (++) (mkQ [] extractSubroutines') ast
-
--- extractSubroutines' :: ProgUnit Anno -> [ProgUnit Anno]
--- extractSubroutines' codeSeg = case codeSeg of
---                                 (Sub _ _ _ _ _ _) -> [codeSeg]
---                                 _                 -> []
 
 extractMainProgUnit' :: ProgUnit Anno -> [ProgUnit Anno]
 extractMainProgUnit' codeSeg = case codeSeg of
