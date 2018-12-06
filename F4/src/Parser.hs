@@ -42,13 +42,19 @@ getAst (ast, _, _) = ast
 getLines (_, lines, _) = lines
 getFileName (_, _, filename) = filename
 
+-- This function assumes all subroutines are in their own file
+-- with the file having the same name as the subroutine
+-- e.g the subroutine 'test' would be in 'test.f95'
 parseProgramData :: F4Opts -> IO ()
 parseProgramData opts = do
+    -- parse main and update maps in SubRecAnalysis
     main <- parseCurried $ mainSub opts
     let mainParseResult = main
     let (mainAstMapItem, mainFileMapItem) = getMapEntries mainParseResult
     let mainOnlySra = SRA (DMap.fromList [mainFileMapItem]) (DMap.fromList [mainAstMapItem]) DMap.empty
+    -- recursively search for other files to parse based on call statements found previously
     fullSra <- searchForSubCalls mainOnlySra 1
+    -- display current parsed data
     debug_displaySubRecAnalysis fullSra
     return ()
     where
@@ -57,17 +63,25 @@ parseProgramData opts = do
         fixF = fixedForm opts
         dir = sourceDir opts
         parseCurried = Parser.parseFile cppD cppX fixF dir
+        -- function calls itself recursively until no outstanding call statements left
         searchForSubCalls :: SubRecAnalysis -> Int -> IO (SubRecAnalysis)
         searchForSubCalls sra foundLastItr =
+            -- if no new call statements found in last pass we can
+            -- return there are no new files to find
             if foundLastItr == 0 then
                 return (sra)
             else do
+                -- based on ast data currently in SubRecAnalysis find
+                -- all call statments in currently discovered files
                 let sraWithSubCalls = populateSubCalls sra
+                -- then using this call data find other files containing used subroutines
                 otherSubsParseResults <- findOtherRequiredSubs parseCurried sraWithSubCalls
+                -- update the SubRecAnalysis structure based of newly found files
                 let (otherAstMapItems, otherFileMapItems) = unzip $ map getMapEntries otherSubsParseResults
                 let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
                                             (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
                                             DMap.empty
+                -- recursively call - length otherAstMapItems = 0 when no new files are found
                 searchForSubCalls sra' (length otherAstMapItems)
                 where
                     previousAstMapItems = DMap.toList $ subroutineNameToAstMap sra
