@@ -23,19 +23,33 @@ import           System.IO.Unsafe
 --     otherSubs  :: [SubRec]
 -- }
 
+type SrcName = String
+data SubRec = MkSubRec {
+       subAst          :: ProgUnit Anno,
+       subSrcFile      :: String,
+       subSrcLines     :: [String],
+       subsCalled      :: [SubRec],
+       subName         :: String,
+       argTranslations :: ArgumentTranslationMap,
+       parallelise     :: Bool
+}
+
+-- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
+type ArgumentTranslationMap = DMap.Map (VarName Anno) (VarName Anno)
+emptyArgumentTranslationMap = DMap.empty
+
 data InitialProgramData = InitialProgramData {
     mainParseResult       :: (Program Anno, [String], String),
     forOffloadParseResult :: [(Program Anno, [String], String)]
-    -- ,
-    -- otherSubsParseResult  :: [(Program Anno, [String], String)]
 }
 
 type ParseResult = (Program Anno, [String], String)
 
 data SubRecAnalysis = SRA {
-    subroutineToFileMap    :: DMap.Map String FilePath,
-    subroutineNameToAstMap :: DMap.Map String (ProgUnit Anno),
-    subroutineToCalls      :: DMap.Map String [(Fortran Anno)]
+    subroutineToFileMap     :: DMap.Map String FilePath,
+    subroutineNameToAstMap  :: DMap.Map String (ProgUnit Anno),
+    subroutineToCalls       :: DMap.Map String [(Fortran Anno)],
+    subroutineToArgTransMap :: DMap.Map String ArgumentTranslationMap
 }
 
 getAst (ast, _, _) = ast
@@ -56,6 +70,9 @@ parseProgramData opts = do
     fullSra <- searchForSubCalls mainOnlySra 1
     -- display current parsed data
     debug_displaySubRecAnalysis fullSra
+
+    comput
+
     return ()
     where
         cppD = cppDefines opts
@@ -80,7 +97,7 @@ parseProgramData opts = do
                 let (otherAstMapItems, otherFileMapItems) = unzip $ map getMapEntries otherSubsParseResults
                 let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
                                             (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
-                                            DMap.empty
+                                            DMap.empty DMap.empty
                 -- recursively call - length otherAstMapItems = 0 when no new files are found
                 searchForSubCalls sra' (length otherAstMapItems)
                 where
@@ -96,6 +113,8 @@ findOtherRequiredSubs parse sra = do
         previouslyFound = (map (\(subname, _) -> subname) $ DMap.toList (subroutineNameToAstMap sra))
         allUsedSubNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
             $ DMap.toList (subroutineToCalls sra)
+
+computeSubRoutineArgTranslations :: SubRecAnalysis -> SubRecAnalysis
 
 debug_displaySubRecAnalysis :: SubRecAnalysis -> IO ()
 debug_displaySubRecAnalysis sra = do
