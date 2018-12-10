@@ -10,6 +10,7 @@ import           Data.Generics        (everything, everywhere, everywhereM,
                                        gmapQ, gmapT, mkM, mkQ, mkT)
 import           Data.List
 import qualified Data.Map             as DMap
+-- import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
@@ -30,14 +31,18 @@ data SubRec = MkSubRec {
        subSrcLines     :: [String],
        subsCalled      :: [SubRec],
        subName         :: String,
-       argTranslations :: ArgumentTranslationMap,
+       argTranslations :: ArgumentTranslationTable,
        parallelise     :: Bool
 }
 
 -- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
-type ArgumentTranslationMap = DMap.Map (VarName Anno) (VarName Anno)
-emptyArgumentTranslationMap = DMap.empty
+type ArgumentTranslationTable = DMap.Map String [ArgumentTranslation]
 
+
+data ArgumentTranslation = ArgTrans {
+    argument  :: VarName Anno,
+    parameter :: VarName Anno
+}
 data InitialProgramData = InitialProgramData {
     mainParseResult       :: (Program Anno, [String], String),
     forOffloadParseResult :: [(Program Anno, [String], String)]
@@ -49,8 +54,17 @@ data SubRecAnalysis = SRA {
     subroutineToFileMap     :: DMap.Map String FilePath,
     subroutineNameToAstMap  :: DMap.Map String (ProgUnit Anno),
     subroutineToCalls       :: DMap.Map String [(Fortran Anno)],
-    subroutineToArgTransMap :: DMap.Map String ArgumentTranslationMap
+    subroutineToArgTransMap :: DMap.Map String (DMap.Map String [ArgumentTranslation])
 }
+
+-- updateArgTransTableForSubroutine :: (ArgumentTranslation -> ArgumentTranslationTable -> ArgumentTranslationTable)
+--                                  -> ArgumentTranslationTable
+--                                  -> [ArgumentTranslation]
+--                                  -> ArgumentTranslationTable
+-- updateArgTransTableForSubroutine =
+
+updateMap :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
+updateMap (key, val) map = DMap.insert key val map
 
 getAst (ast, _, _) = ast
 getLines (_, lines, _) = lines
@@ -65,13 +79,13 @@ parseProgramData opts = do
     main <- parseCurried $ mainSub opts
     let mainParseResult = main
     let (mainAstMapItem, mainFileMapItem) = getMapEntries mainParseResult
-    let mainOnlySra = SRA (DMap.fromList [mainFileMapItem]) (DMap.fromList [mainAstMapItem]) DMap.empty
+    let mainOnlySra = SRA (DMap.fromList [mainFileMapItem]) (DMap.fromList [mainAstMapItem]) DMap.empty DMap.empty
     -- recursively search for other files to parse based on call statements found previously
     fullSra <- searchForSubCalls mainOnlySra 1
     -- display current parsed data
     debug_displaySubRecAnalysis fullSra
 
-    comput
+    -- computeSubRoutineArgTranslations fullSra
 
     return ()
     where
@@ -114,7 +128,13 @@ findOtherRequiredSubs parse sra = do
         allUsedSubNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
             $ DMap.toList (subroutineToCalls sra)
 
-computeSubRoutineArgTranslations :: SubRecAnalysis -> SubRecAnalysis
+-- computeSubRoutineArgTranslations :: SubRecAnalysis -> SubRecAnalysis
+-- computeSubRoutineArgTranslations sra =
+
+extractSubArgs :: ProgUnit Anno -> Arg Anno
+extractSubArgs prog = case prog of
+    Main _ _ _ arg _ _ -> arg
+    Sub _ _ _ _ arg _  -> arg
 
 debug_displaySubRecAnalysis :: SubRecAnalysis -> IO ()
 debug_displaySubRecAnalysis sra = do
