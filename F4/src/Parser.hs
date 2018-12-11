@@ -15,6 +15,7 @@ import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
 import           SanityChecks
+import qualified SubroutineTable      as ST
 import           System.FilePath      (FilePath, (</>))
 import           System.IO.Unsafe
 
@@ -29,14 +30,14 @@ data SubRec = MkSubRec {
        subAst          :: ProgUnit Anno,
        subSrcFile      :: String,
        subSrcLines     :: [String],
-       subsCalled      :: [SubRec],
+       subsCalled      :: DMap.Map ST.SubNameStr SubRec,
        subName         :: String,
        argTranslations :: ArgumentTranslationTable,
        parallelise     :: Bool
 }
 
 -- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
-type ArgumentTranslationTable = DMap.Map String [ArgumentTranslation]
+type ArgumentTranslationTable = DMap.Map ST.SubNameStr [ArgumentTranslation]
 
 
 data ArgumentTranslation = ArgTrans {
@@ -53,8 +54,9 @@ type ParseResult = (Program Anno, [String], String)
 
 data SubRecAnalysis = SRA {
     subroutineToFile     :: DMap.Map String FilePath,
-    subroutineToAst  :: DMap.Map String (ProgUnit Anno),
-    subroutineToCalls       :: DMap.Map String (DMap.Map String (Fortran Anno)),
+    subroutineToLines    :: DMap.Map String [String],
+    subroutineToAst      :: DMap.Map String (ProgUnit Anno),
+    subroutineToCalls    :: DMap.Map String (DMap.Map String (Fortran Anno)),
     subroutineToArgTrans :: DMap.Map String (DMap.Map String [ArgumentTranslation])
 }
 
@@ -64,9 +66,6 @@ data SubRecAnalysis = SRA {
 --                                  -> ArgumentTranslationTable
 -- updateArgTransTableForSubroutine =
 
-mapInsertFold :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
-mapInsertFold (key, val) map = DMap.insert key val map
-
 getAst (ast, _, _) = ast
 getLines (_, lines, _) = lines
 getFileName (_, _, filename) = filename
@@ -74,20 +73,27 @@ getFileName (_, _, filename) = filename
 -- This function assumes all subroutines are in their own file
 -- with the file having the same name as the subroutine
 -- e.g the subroutine 'test' would be in 'test.f95'
-parseProgramData :: F4Opts -> IO ()
+parseProgramData :: F4Opts -> IO ()--(ST.SubroutineTable)
 parseProgramData opts = do
     -- parse main and update maps in SubRecAnalysis
     main <- parseCurried $ mainSub opts
     let mainParseResult = main
-    let (mainAstMapItem, mainFileMapItem) = getMapEntries mainParseResult
-    let mainOnlySra = SRA (DMap.fromList [mainFileMapItem]) (DMap.fromList [mainAstMapItem]) DMap.empty DMap.empty
+    let (mainAstMapItem, mainFileMapItem, mainLinesMapItem) = getMapEntries mainParseResult
+    let mainOnlySra = SRA (DMap.fromList [mainFileMapItem])
+            (DMap.fromList [mainLinesMapItem])
+            (DMap.fromList [mainAstMapItem])
+            DMap.empty DMap.empty
     -- recursively search for other files to parse based on call statements found previously
     sraWithSubCalls <- searchForSubCalls mainOnlySra 1
 
+    -- calculate argument translations for called subroutines
     let sraWithArgTrans = populateArgTrans sraWithSubCalls
 
-    -- display current parsed data
+    -- display currently parsed data
     debug_displaySubRecAnalysis sraWithArgTrans
+
+    return ()
+    -- return (createSubRoutineTable sraWithArgTrans)
 
     -- putStrLn $ show $ (getArgNames . getSubParams) ((subroutineToAst fullSra) DMap.! "dyn")
     -- putStrLn $ show $ (getArgNames . getSubParams) ((subroutineToAst fullSra) DMap.! "shapiro")
@@ -95,9 +101,6 @@ parseProgramData opts = do
 
     -- putStrLn $ show $ ((subroutineToCalls fullSra) DMap.! "wave2d")
 
-    -- computeSubRoutineArgTranslations fullSra
-
-    return ()
     where
         cppD = cppDefines opts
         cppX = cppExcludes opts
@@ -118,8 +121,10 @@ parseProgramData opts = do
                 -- then using this call data find other files containing used subroutines
                 otherSubsParseResults <- findOtherRequiredSubs parseCurried sraWithSubCalls
                 -- update the SubRecAnalysis structure based of newly found files
-                let (otherAstMapItems, otherFileMapItems) = unzip $ map getMapEntries otherSubsParseResults
+                let (otherAstMapItems, otherFileMapItems, otherLineMapItems)
+                        = unzip3 $ map getMapEntries otherSubsParseResults
                 let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
+                                                (DMap.fromList (previousLineMapItems ++ otherLineMapItems))
                                                 (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
                                                 DMap.empty DMap.empty
                 -- recursively call - length otherAstMapItems = 0 when no new files are found
@@ -127,6 +132,7 @@ parseProgramData opts = do
             where
                 previousAstMapItems = DMap.toList $ subroutineToAst sra
                 previousFileMapItems = DMap.toList $ subroutineToFile sra
+                previousLineMapItems = DMap.toList $ subroutineToLines sra
 
 findOtherRequiredSubs ::  (String -> IO (ParseResult)) -> SubRecAnalysis -> IO ([ParseResult])
 findOtherRequiredSubs parse sra = do
@@ -223,8 +229,8 @@ parseFile cppDArgs cppXArgs fixedForm dir filename = do
     where
         path = dir </> filename
 
-getMapEntries :: ParseResult -> ((String, ProgUnit Anno), (String, String))
-getMapEntries (ast, lines, filename) = ((subname, subAst), (subname, filename))
+getMapEntries :: ParseResult -> ((String, ProgUnit Anno), (String, String), (String, [String]))
+getMapEntries (ast, lines, filename) = ((subname, subAst), (subname, filename), (subname, lines))
     where
         subAst = getFileAst ast
         subname = getSubName subAst
