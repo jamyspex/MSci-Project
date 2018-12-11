@@ -165,12 +165,21 @@ buildArgTransMapValue argNames varNames = map (\(arg, var) -> ArgTrans arg var) 
 
 
 getVarNamesFromCall :: Fortran Anno -> [VarName Anno]
-getVarNamesFromCall (Call _ _ _ arglist) = everything (++) (mkQ [] extractVarNamesFromCall) arglist
+getVarNamesFromCall (Call _ _ _ arglist) = extractVarNamesFromCall arglist
 
 extractVarNamesFromCall :: ArgList Anno -> [VarName Anno]
-extractVarNamesFromCall (ArgList _ expr) = case expr of
-                                            Var _ _ [(v@(VarName _ name), _)] -> [v]
-                                            _ -> error "Expr in ArgList more complicated than just VarName"
+extractVarNamesFromCall (ArgList _ expr) = everything (++) (mkQ [] extractVarNamesFromCall') expr
+
+
+extractVarNamesFromCall' :: Expr Anno -> [VarName Anno]
+extractVarNamesFromCall' expr = case expr of
+                            Var _ _ varnameList -> map (\(varname, _) -> varname) varnameList
+                            _ -> []
+
+-- temp :: Expr Anno -> [VarName Anno]
+-- temp expr = case expr of
+--             VarName _
+--                                             --error "Expr in ArgList more complicated than just VarName"
 
 getArgNames :: Arg Anno -> [ArgName Anno]
 getArgNames (Arg _ argnames _) = everything (++) (mkQ [] extractArgNames) argnames
@@ -197,7 +206,7 @@ debug_displaySubRecAnalysis sra = do
     mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++
         (concatMap (\(subname, call) -> "\t" ++ subname ++ "->" ++ miniPPF call ++ "\n" ++ show call ++ "\n\n") $ DMap.toList val))) subCallsList
     mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++
-        (concatMap (\(subname, argTransList) -> "\t" ++ subname ++ "->" ++
+        (concatMap (\(subname, argTransList) -> "\t" ++ subname ++ "->\n" ++
             (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList val))) subArgTransList
     where
         subAstsList = DMap.toList $ subroutineToAst sra
@@ -233,7 +242,7 @@ populateSubCalls sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMa
 
 getCalledSubName :: Fortran Anno -> String
 getCalledSubName call@(Call _ _ (expr) _) = case expr of
-                                Var _ _ [((VarName _ name), _)] -> name
+                                Var _ _ (((VarName _ name), _):rest) -> name
                                 _ -> error "sub call expr more complicated than you thought"
 
 extractProgUnitName :: ProgUnit Anno -> String
