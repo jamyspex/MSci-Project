@@ -151,6 +151,9 @@ findOtherRequiredSubs parse sra = do
 -- getCallStatements sub =
 
 -- findCallFromMethod
+constructSubroutineTable :: SubRecAnalysis -> [SubRec]
+constructSubroutineTable sra = 
+    
 
 populateArgTrans :: SubRecAnalysis -> SubRecAnalysis
 populateArgTrans sra = sra { subroutineToArgTrans = DMap.fromList forConversionToArgTransMap }
