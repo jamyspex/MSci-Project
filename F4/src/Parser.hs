@@ -40,7 +40,7 @@ type ArgumentTranslationTable = DMap.Map String [ArgumentTranslation]
 
 
 data ArgumentTranslation = ArgTrans {
-    argument  :: VarName Anno,
+    argument  :: ArgName Anno,
     parameter :: VarName Anno
 }
 data InitialProgramData = InitialProgramData {
@@ -53,7 +53,7 @@ type ParseResult = (Program Anno, [String], String)
 data SubRecAnalysis = SRA {
     subroutineToFileMap     :: DMap.Map String FilePath,
     subroutineNameToAstMap  :: DMap.Map String (ProgUnit Anno),
-    subroutineToCalls       :: DMap.Map String [(Fortran Anno)],
+    subroutineToCalls       :: DMap.Map String (DMap.Map String (Fortran Anno)),
     subroutineToArgTransMap :: DMap.Map String (DMap.Map String [ArgumentTranslation])
 }
 
@@ -63,8 +63,8 @@ data SubRecAnalysis = SRA {
 --                                  -> ArgumentTranslationTable
 -- updateArgTransTableForSubroutine =
 
-updateMap :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
-updateMap (key, val) map = DMap.insert key val map
+mapInsertFold :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
+mapInsertFold (key, val) map = DMap.insert key val map
 
 getAst (ast, _, _) = ast
 getLines (_, lines, _) = lines
@@ -84,6 +84,12 @@ parseProgramData opts = do
     fullSra <- searchForSubCalls mainOnlySra 1
     -- display current parsed data
     debug_displaySubRecAnalysis fullSra
+
+    putStrLn $ show $ (getArgNames . getSubParams) ((subroutineNameToAstMap fullSra) DMap.! "dyn")
+    putStrLn $ show $ (getArgNames . getSubParams) ((subroutineNameToAstMap fullSra) DMap.! "shapiro")
+    putStrLn $ show $ (getArgNames . getSubParams) ((subroutineNameToAstMap fullSra) DMap.! "vernieuw")
+
+    -- putStrLn $ show $ ((subroutineToCalls fullSra) DMap.! "wave2d")
 
     -- computeSubRoutineArgTranslations fullSra
 
@@ -110,37 +116,56 @@ parseProgramData opts = do
                 -- update the SubRecAnalysis structure based of newly found files
                 let (otherAstMapItems, otherFileMapItems) = unzip $ map getMapEntries otherSubsParseResults
                 let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
-                                            (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
-                                            DMap.empty DMap.empty
+                                                (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
+                                                DMap.empty DMap.empty
                 -- recursively call - length otherAstMapItems = 0 when no new files are found
                 searchForSubCalls sra' (length otherAstMapItems)
-                where
-                    previousAstMapItems = DMap.toList $ subroutineNameToAstMap sra
-                    previousFileMapItems = DMap.toList $ subroutineToFileMap sra
+            where
+                previousAstMapItems = DMap.toList $ subroutineNameToAstMap sra
+                previousFileMapItems = DMap.toList $ subroutineToFileMap sra
 
 findOtherRequiredSubs ::  (String -> IO (ParseResult)) -> SubRecAnalysis -> IO ([ParseResult])
 findOtherRequiredSubs parse sra = do
-    otherSubs <- mapM parse $ map (\subname -> subname ++ ".f95") otherUsedSubs
-    return (otherSubs)
+        otherSubs <- mapM parse $ map (\subname -> subname ++ ".f95") otherUsedSubs
+        return (otherSubs)
     where
         otherUsedSubs = filter (not . (flip elem) previouslyFound) allUsedSubNames
         previouslyFound = (map (\(subname, _) -> subname) $ DMap.toList (subroutineNameToAstMap sra))
         allUsedSubNames = concatMap (\(_, calls) -> concatMap extractCallSubName calls)
             $ DMap.toList (subroutineToCalls sra)
 
--- computeSubRoutineArgTranslations :: SubRecAnalysis -> SubRecAnalysis
+                                    -- computeSubRoutineArgTranslations :: SubRecAnalysis -> SubRecAnalysis
+
+
+-- getCallStatements :: ProgUnit Anno -> Fortran Anno
+-- getCallStatements sub =
+
+-- findCallFromMethod
+
+getArgNames :: Arg Anno -> [ArgName Anno]
+getArgNames (Arg _ argnames _)= everything (++) (mkQ [] extractArgNames) argnames
+
+extractArgNames :: ArgName Anno -> [ArgName Anno]
+extractArgNames argname = case argname of
+                        a@(ArgName _ _) -> [a]
+                        _               -> []
+
+getSubParams :: ProgUnit Anno -> Arg Anno
+getSubParams sub = head $ everything (++) (mkQ [] extractSubArgs) sub
 -- computeSubRoutineArgTranslations sra =
 
-extractSubArgs :: ProgUnit Anno -> Arg Anno
+extractSubArgs :: ProgUnit Anno -> [Arg Anno]
 extractSubArgs prog = case prog of
-    Main _ _ _ arg _ _ -> arg
-    Sub _ _ _ _ arg _  -> arg
+                            Main _ _ _  arg _  _ -> [arg]
+                            Sub  _ _ _ _ arg _   -> [arg]
+                            _                    -> []
 
 debug_displaySubRecAnalysis :: SubRecAnalysis -> IO ()
 debug_displaySubRecAnalysis sra = do
     mapM_ (\(key, val) -> putStrLn (key ++ " --> " ++ val)) subFilesList
     mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++ miniPPProgUnit val)) subAstsList
-    mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++ (concatMap (\call -> "\t" ++ miniPPF call ++ "\n") val))) subCallsList
+    mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++
+        (concatMap (\(subname, call) -> "\t" ++ subname ++ "->" ++ miniPPF call ++ "\n") $ DMap.toList val))) subCallsList
     where
         subAstsList = DMap.toList $ subroutineNameToAstMap sra
         subCallsList = DMap.toList $ subroutineToCalls sra
@@ -165,10 +190,17 @@ getFileAst = head . extractMainProgUnit
 getSubName = extractProgUnitName
 
 populateSubCalls :: SubRecAnalysis -> SubRecAnalysis
-populateSubCalls sra = sra { subroutineToCalls = DMap.fromList callsInFiles}
+populateSubCalls sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMap}
     where
         fileAstsList = DMap.toList $ subroutineNameToAstMap sra
         callsInFiles = map (\(subname, ast) -> (subname, extractAllCalls ast)) fileAstsList
+        subnamesToCallsMap = map (\(subname, calls) ->
+            (subname, DMap.fromList $ map (\call -> (getCalledSubName call, call)) calls)) callsInFiles
+
+getCalledSubName :: Fortran Anno -> String
+getCalledSubName call@(Call _ _ (expr) _) = case expr of
+                                Var _ _ [((VarName _ name), _)] -> name
+                                _ -> error "sub call expr more complicated than I thought"
 
 extractProgUnitName :: ProgUnit Anno -> String
 extractProgUnitName ast     |    subNames == [] = error ((show ast) ++ "\n\nextractProgUnitName: no subNames")
