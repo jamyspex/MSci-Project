@@ -5,27 +5,29 @@ where
 --    This module holds functions that perform the top level of analysis. They look to see whether each of the loops in the source
 --    can be parallelised or not. Calls to 'VarAccessAnalysis' and 'VarDependencyAnalysis' are made from here and the information
 --    produce by those other modules is used to deteremine whether the conditions for parallelism are met. This module also handles
---    producing parallelism errors that are later attached to AST nodes. 
-import Warning 
-import MiniPP (miniPP)
+--    producing parallelism errors that are later attached to AST nodes.
+import           MiniPP                (miniPP)
+import           Warning
 
-import Data.Generics                 (Data, Typeable, mkQ, mkT, gmapQ, gmapT, everything, everywhere)
-import Language.Fortran
+import           Data.Generics         (Data, Typeable, everything, everywhere,
+                                        gmapQ, gmapT, mkQ, mkT)
+import           Language.Fortran
 --import Language.Fortran.Pretty
 
-import Data.Char
-import Data.List
-import qualified Data.Map as DMap 
+import           Data.Char
+import           Data.List
+import qualified Data.Map              as DMap
 
-import F95IntrinsicFunctions (f95IntrinsicFunctions)
-import VarAccessAnalysis            (VarAccessAnalysis, isFunctionCall)
-import VarDependencyAnalysis        (VarDependencyAnalysis, isIndirectlyDependentOn)
-import LanguageFortranTools
-import SubroutineTable                 (SubroutineTable, generateArgumentTranslation, subroutineTable_ast)
+import           F95IntrinsicFunctions (f95IntrinsicFunctions)
+import           LanguageFortranTools
+import           Parser                (SubRec (..), SubroutineTable)
+import           VarAccessAnalysis     (VarAccessAnalysis, isFunctionCall)
+import           VarDependencyAnalysis (VarDependencyAnalysis,
+                                        isIndirectlyDependentOn)
 
 --    Type used to standardise loop analysis functions
---    Functions below are used to manupulate and access the AnalysisInfo. 
---                        errors         reduction variables read variables        written variables    
+--    Functions below are used to manupulate and access the AnalysisInfo.
+--                        errors         reduction variables read variables        written variables
 type AnalysisInfo =     (Anno,         [Expr Anno],         [Expr Anno],         [Expr Anno])
 
 analysisInfoBaseCase :: AnalysisInfo
@@ -36,7 +38,7 @@ combineAnalysisInfo accum item = (combineMaps accumErrors itemErrors, accumReduc
                                 where
                                     (accumErrors, accumReductionVars, accumReads, accumWrites) = accum
                                     (itemErrors, itemReductionVars, itemReads, itemWrites)     = item
-                                    
+
 getErrorAnnotations :: AnalysisInfo -> Anno
 getErrorAnnotations (errors, _, _, _) = errors
 
@@ -49,7 +51,7 @@ getReads (_, _, reads, _) = reads
 getWrites :: AnalysisInfo -> [Expr Anno]
 getWrites (_, _, _, writes) = writes
 
-             
+
 
 --    Function takes a list of loop variables and a possible parallel loop's AST and returns a string that details the reasons why the loop
 --    cannot be mapped. If the returned string is empty, the loop represents a possible parallel map
@@ -59,7 +61,7 @@ analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAna
         If _ _ condExpr ifTrue elifList maybeElse -> foldl combineAnalysisInfo analysisInfoBaseCase ([condExprAnalysis, ifTrueAnalysis] ++ elifCondAnalysis ++ elifBodyAnalysis ++ [elseAnalysis]  )
             where
                 recursiveCall = analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAnalysis dependencies subTable
-                -- readWriteAnalysis = gmapQ (mkQ analysisInfoBaseCase recursiveCall) codeSeg -- so this should call recursiveCall on all nodes of codeSeg, why? 
+                -- readWriteAnalysis = gmapQ (mkQ analysisInfoBaseCase recursiveCall) codeSeg -- so this should call recursiveCall on all nodes of codeSeg, why?
                 condExprAnalysis = (nullAnno, [], extractOperands condExpr, []) -- AnalysisInfo tuple from the 'if' condition
                 ifTrueAnalysis = recursiveCall ifTrue
                 elifBodyAnalysis = map (\(_, elif_fortran) ->  recursiveCall elif_fortran) elifList -- list of AnalysisInfo tuples from the body of each 'else if' branch
@@ -81,14 +83,14 @@ analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAna
                 -- WV: not sure if this should not be the same as for the Reduction
                 readExprs = foldl (\accum item -> accum ++ (extractContainedVars item) ++ [item]) [] readOperands
                 prexistingReadExprs = filter (usesVarName_list prexistingVars ) readExprs
---                prexistingReadExprs = filter (usesVarName_list  (warning prexistingVars ("MAP: PRE-EXISTING VARS: "++(show (map (\(VarName _ v)->v) prexistingVars) )++"\nRHS FULL: "++(miniPP rhsExpr)++"\n"++ ("READ EXPRS: "++(show (map miniPP readExprs))++"\n")  ) )) readExprs 
+--                prexistingReadExprs = filter (usesVarName_list  (warning prexistingVars ("MAP: PRE-EXISTING VARS: "++(show (map (\(VarName _ v)->v) prexistingVars) )++"\nRHS FULL: "++(miniPP rhsExpr)++"\n"++ ("READ EXPRS: "++(show (map miniPP readExprs))++"\n")  ) )) readExprs
                 -- prexistingReadExprs = filter (usesVarName_list  (warning prexistingVars ("PRE: "++(show (map (\(VarName _ v)->v) prexistingVars) )++"\nRHS: "++(miniPP rhsExpr)++"\n") ))  (warning readExprs ("READ OPS: "++(show (map miniPP readExprs))++"\n") )
-                --prexistingReadExprs = filter (usesVarName_list  prexistingVars) readExprs 
+                --prexistingReadExprs = filter (usesVarName_list  prexistingVars) readExprs
                 --
-        For _ _ var e1 e2 e3 _ -> foldl combineAnalysisInfo analysisInfo childrenAnalysis  -- foldl combineAnalysisInfo analysisInfoBaseCase childrenAnalysis 
+        For _ _ var e1 e2 e3 _ -> foldl combineAnalysisInfo analysisInfo childrenAnalysis  -- foldl combineAnalysisInfo analysisInfoBaseCase childrenAnalysis
             where
                 childrenAnalysis = (gmapQ (mkQ analysisInfoBaseCase (analyseLoop_map comment (loopVars ++ [var]) loopWrites nonTempVars prexistingVars accessAnalysis dependencies subTable)) codeSeg)
-                
+
                 e1Vars = extractAllVarNames e1
                 e2Vars = extractAllVarNames e2
                 e3Vars = extractAllVarNames e3
@@ -104,11 +106,11 @@ analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAna
                 recursiveCall = analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAnalysis dependencies subTable
 
                 subroutineName = if extractVarNames callExpr == [] then (error "analyseLoop_map: callExpr" ++ (show callExpr))  else varNameStr (head (extractVarNames callExpr))
-                argTranslation = generateArgumentTranslation subTable codeSeg
+                -- argTranslation = generateArgumentTranslation subTable codeSeg
                 (subroutineParsed, subTableEntry) = case DMap.lookup subroutineName subTable of
                                         Just a -> (True, a)
                                         Nothing -> (False, error "analyseLoop_map: DMap.lookup subroutineName subTable")
-                subroutineBody = subroutineTable_ast subTableEntry
+                subroutineBody = subAst subTableEntry
                 subCallAnalysis = recursiveCall (extractFirstFortran subroutineBody)
 
                 callAnalysis =     if not subroutineParsed then
@@ -135,7 +137,7 @@ analyseLoop_map comment loopVars loopWrites nonTempVars prexistingVars accessAna
 
 --    Function takes a list of loop variables and a possible parallel loop's AST and returns a string that details the reasons why the loop
 --    doesn't represent a reduction. If the returned string is empty, the loop represents a possible parallel reduction
---    WV:  condExprs is used for the case of an assignment where the LHS is referenced in a condition of an if that encloses the assignment. It is part of the analysis to check if a variable depends on itself, not sure how it works. 
+--    WV:  condExprs is used for the case of an assignment where the LHS is referenced in a condition of an if that encloses the assignment. It is part of the analysis to check if a variable depends on itself, not sure how it works.
 analyseLoop_reduce :: String -> [Expr Anno] -> [VarName Anno] -> [VarName Anno] -> [VarName Anno] -> [VarName Anno] -> VarDependencyAnalysis -> VarAccessAnalysis -> Fortran Anno -> AnalysisInfo
 analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingVars dependencies accessAnalysis codeSeg = case codeSeg of
 --        If _ _ condExpr ifTrue elifList maybeElse -> foldl combineAnalysisInfo analysisInfoBaseCase ([condExprAnalysis] ++ (warning readWriteAnalysis (show readWriteAnalysis)) ++(warning [ifTrueAnalysis] (show ifTrueAnalysis)) ++ elifCondAnalysis ++ elifBodyAnalysis ++ [elseAnalysis]  )
@@ -167,9 +169,9 @@ analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingV
                                             (errorMap3,
                                             if potentialReductionVar then [lhsExpr] else [],
                                             -- (warning prexistingReadExprs ("PRE-EXISTING READ EXPRS: "++(unwords (map miniPP prexistingReadExprs)))),
-                                            prexistingReadExprs, 
+                                            prexistingReadExprs,
                                             if isNonTempAssignment then [lhsExpr] else []
-                                            )                                            
+                                            )
                                             (if not potentialReductionVar then
                                                 lhsExprAnalysis
                                                 else analysisInfoBaseCase)
@@ -179,26 +181,26 @@ analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingV
                 -- WV so for some reason here only the array index expressions are extracted. I would think we need both.
                 -- WV so I concatenate readOperands with the array indices.
                 -- WV: TODO: if the read operand is an intrinsic function it should not be included I guess
---                readExprsRec = foldl (\accum item -> accum ++ (extractContainedVarsRec item)) []  readOperands 
+--                readExprsRec = foldl (\accum item -> accum ++ (extractContainedVarsRec item)) []  readOperands
                 readExprs = readOperands ++ (foldl (\accum item -> accum ++ (extractContainedVars item)) [] readOperands)
 --                readExprs = readOperands ++ (foldl (\accum item -> accum ++ (extractContainedVars item)) [] (warning readOperands $ "READ OPS:"++(show $ map miniPP readOperands) ) )
 
                 topLevelReadExprs = foldl (\accum item -> if isFunctionCall f95IntrinsicFunctions accessAnalysis item then accum ++ (extractContainedVars item) else accum ++ [item]) [] readOperands
-                -- WV: what does prexistingVars actually mean? 
+                -- WV: what does prexistingVars actually mean?
                 prexistingReadExprs = filter (usesVarName_list prexistingVars) readExprs
---                prexistingReadExprs = filter (usesVarName_list  (warning prexistingVars ("REDUCTION: PRE-EXISTING: "++(show (map (\(VarName _ v)->v) prexistingVars) )++"\nRHS FULL: "++(miniPP rhsExpr)++"\n"++ ("READ EXPRS: "++(show (map miniPP readExprs))++"\n")  ) )) readExprs 
+--                prexistingReadExprs = filter (usesVarName_list  (warning prexistingVars ("REDUCTION: PRE-EXISTING: "++(show (map (\(VarName _ v)->v) prexistingVars) )++"\nRHS FULL: "++(miniPP rhsExpr)++"\n"++ ("READ EXPRS: "++(show (map miniPP readExprs))++"\n")  ) )) readExprs
 
                 dependsOnSelfOnce = length (filter (\item -> applyGeneratedSrcSpans item == applyGeneratedSrcSpans lhsExpr) topLevelReadExprs) == 1
 
                 isNonTempAssignment = usesVarName_list nonTempVars lhsExpr
-                
+
                 referencedInOuterConditionalStatement = (foldl (||) False $ map (\x -> hasOperand x lhsExpr) condExprs)
                 referencedSelf = (hasOperand rhsExpr lhsExpr)
                 associative = isAssociativeExpr lhsExpr rhsExpr
 
-                dependsOnSelf = referencedSelf || referencedInOuterConditionalStatement || dependsOnSelfOnce 
+                dependsOnSelf = referencedSelf || referencedInOuterConditionalStatement || dependsOnSelfOnce
                                     || (foldl (||) False $ map (\x -> isIndirectlyDependentOn dependencies (head $ (extractVarNames x)++[VarName nullAnno "DUMMY8"]) x) writtenExprs)
-                
+
                 lhsExprAnalysis = (analyseLoopIteratorUsage comment loopVars loopWrites nonTempVars accessAnalysis lhsExpr)
                 rhsExprAnalysis = (analyseLoopIteratorUsage comment loopVars loopWrites nonTempVars accessAnalysis rhsExpr)
                 doesNotUseFullLoopVar = (\(errorMap, _, _, _) -> errorMap /= nullAnno) lhsExprAnalysis
@@ -226,10 +228,10 @@ analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingV
                                                 "dependsOnSelfOnce: " ++ show dependsOnSelfOnce ++ "\n" ++
                                                 "doesNotUseFullLoopVar: " ++ show doesNotUseFullLoopVar ++ "\n" ++
                                                 "nonTempVars: " ++ show nonTempVars ++ "\n\n"
-                                                ] 
+                                                ]
                                                 errorMap3
 
-        Call _ srcspan expr arglist -> (errorMap_call, [], [], argExprs) 
+        Call _ srcspan expr arglist -> (errorMap_call, [], [], argExprs)
             where
             -- WV: TODO: a function call should not mean that the reduction can't be parallelised!
                 errorMap_call = DMap.insert (outputTab ++ comment ++ "Call to external function:\n")
@@ -240,9 +242,9 @@ analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingV
             where
                 recursiveCall = analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingVars dependencies accessAnalysis
                 codeSeg1Analysis = recursiveCall codeSeg1
-                codeSeg2Analysis = recursiveCall codeSeg2                
+                codeSeg2Analysis = recursiveCall codeSeg2
 -- If it is not an If, For, Assg or Call, or (WV) FSeq
-        _ -> foldl combineAnalysisInfo analysisInfoBaseCase (gmapQ (mkQ analysisInfoBaseCase (analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingVars dependencies accessAnalysis)) codeSeg)    
+        _ -> foldl combineAnalysisInfo analysisInfoBaseCase (gmapQ (mkQ analysisInfoBaseCase (analyseLoop_reduce comment condExprs loopVars loopWrites nonTempVars prexistingVars dependencies accessAnalysis)) codeSeg)
 
 --    Applied to an expression, returns an AnalysisInfo loaded with an error if it does not use all of the loop iterators in some way. As in,
 --    in a nested loop over 'i' and 'j', expression 'x(i) + 12' doesn't use the iterator 'j' and so the AnalysisInfo will report that. If
@@ -267,9 +269,9 @@ analyseLoopIteratorUsage_foldl nonTempWrittenOperands comment accumAnno loopVar 
             offendingExprsStrs = map (\item -> errorLocationFormatting (srcSpan item) ++ outputTab ++ outputExprFormatting item) offendingExprs
 
             loopVarStr = varNameStr loopVar
-            resultantMap = if (offendingExprs == []) 
+            resultantMap = if (offendingExprs == [])
                         then accumAnno
-                        else 
+                        else
                             DMap.insert (outputTab ++ comment ++ "Non temporary, write variables accessed without use of loop iterator \"" ++ loopVarStr ++ "\":\n") offendingExprsStrs accumAnno
             nonTempWrittenOperandsStrs = map (\item -> errorLocationFormatting (srcSpan item) ++ outputTab ++ outputExprFormatting item) nonTempWrittenOperands
 
@@ -277,8 +279,8 @@ analyseLoopIteratorUsage_foldl nonTempWrittenOperands comment accumAnno loopVar 
 isAssociativeExpr :: Expr Anno -> Expr Anno -> Bool
 isAssociativeExpr assignee assignment = case assignment of
                             (Bin _ _ op expr1 expr2) -> associativeOp
-                            _ -> associativeFunc
-                        where 
+                            _                        -> associativeFunc
+                        where
                             primaryOp = extractPrimaryReductionOp assignee assignment
                             primaryFunc = extractPrimaryReductionFunction assignee assignment
                             associativeOp = case primaryOp of
@@ -288,21 +290,21 @@ isAssociativeExpr assignee assignment = case assignment of
 
 isAssociativeOp :: BinOp Anno -> Bool
 isAssociativeOp (Plus p) = True
-isAssociativeOp (Mul p) = True
-isAssociativeOp (Or p) = True
-isAssociativeOp _ = False
+isAssociativeOp (Mul p)  = True
+isAssociativeOp (Or p)   = True
+isAssociativeOp _        = False
 
 --    Not yet used. In future the program may be able to detect whether or not a variable is given an appropriate start value for a reduction
 opIdentityValue :: BinOp Anno -> Expr Anno
 opIdentityValue (Plus p) = Con nullAnno nullSrcSpan "0"
-opIdentityValue (Mul p) = Con nullAnno nullSrcSpan "1"
-opIdentityValue (Or p) = Con nullAnno nullSrcSpan ".FALSE."
-opIdentityValue _ = Null nullAnno nullSrcSpan
+opIdentityValue (Mul p)  = Con nullAnno nullSrcSpan "1"
+opIdentityValue (Or p)   = Con nullAnno nullSrcSpan ".FALSE."
+opIdentityValue _        = Null nullAnno nullSrcSpan
 
 isAssociativeFunction :: String -> Bool
 isAssociativeFunction fnName = case (map (toLower) fnName) of
-                                "min" -> True
-                                "max" -> True
+                                "min"   -> True
+                                "max"   -> True
                                 "amax1" -> True
                                 "amin1" -> True
-                                _ -> False
+                                _       -> False

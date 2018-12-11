@@ -2,19 +2,19 @@ module CommandLineProcessor
 
 where
 
-import qualified Data.Attoparsec.Char8 as A
 import           Data.List.Split
-import           Data.Semigroup        ((<>))
+import           Data.Semigroup      ((<>))
 import           Options.Applicative
 
 data F4Opts = F4Opts {
-        subsForFPGA :: [String],
-        cppDefines  :: [String],
-        cppExcludes :: [String],
-        fixedForm   :: Bool,
-        mainSub     :: String,
-        ioSubs      :: [String],
-        sourceDir   ::  String
+        subsForFPGA     :: [String],
+        cppDefines      :: [String],
+        cppExcludes     :: [String],
+        fixedForm       :: Bool,
+        mainSub         :: String,
+        ioSubs          :: [String],
+        sourceDir       :: String,
+        loopFusionBound :: Maybe Float
     }
 
 instance Show F4Opts where
@@ -25,6 +25,7 @@ instance Show F4Opts where
         "File containing main subroutine: \n\t" ++ (mainSub opts) ++ "\n" ++
         "Source directory:\n\t" ++ (sourceDir opts) ++ "\n" ++
         "Fixed form: " ++ (show $ fixedForm opts) ++ "\n" ++
+        "Loop fusion bound: " ++ (show $ loopFusionBound opts) ++ "\n" ++
         "CPP Defines: " ++ (concatMap (\def -> def ++ ", ") (cppDefines opts)) ++ "\n" ++
         "CPP Excludes:\n" ++
         (concatMap (\file -> "\t" ++ file ++ "\n") (cppExcludes opts))
@@ -76,6 +77,14 @@ cppExcludesParser = many ( strOption
     <> metavar "<CPP EXCLUDES>"
     <> help "CPP excludes" ))
 
+loopFusionBoundParser :: Parser (Maybe Float)
+loopFusionBoundParser = option auto
+    ( long "loopFusionBound"
+    <> metavar "<LOOP FUSION BOUND>"
+    <> short 'l'
+    <> value Nothing
+    <> help "How different two loops iteration count can be and they still be fused" )
+
 ioSubsParser :: Parser [String]
 ioSubsParser = pure []
     -- many ( strOption
@@ -97,6 +106,7 @@ f4Opts = F4Opts
     <*> mainSubParser
     <*> ioSubsParser
     <*> sourceDirParser
+    <*> loopFusionBoundParser
 
 f4CmdParser :: ParserInfo F4Opts
 f4CmdParser = info (f4Opts <**> helper)

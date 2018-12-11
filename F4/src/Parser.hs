@@ -15,7 +15,7 @@ import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
 import           SanityChecks
-import qualified SubroutineTable      as ST
+-- import qualified SubroutineTable      as ST
 import           System.FilePath      (FilePath, (</>))
 import           System.IO.Unsafe
 
@@ -24,21 +24,22 @@ import           System.IO.Unsafe
 --     forOffload :: [SubRec],
 --     otherSubs  :: [SubRec]
 -- }
-
+type SubNameStr = String
 type SrcName = String
 data SubRec = MkSubRec {
        subAst          :: ProgUnit Anno,
        subSrcFile      :: String,
        subSrcLines     :: [String],
-       subsCalled      :: DMap.Map ST.SubNameStr SubRec,
        subName         :: String,
        argTranslations :: ArgumentTranslationTable,
        parallelise     :: Bool
 }
 
 -- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
-type ArgumentTranslationTable = DMap.Map ST.SubNameStr [ArgumentTranslation]
+type ArgumentTranslationTable = DMap.Map SubNameStr [ArgumentTranslation]
 
+
+type SubroutineTable = DMap.Map SubNameStr SubRec
 
 data ArgumentTranslation = ArgTrans {
     parameter :: ArgName Anno,
@@ -72,8 +73,8 @@ getFileName (_, _, filename) = filename
 
 -- This function assumes all subroutines are in their own file
 -- with the file having the same name as the subroutine
--- e.g the subroutine 'test' would be in 'test.f95'
-parseProgramData :: F4Opts -> IO ()--(ST.SubroutineTable)
+-- e.g the subroutine 'test' would be in 'tef95'
+parseProgramData :: F4Opts -> IO (SubroutineTable)
 parseProgramData opts = do
     -- parse main and update maps in SubRecAnalysis
     main <- parseCurried $ mainSub opts
@@ -89,10 +90,17 @@ parseProgramData opts = do
     -- calculate argument translations for called subroutines
     let sraWithArgTrans = populateArgTrans sraWithSubCalls
 
-    -- display currently parsed data
-    debug_displaySubRecAnalysis sraWithArgTrans
+    -- check all intermediatary maps have the same keys
+    printErrorOrContinue $ checkParseIntermediatariesHaveCorrectKeys sraWithArgTrans
 
-    return ()
+    -- display currently parsed data
+    -- debug_displaySubRecAnalysis sraWithArgTrans
+
+    let subTable = constructSubroutineTable opts sraWithArgTrans
+
+    -- debug_displaySubRoutineTable subTable
+
+    return (subTable)
     -- return (createSubRoutineTable sraWithArgTrans)
 
     -- putStrLn $ show $ (getArgNames . getSubParams) ((subroutineToAst fullSra) DMap.! "dyn")
@@ -151,13 +159,23 @@ findOtherRequiredSubs parse sra = do
 -- getCallStatements sub =
 
 -- findCallFromMethod
-constructSubroutineTable :: SubRecAnalysis -> [SubRec]
-constructSubroutineTable sra = 
-    
+constructSubroutineTable :: F4Opts -> SubRecAnalysis -> SubroutineTable
+constructSubroutineTable opts sra = DMap.fromList $ map (\subname -> (subname, constructOneSubRec subname opts sra)) subnames
+    where
+        subnames = map (\(key, _) -> key) $ DMap.toList (subroutineToFile sra)
+
+
+constructOneSubRec :: String -> F4Opts -> SubRecAnalysis -> SubRec
+constructOneSubRec subname opts sra = MkSubRec ast filename lines subname argTrans parallelise
+    where
+        ast = (subroutineToAst sra)  DMap.! subname
+        filename = (subroutineToFile sra)  DMap.! subname
+        lines = (subroutineToLines sra)  DMap.! subname
+        argTrans = (subroutineToArgTrans sra)  DMap.! subname
+        parallelise = elem subname $ subsForFPGA opts
 
 populateArgTrans :: SubRecAnalysis -> SubRecAnalysis
 populateArgTrans sra = sra { subroutineToArgTrans = DMap.fromList forConversionToArgTransMap }
-
     where
         subNames = map (\(key, _) -> key) $ DMap.toList (subroutineToAst sra)
         argNamesForSubCall = (getArgNames . getSubParams . ((subroutineToAst sra) DMap.!))
@@ -222,6 +240,35 @@ debug_displaySubRecAnalysis sra = do
         subCallsList = DMap.toList $ subroutineToCalls sra
         subFilesList = DMap.toList $ subroutineToFile sra
         subArgTransList = DMap.toList $ subroutineToArgTrans sra
+
+-- data SubRec = MkSubRec {
+--     subAst          :: ProgUnit Anno,
+--     subSrcFile      :: String,
+--     subSrcLines     :: [String],
+--     subName         :: String,
+--     argTranslations :: ArgumentTranslationTable,
+--     parallelise     :: Bool
+-- }
+
+debug_displaySubRoutineTable :: SubroutineTable -> IO ()
+debug_displaySubRoutineTable srt = mapM_ debug_displaySubTableEntry asList
+    where
+        asList = map (\(_, value) -> value) $ DMap.toList srt
+
+debug_displaySubTableEntry :: SubRec -> IO ()
+debug_displaySubTableEntry sr = do
+    putStrLn $ hl
+    putStrLn $ "Subroutine name: " ++ (subName sr)
+    putStrLn $ "Filename: " ++ (subSrcFile sr)
+    putStrLn $ "AST:"
+    putStrLn $ miniPPProgUnit(subAst sr)
+    putStrLn $ "Argument translations:"
+    putStrLn $ concatMap (\(subname, argTransList) -> "\t" ++ subname ++ "->\n" ++ (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
+    putStrLn (if (parallelise sr) then "This subroutine will be offloaded to the FPGA" else "This subroutine will not be offloaded to the FPGA")
+    putStrLn $ hl ++ "\n"
+    where
+        hl = (take 80 $ repeat '=')
+
 --                                                                          AST           Lines    Filename
 parseFile :: [String] -> [String] -> Bool -> String -> String -> IO ((Program Anno, [String], String))
 parseFile cppDArgs cppXArgs fixedForm dir filename = do
@@ -294,3 +341,21 @@ validateInputFile fileAst = do
             [checkFilesHaveOnlyOneSubroutine]
     mapM_ printErrorOrContinue results
 
+
+checkParseIntermediatariesHaveCorrectKeys :: SubRecAnalysis -> SanityCheckResult
+checkParseIntermediatariesHaveCorrectKeys sra = if (foldr (&&) True allResults) then Success else Error "Not all maps contain same keys."
+    where
+        subnames = map (\(key, val) -> key) $ DMap.toList (subroutineToFile sra)
+        subToLinesResults = checkIncludesAllSubs (subroutineToLines sra) subnames
+        subToAstResults = checkIncludesAllSubs (subroutineToAst sra) subnames
+        subToCallsResults = checkIncludesAllSubs (subroutineToCalls sra) subnames
+        subToArgTransResults = checkIncludesAllSubs (subroutineToArgTrans sra) subnames
+        allResults = subToLinesResults ++ subToAstResults ++ subToCallsResults ++ subToArgTransResults
+        checkIncludesAllSubs mapToCheck subsToCheckFor = map (\subName -> DMap.member subName mapToCheck) subsToCheckFor
+-- data SubRecAnalysis = SRA {
+--     subroutineToFile     :: DMap.Map String FilePath,
+--     subroutineToLines    :: DMap.Map String [String],
+--     subroutineToAst      :: DMap.Map String (ProgUnit Anno),
+--     subroutineToCalls    :: DMap.Map String (DMap.Map String (Fortran Anno)),
+--     subroutineToArgTrans :: DMap.Map String (DMap.Map String [ArgumentTranslation])
+-- }

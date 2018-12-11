@@ -3,7 +3,9 @@
 
 module F4 where
 
-import           Parser                  (parseProgramData)
+import           Parser                  (SubRec (..),
+                                          debug_displaySubRoutineTable,
+                                          parseProgramData)
 
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
@@ -16,6 +18,7 @@ import qualified LanguageFortranTools    as LFT
 import           MiniPP
 import           Options.Applicative
 import           SanityChecks
+import           Transformer
 
 
 processArgs :: IO ()
@@ -27,44 +30,30 @@ processArgs = do
 
 compilerMain :: F4Opts -> IO ()
 compilerMain args = do
-    parseProgramData args
-    -- filesToBeParallelised <- mapM (parseFile (cppDefines args) (cppExcludes args) (fixedForm args)) $ subsForFPGA args
-    -- putStrLn ((show $ length filesToBeParallelised) ++ " files to be parallelised parsed!\n")
-    -- -- Check the files
-    -- mapM_ validateInputFiles filesToBeParallelised
-    -- main <- parseFile (cppDefines args) (cppExcludes args) (fixedForm args) (mainSub args)
-    -- putStrLn "Parsed main file!"
+    subroutineTable <- parseProgramData args
 
+    let forOffloadSubTable = DMap.filter (\subRec -> parallelise subRec) subroutineTable
+    let subroutineNames = DMap.keys forOffloadSubTable
 
+    debug_displaySubRoutineTable forOffloadSubTable
 
+    -- < STEP 4 : Parallelise the loops >
+    -- WV: this is the equivalent of calling a statefull pass on every subroutine.
+    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) forOffloadSubTable) (DMap.empty, []) subroutineNames
 
-    -- let
-        --     (parsedPrograms,stashes,moduleVarTables) = unzip3 parsedPrograms_stashes
-        -- (parsedMain,mainStash,mainModuleVarTable) <- parseFile cppDFlags cppXFlags fixedForm mainFilename
-        -- -- < STEP 3 : Construct subroutine AST lists>
+    mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
+        (DMap.toList parallelisedSubroutines)
 
-        -- let parsedSubroutines' = constructSubroutineTable (zip filesToBeParallelised filenames)
-        -- let subroutineNames = DMap.keys parsedSubroutines'
-        -- let parsedSubroutines = parsedSubroutines'
+    -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
+    let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) subroutineNames
 
-        -- -- < STEP 4 : Parallelise the loops >
-        -- -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-        -- let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl ioWriteSubroutines parsedSubroutines') (DMap.empty, []) subroutineNames
+    putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
 
-        -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
-        --     (DMap.toList parallelisedSubroutines)
+    mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
+        (DMap.toList combinedKernelSubroutines)
 
-        -- -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-        -- -- (SubroutineTable, [(String, String)])
-        -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl loopFusionBound) (parallelisedSubroutines, []) subroutineNames
-
-        -- putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
-
-        -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
-        --     (DMap.toList combinedKernelSubroutines)
-
-    -- -- JM: This is simply so status information can be printed.
-    -- -- < STEP 6a : create annotation listings >
+    -- JM: This is simply so status information can be printed.
+    -- < STEP 6a : create annotation listings >
     -- let annotationListings = map (combineAnnotationListings_map parAnnotations) combAnnotations
 
     -- --    < STEP 7a : >
@@ -81,14 +70,15 @@ validateInputFiles fileAst = do
     return ()
 
 banner =
-    hl ++
+    rule '=' ++
     "F4: Finite-element Fortran for FPGAs\n" ++
     "This compiler allows Fortran finite element codes to be compiled\n" ++
     "for execution on FPGA devices via OpenCL" ++
-    hl
+    rule '='
 
-hl = "\n" ++ (take 80 $ repeat '=') ++ "\n"
+hl = rule '-'
 
+rule char = "\n" ++ (take 80 (repeat char)) ++ "\n"
 -- parseTestFile :: IO ()
 -- parseTestFile = do
 --     parseOutput <- LFT.parseFile [] [] False "Shallow-Water-2D/dyn.f95"

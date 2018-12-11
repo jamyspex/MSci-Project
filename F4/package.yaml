@@ -27,7 +27,6 @@ dependencies:
 - process
 - language-fortran
 - optparse-applicative
-- attoparsec
 - split
 - filepath
  
