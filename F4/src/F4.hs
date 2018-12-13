@@ -32,10 +32,18 @@ compilerMain :: F4Opts -> IO ()
 compilerMain args = do
     subroutineTable <- parseProgramData args
 
+    let notForOffloadSubTable = DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
     let forOffloadSubTable = DMap.filter (\subRec -> parallelise subRec) subroutineTable
     let subroutineNames = DMap.keys forOffloadSubTable
 
+    putStrLn ((rule '+') ++ " Subroutines not for offload " ++ (rule '+'))
+
+    debug_displaySubRoutineTable notForOffloadSubTable
+
+    putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
+
     debug_displaySubRoutineTable forOffloadSubTable
+
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.

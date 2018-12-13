@@ -7,10 +7,10 @@ export OPENCL_DIR=$HOME/Documents/Uni/MSci-Project
 # NVIDIA
 export NVSDKCUDA_ROOT="/Developer/GPU\ Computing/"
 # AMD
-export AMDAPPSDKROOT=/opt/AMDAPPSDK-3.0
+export AMDAPPSDKROOT="/opt/amdgpu-pro"
 # Intel
 export INTELOCLSDKROOT=/usr
-# Altera
+# # Altera
 export ALTERAOCLSDKROOT=/path/to/altera/oclsdk
 export AOCL_BOARD_PACKAGE_ROOT=/path/to/altera/bsp
 # Xilinx
