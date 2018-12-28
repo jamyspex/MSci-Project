@@ -21,9 +21,7 @@ mergeSubs srt = updatedSrt
     -- return (updatedSrt)
     where
         paraReplacementPairs = getArgTransSubroutinePairs srt
-        conflictFreeParaReplacementPairs = map (
-            \tup@(argTrans, subrec) ->
-                updateArgTransToRespectLocalVariables (getNonParameterDeclarations subrec) tup) paraReplacementPairs
+        conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls paraReplacementPairs
         subsWithParamsReplaced = map (\(argTrans, calledSub) -> replaceParametersWithArgumentNames argTrans calledSub) conflictFreeParaReplacementPairs
         updateSubRecInSrt subRec srt = DMap.insert (subName subRec) subRec srt
         updatedSrt = foldr updateSubRecInSrt srt subsWithParamsReplaced
@@ -58,16 +56,32 @@ getSubCalls subrec = DMap.keys (argTranslations subrec)
 --     in
 --         argTrans
 
-updateArgTransToRespectLocalVariables :: [String] -> ([ArgumentTranslation], SubRec) -> ([ArgumentTranslation], SubRec)
-updateArgTransToRespectLocalVariables localDecls (argTrans, subrec) =
-    if runAgain then
-        updateArgTransToRespectLocalVariables localDecls (conflictFreeArgTrans, subrec)
+resolveConflictsWithLocalDecls :: [([ArgumentTranslation], SubRec)] -> [([ArgumentTranslation], SubRec)]
+resolveConflictsWithLocalDecls pairs =
+    if hasBeenUpdated then
+        resolveConflictsWithLocalDecls result
     else
-        (conflictFreeArgTrans, subrec)
+        result
+    where
+        allLocalDecls = concatMap (getNonParameterDeclarations . snd) pairs
+        allArgTrans = concatMap fst pairs
+        conflicts = findConflicts allLocalDecls allArgTrans
+        foldResults (updated, curResult) (updatedAcc, resultAcc) = (updated || updatedAcc, (curResult:resultAcc))
+        (hasBeenUpdated, result) = foldr foldResults (False, []) withConflictsResolved
+        withConflictsResolved = map (updateArgTransToRespectLocalVariables conflicts) pairs
+        -- resolveConflicts (argTrans, subrec) = (map (updateArgTran conflicts) argTrans, subrec)
+
+findConflicts :: [String] -> [ArgumentTranslation] -> [String]
+findConflicts localDecls argTrans = filter (\decl -> decl `elem` argNames) localDecls
+    where
+        argumentVarNames = map (\(argTran) -> argument argTran) argTrans
+        argNames = map (\(VarName _ name) -> name) argumentVarNames
+
+updateArgTransToRespectLocalVariables :: [String] -> ([ArgumentTranslation], SubRec) -> (Bool, ([ArgumentTranslation], SubRec))
+updateArgTransToRespectLocalVariables conflicts (argTrans, subrec) = (runAgain, (conflictFreeArgTrans, subrec))
     where
         (runAgain, conflictFreeArgTrans) = foldr foldResults (False, []) updatedArgTrans
-        updatedArgTrans =  map (updateArgTran localDecls) argTrans
-        foldResults :: (Bool, ArgumentTranslation) -> (Bool, [ArgumentTranslation]) -> (Bool, [ArgumentTranslation])
+        updatedArgTrans =  map (updateArgTran conflicts) argTrans
         foldResults (updated, argTran) (updatedAcc, argTransAcc) = (updated || updatedAcc, argTran:argTransAcc)
 
 updateArgTran :: [String] -> ArgumentTranslation -> (Bool, ArgumentTranslation)
