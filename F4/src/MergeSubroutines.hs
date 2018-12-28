@@ -166,6 +166,6 @@ updatedAnno :: Anno
 updatedAnno = DMap.singleton (mergeSubsAnnoKey) []
 
 mergeSubsAnnoKey = "msak"
-hasBeenUpdated anno = trace (show anno) $ DMap.member mergeSubsAnnoKey anno
+hasBeenUpdated anno = DMap.member mergeSubsAnnoKey anno
 
 
