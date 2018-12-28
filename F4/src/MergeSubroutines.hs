@@ -9,6 +9,7 @@ import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
 import           Data.List
 import qualified Data.Map             as DMap
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           Parser
@@ -126,23 +127,45 @@ replaceParametersWithArgumentNames argTransForCall callee = updatedAst
         updatedAst = foldr preformUpdates callee argTransForCall
         preformUpdates argTran = ((renameParameter argTran) . (replaceOneParamUsageWithArg argTran))
 
+-- renameParameter :: ArgumentTranslation -> SubRec -> SubRec
+-- renameParameter argTrans subRec = subRec { subAst = everywhere (mkT renameQuery) $ subAst subRec }
+--     where
+--         renameQuery curVal@(ArgName _ name)
+--             | name == (getArgName $ parameter argTrans) = ArgName nullAnno $ getVarName (argument argTrans)
+--             | otherwise = curVal
+--         renameQuery curVal = curVal
+
+-- replaceOneParamUsageWithArg :: ArgumentTranslation -> SubRec -> SubRec
+-- replaceOneParamUsageWithArg argTrans subRec = subRec { subAst = everywhere (mkT replaceQuery) $ subAst subRec }
+--     where
+--         replaceQuery curVal@(VarName _ name)
+--             | name == (getArgName $ parameter argTrans) = argument argTrans
+--             | otherwise = curVal
+
 renameParameter :: ArgumentTranslation -> SubRec -> SubRec
 renameParameter argTrans subRec = subRec { subAst = everywhere (mkT renameQuery) $ subAst subRec }
     where
-        renameQuery curVal@(ArgName _ name)
-            | name == (getArgName $ parameter argTrans) = ArgName nullAnno $ getVarName (argument argTrans)
+        renameQuery curVal@(ArgName anno name)
+            | ((name == (getArgName $ parameter argTrans)) && (not . hasBeenUpdated) anno)
+                = ArgName updatedAnno $ getVarName (argument argTrans)
             | otherwise = curVal
         renameQuery curVal = curVal
 
 replaceOneParamUsageWithArg :: ArgumentTranslation -> SubRec -> SubRec
 replaceOneParamUsageWithArg argTrans subRec = subRec { subAst = everywhere (mkT replaceQuery) $ subAst subRec }
     where
-        replaceQuery curVal@(VarName _ name)
-            | name == (getArgName $ parameter argTrans) = argument argTrans
+        replaceQuery curVal@(VarName anno name)
+            | ((name == (getArgName $ parameter argTrans)) && (not . hasBeenUpdated) anno)
+                 = VarName updatedAnno $ getVarName (argument argTrans)
             | otherwise = curVal
 
 getArgName (ArgName _ name) = name
 getVarName (VarName _ name) = name
 
+updatedAnno :: Anno
+updatedAnno = DMap.singleton (mergeSubsAnnoKey) []
+
+mergeSubsAnnoKey = "msak"
+hasBeenUpdated anno = trace (show anno) $ DMap.member mergeSubsAnnoKey anno
 
 
