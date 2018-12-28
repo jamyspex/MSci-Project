@@ -36,7 +36,7 @@ data SubRec = MkSubRec {
 }
 
 -- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
-type ArgumentTranslationTable = DMap.Map SubNameStr [ArgumentTranslation]
+type ArgumentTranslationTable = DMap.Map SubNameStr ((Fortran Anno), [ArgumentTranslation])
 
 
 type SubroutineTable = DMap.Map SubNameStr SubRec
@@ -58,7 +58,7 @@ data SubRecAnalysis = SRA {
     subroutineToLines    :: DMap.Map String [String],
     subroutineToAst      :: DMap.Map String (ProgUnit Anno),
     subroutineToCalls    :: DMap.Map String (DMap.Map String (Fortran Anno)),
-    subroutineToArgTrans :: DMap.Map String (DMap.Map String [ArgumentTranslation])
+    subroutineToArgTrans :: DMap.Map String (DMap.Map String ((Fortran Anno), [ArgumentTranslation]))
 }
 
 -- updateArgTransTableForSubroutine :: (ArgumentTranslation -> ArgumentTranslationTable -> ArgumentTranslationTable)
@@ -182,7 +182,7 @@ populateArgTrans sra = sra { subroutineToArgTrans = DMap.fromList forConversionT
         subNameParamMap = DMap.fromList $ map (\name -> (name, argNamesForSubCall name)) subNames
         forConversionToArgTransMap = map (\(calledFrom, callsMap) ->
             (calledFrom, DMap.fromList $ map (\(calledSub, callStatement) ->
-                (calledSub, buildArgTransMapValue (subNameParamMap DMap.! calledSub) (getVarNamesFromCall callStatement))) $ DMap.toList callsMap))
+                (calledSub, (callStatement, buildArgTransMapValue (subNameParamMap DMap.! calledSub) (getVarNamesFromCall callStatement)))) $ DMap.toList callsMap))
             $ DMap.toList (subroutineToCalls sra)
 
 buildArgTransMapValue :: [ArgName Anno] -> [VarName Anno] -> [ArgumentTranslation]
@@ -195,11 +195,11 @@ getVarNamesFromCall :: Fortran Anno -> [VarName Anno]
 getVarNamesFromCall (Call _ _ _ arglist) = extractVarNamesFromCall arglist
 
 extractVarNamesFromCall :: ArgList Anno -> [VarName Anno]
-extractVarNamesFromCall (ArgList _ expr) = everything (++) (mkQ [] extractVarNamesFromCall') expr
+extractVarNamesFromCall (ArgList _ expr) = everything (++) (mkQ [] extractVarNamesFromExpr) expr
 
 
-extractVarNamesFromCall' :: Expr Anno -> [VarName Anno]
-extractVarNamesFromCall' expr = case expr of
+extractVarNamesFromExpr :: Expr Anno -> [VarName Anno]
+extractVarNamesFromExpr expr = case expr of
                             Var _ _ varnameList -> map (\(varname, _) -> varname) varnameList
                             _ -> []
 
@@ -233,7 +233,7 @@ debug_displaySubRecAnalysis sra = do
     mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++
         (concatMap (\(subname, call) -> "\t" ++ subname ++ "->" ++ miniPPF call ++ "\n" ++ show call ++ "\n\n") $ DMap.toList val))) subCallsList
     mapM_ (\(key, val) -> putStrLn (key ++ " --> \n" ++
-        (concatMap (\(subname, argTransList) -> "\t" ++ subname ++ "->\n" ++
+        (concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++ miniPPF callStatement ++ "\n" ++
             (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList val))) subArgTransList
     where
         subAstsList = DMap.toList $ subroutineToAst sra
@@ -260,10 +260,14 @@ debug_displaySubTableEntry sr = do
     putStrLn $ hl
     putStrLn $ "Subroutine name: " ++ (subName sr)
     putStrLn $ "Filename: " ++ (subSrcFile sr)
-    putStrLn $ "AST:"
-    putStrLn $ miniPPProgUnit(subAst sr)
+    putStrLn $ "Source:"
+    putStrLn $ miniPPProgUnit (subAst sr)
+    -- putStrLn $ "AST: "
+    -- putStrLn $ show (subAst sr)
     putStrLn $ "Argument translations:"
-    putStrLn $ concatMap (\(subname, argTransList) -> "\t" ++ subname ++ "->\n" ++ (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
+    putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
+        "\t" ++ miniPPF callStatement ++ "\n" ++
+        (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
     putStrLn (if (parallelise sr) then "This subroutine will be offloaded to the FPGA" else "This subroutine will not be offloaded to the FPGA")
     putStrLn $ hl ++ "\n"
     where

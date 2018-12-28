@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f0e666f50f106bf95be9c30c9e731dcfb38e6de397bd36d1837f1e131f177940
+-- hash: 15f3c6d957d3add02ee552ad81f116acb5b7490251d73d9e7b829115843e1ab1
 
 name:           F4
 version:        0.1.0.0
@@ -35,6 +35,7 @@ library
       LanguageFortranTools
       LoopAnalysis
       Main
+      MergeSubroutines
       MiniPP
       Parser
       Platform

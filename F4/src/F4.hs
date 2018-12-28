@@ -15,6 +15,7 @@ import qualified Data.Map                as DMap
 import           Language.Fortran
 import           Language.Fortran.Pretty
 import qualified LanguageFortranTools    as LFT
+import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
 import           SanityChecks
@@ -44,6 +45,9 @@ compilerMain args = do
 
     debug_displaySubRoutineTable forOffloadSubTable
 
+    putStrLn ((rule '+') ++ " Offload subroutines with parameters replaced with args " ++ (rule '+'))
+
+    debug_displaySubRoutineTable $ mergeSubs subroutineTable
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.
