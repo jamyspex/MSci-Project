@@ -26,6 +26,7 @@ dependencies:
 - syb
 - process
 - language-fortran
+- Unique
 - optparse-applicative
 - split
 - filepath

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 15f3c6d957d3add02ee552ad81f116acb5b7490251d73d9e7b829115843e1ab1
+-- hash: 8cb96fcd0ead8f2da83789c8e2e167206b5842916666637146c60e3e714f1afc
 
 name:           F4
 version:        0.1.0.0
@@ -44,6 +44,7 @@ library
       SubroutineTable
       Transformer
       TupleTable
+      Utils
       VarAccessAnalysis
       VarDependencyAnalysis
       Warning
@@ -52,7 +53,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      Unique
+    , base >=4.7 && <5
     , containers
     , directory
     , filepath
@@ -72,6 +74,7 @@ executable F4-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , Unique
     , base >=4.7 && <5
     , containers
     , directory
@@ -93,6 +96,7 @@ test-suite F4-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , Unique
     , base >=4.7 && <5
     , containers
     , directory

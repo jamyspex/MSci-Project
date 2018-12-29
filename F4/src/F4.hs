@@ -47,7 +47,8 @@ compilerMain args = do
 
     putStrLn ((rule '+') ++ " Offload subroutines with parameters replaced with args " ++ (rule '+'))
 
-    debug_displaySubRoutineTable $ mergeSubs subroutineTable
+    -- debug_displaySubRoutineTable $
+    mergeSubsToBeParallelised subroutineTable
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.

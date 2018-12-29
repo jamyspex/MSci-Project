@@ -8,38 +8,48 @@ where
 import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
 import           Data.List
+import           Data.List.Unique
 import qualified Data.Map             as DMap
 import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
+import           MiniPP
 import           Parser
+import           Utils
 
-mergeSubs :: SubroutineTable -> SubroutineTable
-mergeSubs srt = updatedSrt
-    -- do
-    -- mapM_ (\(key, val) -> putStrLn (key ++ " = " ++ (show $ getNonParameterDeclarations val))) subsToOffload
-    -- putStrLn ("offloadlength = " ++ (show $ length subsToOffload))
-    -- return (updatedSrt)
+mergeSubsToBeParallelised :: SubroutineTable -> IO (SubroutineTable)
+mergeSubsToBeParallelised srt = do
+    mergeSubs forOffloadPairs
+    return (srt)
     where
         paraReplacementPairs = getArgTransSubroutinePairs srt
-        conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls paraReplacementPairs
+        -- (mergedArgTrans, mergedSub) = mergeSubs forOffloadPairs
+        -- updateSubRecInSrt subRec srt = DMap.insert (subName subRec) subRec srt
+        -- srtWithMergedAdded = DMap.insert (subName mergedSub) mergedSub srt
+        forOffloadPairs = filter (\(_, sub) -> parallelise sub) $ paraReplacementPairs
+
+mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO ()--([ArgumentTranslation], SubRec)
+mergeSubs argTransToSubRecs = do
+    putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
+    putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
+    return ()
+    where
+        conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls argTransToSubRecs
         subsWithParamsReplaced = map (\(argTrans, calledSub) -> replaceParametersWithArgumentNames argTrans calledSub) conflictFreeParaReplacementPairs
-        updateSubRecInSrt subRec srt = DMap.insert (subName subRec) subRec srt
-        updatedSrt = foldr updateSubRecInSrt srt subsWithParamsReplaced
-        -- map (\(argTrans, calledSub) -> replaceParametersWithArgumentNames argTrans calledSub)
-        subsToOffload = filter (\(_, sub) -> parallelise sub) $ DMap.toList srt
+        uniqueDecls = getUniqueDecls $ getAllDecls subsWithParamsReplaced
+        uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
 
 
 getArgTransSubroutinePairs :: SubroutineTable -> [([ArgumentTranslation], SubRec)]
 getArgTransSubroutinePairs srt = concatMap (\caller -> concatMap (getPair caller) $ getCalled caller) callers
-        where
-            getCalled callerSubRec = DMap.keys $ argTranslations callerSubRec
-            getPair :: SubRec -> String -> [([ArgumentTranslation], SubRec)]
-            getPair caller calleeName =
-                case (DMap.lookup calleeName (argTranslations caller)) of
-                    Just argTrans -> [(snd argTrans, srt DMap.! calleeName)]
-                    _             -> []
-            callers = getSubRoutinesThatMakeCalls srt
+    where
+        getCalled callerSubRec = DMap.keys $ argTranslations callerSubRec
+        getPair :: SubRec -> String -> [([ArgumentTranslation], SubRec)]
+        getPair caller calleeName =
+            case (DMap.lookup calleeName (argTranslations caller)) of
+                Just argTrans -> [(snd argTrans, srt DMap.! calleeName)]
+                _             -> []
+        callers = getSubRoutinesThatMakeCalls srt
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]
@@ -96,30 +106,62 @@ updateArgTran localDecls a@(ArgTrans param arg@(VarName anno name)) =
 getNonParameterDeclarations :: SubRec -> [String]
 getNonParameterDeclarations subrec = (decls \\ arguments)
     where
-        arguments = getArguments $ subAst subrec
-        decls = getDecls $ subAst subrec
+        arguments = getArgsAsString $ subAst subrec
+        decls = getDeclNames $ subAst subrec
 
+getUniqueArgs :: [ArgName Anno] -> [ArgName Anno]
+getUniqueArgs args = removeDuplicates getArgName args
 
-getDecls :: ProgUnit Anno -> [String]
-getDecls  (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) = getNames
+getAllArgs :: [SubRec] -> [ArgName Anno]
+getAllArgs subrecs = concatMap (\subrec -> getArgs $ subAst subrec) subrecs
+
+getUniqueDecls :: [Decl Anno] -> [Decl Anno]
+getUniqueDecls decls = removeDuplicates (getNameFromVarName . getVarName) decls
+
+-- DMap.elems uniqueMap
+--     where
+--         pairsForMap = map (\decl -> ( decl, decl)) decls
+--         uniqueMap = foldr addToMap DMap.empty pairsForMap
+--         addToMap :: (String, Decl Anno) -> DMap.Map String (Decl Anno) -> DMap.Map String (Decl Anno)
+--         addToMap (key, val) map = DMap.insert key val map
+
+getAllDecls :: [SubRec] -> [Decl Anno]
+getAllDecls subrecs = concatMap (\subrec -> getDeclForMerge $ subAst subrec) subrecs
+
+getDeclForMerge :: ProgUnit Anno -> [Decl Anno]
+getDeclForMerge (Sub _ _ _ _ _ (Block _ _ _ _ decls _))  = everything (++) (mkQ [] getDeclsQuery) decls
     where
-        getDecls = everything (++) (mkQ [] declQuery) $ decls
-        declQuery :: Decl Anno -> [Expr Anno]
-        declQuery decl = case decl of
+        getDeclsQuery :: Decl Anno -> [Decl Anno]
+        getDeclsQuery decl = case decl of
+                                (Decl _ _ _ _) -> [decl]
+                                _              -> []
+
+getDeclNames :: ProgUnit Anno -> [String]
+getDeclNames  (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) = map (getNameFromVarName . getVarName) declStatements
+    where
+        declStatements = everything (++) (mkQ [] declNameQuery) $ decls
+
+declNameQuery :: Decl Anno -> [Expr Anno]
+declNameQuery decl = case decl of
                                 (Decl _ _ ((expr, _, _):_) _) -> [expr] --everything (++) (mkQ [] extractVarNamesFromExpr) expr
                                 _                             -> []
-        getVarNames = concatMap (everything (++) (mkQ [] extractVarNamesFromExpr)) getDecls
-        getNames = map (\(VarName _ name) -> name) getVarNames
 
+getVarName decl = head $ everything (++) (mkQ [] extractVarNamesFromExpr) decl
+getNameFromVarName (VarName _ name) = name
 
-getArguments :: ProgUnit Anno -> [String]
-getArguments (Sub _ _ _ _ arg _) =  everything (++) (mkQ [] argNameQuery) $ arg
+getArgs :: ProgUnit Anno -> [ArgName Anno]
+getArgs (Sub _ _ _ _ args _) = everything (++) (mkQ [] argNameQuery) args
     where
-        argNameQuery :: ArgName Anno -> [String]
+        argNameQuery :: ArgName Anno -> [ArgName Anno]
         argNameQuery input = case input of
-                                (ArgName _ name) -> [name]
-                                _                -> []
-getArguments _ = []
+                        argname@(ArgName _ name) -> [argname]
+                        _                        -> []
+getArgs _ = error "Passed something other than a Sub to getArgs"
+
+getArgsAsString :: ProgUnit Anno -> [String]
+getArgsAsString sub = map getArgName $ getArgs sub
+gerArgsAsString = error "Passed something other than a Sub to getArgsAsString"
+
 
 replaceParametersWithArgumentNames :: [ArgumentTranslation] -> SubRec -> SubRec
 replaceParametersWithArgumentNames argTransForCall callee = updatedAst
@@ -147,7 +189,7 @@ renameParameter argTrans subRec = subRec { subAst = everywhere (mkT renameQuery)
     where
         renameQuery curVal@(ArgName anno name)
             | ((name == (getArgName $ parameter argTrans)) && (not . hasBeenUpdated) anno)
-                = ArgName updatedAnno $ getVarName (argument argTrans)
+                = ArgName updatedAnno $ getNameFromVarName (argument argTrans)
             | otherwise = curVal
         renameQuery curVal = curVal
 
@@ -156,11 +198,10 @@ replaceOneParamUsageWithArg argTrans subRec = subRec { subAst = everywhere (mkT 
     where
         replaceQuery curVal@(VarName anno name)
             | ((name == (getArgName $ parameter argTrans)) && (not . hasBeenUpdated) anno)
-                 = VarName updatedAnno $ getVarName (argument argTrans)
+                 = VarName updatedAnno $ getNameFromVarName (argument argTrans)
             | otherwise = curVal
 
 getArgName (ArgName _ name) = name
-getVarName (VarName _ name) = name
 
 updatedAnno :: Anno
 updatedAnno = DMap.singleton (mergeSubsAnnoKey) []

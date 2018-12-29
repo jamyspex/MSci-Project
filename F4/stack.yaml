@@ -41,6 +41,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps: 
   - ./language-fortran
+  - Unique-0.4.7.5@sha256:580b578ddde452111cc20aa84bdccd7e723d19eb4f8d167d2358d08a4637eed3
 
 
 # Override default flag values for local packages and extra-deps
