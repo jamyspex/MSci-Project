@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module MergeSubroutines
@@ -5,6 +6,7 @@ module MergeSubroutines
 where
 
 
+import           Data.Function
 import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
 import           Data.List
@@ -28,7 +30,9 @@ mergeSubsToBeParallelised srt = do
         -- srtWithMergedAdded = DMap.insert (subName mergedSub) mergedSub srt
         forOffloadPairs = filter (\(_, sub) -> parallelise sub) $ paraReplacementPairs
 
-mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO ()--([ArgumentTranslation], SubRec)
+-- argTransToSubRecs is ordered by the call sequence in question this means the
+-- bodies will be merged in the order they are in the argTransToSubRecs list
+mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO () --([ArgumentTranslation], SubRec)
 mergeSubs argTransToSubRecs = do
     putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
     putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
@@ -39,17 +43,28 @@ mergeSubs argTransToSubRecs = do
         uniqueDecls = getUniqueDecls $ getAllDecls subsWithParamsReplaced
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
 
+fst3 (a, _, _) = a
 
 getArgTransSubroutinePairs :: SubroutineTable -> [([ArgumentTranslation], SubRec)]
-getArgTransSubroutinePairs srt = concatMap (\caller -> concatMap (getPair caller) $ getCalled caller) callers
+getArgTransSubroutinePairs srt = map (\(_, argTrans, subrec) -> (argTrans, subrec)) sorted
     where
+        sorted = sortBy (getCallOrdering `on` fst3) allPairs
+        allPairs = concatMap (\caller -> concatMap (getPair caller) $ getCalled caller) callers
         getCalled callerSubRec = DMap.keys $ argTranslations callerSubRec
-        getPair :: SubRec -> String -> [([ArgumentTranslation], SubRec)]
+        getPair :: SubRec -> String -> [(Fortran Anno, [ArgumentTranslation], SubRec)]
         getPair caller calleeName =
             case (DMap.lookup calleeName (argTranslations caller)) of
-                Just argTrans -> [(snd argTrans, srt DMap.! calleeName)]
+                Just argTrans -> [(fst argTrans, snd argTrans, srt DMap.! calleeName)]
                 _             -> []
         callers = getSubRoutinesThatMakeCalls srt
+
+getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
+        if lineCompareResult == EQ then
+            srcColumn start1 `compare` srcColumn start2
+        else
+            lineCompareResult
+        where
+            lineCompareResult = srcLine start1 `compare` srcLine start2
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]
@@ -59,6 +74,8 @@ getSubRoutinesThatMakeCalls srt = filter (\subrec -> numberOfCallsMade subrec > 
 
 getSubCalls :: SubRec -> [String]
 getSubCalls subrec = DMap.keys (argTranslations subrec)
+
+-- getB
 
 -- getArgTransForCallToSub :: SubRec -> String -> [ArgumentTranslation]
 -- getArgTransForCallToSub subrec name =
