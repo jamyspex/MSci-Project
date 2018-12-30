@@ -19,7 +19,7 @@ integer(4), parameter :: ny=500
       real :: dy
       real :: eps
       real, dimension(0:ny+1,0:nx+1) :: eta
-      real, dimension(0:ny+1,0:nx+1) :: etan
+      real, dimension(0:ny+1,0:nx+1) :: etan  
       real :: g
       real, dimension(0:ny+1,0:nx+1) :: h
       real :: hmin

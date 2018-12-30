@@ -10,7 +10,6 @@ import           Data.Function
 import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
 import           Data.List
-import           Data.List.Unique
 import qualified Data.Map             as DMap
 import           Debug.Trace
 import           Language.Fortran
@@ -36,12 +35,18 @@ mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO () --([ArgumentTranslation]
 mergeSubs argTransToSubRecs = do
     putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
     putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
+    putStrLn ("mergedBody = \n" ++ miniPPF combinedBody)
+    putStrLn ("merged AST = \n" ++ show combinedBody)
+    putStrLn ("bodies = \n" ++ concatMap miniPPF bodies)
     return ()
     where
         conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls argTransToSubRecs
         subsWithParamsReplaced = map (\(argTrans, calledSub) -> replaceParametersWithArgumentNames argTrans calledSub) conflictFreeParaReplacementPairs
         uniqueDecls = getUniqueDecls $ getAllDecls subsWithParamsReplaced
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
+        uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
+        combinedBody = combineBodies bodies
+        bodies = map getSubroutineBody subsWithParamsReplaced
 
 fst3 (a, _, _) = a
 
@@ -65,6 +70,19 @@ getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
             lineCompareResult
         where
             lineCompareResult = srcLine start1 `compare` srcLine start2
+getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
+
+combineBodies :: [Fortran Anno] -> Fortran Anno
+combineBodies bodies =
+    if length bodies > 1 then
+        foldr bodyFold innerFSeq (drop 2 reversedBodies)
+    else
+        head bodies
+    where
+        bodyFold cur acc = FSeq nullAnno nullSrcSpan cur acc
+        reversedBodies = reverse bodies
+        lastTwoBodies = take 2 reversedBodies
+        innerFSeq = FSeq nullAnno nullSrcSpan (last lastTwoBodies) (head lastTwoBodies)
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]
@@ -75,7 +93,13 @@ getSubRoutinesThatMakeCalls srt = filter (\subrec -> numberOfCallsMade subrec > 
 getSubCalls :: SubRec -> [String]
 getSubCalls subrec = DMap.keys (argTranslations subrec)
 
--- getB
+getSubroutineBody :: SubRec -> Fortran Anno
+getSubroutineBody subrec = (getBody . getBlock) ast
+    where
+        ast = subAst subrec
+        getBlock (Sub _ _ _ _ _ block) = block
+        getBlock _ = error "Tried to get block from element other than Sub"
+        getBody (Block _ _ _ _ _ body) = body
 
 -- getArgTransForCallToSub :: SubRec -> String -> [ArgumentTranslation]
 -- getArgTransForCallToSub subrec name =
@@ -135,6 +159,8 @@ getAllArgs subrecs = concatMap (\subrec -> getArgs $ subAst subrec) subrecs
 getUniqueDecls :: [Decl Anno] -> [Decl Anno]
 getUniqueDecls decls = removeDuplicates (getNameFromVarName . getVarName) decls
 
+getUniqueArgTrans :: [ArgumentTranslation] -> [ArgumentTranslation]
+getUniqueArgTrans argTrans = removeDuplicates argument argTrans
 -- DMap.elems uniqueMap
 --     where
 --         pairsForMap = map (\decl -> ( decl, decl)) decls

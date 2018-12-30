@@ -37,12 +37,12 @@ import           Data.Generics           (Data, Typeable, everything,
                                           everywhere, gmapQ, gmapT, mkQ, mkT)
 import           Data.List
 import qualified Data.Map                as DMap
-import           Warning
-
 import           F95IntrinsicFunctions   (f95IntrinsicFunctions)
 import           Language.Fortran
 import           Language.Fortran.Parser
 import           LanguageFortranTools
+import           Utils
+import           Warning
 
 
 --    Type used to colate data on variable accesses throughout a program.

@@ -35,13 +35,14 @@ data SrcLoc = SrcLoc {
                 srcFilename :: String,
                 srcLine     :: Int,
                 srcColumn   :: Int
-                }
+                } | NoSrcLoc
             deriving (Eq, Typeable, Data)
 
 instance Show SrcLoc where
     -- A special instance if the filename is set to "compact" to reduce size of outputs
     show (SrcLoc "compact" l c) = "{l" ++ show l ++ ",c" ++ show c ++ "}"
     show (SrcLoc f l c) = "{" ++ f ++ ", line = " ++ show l ++ ", col = " ++ show c ++ "}"
+    show NoSrcLoc = "No source location"
 
 
 type SrcSpan = (SrcLoc, SrcLoc)

@@ -13,10 +13,10 @@ import           Data.Generics         (Data, Typeable, everything, everywhere,
                                         gmapQ, gmapT, mkQ, mkT)
 import           Language.Fortran
 --import Language.Fortran.Pretty
-
 import           Data.Char
 import           Data.List
 import qualified Data.Map              as DMap
+import           Utils
 
 import           F95IntrinsicFunctions (f95IntrinsicFunctions)
 import           LanguageFortranTools

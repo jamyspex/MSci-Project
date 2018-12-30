@@ -1,6 +1,9 @@
 module Utils where
 
-import qualified Data.Map as DMap
+import qualified Data.Map         as DMap
+import           Language.Fortran
+
+nullSrcSpan = (NoSrcLoc, NoSrcLoc)
 
 removeDuplicates :: Ord a => (b -> a) -> [b] -> [b]
 removeDuplicates getKey input = DMap.elems uniqueMap
