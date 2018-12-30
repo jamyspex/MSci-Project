@@ -36,7 +36,6 @@ mergeSubs argTransToSubRecs = do
     putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
     putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
     putStrLn ("mergedBody = \n" ++ miniPPF combinedBody)
-    putStrLn ("merged AST = \n" ++ show combinedBody)
     putStrLn ("bodies = \n" ++ concatMap miniPPF bodies)
     return ()
     where
@@ -47,6 +46,8 @@ mergeSubs argTransToSubRecs = do
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
         combinedBody = combineBodies bodies
         bodies = map getSubroutineBody subsWithParamsReplaced
+        -- block =  Block nullAnno (UseNil nullAnno) (ImplicitNull nullAnno) nullSrcSpan combinedBody
+        -- sub =  Sub nullAnno nullSrcSpan Nothing (SubName p) uniqueArgs block
 
 fst3 (a, _, _) = a
 
@@ -72,17 +73,28 @@ getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
             lineCompareResult = srcLine start1 `compare` srcLine start2
 getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
 
-combineBodies :: [Fortran Anno] -> Fortran Anno
-combineBodies bodies =
-    if length bodies > 1 then
-        foldr bodyFold innerFSeq (drop 2 reversedBodies)
+buildAst :: (a -> a -> a) -> [a] -> a
+buildAst constructor items =
+    if length items > 1 then
+        foldr (\cur acc -> constructor cur acc) innerNode (drop 2 reversedItems)
     else
-        head bodies
+        head items
     where
-        bodyFold cur acc = FSeq nullAnno nullSrcSpan cur acc
-        reversedBodies = reverse bodies
-        lastTwoBodies = take 2 reversedBodies
-        innerFSeq = FSeq nullAnno nullSrcSpan (last lastTwoBodies) (head lastTwoBodies)
+        reversedItems = reverse items
+        lastTwoItems = take 2 reversedItems
+        innerNode = constructor (last lastTwoItems) (head lastTwoItems)
+
+combineBodies ::  [Fortran Anno] -> Fortran Anno
+combineBodies = buildAst $ FSeq nullAnno nullSrcSpan
+    -- if length bodies > 1 then
+    --     foldr bodyFold innerFSeq (drop 2 reversedBodies)
+    -- else
+    --     head bodies
+    -- where
+    --     bodyFold cur acc = FSeq nullAnno nullSrcSpan cur acc
+    --     reversedBodies = reverse bodies
+    --     lastTwoBodies = take 2 reversedBodies
+    --     innerFSeq =  (last lastTwoBodies) (head lastTwoBodies)
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]
@@ -193,7 +205,11 @@ getVarName decl = head $ everything (++) (mkQ [] extractVarNamesFromExpr) decl
 getNameFromVarName (VarName _ name) = name
 
 getArgs :: ProgUnit Anno -> [ArgName Anno]
-getArgs (Sub _ _ _ _ args _) = everything (++) (mkQ [] argNameQuery) args
+getArgs (Sub _ _ return _ args _) =
+    if return /= Nothing then
+        error "Only subroutines with Nothing as their return type can be merged"
+    else
+        everything (++) (mkQ [] argNameQuery) args
     where
         argNameQuery :: ArgName Anno -> [ArgName Anno]
         argNameQuery input = case input of
