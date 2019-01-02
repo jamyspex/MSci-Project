@@ -35,8 +35,10 @@ mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO () --([ArgumentTranslation]
 mergeSubs argTransToSubRecs = do
     putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
     putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
+    putStrLn ("merged decls = \n" ++ miniPPD combinedDeclNode)
+    putStrLn ("decls ast = \n" ++ show combinedDeclNode)
     putStrLn ("mergedBody = \n" ++ miniPPF combinedBody)
-    putStrLn ("bodies = \n" ++ concatMap miniPPF bodies)
+    putStrLn ("mergedBody ast = \n" ++ show combinedBody)
     return ()
     where
         conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls argTransToSubRecs
@@ -46,6 +48,7 @@ mergeSubs argTransToSubRecs = do
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
         combinedBody = combineBodies bodies
         bodies = map getSubroutineBody subsWithParamsReplaced
+        combinedDeclNode = combineDecls uniqueDecls
         -- block =  Block nullAnno (UseNil nullAnno) (ImplicitNull nullAnno) nullSrcSpan combinedBody
         -- sub =  Sub nullAnno nullSrcSpan Nothing (SubName p) uniqueArgs block
 
@@ -73,28 +76,24 @@ getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
             lineCompareResult = srcLine start1 `compare` srcLine start2
 getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
 
-buildAst :: (a -> a -> a) -> [a] -> a
-buildAst constructor items =
+buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
+buildAstSeq constructor nullNode inputList =
     if length items > 1 then
-        foldr (\cur acc -> constructor cur acc) innerNode (drop 2 reversedItems)
+        foldl (\cur acc -> constructor acc cur) (head items) (tail items)
     else
         head items
     where
-        reversedItems = reverse items
-        lastTwoItems = take 2 reversedItems
-        innerNode = constructor (last lastTwoItems) (head lastTwoItems)
+        items = reverse $ if odd $ length inputList then inputList else inputList
+        -- reversedItems = reverse items
+        -- lastTwoItems = take 2 reversedItems
+
+        -- innerNode = constructor (last lastTwoItems) (head lastTwoItems)
 
 combineBodies ::  [Fortran Anno] -> Fortran Anno
-combineBodies = buildAst $ FSeq nullAnno nullSrcSpan
-    -- if length bodies > 1 then
-    --     foldr bodyFold innerFSeq (drop 2 reversedBodies)
-    -- else
-    --     head bodies
-    -- where
-    --     bodyFold cur acc = FSeq nullAnno nullSrcSpan cur acc
-    --     reversedBodies = reverse bodies
-    --     lastTwoBodies = take 2 reversedBodies
-    --     innerFSeq =  (last lastTwoBodies) (head lastTwoBodies)
+combineBodies = buildAstSeq (FSeq (DMap.singleton "body joining node" []) nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
+
+combineDecls :: [Decl Anno] -> Decl Anno
+combineDecls = buildAstSeq (DSeq nullAnno) (NullDecl nullAnno nullSrcSpan)
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]

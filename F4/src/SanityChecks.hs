@@ -26,6 +26,8 @@ numberOfNodes :: (ProgUnit Anno -> [ProgUnit Anno]) -> Int -> Program Anno -> Bo
 numberOfNodes query count node =
     (foldl (\acc cur -> (length $ (everything (++) (mkQ [] query) cur)) + acc) 0 node) == count
 
+--     subAst          :: ProgUnit Anno,
+
 checkFilesHaveOnlyOneSubroutine :: Program Anno -> SanityCheckResult
 checkFilesHaveOnlyOneSubroutine prog =
     crashWithError "Program doesn't have exactly 1 subroutine." prog
