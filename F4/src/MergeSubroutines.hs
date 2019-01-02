@@ -18,39 +18,43 @@ import           MiniPP
 import           Parser
 import           Utils
 
-mergeSubsToBeParallelised :: SubroutineTable -> IO (SubroutineTable)
-mergeSubsToBeParallelised srt = do
-    mergeSubs forOffloadPairs
-    return (srt)
+mergeSubsToBeParallelised :: SubroutineTable -> SubroutineTable
+mergeSubsToBeParallelised srt = DMap.insert (subName mergedSubRec) mergedSubRec originalsRemoved
     where
         paraReplacementPairs = getArgTransSubroutinePairs srt
-        -- (mergedArgTrans, mergedSub) = mergeSubs forOffloadPairs
-        -- updateSubRecInSrt subRec srt = DMap.insert (subName subRec) subRec srt
-        -- srtWithMergedAdded = DMap.insert (subName mergedSub) mergedSub srt
+        keysToRemove = map (\(_, sub) -> (subName sub)) paraReplacementPairs
+        (mergedArgTrans, mergedSubRec) = mergeSubs forOffloadPairs
+        originalsRemoved = foldr (\cur acc -> DMap.delete cur acc) srt keysToRemove
         forOffloadPairs = filter (\(_, sub) -> parallelise sub) $ paraReplacementPairs
 
 -- argTransToSubRecs is ordered by the call sequence in question this means the
 -- bodies will be merged in the order they are in the argTransToSubRecs list
-mergeSubs :: [([ArgumentTranslation], SubRec)] -> IO () --([ArgumentTranslation], SubRec)
-mergeSubs argTransToSubRecs = do
-    putStrLn ("unique args = " ++ show (map getArgName uniqueArgs))
-    putStrLn ("unique decls = \n" ++ (concatMap (\decl -> miniPPD decl ++ "\n") uniqueDecls))
-    putStrLn ("merged decls = \n" ++ miniPPD combinedDeclNode)
-    putStrLn ("decls ast = \n" ++ show combinedDeclNode)
-    putStrLn ("mergedBody = \n" ++ miniPPF combinedBody)
-    putStrLn ("mergedBody ast = \n" ++ show combinedBody)
-    return ()
+mergeSubs :: [([ArgumentTranslation], SubRec)] -> ([ArgumentTranslation], SubRec)
+mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
     where
         conflictFreeParaReplacementPairs = resolveConflictsWithLocalDecls argTransToSubRecs
         subsWithParamsReplaced = map (\(argTrans, calledSub) -> replaceParametersWithArgumentNames argTrans calledSub) conflictFreeParaReplacementPairs
-        uniqueDecls = getUniqueDecls $ getAllDecls subsWithParamsReplaced
+        mergedName = getMergedName subsWithParamsReplaced
+        uniqueDecls = sortBy getDeclOrdering $ getUniqueDecls $ getAllDecls subsWithParamsReplaced
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
         combinedBody = combineBodies bodies
         bodies = map getSubroutineBody subsWithParamsReplaced
         combinedDeclNode = combineDecls uniqueDecls
-        -- block =  Block nullAnno (UseNil nullAnno) (ImplicitNull nullAnno) nullSrcSpan combinedBody
-        -- sub =  Sub nullAnno nullSrcSpan Nothing (SubName p) uniqueArgs block
+        combinedArgs = combineArgs uniqueArgs
+        useBlock = (UseBlock (UseNil nullAnno) NoSrcLoc)
+        block =  Block nullAnno  useBlock (ImplicitNull nullAnno) nullSrcSpan combinedDeclNode combinedBody
+        sub =  Sub nullAnno nullSrcSpan Nothing (SubName nullAnno mergedName) combinedArgs block
+        modName = (SubName nullAnno ("module_" ++ mergedName))
+        mod = Module nullAnno nullSrcSpan modName (UseNil nullAnno) (ImplicitNull nullAnno) (NullDecl nullAnno nullSrcSpan) [sub]
+        mergedSubRec = MkSubRec {
+            subAst = mod,
+            subSrcFile = "",
+            subSrcLines = [],
+            subName  = mergedName,
+            argTranslations = DMap.empty,
+            parallelise = True
+        }
 
 fst3 (a, _, _) = a
 
@@ -67,6 +71,23 @@ getArgTransSubroutinePairs srt = map (\(_, argTrans, subrec) -> (argTrans, subre
                 _             -> []
         callers = getSubRoutinesThatMakeCalls srt
 
+getAttrs typeDecl = case typeDecl of
+                    (BaseType _ _ attrs _ _) -> attrs
+                    (ArrayT _ _ _ attrs _ _) -> attrs
+
+getDeclOrdering (Decl _ _ _ typeDecl1) (Decl _ _ _ typeDecl2) =
+    case results of
+        (True, False) -> LT
+        (False, True) -> GT
+        (_, _)        -> EQ
+    where
+        results = (hasParamAttr typeDecl1, hasParamAttr typeDecl2)
+        hasParamAttr = (not . null . (concatMap (getParameterAttrs)) . getAttrs)
+        getParameterAttrs attr = case attr of
+                                    p@(Parameter _) -> [p]
+                                    _               -> []
+getDeclOrdering _ _ = error "Can't get ordering for declarations other than Decl"
+
 getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
         if lineCompareResult == EQ then
             srcColumn start1 `compare` srcColumn start2
@@ -79,21 +100,26 @@ getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
 buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
 buildAstSeq constructor nullNode inputList =
     if length items > 1 then
-        foldl (\cur acc -> constructor acc cur) (head items) (tail items)
+        foldl (\acc cur -> constructor acc cur) (head items) (tail items)
     else
         head items
     where
-        items = reverse $ if odd $ length inputList then inputList else inputList
-        -- reversedItems = reverse items
-        -- lastTwoItems = take 2 reversedItems
-
-        -- innerNode = constructor (last lastTwoItems) (head lastTwoItems)
+        items = if (odd . length) inputList then (inputList ++ [nullNode]) else inputList
 
 combineBodies ::  [Fortran Anno] -> Fortran Anno
-combineBodies = buildAstSeq (FSeq (DMap.singleton "body joining node" []) nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
+combineBodies = buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
 
 combineDecls :: [Decl Anno] -> Decl Anno
 combineDecls = buildAstSeq (DSeq nullAnno) (NullDecl nullAnno nullSrcSpan)
+
+combineArgs :: [ArgName Anno] -> Arg Anno
+combineArgs args = Arg nullAnno (buildAstSeq (ASeq nullAnno) (NullArg nullAnno) args) nullSrcSpan
+
+getMergedName :: [SubRec] -> String
+getMergedName items = (foldl buildString "" items) ++ "_merged"
+    where
+        buildString :: String -> SubRec -> String
+        buildString acc cur = if acc /= "" then acc ++ "_" ++ (subName cur) else subName cur
 
 -- -- get subrecs with entires in their argumentTranslation table
 getSubRoutinesThatMakeCalls :: SubroutineTable -> [SubRec]
@@ -112,13 +138,6 @@ getSubroutineBody subrec = (getBody . getBlock) ast
         getBlock _ = error "Tried to get block from element other than Sub"
         getBody (Block _ _ _ _ _ body) = body
 
--- getArgTransForCallToSub :: SubRec -> String -> [ArgumentTranslation]
--- getArgTransForCallToSub subrec name =
---     let
---         (_, argTrans) = (name DMap.! (argumentTranslations subrec))
---     in
---         argTrans
-
 resolveConflictsWithLocalDecls :: [([ArgumentTranslation], SubRec)] -> [([ArgumentTranslation], SubRec)]
 resolveConflictsWithLocalDecls pairs =
     if hasBeenUpdated then
@@ -132,7 +151,6 @@ resolveConflictsWithLocalDecls pairs =
         foldResults (updated, curResult) (updatedAcc, resultAcc) = (updated || updatedAcc, (curResult:resultAcc))
         (hasBeenUpdated, result) = foldr foldResults (False, []) withConflictsResolved
         withConflictsResolved = map (updateArgTransToRespectLocalVariables conflicts) pairs
-        -- resolveConflicts (argTrans, subrec) = (map (updateArgTran conflicts) argTrans, subrec)
 
 findConflicts :: [String] -> [ArgumentTranslation] -> [String]
 findConflicts localDecls argTrans = filter (\decl -> decl `elem` argNames) localDecls
@@ -154,7 +172,6 @@ updateArgTran localDecls a@(ArgTrans param arg@(VarName anno name)) =
     else
         (False, a)
 
-
 getNonParameterDeclarations :: SubRec -> [String]
 getNonParameterDeclarations subrec = (decls \\ arguments)
     where
@@ -167,17 +184,41 @@ getUniqueArgs args = removeDuplicates getArgName args
 getAllArgs :: [SubRec] -> [ArgName Anno]
 getAllArgs subrecs = concatMap (\subrec -> getArgs $ subAst subrec) subrecs
 
+orderDeclsByIntents :: Decl Anno -> Decl Anno -> Ordering
+orderDeclsByIntents (Decl _ _ _ typeDecl1) (Decl _ _ _ typeDecl2) =
+    case results of
+        (Just (In _), Just (Out _))    -> GT
+        (Just (In _), Just (InOut _))  -> GT
+        (Just (Out _), Just (In _))    -> LT
+        (Just (Out _), Just (InOut _)) -> GT
+        (Just (InOut _), Just (In _))  -> LT
+        (Just (InOut _), Just (Out _)) -> LT
+        (Nothing, Just _)              -> LT
+        (Just _, Nothing)              -> GT
+        (_, _)                         -> EQ
+    where
+        results = (getIntent typeDecl1, getIntent typeDecl2)
+        getIntent attrs = case ((concatMap (getIntentAttrs)) . getAttrs) attrs of
+                            (Intent _ intentType):is -> Just intentType
+                            []                       -> Nothing
+        getIntentAttrs attr = case attr of
+                            i@(Intent _ _) -> [i]
+                            _              -> []
+orderDeclsByIntents _ _ = error "Can't get ordering for declarations other than Decl"
+
 getUniqueDecls :: [Decl Anno] -> [Decl Anno]
-getUniqueDecls decls = removeDuplicates (getNameFromVarName . getVarName) decls
+getUniqueDecls decls = map (\(key, val) -> head val) $ DMap.toList mapValsSorted
+    where
+        mapValsSorted = DMap.map (sortBy orderDeclsByIntents) declMap
+        pairsForMap = map (\item -> ((getNameFromVarName . getVarName) item, item)) decls
+        initialMap = DMap.fromList $ map (\key -> (key, [])) uniqueKeys
+        uniqueKeys = map (getNameFromVarName . getVarName) $ removeDuplicates (getNameFromVarName . getVarName) decls
+        declMap = foldr updateMap initialMap pairsForMap
+        updateMap :: (String, Decl Anno) -> DMap.Map String [Decl Anno] -> DMap.Map String [Decl Anno]
+        updateMap (key, val) map = DMap.adjust ([val] ++) key map
 
 getUniqueArgTrans :: [ArgumentTranslation] -> [ArgumentTranslation]
 getUniqueArgTrans argTrans = removeDuplicates argument argTrans
--- DMap.elems uniqueMap
---     where
---         pairsForMap = map (\decl -> ( decl, decl)) decls
---         uniqueMap = foldr addToMap DMap.empty pairsForMap
---         addToMap :: (String, Decl Anno) -> DMap.Map String (Decl Anno) -> DMap.Map String (Decl Anno)
---         addToMap (key, val) map = DMap.insert key val map
 
 getAllDecls :: [SubRec] -> [Decl Anno]
 getAllDecls subrecs = concatMap (\subrec -> getDeclForMerge $ subAst subrec) subrecs
@@ -226,21 +267,6 @@ replaceParametersWithArgumentNames argTransForCall callee = updatedAst
    where
         updatedAst = foldr preformUpdates callee argTransForCall
         preformUpdates argTran = ((renameParameter argTran) . (replaceOneParamUsageWithArg argTran))
-
--- renameParameter :: ArgumentTranslation -> SubRec -> SubRec
--- renameParameter argTrans subRec = subRec { subAst = everywhere (mkT renameQuery) $ subAst subRec }
---     where
---         renameQuery curVal@(ArgName _ name)
---             | name == (getArgName $ parameter argTrans) = ArgName nullAnno $ getVarName (argument argTrans)
---             | otherwise = curVal
---         renameQuery curVal = curVal
-
--- replaceOneParamUsageWithArg :: ArgumentTranslation -> SubRec -> SubRec
--- replaceOneParamUsageWithArg argTrans subRec = subRec { subAst = everywhere (mkT replaceQuery) $ subAst subRec }
---     where
---         replaceQuery curVal@(VarName _ name)
---             | name == (getArgName $ parameter argTrans) = argument argTrans
---             | otherwise = curVal
 
 renameParameter :: ArgumentTranslation -> SubRec -> SubRec
 renameParameter argTrans subRec = subRec { subAst = everywhere (mkT renameQuery) $ subAst subRec }

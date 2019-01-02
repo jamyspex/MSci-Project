@@ -45,10 +45,11 @@ compilerMain args = do
 
     debug_displaySubRoutineTable forOffloadSubTable
 
-    putStrLn ((rule '+') ++ " Offload subroutines with parameters replaced with args " ++ (rule '+'))
+    putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
 
-    -- debug_displaySubRoutineTable $
-    mergeSubsToBeParallelised subroutineTable
+    debug_displaySubRoutineTable $ mergeSubsToBeParallelised subroutineTable
+
+    putStrLn ((rule '+') ++ " Map Detection " ++ (rule '+'))
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.

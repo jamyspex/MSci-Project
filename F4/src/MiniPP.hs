@@ -66,13 +66,13 @@ showArg (Arg _ argname _) = let
 
 showArgName argName = case argName of
                 ArgName _ argname -> argname
-                NullArg _ -> ""
-                ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
+                NullArg _         -> ""
+                ASeq _ (NullArg _) a2 -> showArgName a2
+                ASeq _ a1 (NullArg _) -> showArgName a1
+                ASeq _ a1 a2      -> showArgName a1 ++ "," ++ showArgName a2
 
 -- showArgName  (NullArg _) = ""
 -- showArgName  (ASeq _ (NullArg _) (NullArg _)) = ""
--- showArgName  (ASeq _ (NullArg _) a2) = showArgName a2
--- showArgName  (ASeq _ a1 (NullArg _)) = showArgName a1
 -- showArgName  (ASeq _ a1 a2) = (showArgName a1)++", "++(showArgName a2)
 
 
@@ -169,10 +169,10 @@ miniPPProgUnit prog = case prog of
 printBlock (Block _ _ _ _ decls fortran) =
     miniPPD decls ++ "\n" ++ miniPPF fortran
 
-printArgName argName = case argName of
-                    ArgName _ argname -> argname
-                    NullArg _ -> ""
-                    ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
+-- printArgName argName = case argName of
+--                     ArgName _ argname -> argname
+--                     NullArg _ -> ""
+--                     ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
 
 
 miniPPFT :: Fortran Anno -> String -> String
