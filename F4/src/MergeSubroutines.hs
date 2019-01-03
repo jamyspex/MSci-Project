@@ -97,14 +97,20 @@ getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
             lineCompareResult = srcLine start1 `compare` srcLine start2
 getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
 
+-- buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
+-- buildAstSeq constructor nullNode inputList =
+--     if length items > 1 then
+--         foldr (\cur acc -> constructor acc cur) (head items) (tail items)
+--     else
+--         head items
+--     where
+--         items = if (odd . length) inputList then (inputList ++ [nullNode]) else inputList
+
 buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
-buildAstSeq constructor nullNode inputList =
-    if length items > 1 then
-        foldr (\cur acc -> constructor acc cur) (head items) (tail items)
-    else
-        head items
-    where
-        items = if (odd . length) inputList then (inputList ++ [nullNode]) else inputList
+buildAstSeq _ nullNode [] = nullNode
+buildAstSeq _ _ (statement:[]) = statement
+buildAstSeq constructor nullNode (statement:statements) = constructor statement (buildAstSeq constructor nullNode statements)
+
 
 combineBodies ::  [Fortran Anno] -> Fortran Anno
 combineBodies = buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
