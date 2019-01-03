@@ -1,8 +1,7 @@
 module StencilDetection where
 
 detectStencils :: SubRec -> SubRec
-detectStencils subrec = 
-
+detectStencils subrec = subrec
     where
-        getOpen
+        getOpen = id
 
