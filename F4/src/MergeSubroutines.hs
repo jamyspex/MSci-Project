@@ -100,7 +100,7 @@ getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
 buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
 buildAstSeq constructor nullNode inputList =
     if length items > 1 then
-        foldl (\acc cur -> constructor acc cur) (head items) (tail items)
+        foldr (\cur acc -> constructor acc cur) (head items) (tail items)
     else
         head items
     where

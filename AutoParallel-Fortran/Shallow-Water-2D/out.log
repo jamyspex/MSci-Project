@@ -328,6 +328,59 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
+Parsing ./main.f95
+
+--------------------------------------------------------------------------------
+dyn
+--------------------------------------------------------------------------------
+	dt -> dt
+	dx -> dx
+	dy -> dy
+	eta -> eta
+	etan -> etan
+	g -> g
+	h -> h
+	j -> j
+	k -> k
+	u -> u
+	un -> un
+	v -> v
+	vn -> vn
+	wet -> wet
+
+
+--------------------------------------------------------------------------------
+shapiro
+--------------------------------------------------------------------------------
+	eps -> eps
+	eta -> eta
+	etan -> etan
+	j -> j
+	k -> k
+	wet -> wet
+
+
+--------------------------------------------------------------------------------
+vernieuw
+--------------------------------------------------------------------------------
+	dt -> dt
+	dx -> dx
+	dy -> dy
+	eps -> eps
+	eta -> eta
+	etan -> etan
+	g -> g
+	h -> h
+	hmin -> hmin
+	hzero -> hzero
+	j -> j
+	k -> k
+	u -> u
+	un -> un
+	v -> v
+	vn -> vn
+	wet -> wet
+
 ParallelFortran: Analysing ./dyn.f95
 
 ParallelFortran: Adjacent maps at 38:0 and 44:0 fused	
@@ -359,4 +412,3 @@ ParallelFortran: Map at 24:0
 
 ParallelFortran: Synthesising OpenCL files
 Output dir: ../AutoparV1/
-Parsing ./main.f95

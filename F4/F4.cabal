@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8cb96fcd0ead8f2da83789c8e2e167206b5842916666637146c60e3e714f1afc
+-- hash: d315295436ccbfa427c4a9c7d7d7085ca7b7a421f96048c4f601d35d6c182f43
 
 name:           F4
 version:        0.1.0.0
@@ -41,6 +41,7 @@ library
       Platform
       PreProcessor
       SanityChecks
+      StencilDetection
       SubroutineTable
       Transformer
       TupleTable

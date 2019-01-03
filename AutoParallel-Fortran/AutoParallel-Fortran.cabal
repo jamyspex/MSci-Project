@@ -27,7 +27,7 @@ executable AutoParallel-Fortran-exe
   build-depends:       base, containers, syb, parsec, array, haskell-src, process, directory
 --                     , AutoParallel-Fortran
 --  ghc-options:         -O2 
-  -- -i./language-fortran/src
+--   -i./language-fortran/src
   default-language:    Haskell2010
   other-modules: BufferTransferAnalysis, CodeEmitter, CodeEmitterUtils, CombineKernels, ConstantFolding, F95IntrinsicFunctions, FortranGenerator, FortranSynthesiser, Language.Fortran, Language.Fortran.Lexer, Language.Fortran.Parser, Language.Fortran.PreProcess, LanguageFortranTools, LoopAnalysis, MiniPP, PreProcessor, SubroutineTable, Transformer, TupleTable, VarAccessAnalysis, VarDependencyAnalysis, Platform, Warning
 

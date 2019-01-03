@@ -98,10 +98,10 @@ end do
 do n = 1,ntot
 time = real(n)*dt
 ! call predictor
-  call dyn(j_cunt,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
+  call dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
 ! updating including Shapiro filter
-  call shapiro(j_cunt,k,wet,etan,eps,eta)
-      call vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j_cunt,k,u,un,v,vn,wet)
+  call shapiro(j,k,wet,etan,eps,eta)
+      call vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! data output
 ! Only write once at the end
 !if(mod(n,nout)==0)then

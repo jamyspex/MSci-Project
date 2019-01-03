@@ -217,7 +217,6 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                 | ReadS p SrcSpan [Spec p] [(Expr p)]
                 | TextStmt p SrcSpan String     -- cpp switches to carry over
                 | NullStmt p SrcSpan
-
                 | SelectStmt p SrcSpan (Expr p) [((Expr p), (Fortran p))] (Maybe (Fortran p)) -- GAV ADDED
                 | OpenCLMap p SrcSpan                   -- Node to represent the data needed for an OpenCL map kernel
                   [VarName p]                           -- List of arguments to kernel that are READ
@@ -240,7 +239,16 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                   (VarName p)                           -- Name of var that buffer is read to
                 | OpenCLBufferWrite p SrcSpan
                   (VarName p)                           -- Name of var that buffer is written to
+                | OpenCLStencil p SrcSpan               -- JAMES ADDED
+                  [Stencil p]
+                  (Fortran p)
                   deriving (Show, Functor, Typeable, Data, Eq)
+
+data Stencil p = Stencil {
+    dimensions :: Int,
+    coords     :: [Int],
+    variable   :: VarName p
+} deriving (Show, Functor, Typeable, Data, Eq)
 
 -- type Bound    = ((Expr p),(Expr p))
 
