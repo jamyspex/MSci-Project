@@ -19,6 +19,7 @@ import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
 import           SanityChecks
+import           StencilDetection
 import           Transformer
 
 
@@ -62,6 +63,8 @@ compilerMain args = do
 
     mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
         (DMap.toList parallelisedSubroutines)
+
+    mapM_ detectStencils mergedForOffload
 
     -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
     -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) subroutineNames

@@ -71,10 +71,6 @@ getArgTransSubroutinePairs srt = map (\(_, argTrans, subrec) -> (argTrans, subre
                 _             -> []
         callers = getSubRoutinesThatMakeCalls srt
 
-getAttrs typeDecl = case typeDecl of
-                    (BaseType _ _ attrs _ _) -> attrs
-                    (ArrayT _ _ _ attrs _ _) -> attrs
-
 getDeclOrdering (Decl _ _ _ typeDecl1) (Decl _ _ _ typeDecl2) =
     case results of
         (True, False) -> LT
@@ -96,21 +92,6 @@ getCallOrdering (Call _ (start1, _) _ _) (Call _ (start2, _) _ _) =
         where
             lineCompareResult = srcLine start1 `compare` srcLine start2
 getCallOrdering _ _ = error "Can't get ordering for statements other than calls"
-
--- buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
--- buildAstSeq constructor nullNode inputList =
---     if length items > 1 then
---         foldr (\cur acc -> constructor acc cur) (head items) (tail items)
---     else
---         head items
---     where
---         items = if (odd . length) inputList then (inputList ++ [nullNode]) else inputList
-
-buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
-buildAstSeq _ nullNode [] = nullNode
-buildAstSeq _ _ (statement:[]) = statement
-buildAstSeq constructor nullNode (statement:statements) = constructor statement (buildAstSeq constructor nullNode statements)
-
 
 combineBodies ::  [Fortran Anno] -> Fortran Anno
 combineBodies = buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
@@ -227,28 +208,7 @@ getUniqueArgTrans :: [ArgumentTranslation] -> [ArgumentTranslation]
 getUniqueArgTrans argTrans = removeDuplicates argument argTrans
 
 getAllDecls :: [SubRec] -> [Decl Anno]
-getAllDecls subrecs = concatMap (\subrec -> getDeclForMerge $ subAst subrec) subrecs
-
-getDeclForMerge :: ProgUnit Anno -> [Decl Anno]
-getDeclForMerge (Sub _ _ _ _ _ (Block _ _ _ _ decls _))  = everything (++) (mkQ [] getDeclsQuery) decls
-    where
-        getDeclsQuery :: Decl Anno -> [Decl Anno]
-        getDeclsQuery decl = case decl of
-                                (Decl _ _ _ _) -> [decl]
-                                _              -> []
-
-getDeclNames :: ProgUnit Anno -> [String]
-getDeclNames  (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) = map (getNameFromVarName . getVarName) declStatements
-    where
-        declStatements = everything (++) (mkQ [] declNameQuery) $ decls
-
-declNameQuery :: Decl Anno -> [Expr Anno]
-declNameQuery decl = case decl of
-                                (Decl _ _ ((expr, _, _):_) _) -> [expr] --everything (++) (mkQ [] extractVarNamesFromExpr) expr
-                                _                             -> []
-
-getVarName decl = head $ everything (++) (mkQ [] extractVarNamesFromExpr) decl
-getNameFromVarName (VarName _ name) = name
+getAllDecls subrecs = concatMap (\subrec -> getDecls $ subAst subrec) subrecs
 
 getArgs :: ProgUnit Anno -> [ArgName Anno]
 getArgs (Sub _ _ return _ args _) =

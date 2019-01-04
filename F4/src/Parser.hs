@@ -5,25 +5,18 @@
 module Parser where
 
 import           CommandLineProcessor
--- import           Control.Monad.State.Lazy
 import           Data.Generics        (everything, everywhere, everywhereM,
                                        gmapQ, gmapT, mkM, mkQ, mkT)
 import           Data.List
 import qualified Data.Map             as DMap
--- import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
 import           SanityChecks
--- import qualified SubroutineTable      as ST
 import           System.FilePath      (FilePath, (</>))
 import           System.IO.Unsafe
+import           Utils
 
--- data ParsedProgram = ParsedProgram {
---     main       :: SubRec,
---     forOffload :: [SubRec],
---     otherSubs  :: [SubRec]
--- }
 type SubNameStr = String
 type SrcName = String
 data SubRec = MkSubRec {
@@ -35,7 +28,6 @@ data SubRec = MkSubRec {
        parallelise     :: Bool
 }
 
--- type SubroutineArgumentTranslationMap = DMap.Map SubNameStr ArgumentTranslation
 type ArgumentTranslationTable = DMap.Map SubNameStr ((Fortran Anno), [ArgumentTranslation])
 
 
@@ -60,12 +52,6 @@ data SubRecAnalysis = SRA {
     subroutineToCalls    :: DMap.Map String (DMap.Map String (Fortran Anno)),
     subroutineToArgTrans :: DMap.Map String (DMap.Map String ((Fortran Anno), [ArgumentTranslation]))
 }
-
--- updateArgTransTableForSubroutine :: (ArgumentTranslation -> ArgumentTranslationTable -> ArgumentTranslationTable)
---                                  -> ArgumentTranslationTable
---                                  -> [ArgumentTranslation]
---                                  -> ArgumentTranslationTable
--- updateArgTransTableForSubroutine =
 
 getAst (ast, _, _) = ast
 getLines (_, lines, _) = lines
@@ -197,12 +183,6 @@ getVarNamesFromCall (Call _ _ _ arglist) = extractVarNamesFromCall arglist
 extractVarNamesFromCall :: ArgList Anno -> [VarName Anno]
 extractVarNamesFromCall (ArgList _ expr) = everything (++) (mkQ [] extractVarNamesFromExpr) expr
 
-
-extractVarNamesFromExpr :: Expr Anno -> [VarName Anno]
-extractVarNamesFromExpr expr = case expr of
-                            Var _ _ varnameList -> map (\(varname, _) -> varname) varnameList
-                            _ -> []
-
 -- temp :: Expr Anno -> [VarName Anno]
 -- temp expr = case expr of
 --             VarName _
@@ -262,8 +242,8 @@ debug_displaySubTableEntry sr = do
     putStrLn $ "Filename: " ++ (subSrcFile sr)
     putStrLn $ "Source:"
     putStrLn $ miniPPProgUnit (subAst sr)
-    putStrLn $ "AST: "
-    putStrLn $ show (subAst sr)
+    -- putStrLn $ "AST: "
+    -- putStrLn $ show (subAst sr)
     putStrLn $ "Argument translations:"
     putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
         "\t" ++ miniPPF callStatement ++ "\n" ++

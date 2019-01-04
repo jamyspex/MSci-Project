@@ -15,7 +15,6 @@ import           Language.Fortran.Parser (parse)
 import           System.Directory
 import           System.Process
 import           Text.Read
-import           Utils
 import           Warning                 (warning)
 
 import           F95IntrinsicFunctions   (f95IntrinsicFunctions)
@@ -33,6 +32,9 @@ type ValueTable = DMap.Map String (Float, BaseType Anno)
 
 nullAnno :: Anno
 nullAnno = DMap.empty
+
+nullSrcSpan = (NoSrcLoc, NoSrcLoc)
+
 
 --    Taken from language-fortran example. Runs preprocessor on target source and then parses the result, returning an AST.
 parseFile :: [String] -> [String] -> Bool -> String -> IO ( (Program Anno, [String]) , (String, CodeStash), ModuleVarsTable)
@@ -229,7 +231,6 @@ getReadArgs' codeSeg = case codeSeg of
                             OpenCLMap _ _ vrs vws _ _ _      -> vrs
                             OpenCLReduce _ _ vrs vws _ _ _ _ -> vrs
                             _                                -> []
-
 
 extractBufferWrites ast = everything (++) (mkQ [] (extractBufferWrites')) ast
 
