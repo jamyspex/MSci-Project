@@ -1,8 +1,10 @@
 module StencilDetection where
 
 import           Data.Data
-import           Data.Generics        (Data, Typeable, everything, everywhere,
-                                       gmapQ, gmapT, mkQ, mkT)
+import           Data.Generics         (Data, Typeable, everything, everywhere,
+                                        gmapQ, gmapT, mkQ, mkT)
+import           Data.List
+import           F95IntrinsicFunctions
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -17,11 +19,12 @@ data Array = Array {
 detectStencils :: SubRec -> IO ()
 detectStencils subrec = do
     putStrLn (concatMap (\d -> show d ++ "\n") arraysInSub)
-    -- putStrLn (concatMap (\block -> ("\n----------------------------------\n" ++  miniPP d) $ findArrayAccesses arraysInSub subBody)
-    putStrLn (concatMap (\set -> ("\n----------------------------------\n" ++ (concatMap (\d -> miniPP d ++ "\n") set))) $ findArrayAccesses arraysInSub subBody)
+    putStrLn (concatMap (\(block, exprs) -> ("\n----------------------------------\n" ++  miniPPF block ++ "\n" ++ (concatMap (\d -> miniPP d ++ "\n") exprs))) results)
+    -- putStrLn (concatMap (\d -> miniPP d ++ "\n") $ findArrayAccesses arraysInSub subBody)
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
         subBody = getSubBody $ subAst subrec
+        results = map (\body -> (body, findStencils arraysInSub body)) $ getMapsAndFolds subBody
 
 arrayFromDecl :: Decl Anno -> Array
 arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}
@@ -49,12 +52,21 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
 
-findStencilAccessesAndAddNode :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencilAccessesAndAddNode arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccessesAndAddNode arrays body
-findStencilAccessesAndAddNode arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccessesAndAddNode arrays body
-findStencilAccessesAndAddNode arrays body = arrayAccess
+findStencilAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
+findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
+findStencilAccesses arrays body = arrayAccesses
     where
-        arrayAccess = getArrayReadsQuery body
+        arrayAccesses = everything (++) (mkQ [] getArrayReadsQuery) body
+
+
+arrayName = (getNameFromVarName . getVarName)
+
+sortVarNames :: Expr Anno -> Expr Anno -> Ordering
+sortVarNames one two = name1 `compare` name2
+    where
+        name1 = arrayName one
+        name2 = arrayName two
 
 getMapsAndFolds :: Fortran Anno -> [Fortran Anno]
 getMapsAndFolds fortran = everything (++) (mkQ [] mapFoldQuery) fortran
@@ -65,18 +77,25 @@ getMapsAndFolds fortran = everything (++) (mkQ [] mapFoldQuery) fortran
             fold@(OpenCLReduce _ _ _ _ _ _ _ _) -> [fold]
             a@_                                 -> []
 
-findArrayAccesses :: [Array] -> Fortran Anno -> [[Expr Anno]]
-findArrayAccesses arrays fortran = map (findStencilAccessesAndAddNode arrays) mapAndFoldBlocks
+findStencils :: [Array] -> Fortran Anno -> [Expr Anno]
+findStencils arrays fortran = concatMap id stencilsOnly
     where
-        mapAndFoldBlocks = getMapsAndFolds fortran
+        allAccesses = findStencilAccesses arrays fortran
+        uniqueAccesses = removeDuplicates miniPP allAccesses
+        sortedByVarName = sortBy sortVarNames uniqueAccesses
+        groupedByArray = groupBy groupByArray sortedByVarName
+        groupByArray var1 var2 = arrayName var1 == arrayName var2
+        stencilsOnly = filter (\grp -> length grp > 1) groupedByArray
 
 getArrayReadsQuery :: Fortran Anno -> [Expr Anno]
-getArrayReadsQuery fortran = concatMap arrayReadQuery allReadExprs
+getArrayReadsQuery fortran = allReadExprs
     where
         arrayReadQuery expr = case expr of
-                                var@(Var _ _ [(_, (idx:_))]) -> [var]
+                                var@(Var _ _ ((VarName _ name, (idx:_)):_)) ->
+                                    if not (name `elem` f95IntrinsicFunctions) then [var] else []
                                 _                            -> []
-        allReadExprs = case fortran of
+        allReadExprs = everything (++) (mkQ [] arrayReadQuery) readExprsFromFortran
+        readExprsFromFortran = case fortran of
                         (Assg _ _ _ rhs) -> [rhs]
                         (For _ _ _ start bound incre body) -> (start:bound:incre:(getArrayReadsQuery body))
                         (DoWhile _ _ bound body) -> [bound] ++ getArrayReadsQuery body
