@@ -61,10 +61,12 @@ compilerMain args = do
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.
     let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) mergedForOffload) (DMap.empty, []) mergedOffloadName
 
+    debug_displaySubRoutineTable parallelisedSubroutines
+
     mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
         (DMap.toList parallelisedSubroutines)
 
-    mapM_ detectStencils mergedForOffload
+    detectStencils $ head (map (\(_, val) -> val) $ (DMap.toList parallelisedSubroutines))
 
     -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
     -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) subroutineNames

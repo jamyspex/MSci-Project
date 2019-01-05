@@ -1,5 +1,8 @@
 module StencilDetection where
 
+import           Data.Data
+import           Data.Generics        (Data, Typeable, everything, everywhere,
+                                       gmapQ, gmapT, mkQ, mkT)
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -13,9 +16,12 @@ data Array = Array {
 
 detectStencils :: SubRec -> IO ()
 detectStencils subrec = do
-    putStrLn (concatMap (\d -> show d ++ "\n") $ arraysInSub)
+    putStrLn (concatMap (\d -> show d ++ "\n") arraysInSub)
+    -- putStrLn (concatMap (\block -> ("\n----------------------------------\n" ++  miniPP d) $ findArrayAccesses arraysInSub subBody)
+    putStrLn (concatMap (\set -> ("\n----------------------------------\n" ++ (concatMap (\d -> miniPP d ++ "\n") set))) $ findArrayAccesses arraysInSub subBody)
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
+        subBody = getSubBody $ subAst subrec
 
 arrayFromDecl :: Decl Anno -> Array
 arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}
@@ -43,28 +49,47 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
 
-findStencilAccessesAndAddNode :: [Array] -> Fortran Anno -> Fortran Anno
-findStencilAccessesAndAddNode arrays (OpenCLMap _ _ _ _ _ _ body) =  findStencilAccessesAndAddNode arrays body
+findStencilAccessesAndAddNode :: [Array] -> Fortran Anno -> [Expr Anno]
+findStencilAccessesAndAddNode arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccessesAndAddNode arrays body
 findStencilAccessesAndAddNode arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccessesAndAddNode arrays body
-findStencilAccessesAndAddNode arrays body = body
+findStencilAccessesAndAddNode arrays body = arrayAccess
+    where
+        arrayAccess = getArrayReadsQuery body
 
---     where
---         arrayAccess = body
+getMapsAndFolds :: Fortran Anno -> [Fortran Anno]
+getMapsAndFolds fortran = everything (++) (mkQ [] mapFoldQuery) fortran
+    where
+        mapFoldQuery :: Fortran Anno -> [Fortran Anno]
+        mapFoldQuery fortran = case fortran of
+            map@(OpenCLMap _ _ _ _ _ _ _)       -> [map]
+            fold@(OpenCLReduce _ _ _ _ _ _ _ _) -> [fold]
+            a@_                                 -> []
 
--- get
+findArrayAccesses :: [Array] -> Fortran Anno -> [[Expr Anno]]
+findArrayAccesses arrays fortran = map (findStencilAccessesAndAddNode arrays) mapAndFoldBlocks
+    where
+        mapAndFoldBlocks = getMapsAndFolds fortran
 
+getArrayReadsQuery :: Fortran Anno -> [Expr Anno]
+getArrayReadsQuery fortran = concatMap arrayReadQuery allReadExprs
+    where
+        arrayReadQuery expr = case expr of
+                                var@(Var _ _ [(_, (idx:_))]) -> [var]
+                                _                            -> []
+        allReadExprs = case fortran of
+                        (Assg _ _ _ rhs) -> [rhs]
+                        (For _ _ _ start bound incre body) -> (start:bound:incre:(getArrayReadsQuery body))
+                        (DoWhile _ _ bound body) -> [bound] ++ getArrayReadsQuery body
+                        (FSeq _ _ fst snd) -> getArrayReadsQuery fst ++ getArrayReadsQuery snd
+                        (If _ _ cond branch elseIfs elseBranch) ->
+                            [cond] ++ getArrayReadsQuery branch ++ elseBranchResult
+                            ++ branchConds ++ concatMap getArrayReadsQuery branchBodys
+                            where
+                                (branchConds, branchBodys) = unzip elseIfs
+                                elseBranchResult = case elseBranch of
+                                    (Just body) -> getArrayReadsQuery body
+                                    _           -> []
+                        (NullStmt _ _) -> []
+                        missing@_ -> error ("Unimplemented Fortran Statement " ++ show missing)
 
--- Node to represent the data needed for an OpenCL map kernel
--- [VarName p]                           -- List of arguments to kernel that are READ
--- [VarName p]                           -- List of arguments to kernel that are WRITTEN
--- [(VarName p, Expr p, Expr p, Expr p)] -- Loop variables of nested maps
--- [VarName p] -- Loop variables of enclosing iterative loops
--- (Fortran p)                           -- Body of kernel code
--- | OpenCLReduce p SrcSpan
--- [VarName p]                           -- List of arguments to kernel that are READ
--- [VarName p]                           -- List of arguments to kernel that are WRITTEN
--- [(VarName p, Expr p, Expr p, Expr p)] -- Loop variables of nested reductions
--- [VarName p] -- Loop variables of enclosing iterative loops
--- [(VarName p, Expr p)]                 -- List of variables that are considered 'reduction variables' along with their initial values
--- (Fortran p)   )
 

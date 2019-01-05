@@ -18,6 +18,9 @@ getAttrs typeDecl = case typeDecl of
     (BaseType _ _ attrs _ _) -> attrs
     (ArrayT _ _ _ attrs _ _) -> attrs
 
+getSubBody :: ProgUnit Anno -> Fortran Anno
+getSubBody (Sub _ _ _ _ _ (Block _ _ _ _ _ fortran)) = fortran
+getSubBody (Module _ _ _ _ _ _ progUnits) = head $ map getSubBody progUnits
 
 getDecls :: ProgUnit Anno -> [Decl Anno]
 getDecls (Sub _ _ _ _ _ (Block _ _ _ _ decls _))  = everything (++) (mkQ [] getDeclsQuery) decls
