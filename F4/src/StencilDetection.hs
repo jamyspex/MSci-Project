@@ -57,7 +57,7 @@ findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses ar
 findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
 findStencilAccesses arrays body = arrayAccesses
     where
-        arrayAccesses = everything (++) (mkQ [] getArrayReadsQuery) body
+        arrayAccesses = everything (++) (mkQ [] (getArrayReadsQuery arrays)) body
 
 
 arrayName = (getNameFromVarName . getVarName)
@@ -77,38 +77,87 @@ getMapsAndFolds fortran = everything (++) (mkQ [] mapFoldQuery) fortran
             fold@(OpenCLReduce _ _ _ _ _ _ _ _) -> [fold]
             a@_                                 -> []
 
-findStencils :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencils arrays fortran = concatMap id stencilsOnly
+usesIndexVariablesAndConstantOffset :: [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)] -> [Expr Anno] -> [Expr Anno]
+usesIndexVariablesAndConstantOffset idxVars stencilAccesses = getStencilsOnly simpleOpsOnly
     where
+        getStencilsOnly = map fst
+        loopVarNames = map (\(varName, _, _, _) -> getNameFromVarName varName) idxVars
+        stencilsAndIdxNames = map stencilToStencilIdxNames stencilAccesses
+        stencilsUsingLoopVars
+            = getStencilsOnly $ filter (\(_, indices) -> foldr (\cur acc -> acc && cur `elem` loopVarNames) True indices) stencilsAndIdxNames
+        stencilsUsingLoopVarsAndIdxExprs = map stencilToIndexExprs stencilsUsingLoopVars
+        simpleOpsOnly
+            = filter (\(_, indices) -> foldr (&&) True (map stencilOnlyContainsValidOps indices)) stencilsUsingLoopVarsAndIdxExprs
+
+-- this might have to do constant folding at some point
+stencilOnlyContainsValidOps :: Expr Anno -> Bool
+stencilOnlyContainsValidOps index = foldr (&&) True $ map convertToBools getAllExpr
+    where
+        getAllExpr = everything (++) (mkQ [] getSimpleExprsQuery) index
+        getSimpleExprsQuery :: Expr Anno -> [Expr Anno]
+        getSimpleExprsQuery expr = case expr of
+                                    e@(Bin _ _ _ _ _) -> [e]
+                                    e@(Con _ _ _)     -> [e]
+                                    e@(Var _ _ _)     -> [e]
+                                    _                 -> []
+        convertToBools expr = case expr of
+                                (Bin _ _ _ _ _) -> True
+                                (Con _ _ _)     -> True
+                                (Var _ _ _)     -> True
+                                _               -> False
+
+
+idxVarQuery :: Expr Anno -> [Expr Anno]
+idxVarQuery (Var _ _ [(_,indices)]) = indices
+
+stencilToIndexExprs sten = (sten, idxVarQuery sten)
+stencilToStencilIdxNames sten = (sten, map getNameFromVarName $ everything (++) (mkQ [] extractVarNamesFromExpr) $ idxVarQuery sten)
+
+getLoopVariables :: [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)]
+                 -> Fortran Anno
+                 -> [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)]
+getLoopVariables vars (OpenCLMap _ _ _ _ loopVariables _ body) = getLoopVariables (vars ++ loopVariables) body
+getLoopVariables vars (OpenCLReduce _ _ _ _ loopVariables _ _ body) = getLoopVariables (vars ++ loopVariables) body
+getLoopVariables vars _ = vars
+
+varNameFromLoopIdx (varname, _, _, _) = varname
+
+findStencils :: [Array] -> Fortran Anno -> [Expr Anno]
+findStencils arrays fortran = usesLoopVarsOnly
+    where
+        loopVariables = removeDuplicates (getNameFromVarName . varNameFromLoopIdx) $ getLoopVariables [] fortran
         allAccesses = findStencilAccesses arrays fortran
         uniqueAccesses = removeDuplicates miniPP allAccesses
         sortedByVarName = sortBy sortVarNames uniqueAccesses
         groupedByArray = groupBy groupByArray sortedByVarName
         groupByArray var1 var2 = arrayName var1 == arrayName var2
-        stencilsOnly = filter (\grp -> length grp > 1) groupedByArray
+        moreThanOneAccess = concatMap id $ filter (\grp -> length grp > 1) groupedByArray
+        usesLoopVarsOnly = usesIndexVariablesAndConstantOffset loopVariables moreThanOneAccess
 
-getArrayReadsQuery :: Fortran Anno -> [Expr Anno]
-getArrayReadsQuery fortran = allReadExprs
+getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
+getArrayReadsQuery arrays fortran = allReadExprs
     where
+        arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
         arrayReadQuery expr = case expr of
                                 var@(Var _ _ ((VarName _ name, (idx:_)):_)) ->
-                                    if not (name `elem` f95IntrinsicFunctions) then [var] else []
+                                    if (name `elem` arrayNames) then [var] else []
                                 _                            -> []
         allReadExprs = everything (++) (mkQ [] arrayReadQuery) readExprsFromFortran
         readExprsFromFortran = case fortran of
                         (Assg _ _ _ rhs) -> [rhs]
-                        (For _ _ _ start bound incre body) -> (start:bound:incre:(getArrayReadsQuery body))
-                        (DoWhile _ _ bound body) -> [bound] ++ getArrayReadsQuery body
-                        (FSeq _ _ fst snd) -> getArrayReadsQuery fst ++ getArrayReadsQuery snd
+                        (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
+                        (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
+                        (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
                         (If _ _ cond branch elseIfs elseBranch) ->
-                            [cond] ++ getArrayReadsQuery branch ++ elseBranchResult
-                            ++ branchConds ++ concatMap getArrayReadsQuery branchBodys
+                            [cond] ++ recursiveCall branch ++ elseBranchResult
+                            ++ branchConds ++ concatMap recursiveCall branchBodys
                             where
                                 (branchConds, branchBodys) = unzip elseIfs
                                 elseBranchResult = case elseBranch of
-                                    (Just body) -> getArrayReadsQuery body
+                                    (Just body) -> recursiveCall body
                                     _           -> []
                         (NullStmt _ _) -> []
                         missing@_ -> error ("Unimplemented Fortran Statement " ++ show missing)
+        recursiveCall = getArrayReadsQuery arrays
 
 

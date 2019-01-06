@@ -1020,9 +1020,6 @@ eta(j,k+1)
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     }
-eta(j+1,k)
-eta(j,k)
-eta(j,k+1)
 
 ----------------------------------
 ! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500.0,1)","(k,1,500.0,1)"],[]) {
@@ -1084,9 +1081,6 @@ wet(j,k+1)
         end if
     end if
     }
-wet(j+1,k)
-wet(j,k)
-wet(j,k+1)
 
 ----------------------------------
 ! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500.0,1)","(k,1,500.0,1)"],[]) {
@@ -1132,15 +1126,6 @@ vn(j-1,k)
     hvs = hsp+hsn
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     }
-h(j+1,k)
-h(j,k)
-h(j,k+1)
-h(j,k-1)
-h(j-1,k)
-un(j,k)
-un(j,k-1)
-vn(j,k)
-vn(j-1,k)
 
 ----------------------------------
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500.0,1)","(k,1,500.0,1)"],[]) {
@@ -1177,16 +1162,6 @@ wet(j-1,k)
         eta(j,k) = etan(j,k)
     end if
     }
-etan(j+1,k)
-etan(j,k)
-etan(j,k+1)
-etan(j,k-1)
-etan(j-1,k)
-wet(j+1,k)
-wet(j,k)
-wet(j,k+1)
-wet(j,k-1)
-wet(j-1,k)
 
 ----------------------------------
 ! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,500.0+1,1)","(k,0,500.0+1,1)"],[]) {
