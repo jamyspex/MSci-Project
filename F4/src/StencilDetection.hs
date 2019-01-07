@@ -26,17 +26,8 @@ detectStencilsInSubsToBeParallelise srt = updatedSrt
 
 detectStencils :: SubRec -> SubRec
 detectStencils subrec = addStencilNodes arraysInSub subrec
-    -- do
-    -- putStrLn (concatMap (\d -> show d ++ "\n") arraysInSub)
-    -- putStrLn (concatMap (\(block, stencils) ->
-    --     ("\n----------------------------------\n" ++  miniPPF block ++ "\n" ++ (concatMap (\sten -> show sten ++ "\n") stencils))) debug_stencils)
-    -- putStrLn ((miniPPProgUnit . subAst) $ addStencilNodes arraysInSub subrec)
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
-        -- subBody = getSubBody $ subAst subrec
-        -- debug_stencils = map (\body -> (body, (createStencilRecords arraysInSub $ findStencils arraysInSub body))) $ getMapsAndFolds subBody
-        -- stencilExprs = map (findStencils arraysInSub) $ getMapsAndFolds subBody
-        -- stencils = map (createStencilRecords arraysInSub) stencilExprs
 
 addStencilNodes :: [Array] -> SubRec -> SubRec
 addStencilNodes arrays subRec = subRec { subAst = everywhere (mkT addNodeQuery) $ subAst subRec }

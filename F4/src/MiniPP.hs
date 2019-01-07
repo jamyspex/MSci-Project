@@ -197,9 +197,9 @@ miniPPFT stmt tab = case stmt of
                  NullStmt _ _ -> "" -- "! NullStmt"
                  Stop _ _ e1 -> tab++"stop "++(miniPP e1)
                  Continue _ _ -> tab++"continue"
-                 OpenCLMap _ _ vrs  vws lvars ilvars stmt1  -> "! OpenCLMap ( "++(showVarLst vrs)++","++(  showVarLst vws)++","++( showLoopVarLst lvars)++","++( showVarLst ilvars)++") {\n"++(miniPPFT stmt1 tab)++"\n"++tab++"}" -- WV20170426
-                 OpenCLReduce _ _ vrs vws lvars ilvars rvarexprs stmt1 -> "! OpenCLReduce ( "++(showVarLst vrs)++","++(  showVarLst vws)++","++( showLoopVarLst lvars)++","++( showVarLst ilvars)++","++ (showReductionVarLst rvarexprs)++") {\n"++(miniPPFT stmt1 tab) ++"\n"++tab++"}" -- WV20170426
-                 OpenCLStencil _ _ stencils stmt1 -> "! OpenCLStencil (\n" ++ showStencils tab stencils ++ "\n" ++ tab ++ "){\n" ++ miniPPFT stmt1 tab ++ tab ++ "\n}"
+                 OpenCLMap _ _ vrs  vws lvars ilvars stmt1  -> "! OpenCLMap ( "++(showVarLst vrs)++","++(  showVarLst vws)++","++( showLoopVarLst lvars)++","++( showVarLst ilvars)++") {\n"++(miniPPFT stmt1 tab)++"\n"++"!}" -- WV20170426
+                 OpenCLReduce _ _ vrs vws lvars ilvars rvarexprs stmt1 -> "! OpenCLReduce ( "++(showVarLst vrs)++","++(  showVarLst vws)++","++( showLoopVarLst lvars)++","++( showVarLst ilvars)++","++ (showReductionVarLst rvarexprs)++") {\n"++(miniPPFT stmt1 tab) ++"\n"++"!}" -- WV20170426
+                 OpenCLStencil _ _ stencils stmt1 -> "! OpenCLStencil (\n" ++ showStencils tab stencils ++ "\n" ++ "!" ++ tab ++ "){\n" ++ miniPPFT stmt1 tab ++ tab ++ "\n!}"
                  OpenCLBufferWrite _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
@@ -209,7 +209,7 @@ miniPPFT stmt tab = case stmt of
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
 
 showStencils tab [(Stencil _ dimen points coords (VarName _ name))]
-    = tab ++ tab ++ (show points) ++ " point stencil on " ++ (show dimen) ++ "D array " ++ name ++ ": " ++ (show coords)
+    = "!" ++ tab ++ tab ++ (show points) ++ " point stencil on " ++ (show dimen) ++ "D array " ++ name ++ ": " ++ (show coords)
 showStencils tab (s:ss) = showStencils tab [s] ++ "\n" ++ showStencils tab ss
 
 miniPPSpecs :: [Spec Anno] -> String -> String

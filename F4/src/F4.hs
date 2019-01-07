@@ -35,7 +35,7 @@ compilerMain :: F4Opts -> IO ()
 compilerMain args = do
     subroutineTable <- parseProgramData args
 
-    traceIO $ show (DMap.keys subroutineTable)
+    -- traceIO $ show (DMap.keys subroutineTable)
 
     let notForOffloadSubTable = DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
     let forOffloadSubTable = DMap.filter (\subRec -> parallelise subRec) subroutineTable
@@ -45,19 +45,19 @@ compilerMain args = do
 
     debug_displaySubRoutineTable notForOffloadSubTable
 
-    traceIO $ show (DMap.keys notForOffloadSubTable)
+    -- traceIO $ show (DMap.keys notForOffloadSubTable)
 
     putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
 
     debug_displaySubRoutineTable forOffloadSubTable
 
-    traceIO $ show (DMap.keys forOffloadSubTable)
+    -- traceIO $ show (DMap.keys forOffloadSubTable)
 
     putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
 
     let subroutineTableWithOffloadSubsMerged = mergeSubsToBeParallelised subroutineTable
 
-    traceIO $ show (DMap.keys subroutineTableWithOffloadSubsMerged)
+    -- traceIO $ show (DMap.keys subroutineTableWithOffloadSubsMerged)
 
     debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged
 
