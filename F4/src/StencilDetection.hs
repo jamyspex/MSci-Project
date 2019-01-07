@@ -22,13 +22,28 @@ detectStencils subrec = do
     putStrLn (concatMap (\d -> show d ++ "\n") arraysInSub)
     putStrLn (concatMap (\(block, stencils) ->
         ("\n----------------------------------\n" ++  miniPPF block ++ "\n" ++ (concatMap (\sten -> show sten ++ "\n") stencils))) debug_stencils)
-    -- putStrLn (concatMap (\d -> miniPP d ++ "\n") $ findArrayAccesses arraysInSub subBody)
+    putStrLn ((miniPPProgUnit . subAst) $ addStencilNodes arraysInSub subrec)
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
         subBody = getSubBody $ subAst subrec
         debug_stencils = map (\body -> (body, (createStencilRecords arraysInSub $ findStencils arraysInSub body))) $ getMapsAndFolds subBody
         stencilExprs = map (findStencils arraysInSub) $ getMapsAndFolds subBody
         stencils = map (createStencilRecords arraysInSub) stencilExprs
+
+addStencilNodes :: [Array] -> SubRec -> SubRec
+addStencilNodes arrays subRec = subRec { subAst = everywhere (mkT addNodeQuery) $ subAst subRec }
+    where
+        addNodeQuery curVal@(OpenCLMap _ _ _ _ _ _ body)
+            | length stencils > 0 = OpenCLStencil nullAnno nullSrcSpan stencils curVal
+            | otherwise = curVal
+            where
+                stencils = createStencilRecords arrays $ findStencils arrays curVal
+        addNodeQuery curVal@(OpenCLReduce _ _ _ _ _ _ _ body)
+            | length stencils > 0 = OpenCLStencil nullAnno nullSrcSpan stencils curVal
+            | otherwise = curVal
+            where
+                stencils = createStencilRecords arrays $ findStencils arrays curVal
+        addNodeQuery curVal = curVal
 
 createStencilRecords :: [Array] -> [[Expr Anno]] -> [Stencil Anno]
 createStencilRecords arrays stencils = map (\(arrayDecl, stenUsages) -> createOneStencilRecord arrayDecl stenUsages) arrayDeclUsagePairs
