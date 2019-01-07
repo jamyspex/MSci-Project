@@ -4,6 +4,7 @@ import           Data.Data
 import           Data.Generics         (Data, Typeable, everything, everywhere,
                                         gmapQ, gmapT, mkQ, mkT)
 import           Data.List
+import qualified Data.Map              as DMap
 import           F95IntrinsicFunctions
 import           Language.Fortran
 import           LanguageFortranTools
@@ -19,12 +20,41 @@ data Array = Array {
 detectStencils :: SubRec -> IO ()
 detectStencils subrec = do
     putStrLn (concatMap (\d -> show d ++ "\n") arraysInSub)
-    putStrLn (concatMap (\(block, exprs) -> ("\n----------------------------------\n" ++  miniPPF block ++ "\n" ++ (concatMap (\d -> miniPP d ++ "\n") exprs))) results)
+    putStrLn (concatMap (\(block, stencils) ->
+        ("\n----------------------------------\n" ++  miniPPF block ++ "\n" ++ (concatMap (\sten -> show sten ++ "\n") stencils))) debug_stencils)
     -- putStrLn (concatMap (\d -> miniPP d ++ "\n") $ findArrayAccesses arraysInSub subBody)
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
         subBody = getSubBody $ subAst subrec
-        results = map (\body -> (body, findStencils arraysInSub body)) $ getMapsAndFolds subBody
+        debug_stencils = map (\body -> (body, (createStencilRecords arraysInSub $ findStencils arraysInSub body))) $ getMapsAndFolds subBody
+        stencilExprs = map (findStencils arraysInSub) $ getMapsAndFolds subBody
+        stencils = map (createStencilRecords arraysInSub) stencilExprs
+
+createStencilRecords :: [Array] -> [[Expr Anno]] -> [Stencil Anno]
+createStencilRecords arrays stencils = map (\(arrayDecl, stenUsages) -> createOneStencilRecord arrayDecl stenUsages) arrayDeclUsagePairs
+    where
+        arrayDeclMapItems = map (\array -> (getNameFromVarName $ varName array, array)) arrays
+        arrayDeclMap = DMap.fromList arrayDeclMapItems
+        stencilMapItems = map (\stencils -> (arrayName $ head stencils, stencils)) stencils
+        stenMap = DMap.fromList stencilMapItems
+        requiredKeys = DMap.keys stenMap
+        arrayDeclUsagePairs = map (\key -> (arrayDeclMap DMap.! key, stenMap DMap.! key)) requiredKeys
+
+createOneStencilRecord :: Array -> [Expr Anno] -> Stencil Anno
+createOneStencilRecord arrayDecl stencilArrayAccesses = Stencil nullAnno dimensions (length offsets) offsets arrayVarName
+    where
+        arrayVarName = getVarName $ head stencilArrayAccesses
+        offsets =  map (getOffsets . idxVarQuery) stencilArrayAccesses
+        dimensions = arrDimensions arrayDecl
+
+getOffsets :: [Expr Anno] -> [Int]
+getOffsets indices = map getOffset indices
+
+getOffset :: Expr Anno -> Int
+getOffset (Bin _ _ (Plus _) loopVar (Con _ _ offset))  = read offset
+getOffset (Bin _ _ (Minus _) loopVar (Con _ _ offset)) = negate $ read offset
+getOffset (Var _ _ loopVar) = 0
+getOffset missing@_ = error ("getOffset pattern miss for: " ++ show missing)
 
 arrayFromDecl :: Decl Anno -> Array
 arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}
@@ -118,21 +148,21 @@ getLoopVariables :: [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)]
                  -> [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)]
 getLoopVariables vars (OpenCLMap _ _ _ _ loopVariables _ body) = getLoopVariables (vars ++ loopVariables) body
 getLoopVariables vars (OpenCLReduce _ _ _ _ loopVariables _ _ body) = getLoopVariables (vars ++ loopVariables) body
-getLoopVariables vars _ = vars
+getLoopVariables vars _ = removeDuplicates (getNameFromVarName . varNameFromLoopIdx) vars
 
 varNameFromLoopIdx (varname, _, _, _) = varname
 
-findStencils :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencils arrays fortran = usesLoopVarsOnly
+findStencils :: [Array] -> Fortran Anno -> [[Expr Anno]]
+findStencils arrays fortran = moreThanOneAccess
     where
         loopVariables = removeDuplicates (getNameFromVarName . varNameFromLoopIdx) $ getLoopVariables [] fortran
         allAccesses = findStencilAccesses arrays fortran
         uniqueAccesses = removeDuplicates miniPP allAccesses
-        sortedByVarName = sortBy sortVarNames uniqueAccesses
+        usesLoopVarsOnly = usesIndexVariablesAndConstantOffset loopVariables uniqueAccesses
+        sortedByVarName = sortBy sortVarNames usesLoopVarsOnly
         groupedByArray = groupBy groupByArray sortedByVarName
         groupByArray var1 var2 = arrayName var1 == arrayName var2
-        moreThanOneAccess = concatMap id $ filter (\grp -> length grp > 1) groupedByArray
-        usesLoopVarsOnly = usesIndexVariablesAndConstantOffset loopVariables moreThanOneAccess
+        moreThanOneAccess = filter (\grp -> length grp > 1) groupedByArray
 
 getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
 getArrayReadsQuery arrays fortran = allReadExprs

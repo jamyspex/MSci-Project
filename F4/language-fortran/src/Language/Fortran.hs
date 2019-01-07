@@ -244,11 +244,10 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                   (Fortran p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
-data Stencil p = Stencil {
-    dimensions :: Int,
-    coords     :: [Int],
-    variable   :: VarName p
-} deriving (Show, Functor, Typeable, Data, Eq)
+
+                        -- dimensions, stencil points, co ords, array name
+data Stencil p = Stencil p Int Int [[Int]] (VarName p)
+                deriving (Show, Functor, Typeable, Data, Eq)
 
 -- type Bound    = ((Expr p),(Expr p))
 

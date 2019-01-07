@@ -242,8 +242,8 @@ debug_displaySubTableEntry sr = do
     putStrLn $ "Filename: " ++ (subSrcFile sr)
     putStrLn $ "Source:"
     putStrLn $ miniPPProgUnit (subAst sr)
-    putStrLn $ "AST: "
-    putStrLn $ show (subAst sr)
+    -- putStrLn $ "AST: "
+    -- putStrLn $ show (subAst sr)
     putStrLn $ "Argument translations:"
     putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
         "\t" ++ miniPPF callStatement ++ "\n" ++
