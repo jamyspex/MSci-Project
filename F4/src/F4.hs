@@ -12,6 +12,7 @@ import           ConstantFolding
 import           Data.Generics           (everything, everywhere, everywhereM,
                                           gmapQ, gmapT, mkM, mkQ, mkT)
 import qualified Data.Map                as DMap
+import           Debug.Trace
 import           Language.Fortran
 import           Language.Fortran.Pretty
 import qualified LanguageFortranTools    as LFT
@@ -34,6 +35,8 @@ compilerMain :: F4Opts -> IO ()
 compilerMain args = do
     subroutineTable <- parseProgramData args
 
+    traceIO $ show (DMap.keys subroutineTable)
+
     let notForOffloadSubTable = DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
     let forOffloadSubTable = DMap.filter (\subRec -> parallelise subRec) subroutineTable
     let subroutineNames = DMap.keys forOffloadSubTable
@@ -42,34 +45,46 @@ compilerMain args = do
 
     debug_displaySubRoutineTable notForOffloadSubTable
 
+    traceIO $ show (DMap.keys notForOffloadSubTable)
+
     putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
 
     debug_displaySubRoutineTable forOffloadSubTable
 
+    traceIO $ show (DMap.keys forOffloadSubTable)
+
     putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
 
     let subroutineTableWithOffloadSubsMerged = mergeSubsToBeParallelised subroutineTable
+
+    traceIO $ show (DMap.keys subroutineTableWithOffloadSubsMerged)
 
     debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged
 
     let mergedForOffload = DMap.filter (\subRec -> parallelise subRec) subroutineTableWithOffloadSubsMerged
     let mergedOffloadName = DMap.keys mergedForOffload
 
-    putStrLn ((rule '+') ++ " Map Detection " ++ (rule '+'))
+    putStrLn ((rule '+') ++ " Map + Fold Detection " ++ (rule '+'))
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) mergedForOffload) (DMap.empty, []) mergedOffloadName
+    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) subroutineTableWithOffloadSubsMerged) (DMap.empty, []) mergedOffloadName
 
     debug_displaySubRoutineTable parallelisedSubroutines
 
-    mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
-        (DMap.toList parallelisedSubroutines)
+    let srtWithParallelisedSubroutines = DMap.union parallelisedSubroutines subroutineTableWithOffloadSubsMerged
 
-    detectStencils $ head (map (\(_, val) -> val) $ (DMap.toList parallelisedSubroutines))
+    -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
+    --     (DMap.toList parallelisedSubroutines)
+
+    putStrLn ((rule '+') ++ " Stencil Detection " ++ (rule '+'))
+
+    let srtAfterStenDetect = detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
+
+    debug_displaySubRoutineTable srtAfterStenDetect
 
     -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-    -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) subroutineNames
+    -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) mergedOffloadName
 
     -- putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
 

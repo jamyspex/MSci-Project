@@ -22,7 +22,7 @@ mergeSubsToBeParallelised :: SubroutineTable -> SubroutineTable
 mergeSubsToBeParallelised srt = DMap.insert (subName mergedSubRec) mergedSubRec originalsRemoved
     where
         paraReplacementPairs = getArgTransSubroutinePairs srt
-        keysToRemove = map (\(_, sub) -> (subName sub)) paraReplacementPairs
+        keysToRemove = map (\(_, sub) -> (subName sub)) forOffloadPairs
         (mergedArgTrans, mergedSubRec) = mergeSubs forOffloadPairs
         originalsRemoved = foldr (\cur acc -> DMap.delete cur acc) srt keysToRemove
         forOffloadPairs = filter (\(_, sub) -> parallelise sub) $ paraReplacementPairs

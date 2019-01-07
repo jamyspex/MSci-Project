@@ -53,7 +53,3 @@ buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
 buildAstSeq _ nullNode [] = nullNode
 buildAstSeq _ _ (statement:[]) = statement
 buildAstSeq constructor nullNode (statement:statements) = constructor statement (buildAstSeq constructor nullNode statements)
-
-
-
-
