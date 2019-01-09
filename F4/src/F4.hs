@@ -84,9 +84,13 @@ compilerMain args = do
     debug_displaySubRoutineTable srtAfterStenDetect
 
     -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-    -- let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (parallelisedSubroutines, []) mergedOffloadName
+    let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (srtAfterStenDetect, []) mergedOffloadName
 
-    -- putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
+    putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
+
+    let srtAfterKernelCombination = DMap.union combinedKernelSubroutines srtAfterStenDetect
+
+    debug_displaySubRoutineTable srtAfterKernelCombination
 
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
     --     (DMap.toList combinedKernelSubroutines)
