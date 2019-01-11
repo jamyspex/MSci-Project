@@ -1,0 +1,1 @@
+F4-exe -m main.f95 -s ./src -o adam.f95 -o bondv1.f95 -o feedbf.f95 -o les.f95 -o press.f95 -o velFG.f95 -o velnw.f95 -D WV_OPENCL,WV_NEW,NO_GLOBAL_SOR,INLINE_BOUND_CALCS,WV_TEST,TWINNED_BUFFER,NO_IO,IFBF=1,IADAM=0

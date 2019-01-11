@@ -6,6 +6,7 @@ import           Data.Char
 import           Data.Generics           (Data, Typeable, everything,
                                           everywhere, gmapQ, gmapT, mkQ, mkT)
 import           Data.List
+import qualified Data.List.Split         as LS
 import qualified Data.Map                as DMap
 import           Data.Maybe
 import           Data.Typeable
@@ -61,35 +62,46 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
             then  ""
             else unwords dFlagList
     inp <- readFile filename
-    let
-        contentLines = lines inp
-    let
-    -- Then we split out var decls into one per line
-        inp' = unlines $ oneVarDeclPerVarDeclLine contentLines
-    -- Then we preprocess, which should remove blank lines
-        (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
-    -- Write this out to a file so we can call cpp on it via the shell
+
     let
         filename_no_dot
             | head filename == '.' = tail $ tail filename
             | otherwise = filename
         filename_noext = head $ split '.' filename_no_dot
+
+    writeFile ("./" ++ filename_noext ++ "_just_read.f95") inp
+
+    let
+        contentLines = lines inp
+    let
+    -- Then we split out var decls into one per line
+        inp' = unlines contentLines -- $ oneVarDeclPerVarDeclLine contentLines
+
+    -- Then we preprocess, which should remove blank lines
+        (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
+    -- Write this out to a file so we can call cpp on it via the shell
     writeFile ("./"++filename_noext++"_tmp.f95") preproc_inp
     -- Apply the C preprocessor on the temporary file and remove the blank lines
     let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " ./"++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
     -- putStrLn cpp_cmd
+    putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
+    writeFile ("./" ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
     -- Language.Fortran.Parser borks on lines starting with !# and on trailing comments
         exp_inp_lines_no_comments = map (takeWhile (/= '!')) (lines preproc_inp')
     -- I also skip any blank lines
         exp_inp_lines'' = removeBlankLines exp_inp_lines_no_comments
+
+    writeFile ("./" ++ filename_noext ++ "_blank_lines_removed.f95") $ unlines exp_inp_lines''
         -- exp_inp_lines'' = filter ( /= "") exp_inp_lines_no_comments
     -- First declarations from used modules are inlined. Why first? Surely it would be better to do that *after* running CPP?
     (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
+    writeFile ("./" ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
     let
         preproc_inp'' = unlines exp_inp_lines'
+    writeFile ("./" ++ filename_noext ++ "_after_inling.f95") preproc_inp''
     return (preproc_inp'', stash,moduleVarTable)
 
 
@@ -1047,34 +1059,36 @@ addImplicitNone contentLines =
 
 
 
+-- splitDelim :: String -> String -> [String]
+-- splitDelim patt line =
+--     let
+--         (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch ->
+--                     if Data.List.isPrefixOf patt rest_of_line
+--                         then
+--                             let
+--                                  rest_of_line' = case Data.List.stripPrefix patt rest_of_line of
+--                                     Just r  -> r
+--                                     Nothing -> rest_of_line
+--                             in
+--                                 (chunks++[current_chunk],"",rest_of_line')
+--                         else
+--                             if length rest_of_line > 0
+--                             then
+--                                 let
+--                                     ch':rest_of_line' = rest_of_line
+--                                     current_chunk' = current_chunk++[ch']
+--                                 in
+--                                     (chunks, current_chunk', rest_of_line')
+--                             else
+--                                  (chunks, current_chunk, rest_of_line)
+--                 ) ([],"",line) line
+--     in
+--         chunks++[ last_chunk ]
+
 splitDelim :: String -> String -> [String]
-splitDelim patt line =
-    let
-        (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch ->
-                    if Data.List.isPrefixOf patt rest_of_line
-                        then
-                            let
-                                 rest_of_line' = case Data.List.stripPrefix patt rest_of_line of
-                                    Just r  -> r
-                                    Nothing -> rest_of_line
-                            in
-                                (chunks++[current_chunk],"",rest_of_line')
-                        else
-                            if length rest_of_line > 0
-                            then
-                                let
-                                    ch':rest_of_line' = rest_of_line
-                                    current_chunk' = current_chunk++[ch']
-                                in
-                                    (chunks, current_chunk', rest_of_line')
-                            else
-                                 (chunks, current_chunk, rest_of_line)
-                ) ([],"",line) line
-    in
-        chunks++[ last_chunk ]
+splitDelim delim str = LS.splitOn delim str -- (find_delim delim str [])
+
 {-
-splitDelim :: String -> String -> [String]
-splitDelim delim str = words (find_delim delim str [])
 
 find_delim :: String -> String -> String -> String
 find_delim delim str str'
