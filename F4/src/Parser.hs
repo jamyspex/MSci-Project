@@ -278,7 +278,7 @@ populateSubCalls :: F4Opts -> SubRecAnalysis -> SubRecAnalysis
 populateSubCalls opts sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMap}
     where
         fileAstsList = DMap.toList $ subroutineToAst sra
-        callsInFiles = map (\(subname, ast) -> (subname, extractAllCalls ast)) fileAstsList¬
+        callsInFiles = map (\(subname, ast) -> (subname, extractAllCalls ast)) fileAstsList
         callsOfInterest = map (\(subname, calls) -> (subname, filter (checkIfSubOfInterest opts) calls)) callsInFiles
         subnamesToCallsMap = trace ("callsOfInterest: " ++ concatMap (\(key, val) -> key ++ ": " ++ show (map getCalledSubName val) ++ "\n") callsOfInterest)
             $ map (\(subname, calls) -> (subname, DMap.fromList $ map (\call -> (getCalledSubName call, call)) calls)) callsOfInterest

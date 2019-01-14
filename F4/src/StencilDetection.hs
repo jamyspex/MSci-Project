@@ -5,6 +5,7 @@ import           Data.Generics         (Data, Typeable, everything, everywhere,
                                         gmapQ, gmapT, mkQ, mkT)
 import           Data.List
 import qualified Data.Map              as DMap
+import           Debug.Trace
 import           F95IntrinsicFunctions
 import           Language.Fortran
 import           LanguageFortranTools
@@ -98,8 +99,8 @@ isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
 
 findStencilAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
--- findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body
--- findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = trace ("trace:: \n" ++ miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = trace ("trace:: \n" ++  miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
 -- findStencilAccesses arrays (OpenCLStencil _ _ _ body) = findStencilAccesses arrays body
 findStencilAccesses arrays body = arrayAccesses
     where
@@ -204,9 +205,9 @@ getArrayReadsQuery arrays fortran = allReadExprs
                                     _           -> []
                         (NullStmt _ _) -> []
                         (OpenCLStencil _ _ _ body) -> recursiveCall body
-                        (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
-                        (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
-                        missing@_ -> error ("Unimplemented Fortran Statement " ++ miniPPF missing)
+                        -- (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
+                        -- (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
+                        missing@_ -> [] --error ("Unimplemented Fortran Statement " ++ miniPPF missing)
         recursiveCall = getArrayReadsQuery arrays
 
 

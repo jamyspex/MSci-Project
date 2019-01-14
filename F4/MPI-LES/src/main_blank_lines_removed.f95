@@ -187,6 +187,8 @@ program main
                     dt,beta,fx,fy,fz,f,g,h)
         call les(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6, &
                  diu7,diu8,diu9,sm,f,g,h,uspd,vspd,dxs,dys)
+        call temp(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6, &
+                 diu7,diu8,diu9,sm,f,g,h,uspd,vspd,dxs,dys)
         call adam(n,nmax,data21,fold,im,jm,km,gold,hold,fghold,f,g,h)
         call press(km,jm,im,rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s, &
                    cn3l,cn3s,cn4l,cn4s,n, nmax,data20,usum,vsum,wsum)

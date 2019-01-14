@@ -285,6 +285,8 @@ program main
 #endif
         call les(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6, &
                  diu7,diu8,diu9,sm,f,g,h,uspd,vspd,dxs,dys)
+        call temp(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6, &
+                 diu7,diu8,diu9,sm,f,g,h,uspd,vspd,dxs,dys)
 #ifdef TIMINGS
         call system_clock(timestamp(5), clock_rate)
 #endif

@@ -1,0 +1,1315 @@
+./src/grid_tmp.f95:53:9: warning: missing terminating ' character
+ !WV: let's set the *whole* array to this value!
+         ^
+cc1: warning: unrecognized command line option ‘-Wno-invalid-pp-token’
+./src/velnw_tmp.f95:23:17: warning: missing terminating ' character
+ ! Which means it's the values of f,g,h that are changing. g seems fine.
+                 ^
+cc1: warning: unrecognized command line option ‘-Wno-invalid-pp-token’
+callsOfInterest: main: ["temp"]
+
+callsOfInterest: main: ["temp"]
+temp: []
+
+callsOfInterest: main: ["temp"]
+temp: []
+
+
+================================================================================
+F4: Finite-element Fortran for FPGAs
+This compiler allows Fortran finite element codes to be compiled
+for execution on FPGA devices via OpenCL
+================================================================================
+
+The following command line values were parsed:
+
+Files with subroutines to be parallelised:
+	temp
+File containing main subroutine: 
+	main.f95
+Source directory:
+	./src
+Fixed form: False
+Loop fusion bound: Nothing
+CPP Defines: WV_OPENCL, WV_NEW, NO_GLOBAL_SOR, INLINE_BOUND_CALCS, WV_TEST, TWINNED_BUFFER, NO_IO, IFBF=1, IADAM=0, 
+CPP Excludes:
+
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/main_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/init_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/grid_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/set_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/timdata_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/aveflow_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/ifdata_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/velnw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/press_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondFG_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/adam_tmp.f95 | grep -v -E '^\s*$' 
+Parsing ./src/main.f95
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/temp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+Parsing ./src/temp.f95
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Subroutines not for offload 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: main
+Filename: ./src/main.f95
+Source:
+program main
+      real(4) :: alpha
+      integer :: ianime
+      integer :: ical
+      integer :: ifbf
+      integer :: im
+      integer :: jm
+      integer :: km
+      integer :: n
+      integer :: n0
+      integer :: n1
+      integer :: nmax
+      real(4) :: beta
+      character*70 :: data10
+      character*70 :: data11
+      character*70 :: data12
+      character*70 :: data13
+      character*70 :: data14
+      character*70 :: data20
+      character*70 :: data21
+      character*70 :: data22
+      character*70 :: data23
+      character*70 :: data24
+      character*70 :: data25
+      character*70 :: data26
+      character*70 :: data27
+      character*70 :: data30
+      character*70 :: data31
+      real(4) :: dt
+      real(4) :: ro
+      real(4) :: time
+      real(4) :: vn
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: amask1
+      real(4), dimension(ip,jp,kp) :: avel
+      real(4), dimension(ip,jp,kp) :: avep
+      real(4), dimension(ip,jp,kp) :: avesm
+      real(4), dimension(ip,jp,kp) :: avesmsm
+      real(4), dimension(ip,kp) :: avesu
+      real(4), dimension(ip,kp) :: avesuu
+      real(4), dimension(ip,kp) :: avesv
+      real(4), dimension(ip,kp) :: avesvv
+      real(4), dimension(ip,kp) :: avesw
+      real(4), dimension(ip,kp) :: avesww
+      real(4), dimension(ip,jp,0:kp) :: aveu
+      real(4), dimension(ip,jp,kp) :: aveuu
+      real(4), dimension(ip,jp,0:kp) :: avev
+      real(4), dimension(ip,jp,kp) :: avevv
+      real(4), dimension(ip+1,jp,0:kp+2) :: avew
+      real(4), dimension(ip,jp,kp) :: aveww
+      real(4), dimension(-1:ip+1,0:jp+1,0:kp+1) :: bmask1
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: cmask1
+      real(4), dimension(ip,jp,kp) :: cn1
+      real(4), dimension(ip) :: cn2l
+      real(4), dimension(ip) :: cn2s
+      real(4), dimension(jp) :: cn3l
+      real(4), dimension(jp) :: cn3s
+      real(4), dimension(kp) :: cn4l
+      real(4), dimension(kp) :: cn4s
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov9
+      real(4), dimension(kp) :: delx1
+      real(4), dimension(0:ip,jp,kp) :: dfu1
+      real(4), dimension(ip,0:jp,kp) :: dfv1
+      real(4), dimension(ip,jp,kp) :: dfw1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu9
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: dmask1
+      real(4), dimension(-1:ip+1) :: dx1
+      real(4), dimension(0:ip) :: dxl
+      real(4), dimension(0:ip) :: dxs
+      real(4), dimension(0:jp+1) :: dy1
+      real(4), dimension(0:jp) :: dyl
+      real(4), dimension(0:jp) :: dys
+      real(4), dimension(-1:kp+2) :: dzn
+      real(4), dimension(-1:kp+2) :: dzs
+      real(4), dimension(0:ip,0:jp,0:kp) :: f
+      real(4), dimension(ip,jp,kp) :: fold
+      real(4), dimension(0:ip,0:jp,0:kp) :: fx
+      real(4), dimension(0:ip,0:jp,0:kp) :: fy
+      real(4), dimension(0:ip,0:jp,0:kp) :: fz
+      real(4), dimension(0:ip,0:jp,0:kp) :: g
+      real(4), dimension(ip,jp,kp) :: gold
+      real(4), dimension(0:ip,0:jp,0:kp) :: h
+      real(4), dimension(ip,jp,kp) :: hold
+      real(4), dimension(ip,jp,kp) :: fghold
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou9
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+1) :: p
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: rhs
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1) :: sm
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: u
+      real(4), dimension(0:ip,0:jp,0:kp) :: usum
+      real(4), dimension(ip,jp,kp) :: uwfx
+      real(4), dimension(ip,kp) :: uwfxs
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: v
+      real(4), dimension(0:ip,0:jp,0:kp) :: vsum
+      real(4), dimension(0:ip+1,-1:jp+1,-1:kp+1) :: w
+      real(4), dimension(0:ip,0:jp,0:kp) :: wsum
+      real(4), dimension(0:kp+2) :: z2
+      real(4), dimension(-1:ipmax+1,-1:jpmax+1) :: zbm
+      real(4), dimension(0:ip+1,0:jp+1) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1) :: vspd
+      integer :: idata24
+      integer :: jdata24
+      integer :: nspec
+      real(4), dimension(1,1,36001,kp) :: ut_x1_2
+      real(4), dimension(1,1,36001,kp) :: ut_x2_2
+      real(4), dimension(1,1,36001,kp) :: vt_x1_2
+      real(4), dimension(1,1,36001,kp) :: vt_x2_2
+      real(4), dimension(1,1,36001,kp) :: wt_x1_2
+      real(4), dimension(1,1,36001,kp) :: wt_x2_2
+      real(4), dimension(1,kp,36001) :: u_spany2
+      real(4), dimension(1,kp,36001) :: v_spany2
+      real(4), dimension(1,kp,36001) :: w_spany2
+      real(4), dimension(1,kp,36001) :: u_spany3
+      real(4), dimension(1,kp,36001) :: v_spany3
+      real(4), dimension(1,kp,36001) :: w_spany3
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany3
+    call set(data10, data11, data20, data21, data22, data23, data24, data25, data26, data27, data30, data31, im, jm, km, ifbf, ianime, ical, n0, n1, nmax, dt, ro, vn, alpha, beta, data12, data13, data14, idata24, nspec, jdata24)
+    call grid(dx1, dxl, dy1, dyl, z2, dzn, dzs, dxs, dys)
+    call timdata()
+    call init(km, jm, im, u, v, w, p, cn2s, dxs, cn2l, cn3s, dys, cn3l, dzs, cn4s, cn4l, cn1, amask1, bmask1, cmask1, dmask1, zbm, z2, dzn)
+    call ifdata(data30, data31, fold, gold, hold, fghold, time, n, u, im, jm, km, v, w, p, usum, vsum, wsum, delx1, dx1, dy1, dzn, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, z2, dt, dxs, cov1, cov2, cov3, dfu1, vn, cov4, cov5, cov6, dfv1, cov7, cov8, cov9, dfw1, dzs, nou1, nou5, nou9, nou2, nou3, nou4, nou6, nou7, nou8, bmask1, cmask1, dmask1, alpha, beta, fx, fy, fz, amask1, zbm, ical)
+    do n = n0, nmax, 1
+        time = float(n-1)*dt
+        call velnw(km, jm, im, p, ro, dxs, u, dt, f, dys, v, g, dzs, w, h)
+        if (jdata24==0) then
+                call bondv1(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        else
+                call bondv1_data24(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        end if
+        call velfg(km, jm, im, dx1, cov1, cov2, cov3, dfu1, diu1, diu2, dy1, diu3, dzn, vn, f, cov4, cov5, cov6, dfv1, diu4, diu5, diu6, g, cov7, cov8, cov9, dfw1, diu7, diu8, diu9, dzs, h, nou1, u, nou5, v, nou9, w, nou2, nou3, nou4, nou6, nou7, nou8, uspd, vspd)
+        call feedbf(km, jm, im, usum, u, bmask1, vsum, v, cmask1, wsum, w, dmask1, alpha, dt, beta, fx, fy, fz, f, g, h)
+        call les(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call adam(n, nmax, data21, fold, im, jm, km, gold, hold, fghold, f, g, h)
+        call press(km, jm, im, rhs, u, dx1, v, dy1, w, dzn, f, g, h, dt, cn1, cn2l, p, cn2s, cn3l, cn3s, cn4l, cn4s, n, nmax, data20, usum, vsum, wsum)
+        call ifdata_out(n, n0, n1, nmax, time, km, jm, im, u, w, v, p, usum, vsum, wsum, f, g, h, fold, gold, hold)
+        call aveflow(n, n1, km, jm, im, aveu, avev, avew, avep, avel, aveuu, avevv, aveww, avesm, avesmsm, uwfx, avesu, avesv, avesw, avesuu, avesvv, avesww, u, v, w, p, sm, nmax, uwfxs, data10, time, data11, data13, data14, amask1)
+        call timestep_out_all_k(n, n0, n1, nmax, km, jm, im, z2, data22, data23, u, w, v, amask1, ut_x1_2, vt_x1_2, wt_x1_2, ut_x2_2, vt_x2_2, wt_x2_2, nspec, u_spany2, v_spany2, w_spany2, u_spany3, v_spany3, w_spany3, u_x1_19_spany2, v_x1_19_spany2, w_x1_19_spany2, u_x1_19_spany3, v_x1_19_spany3, w_x1_19_spany3)
+    end do
+
+end program main
+Argument translations:
+	temp->
+	    call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+	ArgTrans {parameter = ArgName (fromList []) "km", argument = VarName (fromList []) "km"}
+	ArgTrans {parameter = ArgName (fromList []) "delx1", argument = VarName (fromList []) "delx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dx1", argument = VarName (fromList []) "dx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dy1", argument = VarName (fromList []) "dy1"}
+	ArgTrans {parameter = ArgName (fromList []) "dzn", argument = VarName (fromList []) "dzn"}
+	ArgTrans {parameter = ArgName (fromList []) "jm", argument = VarName (fromList []) "jm"}
+	ArgTrans {parameter = ArgName (fromList []) "im", argument = VarName (fromList []) "im"}
+	ArgTrans {parameter = ArgName (fromList []) "diu1", argument = VarName (fromList []) "diu1"}
+	ArgTrans {parameter = ArgName (fromList []) "diu2", argument = VarName (fromList []) "diu2"}
+	ArgTrans {parameter = ArgName (fromList []) "diu3", argument = VarName (fromList []) "diu3"}
+	ArgTrans {parameter = ArgName (fromList []) "diu4", argument = VarName (fromList []) "diu4"}
+	ArgTrans {parameter = ArgName (fromList []) "diu5", argument = VarName (fromList []) "diu5"}
+	ArgTrans {parameter = ArgName (fromList []) "diu6", argument = VarName (fromList []) "diu6"}
+	ArgTrans {parameter = ArgName (fromList []) "diu7", argument = VarName (fromList []) "diu7"}
+	ArgTrans {parameter = ArgName (fromList []) "diu8", argument = VarName (fromList []) "diu8"}
+	ArgTrans {parameter = ArgName (fromList []) "diu9", argument = VarName (fromList []) "diu9"}
+	ArgTrans {parameter = ArgName (fromList []) "sm", argument = VarName (fromList []) "sm"}
+	ArgTrans {parameter = ArgName (fromList []) "f", argument = VarName (fromList []) "f"}
+	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
+	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
+	ArgTrans {parameter = ArgName (fromList []) "uspd", argument = VarName (fromList []) "uspd"}
+	ArgTrans {parameter = ArgName (fromList []) "vspd", argument = VarName (fromList []) "vspd"}
+	ArgTrans {parameter = ArgName (fromList []) "dxs", argument = VarName (fromList []) "dxs"}
+	ArgTrans {parameter = ArgName (fromList []) "dys", argument = VarName (fromList []) "dys"}
+
+This subroutine will not be offloaded to the FPGA
+================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Subroutines for offload 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: temp
+Filename: ./src/temp.f95
+Source:
+subroutine temp(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm,f,g,h,uspd,vspd,dxs,dys)
+      real(4), dimension(kp), intent(Out) :: delx1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu9
+      real(4), dimension(-1:ip+1), intent(In) :: dx1
+      real(4), dimension(0:jp+1), intent(In) :: dy1
+      real(4), dimension(-1:kp+2), intent(In) :: dzn
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: f
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: g
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: h
+      integer, intent(In) :: im
+      integer, intent(In) :: jm
+      integer, intent(In) :: km
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1), intent(Out) :: sm
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
+      real(4), dimension(0:ip), intent(In) :: dxs
+      real(4), dimension(0:jp), intent(In) :: dys
+    cs0 = .1
+    do k = 2, km, 1
+        do j = 1, jm, 1
+                do i = 1, im, 1
+                                evsx2 = sm(i+1,j,k)
+                                evsx1 = sm(i,j,k)
+                                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                                visux2 = (evsx2)*2.*diu1(i+1,j,k)
+                                visux1 = (evsx1)*2.*diu1(i,j,k)
+                                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+                                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+                                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+                                f(i,j,k) = (f(i,j,k)+vfu)
+                end do
+        end do
+    end do
+end subroutine temp
+
+Argument translations:
+
+This subroutine will be offloaded to the FPGA
+================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Subroutines for offload merged 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: main
+Filename: ./src/main.f95
+Source:
+program main
+      real(4) :: alpha
+      integer :: ianime
+      integer :: ical
+      integer :: ifbf
+      integer :: im
+      integer :: jm
+      integer :: km
+      integer :: n
+      integer :: n0
+      integer :: n1
+      integer :: nmax
+      real(4) :: beta
+      character*70 :: data10
+      character*70 :: data11
+      character*70 :: data12
+      character*70 :: data13
+      character*70 :: data14
+      character*70 :: data20
+      character*70 :: data21
+      character*70 :: data22
+      character*70 :: data23
+      character*70 :: data24
+      character*70 :: data25
+      character*70 :: data26
+      character*70 :: data27
+      character*70 :: data30
+      character*70 :: data31
+      real(4) :: dt
+      real(4) :: ro
+      real(4) :: time
+      real(4) :: vn
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: amask1
+      real(4), dimension(ip,jp,kp) :: avel
+      real(4), dimension(ip,jp,kp) :: avep
+      real(4), dimension(ip,jp,kp) :: avesm
+      real(4), dimension(ip,jp,kp) :: avesmsm
+      real(4), dimension(ip,kp) :: avesu
+      real(4), dimension(ip,kp) :: avesuu
+      real(4), dimension(ip,kp) :: avesv
+      real(4), dimension(ip,kp) :: avesvv
+      real(4), dimension(ip,kp) :: avesw
+      real(4), dimension(ip,kp) :: avesww
+      real(4), dimension(ip,jp,0:kp) :: aveu
+      real(4), dimension(ip,jp,kp) :: aveuu
+      real(4), dimension(ip,jp,0:kp) :: avev
+      real(4), dimension(ip,jp,kp) :: avevv
+      real(4), dimension(ip+1,jp,0:kp+2) :: avew
+      real(4), dimension(ip,jp,kp) :: aveww
+      real(4), dimension(-1:ip+1,0:jp+1,0:kp+1) :: bmask1
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: cmask1
+      real(4), dimension(ip,jp,kp) :: cn1
+      real(4), dimension(ip) :: cn2l
+      real(4), dimension(ip) :: cn2s
+      real(4), dimension(jp) :: cn3l
+      real(4), dimension(jp) :: cn3s
+      real(4), dimension(kp) :: cn4l
+      real(4), dimension(kp) :: cn4s
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov9
+      real(4), dimension(kp) :: delx1
+      real(4), dimension(0:ip,jp,kp) :: dfu1
+      real(4), dimension(ip,0:jp,kp) :: dfv1
+      real(4), dimension(ip,jp,kp) :: dfw1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu9
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: dmask1
+      real(4), dimension(-1:ip+1) :: dx1
+      real(4), dimension(0:ip) :: dxl
+      real(4), dimension(0:ip) :: dxs
+      real(4), dimension(0:jp+1) :: dy1
+      real(4), dimension(0:jp) :: dyl
+      real(4), dimension(0:jp) :: dys
+      real(4), dimension(-1:kp+2) :: dzn
+      real(4), dimension(-1:kp+2) :: dzs
+      real(4), dimension(0:ip,0:jp,0:kp) :: f
+      real(4), dimension(ip,jp,kp) :: fold
+      real(4), dimension(0:ip,0:jp,0:kp) :: fx
+      real(4), dimension(0:ip,0:jp,0:kp) :: fy
+      real(4), dimension(0:ip,0:jp,0:kp) :: fz
+      real(4), dimension(0:ip,0:jp,0:kp) :: g
+      real(4), dimension(ip,jp,kp) :: gold
+      real(4), dimension(0:ip,0:jp,0:kp) :: h
+      real(4), dimension(ip,jp,kp) :: hold
+      real(4), dimension(ip,jp,kp) :: fghold
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou9
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+1) :: p
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: rhs
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1) :: sm
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: u
+      real(4), dimension(0:ip,0:jp,0:kp) :: usum
+      real(4), dimension(ip,jp,kp) :: uwfx
+      real(4), dimension(ip,kp) :: uwfxs
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: v
+      real(4), dimension(0:ip,0:jp,0:kp) :: vsum
+      real(4), dimension(0:ip+1,-1:jp+1,-1:kp+1) :: w
+      real(4), dimension(0:ip,0:jp,0:kp) :: wsum
+      real(4), dimension(0:kp+2) :: z2
+      real(4), dimension(-1:ipmax+1,-1:jpmax+1) :: zbm
+      real(4), dimension(0:ip+1,0:jp+1) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1) :: vspd
+      integer :: idata24
+      integer :: jdata24
+      integer :: nspec
+      real(4), dimension(1,1,36001,kp) :: ut_x1_2
+      real(4), dimension(1,1,36001,kp) :: ut_x2_2
+      real(4), dimension(1,1,36001,kp) :: vt_x1_2
+      real(4), dimension(1,1,36001,kp) :: vt_x2_2
+      real(4), dimension(1,1,36001,kp) :: wt_x1_2
+      real(4), dimension(1,1,36001,kp) :: wt_x2_2
+      real(4), dimension(1,kp,36001) :: u_spany2
+      real(4), dimension(1,kp,36001) :: v_spany2
+      real(4), dimension(1,kp,36001) :: w_spany2
+      real(4), dimension(1,kp,36001) :: u_spany3
+      real(4), dimension(1,kp,36001) :: v_spany3
+      real(4), dimension(1,kp,36001) :: w_spany3
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany3
+    call set(data10, data11, data20, data21, data22, data23, data24, data25, data26, data27, data30, data31, im, jm, km, ifbf, ianime, ical, n0, n1, nmax, dt, ro, vn, alpha, beta, data12, data13, data14, idata24, nspec, jdata24)
+    call grid(dx1, dxl, dy1, dyl, z2, dzn, dzs, dxs, dys)
+    call timdata()
+    call init(km, jm, im, u, v, w, p, cn2s, dxs, cn2l, cn3s, dys, cn3l, dzs, cn4s, cn4l, cn1, amask1, bmask1, cmask1, dmask1, zbm, z2, dzn)
+    call ifdata(data30, data31, fold, gold, hold, fghold, time, n, u, im, jm, km, v, w, p, usum, vsum, wsum, delx1, dx1, dy1, dzn, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, z2, dt, dxs, cov1, cov2, cov3, dfu1, vn, cov4, cov5, cov6, dfv1, cov7, cov8, cov9, dfw1, dzs, nou1, nou5, nou9, nou2, nou3, nou4, nou6, nou7, nou8, bmask1, cmask1, dmask1, alpha, beta, fx, fy, fz, amask1, zbm, ical)
+    do n = n0, nmax, 1
+        time = float(n-1)*dt
+        call velnw(km, jm, im, p, ro, dxs, u, dt, f, dys, v, g, dzs, w, h)
+        if (jdata24==0) then
+                call bondv1(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        else
+                call bondv1_data24(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        end if
+        call velfg(km, jm, im, dx1, cov1, cov2, cov3, dfu1, diu1, diu2, dy1, diu3, dzn, vn, f, cov4, cov5, cov6, dfv1, diu4, diu5, diu6, g, cov7, cov8, cov9, dfw1, diu7, diu8, diu9, dzs, h, nou1, u, nou5, v, nou9, w, nou2, nou3, nou4, nou6, nou7, nou8, uspd, vspd)
+        call feedbf(km, jm, im, usum, u, bmask1, vsum, v, cmask1, wsum, w, dmask1, alpha, dt, beta, fx, fy, fz, f, g, h)
+        call les(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call adam(n, nmax, data21, fold, im, jm, km, gold, hold, fghold, f, g, h)
+        call press(km, jm, im, rhs, u, dx1, v, dy1, w, dzn, f, g, h, dt, cn1, cn2l, p, cn2s, cn3l, cn3s, cn4l, cn4s, n, nmax, data20, usum, vsum, wsum)
+        call ifdata_out(n, n0, n1, nmax, time, km, jm, im, u, w, v, p, usum, vsum, wsum, f, g, h, fold, gold, hold)
+        call aveflow(n, n1, km, jm, im, aveu, avev, avew, avep, avel, aveuu, avevv, aveww, avesm, avesmsm, uwfx, avesu, avesv, avesw, avesuu, avesvv, avesww, u, v, w, p, sm, nmax, uwfxs, data10, time, data11, data13, data14, amask1)
+        call timestep_out_all_k(n, n0, n1, nmax, km, jm, im, z2, data22, data23, u, w, v, amask1, ut_x1_2, vt_x1_2, wt_x1_2, ut_x2_2, vt_x2_2, wt_x2_2, nspec, u_spany2, v_spany2, w_spany2, u_spany3, v_spany3, w_spany3, u_x1_19_spany2, v_x1_19_spany2, w_x1_19_spany2, u_x1_19_spany3, v_x1_19_spany3, w_x1_19_spany3)
+    end do
+
+end program main
+Argument translations:
+	temp->
+	    call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+	ArgTrans {parameter = ArgName (fromList []) "km", argument = VarName (fromList []) "km"}
+	ArgTrans {parameter = ArgName (fromList []) "delx1", argument = VarName (fromList []) "delx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dx1", argument = VarName (fromList []) "dx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dy1", argument = VarName (fromList []) "dy1"}
+	ArgTrans {parameter = ArgName (fromList []) "dzn", argument = VarName (fromList []) "dzn"}
+	ArgTrans {parameter = ArgName (fromList []) "jm", argument = VarName (fromList []) "jm"}
+	ArgTrans {parameter = ArgName (fromList []) "im", argument = VarName (fromList []) "im"}
+	ArgTrans {parameter = ArgName (fromList []) "diu1", argument = VarName (fromList []) "diu1"}
+	ArgTrans {parameter = ArgName (fromList []) "diu2", argument = VarName (fromList []) "diu2"}
+	ArgTrans {parameter = ArgName (fromList []) "diu3", argument = VarName (fromList []) "diu3"}
+	ArgTrans {parameter = ArgName (fromList []) "diu4", argument = VarName (fromList []) "diu4"}
+	ArgTrans {parameter = ArgName (fromList []) "diu5", argument = VarName (fromList []) "diu5"}
+	ArgTrans {parameter = ArgName (fromList []) "diu6", argument = VarName (fromList []) "diu6"}
+	ArgTrans {parameter = ArgName (fromList []) "diu7", argument = VarName (fromList []) "diu7"}
+	ArgTrans {parameter = ArgName (fromList []) "diu8", argument = VarName (fromList []) "diu8"}
+	ArgTrans {parameter = ArgName (fromList []) "diu9", argument = VarName (fromList []) "diu9"}
+	ArgTrans {parameter = ArgName (fromList []) "sm", argument = VarName (fromList []) "sm"}
+	ArgTrans {parameter = ArgName (fromList []) "f", argument = VarName (fromList []) "f"}
+	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
+	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
+	ArgTrans {parameter = ArgName (fromList []) "uspd", argument = VarName (fromList []) "uspd"}
+	ArgTrans {parameter = ArgName (fromList []) "vspd", argument = VarName (fromList []) "vspd"}
+	ArgTrans {parameter = ArgName (fromList []) "dxs", argument = VarName (fromList []) "dxs"}
+	ArgTrans {parameter = ArgName (fromList []) "dys", argument = VarName (fromList []) "dys"}
+
+This subroutine will not be offloaded to the FPGA
+================================================================================
+
+================================================================================
+Subroutine name: temp_merged
+Filename: 
+Source:
+module module_temp_merged
+contains
+subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dxs,dy1,dys,dzn,f,g,h,im,jm,km,sm,uspd,vspd)
+      real(4), dimension(kp), intent(Out) :: delx1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu9
+      real(4), dimension(-1:ip+1), intent(In) :: dx1
+      real(4), dimension(0:ip), intent(In) :: dxs
+      real(4), dimension(0:jp+1), intent(In) :: dy1
+      real(4), dimension(0:jp), intent(In) :: dys
+      real(4), dimension(-1:kp+2), intent(In) :: dzn
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: f
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: g
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: h
+      integer, intent(In) :: im
+      integer, intent(In) :: jm
+      integer, intent(In) :: km
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1), intent(Out) :: sm
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
+    cs0 = .1
+    do k = 2, km, 1
+        do j = 1, jm, 1
+                do i = 1, im, 1
+                                evsx2 = sm(i+1,j,k)
+                                evsx1 = sm(i,j,k)
+                                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                                visux2 = (evsx2)*2.*diu1(i+1,j,k)
+                                visux1 = (evsx1)*2.*diu1(i,j,k)
+                                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+                                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+                                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+                                f(i,j,k) = (f(i,j,k)+vfu)
+                end do
+        end do
+    end do
+end subroutine temp_merged
+
+end module module_temp_merged
+Argument translations:
+
+This subroutine will be offloaded to the FPGA
+================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Map + Fold Detection 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: temp_merged
+Filename: 
+Source:
+module module_temp_merged
+contains
+subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dxs,dy1,dys,dzn,f,g,h,im,jm,km,sm,uspd,vspd)
+      real(4), dimension(kp), intent(Out) :: delx1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu9
+      real(4), dimension(-1:ip+1), intent(In) :: dx1
+      real(4), dimension(0:ip), intent(In) :: dxs
+      real(4), dimension(0:jp+1), intent(In) :: dy1
+      real(4), dimension(0:jp), intent(In) :: dys
+      real(4), dimension(-1:kp+2), intent(In) :: dzn
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: f
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: g
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: h
+      integer, intent(In) :: im
+      integer, intent(In) :: jm
+      integer, intent(In) :: km
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1), intent(Out) :: sm
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
+    cs0 = .1
+! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)","(i,1,im,1)"],[]) {
+! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
+! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+!}
+!}
+!}
+end subroutine temp_merged
+
+end module module_temp_merged
+Argument translations:
+
+This subroutine will be offloaded to the FPGA
+================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Stencil Detection 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: main
+Filename: ./src/main.f95
+Source:
+program main
+      real(4) :: alpha
+      integer :: ianime
+      integer :: ical
+      integer :: ifbf
+      integer :: im
+      integer :: jm
+      integer :: km
+      integer :: n
+      integer :: n0
+      integer :: n1
+      integer :: nmax
+      real(4) :: beta
+      character*70 :: data10
+      character*70 :: data11
+      character*70 :: data12
+      character*70 :: data13
+      character*70 :: data14
+      character*70 :: data20
+      character*70 :: data21
+      character*70 :: data22
+      character*70 :: data23
+      character*70 :: data24
+      character*70 :: data25
+      character*70 :: data26
+      character*70 :: data27
+      character*70 :: data30
+      character*70 :: data31
+      real(4) :: dt
+      real(4) :: ro
+      real(4) :: time
+      real(4) :: vn
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: amask1
+      real(4), dimension(ip,jp,kp) :: avel
+      real(4), dimension(ip,jp,kp) :: avep
+      real(4), dimension(ip,jp,kp) :: avesm
+      real(4), dimension(ip,jp,kp) :: avesmsm
+      real(4), dimension(ip,kp) :: avesu
+      real(4), dimension(ip,kp) :: avesuu
+      real(4), dimension(ip,kp) :: avesv
+      real(4), dimension(ip,kp) :: avesvv
+      real(4), dimension(ip,kp) :: avesw
+      real(4), dimension(ip,kp) :: avesww
+      real(4), dimension(ip,jp,0:kp) :: aveu
+      real(4), dimension(ip,jp,kp) :: aveuu
+      real(4), dimension(ip,jp,0:kp) :: avev
+      real(4), dimension(ip,jp,kp) :: avevv
+      real(4), dimension(ip+1,jp,0:kp+2) :: avew
+      real(4), dimension(ip,jp,kp) :: aveww
+      real(4), dimension(-1:ip+1,0:jp+1,0:kp+1) :: bmask1
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: cmask1
+      real(4), dimension(ip,jp,kp) :: cn1
+      real(4), dimension(ip) :: cn2l
+      real(4), dimension(ip) :: cn2s
+      real(4), dimension(jp) :: cn3l
+      real(4), dimension(jp) :: cn3s
+      real(4), dimension(kp) :: cn4l
+      real(4), dimension(kp) :: cn4s
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov9
+      real(4), dimension(kp) :: delx1
+      real(4), dimension(0:ip,jp,kp) :: dfu1
+      real(4), dimension(ip,0:jp,kp) :: dfv1
+      real(4), dimension(ip,jp,kp) :: dfw1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu9
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: dmask1
+      real(4), dimension(-1:ip+1) :: dx1
+      real(4), dimension(0:ip) :: dxl
+      real(4), dimension(0:ip) :: dxs
+      real(4), dimension(0:jp+1) :: dy1
+      real(4), dimension(0:jp) :: dyl
+      real(4), dimension(0:jp) :: dys
+      real(4), dimension(-1:kp+2) :: dzn
+      real(4), dimension(-1:kp+2) :: dzs
+      real(4), dimension(0:ip,0:jp,0:kp) :: f
+      real(4), dimension(ip,jp,kp) :: fold
+      real(4), dimension(0:ip,0:jp,0:kp) :: fx
+      real(4), dimension(0:ip,0:jp,0:kp) :: fy
+      real(4), dimension(0:ip,0:jp,0:kp) :: fz
+      real(4), dimension(0:ip,0:jp,0:kp) :: g
+      real(4), dimension(ip,jp,kp) :: gold
+      real(4), dimension(0:ip,0:jp,0:kp) :: h
+      real(4), dimension(ip,jp,kp) :: hold
+      real(4), dimension(ip,jp,kp) :: fghold
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou9
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+1) :: p
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: rhs
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1) :: sm
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: u
+      real(4), dimension(0:ip,0:jp,0:kp) :: usum
+      real(4), dimension(ip,jp,kp) :: uwfx
+      real(4), dimension(ip,kp) :: uwfxs
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: v
+      real(4), dimension(0:ip,0:jp,0:kp) :: vsum
+      real(4), dimension(0:ip+1,-1:jp+1,-1:kp+1) :: w
+      real(4), dimension(0:ip,0:jp,0:kp) :: wsum
+      real(4), dimension(0:kp+2) :: z2
+      real(4), dimension(-1:ipmax+1,-1:jpmax+1) :: zbm
+      real(4), dimension(0:ip+1,0:jp+1) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1) :: vspd
+      integer :: idata24
+      integer :: jdata24
+      integer :: nspec
+      real(4), dimension(1,1,36001,kp) :: ut_x1_2
+      real(4), dimension(1,1,36001,kp) :: ut_x2_2
+      real(4), dimension(1,1,36001,kp) :: vt_x1_2
+      real(4), dimension(1,1,36001,kp) :: vt_x2_2
+      real(4), dimension(1,1,36001,kp) :: wt_x1_2
+      real(4), dimension(1,1,36001,kp) :: wt_x2_2
+      real(4), dimension(1,kp,36001) :: u_spany2
+      real(4), dimension(1,kp,36001) :: v_spany2
+      real(4), dimension(1,kp,36001) :: w_spany2
+      real(4), dimension(1,kp,36001) :: u_spany3
+      real(4), dimension(1,kp,36001) :: v_spany3
+      real(4), dimension(1,kp,36001) :: w_spany3
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany3
+    call set(data10, data11, data20, data21, data22, data23, data24, data25, data26, data27, data30, data31, im, jm, km, ifbf, ianime, ical, n0, n1, nmax, dt, ro, vn, alpha, beta, data12, data13, data14, idata24, nspec, jdata24)
+    call grid(dx1, dxl, dy1, dyl, z2, dzn, dzs, dxs, dys)
+    call timdata()
+    call init(km, jm, im, u, v, w, p, cn2s, dxs, cn2l, cn3s, dys, cn3l, dzs, cn4s, cn4l, cn1, amask1, bmask1, cmask1, dmask1, zbm, z2, dzn)
+    call ifdata(data30, data31, fold, gold, hold, fghold, time, n, u, im, jm, km, v, w, p, usum, vsum, wsum, delx1, dx1, dy1, dzn, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, z2, dt, dxs, cov1, cov2, cov3, dfu1, vn, cov4, cov5, cov6, dfv1, cov7, cov8, cov9, dfw1, dzs, nou1, nou5, nou9, nou2, nou3, nou4, nou6, nou7, nou8, bmask1, cmask1, dmask1, alpha, beta, fx, fy, fz, amask1, zbm, ical)
+    do n = n0, nmax, 1
+        time = float(n-1)*dt
+        call velnw(km, jm, im, p, ro, dxs, u, dt, f, dys, v, g, dzs, w, h)
+        if (jdata24==0) then
+                call bondv1(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        else
+                call bondv1_data24(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        end if
+        call velfg(km, jm, im, dx1, cov1, cov2, cov3, dfu1, diu1, diu2, dy1, diu3, dzn, vn, f, cov4, cov5, cov6, dfv1, diu4, diu5, diu6, g, cov7, cov8, cov9, dfw1, diu7, diu8, diu9, dzs, h, nou1, u, nou5, v, nou9, w, nou2, nou3, nou4, nou6, nou7, nou8, uspd, vspd)
+        call feedbf(km, jm, im, usum, u, bmask1, vsum, v, cmask1, wsum, w, dmask1, alpha, dt, beta, fx, fy, fz, f, g, h)
+        call les(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call adam(n, nmax, data21, fold, im, jm, km, gold, hold, fghold, f, g, h)
+        call press(km, jm, im, rhs, u, dx1, v, dy1, w, dzn, f, g, h, dt, cn1, cn2l, p, cn2s, cn3l, cn3s, cn4l, cn4s, n, nmax, data20, usum, vsum, wsum)
+        call ifdata_out(n, n0, n1, nmax, time, km, jm, im, u, w, v, p, usum, vsum, wsum, f, g, h, fold, gold, hold)
+        call aveflow(n, n1, km, jm, im, aveu, avev, avew, avep, avel, aveuu, avevv, aveww, avesm, avesmsm, uwfx, avesu, avesv, avesw, avesuu, avesvv, avesww, u, v, w, p, sm, nmax, uwfxs, data10, time, data11, data13, data14, amask1)
+        call timestep_out_all_k(n, n0, n1, nmax, km, jm, im, z2, data22, data23, u, w, v, amask1, ut_x1_2, vt_x1_2, wt_x1_2, ut_x2_2, vt_x2_2, wt_x2_2, nspec, u_spany2, v_spany2, w_spany2, u_spany3, v_spany3, w_spany3, u_x1_19_spany2, v_x1_19_spany2, w_x1_19_spany2, u_x1_19_spany3, v_x1_19_spany3, w_x1_19_spany3)
+    end do
+
+end program main
+Argument translations:
+	temp->
+	    call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+	ArgTrans {parameter = ArgName (fromList []) "km", argument = VarName (fromList []) "km"}
+	ArgTrans {parameter = ArgName (fromList []) "delx1", argument = VarName (fromList []) "delx1"}
+	ArgTrans {parameter = ArgName (fromLtrace:: 
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+::trace
+trace:: 
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+!}    
+!}
+::trace
+trace:: 
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!        2 point stencil on 1D array dy1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+!}    
+!}
+!}    
+!}
+::trace
+ist []) "dx1", argument = VarName (fromList []) "dx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dy1", argument = VarName (fromList []) "dy1"}
+	ArgTrans {parameter = ArgName (fromList []) "dzn", argument = VarName (fromList []) "dzn"}
+	ArgTrans {parameter = ArgName (fromList []) "jm", argument = VarName (fromList []) "jm"}
+	ArgTrans {parameter = ArgName (fromList []) "im", argument = VarName (fromList []) "im"}
+	ArgTrans {parameter = ArgName (fromList []) "diu1", argument = VarName (fromList []) "diu1"}
+	ArgTrans {parameter = ArgName (fromList []) "diu2", argument = VarName (fromList []) "diu2"}
+	ArgTrans {parameter = ArgName (fromList []) "diu3", argument = VarName (fromList []) "diu3"}
+	ArgTrans {parameter = ArgName (fromList []) "diu4", argument = VarName (fromList []) "diu4"}
+	ArgTrans {parameter = ArgName (fromList []) "diu5", argument = VarName (fromList []) "diu5"}
+	ArgTrans {parameter = ArgName (fromList []) "diu6", argument = VarName (fromList []) "diu6"}
+	ArgTrans {parameter = ArgName (fromList []) "diu7", argument = VarName (fromList []) "diu7"}
+	ArgTrans {parameter = ArgName (fromList []) "diu8", argument = VarName (fromList []) "diu8"}
+	ArgTrans {parameter = ArgName (fromList []) "diu9", argument = VarName (fromList []) "diu9"}
+	ArgTrans {parameter = ArgName (fromList []) "sm", argument = VarName (fromList []) "sm"}
+	ArgTrans {parameter = ArgName (fromList []) "f", argument = VarName (fromList []) "f"}
+	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
+	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
+	ArgTrans {parameter = ArgName (fromList []) "uspd", argument = VarName (fromList []) "uspd"}
+	ArgTrans {parameter = ArgName (fromList []) "vspd", argument = VarName (fromList []) "vspd"}
+	ArgTrans {parameter = ArgName (fromList []) "dxs", argument = VarName (fromList []) "dxs"}
+	ArgTrans {parameter = ArgName (fromList []) "dys", argument = VarName (fromList []) "dys"}
+
+This subroutine will not be offloaded to the FPGA
+================================================================================
+
+================================================================================
+Subroutine name: temp_merged
+Filename: 
+Source:
+module module_temp_merged
+contains
+subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dxs,dy1,dys,dzn,f,g,h,im,jm,km,sm,uspd,vspd)
+      real(4), dimension(kp), intent(Out) :: delx1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu9
+      real(4), dimension(-1:ip+1), intent(In) :: dx1
+      real(4), dimension(0:ip), intent(In) :: dxs
+      real(4), dimension(0:jp+1), intent(In) :: dy1
+      real(4), dimension(0:jp), intent(In) :: dys
+      real(4), dimension(-1:kp+2), intent(In) :: dzn
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: f
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: g
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: h
+      integer, intent(In) :: im
+      integer, intent(In) :: jm
+      integer, intent(In) :: km
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1), intent(Out) :: sm
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
+    cs0 = .1
+! OpenCLStencil (
+!        2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
+!        2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
+!        2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
+!        2 point stencil on 3D array diu4: [[1,0,0],[1,-1,0]]
+!        2 point stencil on 3D array diu7: [[1,0,0],[1,0,-1]]
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!        2 point stencil on 1D array dy1: [[0],[1]]
+!        3 point stencil on 1D array dzn: [[0],[1],[-1]]
+!        10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
+!    ){
+! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)","(i,1,im,1)"],[]) {
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!        2 point stencil on 1D array dy1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+!}    
+!}
+!}    
+!}
+!}    
+!}
+end subroutine temp_merged
+
+end module module_temp_merged
+Argument translations:
+
+This subroutine will be offloaded to the FPGA
+================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Combined 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+================================================================================
+Subroutine name: main
+Filename: ./src/main.f95
+Source:
+program main
+      real(4) :: alpha
+      integer :: ianime
+      integer :: ical
+      integer :: ifbf
+      integer :: im
+      integer :: jm
+      integer :: km
+      integer :: n
+      integer :: n0
+      integer :: n1
+      integer :: nmax
+      real(4) :: beta
+      character*70 :: data10
+      character*70 :: data11
+      character*70 :: data12
+      character*70 :: data13
+      character*70 :: data14
+      character*70 :: data20
+      character*70 :: data21
+      character*70 :: data22
+      character*70 :: data23
+      character*70 :: data24
+      character*70 :: data25
+      character*70 :: data26
+      character*70 :: data27
+      character*70 :: data30
+      character*70 :: data31
+      real(4) :: dt
+      real(4) :: ro
+      real(4) :: time
+      real(4) :: vn
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: amask1
+      real(4), dimension(ip,jp,kp) :: avel
+      real(4), dimension(ip,jp,kp) :: avep
+      real(4), dimension(ip,jp,kp) :: avesm
+      real(4), dimension(ip,jp,kp) :: avesmsm
+      real(4), dimension(ip,kp) :: avesu
+      real(4), dimension(ip,kp) :: avesuu
+      real(4), dimension(ip,kp) :: avesv
+      real(4), dimension(ip,kp) :: avesvv
+      real(4), dimension(ip,kp) :: avesw
+      real(4), dimension(ip,kp) :: avesww
+      real(4), dimension(ip,jp,0:kp) :: aveu
+      real(4), dimension(ip,jp,kp) :: aveuu
+      real(4), dimension(ip,jp,0:kp) :: avev
+      real(4), dimension(ip,jp,kp) :: avevv
+      real(4), dimension(ip+1,jp,0:kp+2) :: avew
+      real(4), dimension(ip,jp,kp) :: aveww
+      real(4), dimension(-1:ip+1,0:jp+1,0:kp+1) :: bmask1
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: cmask1
+      real(4), dimension(ip,jp,kp) :: cn1
+      real(4), dimension(ip) :: cn2l
+      real(4), dimension(ip) :: cn2s
+      real(4), dimension(jp) :: cn3l
+      real(4), dimension(jp) :: cn3s
+      real(4), dimension(kp) :: cn4l
+      real(4), dimension(kp) :: cn4s
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: cov5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: cov9
+      real(4), dimension(kp) :: delx1
+      real(4), dimension(0:ip,jp,kp) :: dfu1
+      real(4), dimension(ip,0:jp,kp) :: dfv1
+      real(4), dimension(ip,jp,kp) :: dfw1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: diu9
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: dmask1
+      real(4), dimension(-1:ip+1) :: dx1
+      real(4), dimension(0:ip) :: dxl
+      real(4), dimension(0:ip) :: dxs
+      real(4), dimension(0:jp+1) :: dy1
+      real(4), dimension(0:jp) :: dyl
+      real(4), dimension(0:jp) :: dys
+      real(4), dimension(-1:kp+2) :: dzn
+      real(4), dimension(-1:kp+2) :: dzs
+      real(4), dimension(0:ip,0:jp,0:kp) :: f
+      real(4), dimension(ip,jp,kp) :: fold
+      real(4), dimension(0:ip,0:jp,0:kp) :: fx
+      real(4), dimension(0:ip,0:jp,0:kp) :: fy
+      real(4), dimension(0:ip,0:jp,0:kp) :: fz
+      real(4), dimension(0:ip,0:jp,0:kp) :: g
+      real(4), dimension(ip,jp,kp) :: gold
+      real(4), dimension(0:ip,0:jp,0:kp) :: h
+      real(4), dimension(ip,jp,kp) :: hold
+      real(4), dimension(ip,jp,kp) :: fghold
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2) :: nou5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2) :: nou9
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+1) :: p
+      real(4), dimension(0:ip+1,0:jp+1,0:kp+1) :: rhs
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1) :: sm
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: u
+      real(4), dimension(0:ip,0:jp,0:kp) :: usum
+      real(4), dimension(ip,jp,kp) :: uwfx
+      real(4), dimension(ip,kp) :: uwfxs
+      real(4), dimension(0:ip+1,-1:jp+1,0:kp+1) :: v
+      real(4), dimension(0:ip,0:jp,0:kp) :: vsum
+      real(4), dimension(0:ip+1,-1:jp+1,-1:kp+1) :: w
+      real(4), dimension(0:ip,0:jp,0:kp) :: wsum
+      real(4), dimension(0:kp+2) :: z2
+      real(4), dimension(-1:ipmax+1,-1:jpmax+1) :: zbm
+      real(4), dimension(0:ip+1,0:jp+1) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1) :: vspd
+      integer :: idata24
+      integer :: jdata24
+      integer :: nspec
+      real(4), dimension(1,1,36001,kp) :: ut_x1_2
+      real(4), dimension(1,1,36001,kp) :: ut_x2_2
+      real(4), dimension(1,1,36001,kp) :: vt_x1_2
+      real(4), dimension(1,1,36001,kp) :: vt_x2_2
+      real(4), dimension(1,1,36001,kp) :: wt_x1_2
+      real(4), dimension(1,1,36001,kp) :: wt_x2_2
+      real(4), dimension(1,kp,36001) :: u_spany2
+      real(4), dimension(1,kp,36001) :: v_spany2
+      real(4), dimension(1,kp,36001) :: w_spany2
+      real(4), dimension(1,kp,36001) :: u_spany3
+      real(4), dimension(1,kp,36001) :: v_spany3
+      real(4), dimension(1,kp,36001) :: w_spany3
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany2
+      real(4), dimension(19,kp,36001) :: u_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: v_x1_19_spany3
+      real(4), dimension(19,kp,36001) :: w_x1_19_spany3
+    call set(data10, data11, data20, data21, data22, data23, data24, data25, data26, data27, data30, data31, im, jm, km, ifbf, ianime, ical, n0, n1, nmax, dt, ro, vn, alpha, beta, data12, data13, data14, idata24, nspec, jdata24)
+    call grid(dx1, dxl, dy1, dyl, z2, dzn, dzs, dxs, dys)
+    call timdata()
+    call init(km, jm, im, u, v, w, p, cn2s, dxs, cn2l, cn3s, dys, cn3l, dzs, cn4s, cn4l, cn1, amask1, bmask1, cmask1, dmask1, zbm, z2, dzn)
+    call ifdata(data30, data31, fold, gold, hold, fghold, time, n, u, im, jm, km, v, w, p, usum, vsum, wsum, delx1, dx1, dy1, dzn, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, z2, dt, dxs, cov1, cov2, cov3, dfu1, vn, cov4, cov5, cov6, dfv1, cov7, cov8, cov9, dfw1, dzs, nou1, nou5, nou9, nou2, nou3, nou4, nou6, nou7, nou8, bmask1, cmask1, dmask1, alpha, beta, fx, fy, fz, amask1, zbm, ical)
+    do n = n0, nmax, 1
+        time = float(n-1)*dt
+        call velnw(km, jm, im, p, ro, dxs, u, dt, f, dys, v, g, dzs, w, h)
+        if (jdata24==0) then
+                call bondv1(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        else
+                call bondv1_data24(jm, u, z2, dzn, v, w, km, n, im, dt, dxs)
+        end if
+        call velfg(km, jm, im, dx1, cov1, cov2, cov3, dfu1, diu1, diu2, dy1, diu3, dzn, vn, f, cov4, cov5, cov6, dfv1, diu4, diu5, diu6, g, cov7, cov8, cov9, dfw1, diu7, diu8, diu9, dzs, h, nou1, u, nou5, v, nou9, w, nou2, nou3, nou4, nou6, nou7, nou8, uspd, vspd)
+        call feedbf(km, jm, im, usum, u, bmask1, vsum, v, cmask1, wsum, w, dmask1, alpha, dt, beta, fx, fy, fz, f, g, h)
+        call les(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+        call adam(n, nmax, data21, fold, im, jm, km, gold, hold, fghold, f, g, h)
+        call press(km, jm, im, rhs, u, dx1, v, dy1, w, dzn, f, g, h, dt, cn1, cn2l, p, cn2s, cn3l, cn3s, cn4l, cn4s, n, nmax, data20, usum, vsum, wsum)
+        call ifdata_out(n, n0, n1, nmax, time, km, jm, im, u, w, v, p, usum, vsum, wsum, f, g, h, fold, gold, hold)
+        call aveflow(n, n1, km, jm, im, aveu, avev, avew, avep, avel, aveuu, avevv, aveww, avesm, avesmsm, uwfx, avesu, avesv, avesw, avesuu, avesvv, avesww, u, v, w, p, sm, nmax, uwfxs, data10, time, data11, data13, data14, amask1)
+        call timestep_out_all_k(n, n0, n1, nmax, km, jm, im, z2, data22, data23, u, w, v, amask1, ut_x1_2, vt_x1_2, wt_x1_2, ut_x2_2, vt_x2_2, wt_x2_2, nspec, u_spany2, v_spany2, w_spany2, u_spany3, v_spany3, w_spany3, u_x1_19_spany2, v_x1_19_spany2, w_x1_19_spany2, u_x1_19_spany3, v_x1_19_spany3, w_x1_19_spany3)
+    end do
+
+end program main
+Argument translations:
+	temp->
+	    call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
+	ArgTrans {parameter = ArgName (fromList []) "km", argument = VarName (fromList []) "km"}
+	ArgTrans {parameter = ArgName (fromList []) "delx1", argument = VarName (fromList []) "delx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dx1", argument = VarName (fromList []) "dx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dy1", argument = VarName (fromList []) "dy1"}
+	ArgTrans {parameter = ArgName (fromList []) "dzn", argument = VarName (fromList []) "dzn"}
+	ArgTrans {parameter = ArgName (fromList []) "jm", argument = VarName (fromList []) "jm"}
+	ArgTrans {parameter = ArgName (fromList []) "im", argument = VarName (fromList []) "im"}
+	ArgTrans {parameter = ArgName (fromList []) "diu1", argument = VarName (fromList []) "diu1"}
+	ArgTrans {parameter = ArgName (fromList []) "diu2", argument = VarName (fromList []) "diu2"}
+	ArgTrans {parameter = ArgName (fromList []) "diu3", argument = VarName (fromList []) "diu3"}
+	ArgTrans {parameter = ArgName (fromList []) "diu4", argument = VarName (fromList []) "diu4"}
+	ArgTrans {parameter = ArgName (fromList []) "diu5", argument = VarName (fromList []) "diu5"}
+	ArgTrans {parameter = ArgName (fromList []) "diu6", argument = VarName (fromList []) "diu6"}
+	ArgTrans {parameter = ArgName (fromList []) "diu7", argument = VarName (fromList []) "diu7"}
+	ArgTrans {parameter = ArgName (fromList []) "diu8", argument = VarName (fromList []) "diu8"}
+	ArgTrans {parameter = ArgName (fromList []) "diu9", argument = VarName (fromList []) "diu9"}
+	ArgTrans {parameter = ArgName (fromList []) "sm", argument = VarName (fromList []) "sm"}
+	ArgTrans {parameter = ArgName (fromList []) "f", argument = VarName (fromList []) "f"}
+	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
+	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
+	ArgTrans {parameter = ArgName (fromList []) "uspd", argument = VarName (fromList []) "uspd"}
+	ArgTrans {parameter = ArgName (fromList []) "vspd", argument = VarName (fromList []) "vspd"}
+	ArgTrans {parameter = ArgName (fromList []) "dxs", argument = VarName (fromList []) "dxs"}
+	ArgTrans {parameter = ArgName (fromList []) "dys", argument = VarName (fromList []) "dys"}
+
+This subroutine will not be offloaded to the FPGA
+================================================================================
+
+================================================================================
+Subroutine name: temp_merged
+Filename: 
+Source:
+module module_temp_merged
+contains
+subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dxs,dy1,dys,dzn,f,g,h,im,jm,km,sm,uspd,vspd)
+      real(4), dimension(kp), intent(Out) :: delx1
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu1
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu2
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu3
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu4
+      real(4), dimension(-1:ip+2,0:jp+2,0:kp+2), intent(In) :: diu5
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu6
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu7
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu8
+      real(4), dimension(0:ip+2,0:jp+2,0:kp+2), intent(In) :: diu9
+      real(4), dimension(-1:ip+1), intent(In) :: dx1
+      real(4), dimension(0:ip), intent(In) :: dxs
+      real(4), dimension(0:jp+1), intent(In) :: dy1
+      real(4), dimension(0:jp), intent(In) :: dys
+      real(4), dimension(-1:kp+2), intent(In) :: dzn
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: f
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: g
+      real(4), dimension(0:ip,0:jp,0:kp), intent(InOut) :: h
+      integer, intent(In) :: im
+      integer, intent(In) :: jm
+      integer, intent(In) :: km
+      real(4), dimension(-1:ip+1,-1:jp+1,0:kp+1), intent(Out) :: sm
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
+      real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
+    cs0 = .1
+! OpenCLStencil (
+!        2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
+!        2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
+!        2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
+!        2 point stencil on 3D array diu4: [[1,0,0],[1,-1,0]]
+!        2 point stencil on 3D array diu7: [[1,0,0],[1,0,-1]]
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!        2 point stencil on 1D array dy1: [[0],[1]]
+!        3 point stencil on 1D array dzn: [[0],[1],[-1]]
+!        10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
+!    ){
+! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)","(i,1,im,1)"],[]) {
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!        2 point stencil on 1D array dy1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
+! OpenCLStencil (
+!        2 point stencil on 1D array dx1: [[0],[1]]
+!    ){
+! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+    evsx2 = sm(i+1,j,k)
+    evsx1 = sm(i,j,k)
+    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+    visux2 = (evsx2)*2.*diu1(i+1,j,k)
+    visux1 = (evsx1)*2.*diu1(i,j,k)
+    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+    f(i,j,k) = (f(i,j,k)+vfu)
+!}    
+!}
+!}    
+!}
+!}    
+!}
+end subroutine temp_merged
+
+end module module_temp_merged
+Argument translations:
+
+This subroutine will be offloaded to the FPGA
+================================================================================
+
