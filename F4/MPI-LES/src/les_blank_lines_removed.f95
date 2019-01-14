@@ -1,11 +1,9 @@
 module module_les
       use module_boundsm 
-      implicit none
  contains
-      subroutine les(delx1,dx1,dy1,dzn,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm,f,g, &
-      h,u,v,uspd,vspd,dxs,dys,n)
-    use params_common_sn
-    implicit none
+      subroutine les(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm,f,g, &
+      h,uspd,vspd,dxs,dys)
+      use common_sn 
         real(kind=4), dimension(kp) , intent(Out) :: delx1
         real(kind=4), dimension(-1:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu1
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu2
@@ -16,36 +14,27 @@ module module_les
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu7
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu8
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu9
-        integer, intent(In) :: n
-        real(kind=4), dimension(-1:kp+2) :: dzs
         real(kind=4), dimension(-1:ip+1) , intent(In) :: dx1
         real(kind=4), dimension(0:jp+1) , intent(In) :: dy1
         real(kind=4), dimension(-1:kp+2) , intent(In) :: dzn
         real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: f
         real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: g
         real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: h
+        integer, intent(In) :: im
+        integer, intent(In) :: jm
+        integer, intent(In) :: km
         real(kind=4), dimension(-1:ip+1,-1:jp+1,0:kp+1) , intent(Out) :: sm
-        real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
-        real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
-        real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In) :: w
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(in) :: uspd
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(in) :: vspd
         real(kind=4), dimension(0:ip) , intent(in) :: dxs
         real(kind=4), dimension(0:jp) , intent(in) :: dys
-        integer :: i,j,k
-        real(kind=4) :: csx1
-        real(kind=4) :: dudxx1 , dudyx1 , dudzx1 , dvdxx1 , dvdyx1 , dvdzx1 , dwdxx1 , dwdyx1 , dwdzx1
-        real(kind=4) :: visux2, visux1, visuy2, visuy1, visuz2, visuz1
-        real(kind=4) :: visvx2, visvx1, visvy2, visvy1, visvz2, visvz1
-        real(kind=4) :: viswx2, viswx1, viswy2, viswy1, viswz2, viswz1
-        real(kind=4) :: evsx2, evsx1, evsy2, evsy1, evsz2, evsz1
-        real(kind=4) :: vfu,vfv,vfw
-        do k = 1,kp
+      cs0 = .1
+        do k = 1,km
           delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
         end do
-      do k = 1,kp
-      do j = 1,jp
-      do i = 1,ip
+      do k = 1,km
+      do j = 1,jm
+      do i = 1,im
       dudxx1 = diu1(i,j,k)
       dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k) +diu2(i ,j,k)+diu2(i ,j+1,k) ) *.25
       dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1) +diu3(i ,j,k)+diu3(i ,j,k+1) ) *.25
@@ -61,27 +50,10 @@ module module_les
       end do
       end do
       end do
-        do k = 0,kp+1
-            do j = -1,jp+1
-                    sm( 0,j,k) = sm(1 ,j,k) 
-                    sm(ip+1,j,k) = sm(ip,j,k)
-            end do
-        end do
-        do k = 0,kp+1
-            do i = 0,ip+1
-                    sm(i,jp+1,k) = sm(i,jp ,k)
-                    sm(i,0,k) = sm(i,1 ,k) 
-            end do
-        end do
-    do j = -1,jp+1
-        do i = 0,ip+1
-            sm(i,j, 0) = -sm(i,j, 1)
-            sm(i,j,kp+1) = sm(i,j,kp)
-        end do
-    end do
-      do k = 2,kp
-      do j = 1,jp
-      do i = 1,ip
+      call boundsm(km,jm,sm,im)
+      do k = 2,km
+      do j = 1,jm
+      do i = 1,im
       evsx2 = sm(i+1,j,k)
       evsx1 = sm(i,j,k)
       evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j, &
@@ -107,8 +79,8 @@ module module_les
       end do
       end do
       end do
-      do j=1,jp
-      do i=1,ip
+      do j=1,jm
+      do i=1,im
       evsx2=sm(i+1,j,1)
       evsx1=sm(i,j,1)
       evsy2=(dy1(j+1)*((dx1(i+1)*sm(i,j,1)+dx1(i)*sm(i+1,j,1))/(dx1(i)+dx1(i+1)))&
@@ -122,14 +94,14 @@ module module_les
       visuy2=(evsy2)* ( diu2(i ,j+1,1 )+diu4(i+1,j ,1 ) )
       visuy1=(evsy1)* ( diu2(i ,j ,1 )+diu4(i+1,j-1,1 ) )
       visuz2=(evsz2)* ( diu3(i ,j ,2 )+diu7(i+1,j ,1 ) )
-      visuz1=(0.4*uspd(i,j)/alog(0.5*dzn(1)/0.1))**2*(u(i,j,1)/uspd(i,j))
-      vfu= (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(1)
-      f(i,j,1)=(f(i,j,1)+vfu)
+      visuz1=(0.4*uspd(i,j)/alog(0.5*dzn(1)/0.1))**2*uspd(i,j)
+      vfu= (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(1)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(1)
+      F(i,j,1)=(F(i,j,1)+vfu)
       end do
       end do
-      do k = 2,kp
-      do j = 1,jp
-      do i = 1,ip
+      do k = 2,km
+      do j = 1,jm
+      do i = 1,im
       evsy2 = sm(i,j+1,k)
       evsy1 = sm(i,j,k)
       evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j, &
@@ -155,8 +127,8 @@ module module_les
       end do
       end do
       end do
-      do j=1,jp
-      do i=1,ip
+      do j=1,jm
+      do i=1,im
       evsy2=sm(i,j+1,1)
       evsy1=sm(i,j,1)
       evsx2=(dy1(j+1)*((dx1(i+1)*sm(i,j,1)+dx1(i)*sm(i+1,j,1))/(dx1(i)+dx1(i+1)))&
@@ -170,14 +142,14 @@ module module_les
       visvy2=(evsy2)*2.*diu5(i ,j+1,1 )
       visvy1=(evsy1)*2.*diu5(i ,j ,1 )
       visvz2=(evsz2)* ( diu6(i ,j ,2 )+diu8(i ,j+1,1 ) )
-      visvz1=(0.4*vspd(i,j)/alog(0.5*dzn(1)/0.1))**2*(v(i,j,1)/vspd(i,j))
+      visvz1=(0.4*vspd(i,j)/alog(0.5*dzn(1)/0.1))**2*vspd(i,j)
       vfv=(visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(1)
-      g(i,j,1)=(g(i,j,1)+vfv)
+      G(i,j,1)=(G(i,j,1)+vfv)
       end do
       end do
-      do k = 1,kp
-      do j = 1,jp
-      do i = 1,ip
+      do k = 1,km
+      do j = 1,jm
+      do i = 1,im
       evsz2 = sm(i,j,k+1)
       evsz1 = sm(i,j,k)
       evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j, &

@@ -1,12 +1,18 @@
 module module_press
+    use module_bondFG 
+    use module_boundp 
  contains
-subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax &
-)
-      implicit none
-    real(kind=4), dimension(0:ip) , intent(In) :: dxs
-    real(kind=4), dimension(0:jp) , intent(In) :: dys
-    real(kind=4), dimension(-1:kp+2) , intent(In) :: dzs
-    real(kind=4) :: cn1,cn2l,cn2s,cn3l,cn3s,cn4l,cn4s,dz1,dz2
+subroutine press(km,jm,im,rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,cn4s, &
+                 n,nmax,data20,usum,vsum,wsum)
+    use common_sn 
+    real(kind=4), dimension(ip,jp,kp) , intent(In) :: cn1
+    real(kind=4), dimension(ip) , intent(In) :: cn2l
+    real(kind=4), dimension(ip) , intent(In) :: cn2s
+    real(kind=4), dimension(jp) , intent(In) :: cn3l
+    real(kind=4), dimension(jp) , intent(In) :: cn3s
+    real(kind=4), dimension(kp) , intent(In) :: cn4l
+    real(kind=4), dimension(kp) , intent(In) :: cn4s
+    character(len=70), intent(In) :: data20
     real(kind=4), intent(In) :: dt
     real(kind=4), dimension(-1:ip+1) , intent(In) :: dx1
     real(kind=4), dimension(0:jp+1) , intent(In) :: dy1
@@ -14,38 +20,27 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax &
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: f
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: g
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: h
+    integer, intent(In) :: im
+    integer, intent(In) :: jm
+    integer, intent(In) :: km
     integer, intent(In) :: n
     integer, intent(In) :: nmax
-    real(kind=4), dimension(0:1,0:ip+2,0:jp+2,0:kp+1) :: p
+    real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+1) , intent(InOut) :: p
     real(kind=4), dimension(0:ip+1,0:jp+1,0:kp+1) , intent(Out) :: rhs
     real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
+    real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(In) :: usum
     real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
+    real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(In) :: vsum
     real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In) :: w
+    real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(In) :: wsum
     integer :: nn
-    integer :: i,j,k,l,nrd
-    real(kind=4) :: rhsav, pav, area, pco, sor, reltmp
     real, parameter :: pjuge = 0.0001
     integer, parameter :: nmaxp = 50 
     real, parameter :: omega = 1.
-      do k=1,kp
-      do j=1,jp
-        f( 0,j,k)=f(1 ,j,k)
-   end do
-      end do
-      do k=1,kp
-      do i=1,ip
-        g(i, 0,k)=g(i,jp ,k)
-   end do
-      end do
-      do j=1,jp
-      do i=1,ip
-        h(i,j, 0)=0.0
-        h(i,j,kp)=0.0
-   end do
-      end do
-    do k = 1,kp
-        do j = 1,jp
-            do i = 1,ip
+    call bondfg(km,jm,f,im,g,h)
+    do k = 1,km
+        do j = 1,jm
+            do i = 1,im
                 rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i) +(-v(i,j-1,k)+ &
                              v(i,j,k))/dy1(j) +(-w(i,j,k-1)+w(i,j,k))/dzn(k)
                 rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i) +(g(i,j,k)- &
@@ -56,18 +51,18 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax &
     end do
     rhsav = 0.0
     area = 0.0
-    do k = 1,kp
-        do j = 1,jp
-            do i = 1,ip
+    do k = 1,km
+        do j = 1,jm
+            do i = 1,im
                 rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
                 area = area +dx1(i)*dy1(j)*dzn(k)
             end do
         end do
     end do
     rhsav = rhsav/area
-    do k = 1,kp
-        do j = 1,jp
-            do i = 1,ip
+    do k = 1,km
+        do j = 1,jm
+            do i = 1,im
                 rhs(i,j,k) = rhs(i,j,k)-rhsav
             end do
         end do
@@ -75,89 +70,50 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax &
     do l = 1,nmaxp
         sor = 0.0
         do nrd = 0,1
-            do k = 1,kp
-                do j = 1,jp
-                    do i=1,ip
-                dz1 = dzs(k-1)
-                dz2 = dzs(k)
-                cn4s = 2./(dz1*(dz1+dz2))
-                cn4l = 2./(dz2*(dz1+dz2))
-                    cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                    cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                        cn1 = 1./ (2./(dxs(i-1)*dxs(i)) + 2./(dys(j-1)*dys(j)) + 2./(dz1*dz2))
-                      if (nrd==0) then
-                        reltmp = omega*(cn1 *(cn2l*p(0,i+1,j,k) + &
-                                 cn2s*p(0,i-1,j,k) +cn3l*p(0,i,j+1,k) + &
-                                 cn3s*p(0,i,j-1,k) +cn4l*p(0,i,j,k+1) + &
-                                 cn4s*p(0,i,j,k-1) -rhs(i,j,k))-p(0,i,j,k))
-                        p(1,i,j,k) = p(0,i,j,k) +reltmp
-                      else
-                        reltmp = omega*(cn1 *(cn2l*p(1,i+1,j,k) + &
-                                 cn2s*p(1,i-1,j,k) +cn3l*p(1,i,j+1,k) + &
-                                 cn3s*p(1,i,j-1,k) +cn4l*p(1,i,j,k+1) + &
-                                 cn4s*p(1,i,j,k-1) -rhs(i,j,k))-p(1,i,j,k))
-                        p(0,i,j,k) = p(1,i,j,k) +reltmp
-                      end if
+            do k = 1,km
+                do j = 1,jm
+                    do i = 1+mod(k+j+nrd,2),im,2
+                        reltmp = omega*(cn1(i,j,k) *(cn2l(i)*p(i+1,j,k) + &
+                                 cn2s(i)*p(i-1,j,k) +cn3l(j)*p(i,j+1,k) + &
+                                 cn3s(j)*p(i,j-1,k) +cn4l(k)*p(i,j,k+1) + &
+                                 cn4s(k)*p(i,j,k-1) -rhs(i,j,k))-p(i,j,k))
+                        p(i,j,k) = p(i,j,k) +reltmp
+                        sor = sor+reltmp*reltmp
                     end do
                 end do
             end do
-          do k=0,kp+1
-          do j=0,jp+1
-            p(0, 0,j,k) = p(0,1 ,j,k)
-            p(0,ip+1,j,k) = p(0,ip,j,k)
-          end do
-          end do
-          do k=0,kp+1
-          do i=0,ip+1
-            p(0,i, 0,k) = p(0,i,jp,k)
-            p(0,i,jp+1,k) = p(0,i, 1,k)
-          end do
-          end do
-        end do 
-      do j=0,jp+1
-      do i=0,ip+1
-        p(0,i,j, 0) = p(0,i,j,1)
-        p(0,i,j,kp+1) = p(0,i,j,kp)
-      end do
-      end do
-    end do 
+            call boundp1(km,jm,p,im)
+        end do
+        call boundp2(jm,im,p,km)
+        if (sor < pjuge) then
+            exit
+        end if
+    end do
     pav = 0.0
     pco = 0.0
-    do k = 1,kp
-        do j = 1,jp
-            do i = 1,ip
-                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+    do k = 1,km
+        do j = 1,jm
+            do i = 1,im
+                pav = pav+p(i,j,k)*dx1(i)*dy1(j)*dzn(k)
                 pco = pco+dx1(i)*dy1(j)*dzn(k)
             end do
         end do
     end do
     pav = pav/pco
-    do k = 1,kp
-        do j = 1,jp
-            do i = 1,ip
-                p(0,i,j,k) = p(0,i,j,k)-pav
+    do k = 1,km
+        do j = 1,jm
+            do i = 1,im
+                p(i,j,k) = p(i,j,k)-pav
             end do
         end do
     end do
-          do k=0,kp+1
-          do j=0,jp+1
-            p(0, 0,j,k) = p(0,1 ,j,k)
-            p(0,ip+1,j,k) = p(0,ip,j,k)
-          end do
-          end do
-          do k=0,kp+1
-          do i=0,ip+1
-            p(0,i, 0,k) = p(0,i,jp,k)
-            p(0,i,jp+1,k) = p(0,i, 1,k)
-          end do
-          end do
-      do j=0,jp+1
-      do i=0,ip+1
-        p(0,i,j, 0) = p(0,i,j,1)
-        p(0,i,j,kp+1) = p(0,i,j,kp)
-      end do
-      end do
+    call boundp1(km,jm,p,im)
+    call boundp2(jm,im,p,km)
+    if(mod(n,1000) == 0 .or. n == nmax) then
+        nn = n/1000
+        print *, 'timestep: ',nn,' pressure at centre: ',p(ip/2,jp/2,kp/2), &
+                'vel at centre: ', &
+                u(ip/2,jp/2,kp/2),v(ip/2,jp/2,kp/2),w(ip/2,jp/2,kp/2)
+    end if
 end subroutine press
 end module module_press

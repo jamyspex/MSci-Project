@@ -64,12 +64,10 @@ contains
         covy1 = (cov2(i,j,k)+cov2(i,j+1,k))/2.
         covz1 = (cov3(i,j,k)+cov3(i,j,k+1))/2.
         covc = covx1+covy1+covz1
-!-- molecular viscous term is neglected
-!        dfu1(i,j,k) = 2.*(-diu1(i,j,k)+diu1(i+1,j,k))/(dx1(i)+dx1(i+1))  +   (-diu2(i,j,k)+diu2(i, &
-!      j+1,k))/dy1(j) +   (-diu3(i,j,k)+diu3(i,j,k+1))/dzn(k)
-!        df = vn*dfu1(i,j,k)
-!        f(i,j,k) = (-covc+df)
-        f(i,j,k) = (-covc)
+        dfu1(i,j,k) = 2.*(-diu1(i,j,k)+diu1(i+1,j,k))/(dx1(i)+dx1(i+1))  +   (-diu2(i,j,k)+diu2(i, &
+      j+1,k))/dy1(j) +   (-diu3(i,j,k)+diu3(i,j,k+1))/dzn(k)
+        df = vn*dfu1(i,j,k)
+        f(i,j,k) = (-covc+df)
       end do
       end do
       end do
@@ -82,12 +80,10 @@ contains
         covy1 = (dy1(j+1)*cov5(i,j,k)+dy1(j)*cov5(i,j+1,k)) /(dy1(j)+dy1(j+1))
         covz1 = (cov6(i,j,k)+cov6(i,j,k+1))/2.
         covc = covx1+covy1+covz1
-!-- molecular viscous term is neglected
-!        dfv1(i,j,k) = (-diu4(i,j,k)+diu4(i+1,j,k))/dx1(i)  +2.*(-diu5(i,j,k)+diu5(i,j+1, &
-!      k))/(dy1(j)+dy1(j+1)) +(-diu6(i,j,k)+diu6(i,j,k+1))/dzn(k)
-!        df = vn*dfv1(i,j,k)
-!        g(i,j,k) = (-covc+df)
-        g(i,j,k) = (-covc)
+        dfv1(i,j,k) = (-diu4(i,j,k)+diu4(i+1,j,k))/dx1(i)  +2.*(-diu5(i,j,k)+diu5(i,j+1, &
+      k))/(dy1(j)+dy1(j+1)) +(-diu6(i,j,k)+diu6(i,j,k+1))/dzn(k)
+        df = vn*dfv1(i,j,k)
+        g(i,j,k) = (-covc+df)
       end do
       end do
       end do
@@ -101,12 +97,10 @@ contains
        covy1 = (cov8(i,j,k)+cov8(i,j+1,k))/2.
        covz1 = (dzn(k+1)*cov9(i,j,k)+dzn(k)*cov9(i,j,k+1)) /(dzn(k)+dzn(k+1))
        covc = covx1+covy1+covz1
-!-- molecular viscous term is neglected
-!        dfw1(i,j,k) = (-diu7(i,j,k)+diu7(i+1,j,k))/dx1(i)  +(-diu8(i,j,k)+diu8(i,j+1, &
-!      k))/dy1(j) +(-diu9(i,j,k)+diu9(i,j,k+1))/dzs(k)
-!        df = vn*dfw1(i,j,k)
-!        h(i,j,k) = (-covc+df)
-        h(i,j,k) = (-covc)
+        dfw1(i,j,k) = (-diu7(i,j,k)+diu7(i+1,j,k))/dx1(i)  +(-diu8(i,j,k)+diu8(i,j+1, &
+      k))/dy1(j) +(-diu9(i,j,k)+diu9(i,j,k+1))/dzs(k)
+        df = vn*dfw1(i,j,k)
+        h(i,j,k) = (-covc+df)
       end do
       end do
       end do

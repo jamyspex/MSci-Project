@@ -1,0 +1,130 @@
+      implicit real*4(a-h,o-z)
+      implicit integer(i-n) 
+      real*4 nou1,nou2,nou3,nou4,nou5,nou6,nou7,nou8,nou9
+c
+      parameter(ip=3000,jp=300,kp=105)
+c
+      character*70 data10,data11,data20,data21,data22,data23
+     &                   ,data24,data25,data26,data27,data30
+     &                   ,data31,data41
+     &                   ,data40,data12,data13,data19,data29
+     &                   ,data50,data51,data52,data53,data54
+     &                   ,fname,filename,data14
+c
+      common/namfil/data10,data11,data20,data21,data22,data23
+     &                   ,data24,data25,data26,data27,data30
+     &                   ,data31,data41
+     &                   ,data40,data12,data13,data19,data29
+     &                   ,data50,data51,data52,data53,data54
+     &                   ,fname,data14
+c
+      common/varia/u(0:ip+1,-1:jp+1, 0:kp+1),
+     &             v(0:ip+1,-1:jp+1, 0:kp+1),
+     &             w(0:ip+1,-1:jp+1,-1:kp+1),
+     &             usum(0:ip,0:jp,0:kp),
+     &             vsum(0:ip,0:jp,0:kp),
+     &             wsum(0:ip,0:jp,0:kp),
+
+     &             uani(0:ip,0:jp,0:kp),
+     &             vani(0:ip,0:jp,0:kp),
+     &             wani(0:ip,0:jp,0:kp),
+
+     &             fx(0:ip,0:jp,0:kp),
+     &             fy(0:ip,0:jp,0:kp),
+     &             fz(0:ip,0:jp,0:kp),
+     &             x(0:ip),y(0:jp),
+     &             p( 0:ip+2, 0:jp+2, 0:kp+1),
+     &             F(0:ip,0:jp,0:kp),
+     &             G(0:ip,0:jp,0:kp),
+     &             H(0:ip,0:jp,0:kp),
+     &             FGH(ip,jp,kp),
+     &             Fold(ip,jp,kp),
+     &             Gold(ip,jp,kp),
+     &             Hold(ip,jp,kp),
+     &             FGHold(ip,jp,kp)
+c
+      common/varie/amask1(0:ip+1,0:jp+1,0:kp+1)
+     &            ,bmask1(-1:ip+1,0:jp+1,0:kp+1)
+     &            ,cmask1(0:ip+1,-1:jp+1,0:kp+1)
+     &            ,dmask1(0:ip+1,0:jp+1,0:kp+1)
+     &            ,cn1(ip,jp,kp)
+c
+      common/pois1/cn2s(ip),cn2l(ip),cn3s(jp),cn3l(jp)
+      common/pois2/cn4s(kp),cn4l(kp)
+c
+
+      common/ave/aveu(0:ip+1,0:jp+1,0:kp+1),avev(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avew(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avel(0:ip+1,0:jp+1,0:kp+1),avep(0:ip+1,0:jp+1,0:kp+1)
+     &          ,aveuu(0:ip+1,0:jp+1,0:kp+1),avevv(0:ip+1,0:jp+1,0:kp+1)
+     &          ,aveww(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avesm(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avesmsm(0:ip+1,0:jp+1,0:kp+1)
+     &          ,uwfx(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avesu(0:ip+1,0:kp+1),avesv(0:ip+1,0:kp+1)
+     &          ,avesw(0:ip+1,0:kp+1),uwfxs(0:ip+1,0:kp+1)
+     &          ,avesuu(0:ip+1,0:kp+1)
+     &          ,avesvv(0:ip+1,0:kp+1),avesww(0:ip+1,0:kp+1)
+
+     &          ,avessu(0:kp+1),avessv(0:kp+1)
+     &          ,avessw(0:kp+1),uwfxss(0:kp+1)
+     &          ,avessuu(0:kp+1)
+
+     &          ,avesssu(0:ip+1,0:kp+1),avesssv(0:ip+1,0:kp+1)
+     &          ,avesssw(0:ip+1,0:kp+1),uwfxsss(0:ip+1,0:kp+1)
+     &          ,avesssuu(0:ip+1,0:kp+1)
+     &          ,avesssvv(0:ip+1,0:kp+1),avesssww(0:ip+1,0:kp+1)
+
+     &          ,avessvv(0:kp+1),avessww(0:kp+1)
+     &          ,avecrlx(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avecrly(0:ip+1,0:jp+1,0:kp+1)
+     &          ,avecrlz(0:ip+1,0:jp+1,0:kp+1)
+     &          ,ijs(0:kp+1)
+     &          ,js(0:ip+1,0:kp+1)
+
+
+c
+      common/fpara/dx,dy,dz,dt,time,vn,ro
+      common/fpara2/n,nn
+      common/fb/alpha,beta,ibh
+     &         ,iablock,ibblock,icblock,idblock
+     &         ,jablock,jbblock,jcblock,jdblcok
+     &         ,jbuffer,ist,nblockline,nblockrow,hblock,it,jt
+c
+      common/fgrd /im,jm,km,irec
+      common/fctrl/ical,n0,n1,nmax
+     1  ,irg,ifbf,itchg,nv,ianime,iam
+c--les
+      common/lesrela/sm(-1:ip+1,-1:jp+1,0:kp+1)
+     &              ,dfu1(0:ip,jp,kp),dfv1(ip,0:jp,kp),dfw1(ip,jp,kp)
+      common/lesfilter/delx1(ip,jp,kp)
+c--ifdata
+      common/xyzs/zbm(-1:ip+1,-1:jp+1),zbm1(0:ip+1,0:jp+1,1)
+     &,dem(-1:ip+1,-1:jp+1),dsm(-1:ip+1,-1:jp+1)
+c--press
+      common/rhsrel/rhs(0:ip+1,0:jp+1,0:kp+1),rel(0:ip+1,0:jp+1,0:kp+1)
+c--vel2,velFG
+      common/cdn/cov1(-1:ip+2,0:jp+2,0:kp+2),cov2(0:ip+2,0:jp+2,0:kp+2)
+     &        ,cov3(0:ip+2,0:jp+2,0:kp+2),cov4(0:ip+2,0:jp+2,0:kp+2)
+     &        ,cov5(-1:ip+2,0:jp+2,0:kp+2),cov6(0:ip+2,0:jp+2,0:kp+2)
+     &        ,cov7(0:ip+2,0:jp+2,0:kp+2),cov8(0:ip+2,0:jp+2,0:kp+2)
+     &        ,cov9(0:ip+2,0:jp+2,0:kp+2)
+     &        ,diu1(-1:ip+2,0:jp+2,0:kp+2),diu2(0:ip+2,0:jp+2,0:kp+2)
+     &        ,diu3(0:ip+2,0:jp+2,0:kp+2),diu4(0:ip+2,0:jp+2,0:kp+2)
+     &        ,diu5(-1:ip+2,0:jp+2,0:kp+2),diu6(0:ip+2,0:jp+2,0:kp+2)
+     &        ,diu7(0:ip+2,0:jp+2,0:kp+2),diu8(0:ip+2,0:jp+2,0:kp+2)
+     &        ,diu9(0:ip+2,0:jp+2,0:kp+2)
+     &        ,nou1(-1:ip+2,0:jp+2,0:kp+2),nou2(0:ip+2,0:jp+2,0:kp+2)
+     &        ,nou3(0:ip+2,0:jp+2,0:kp+2),nou4(0:ip+2,0:jp+2,0:kp+2)
+     &        ,nou5(-1:ip+2,0:jp+2,0:kp+2),nou6(0:ip+2,0:jp+2,0:kp+2)
+     &        ,nou7(0:ip+2,0:jp+2,0:kp+2),nou8(0:ip+2,0:jp+2,0:kp+2)
+     &        ,nou9(0:ip+2,0:jp+2,0:kp+2)
+     &        ,uspd(0:ip+2,0:jp+2),vspd(0:ip+2,0:jp+2)
+
+c--stretch
+      common/xg/z1(kp+2),z2(0:kp+2),dzn(0:kp+2),dzs(kp+2)
+     &,dx1(ip+2),dy1(jp+2),dxs(ip+2),dys(jp+2),dxl(ip+2),dyl(jp+2)
+     &,dx1s(ip+2),dzsn(kp+2)
+c
+      real a1(1:ip,1:jp+1,1:kp+1),a2(1:ip,1:jp+1,1:kp+1)
+     &    ,a3(1:ip,1:jp+1,1:kp+1)

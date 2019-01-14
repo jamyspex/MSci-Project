@@ -9,6 +9,7 @@ import           Data.Generics        (everything, everywhere, everywhereM,
                                        gmapQ, gmapT, mkM, mkQ, mkT)
 import           Data.List
 import qualified Data.Map             as DMap
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools as LFT
 import           MiniPP
@@ -111,13 +112,13 @@ parseProgramData opts = do
             else do
                 -- based on ast data currently in SubRecAnalysis find
                 -- all call statments in currently discovered files
-                let sraWithSubCalls = populateSubCalls sra
+                let sraWithSubCalls = populateSubCalls opts sra
                 -- then using this call data find other files containing used subroutines
                 otherSubsParseResults <- findOtherRequiredSubs parseCurried sraWithSubCalls
                 -- update the SubRecAnalysis structure based of newly found files
                 let (otherAstMapItems, otherFileMapItems, otherLineMapItems)
                         = unzip3 $ map getMapEntries otherSubsParseResults
-                let sra' = populateSubCalls $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
+                let sra' = populateSubCalls opts $ SRA (DMap.fromList (previousFileMapItems ++ otherFileMapItems))
                                                 (DMap.fromList (previousLineMapItems ++ otherLineMapItems))
                                                 (DMap.fromList (previousAstMapItems ++ otherAstMapItems))
                                                 DMap.empty DMap.empty
@@ -256,7 +257,7 @@ debug_displaySubTableEntry sr = do
 --                                                                          AST           Lines    Filename
 parseFile :: [String] -> [String] -> Bool -> String -> String -> IO ((Program Anno, [String], String))
 parseFile cppDArgs cppXArgs fixedForm dir filename = do
-    parseOutput <- LFT.parseFile cppDArgs cppXArgs fixedForm path
+    parseOutput <- LFT.parseFile cppDArgs cppXArgs fixedForm dir filename
     let ((parsedProgram, lines), _, _) = parseOutput
     -- validateInputFile parsedProgram
     return (parsedProgram, lines, path)
@@ -272,13 +273,16 @@ getMapEntries (ast, lines, filename) = ((subname, subAst), (subname, filename), 
 getFileAst = head . extractMainProgUnit
 getSubName = extractProgUnitName
 
-populateSubCalls :: SubRecAnalysis -> SubRecAnalysis
-populateSubCalls sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMap}
+populateSubCalls :: F4Opts -> SubRecAnalysis -> SubRecAnalysis
+populateSubCalls opts sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMap}
     where
         fileAstsList = DMap.toList $ subroutineToAst sra
         callsInFiles = map (\(subname, ast) -> (subname, extractAllCalls ast)) fileAstsList
+        callsOfInterest =  callsInFiles
         subnamesToCallsMap = map (\(subname, calls) ->
-            (subname, DMap.fromList $ map (\call -> (getCalledSubName call, call)) calls)) callsInFiles
+            (subname, DMap.fromList $
+                filter (\(subname, _) -> subname `elem` (trace (show $ subsForFPGA opts) subsForFPGA opts)) $
+                map (\call -> (getCalledSubName call, call)) calls)) callsOfInterest
 
 getCalledSubName :: Fortran Anno -> String
 getCalledSubName call@(Call _ _ (expr) _) = case expr of

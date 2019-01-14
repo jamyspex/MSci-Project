@@ -1739,12 +1739,14 @@ io_control_spec_id :: { Spec A0 }
 
 input_item_list :: { [Expr A0] }
 input_item_list
-  : input_item_list ',' input_item                { $1++[$3] }
-  | input_item                                    { [$1] }
+  : input_item_list ',' input_item         { $1++[$3] }
+  -- | srcloc '(' input_item ')'              { %getSrcSpan $1 >>= (\s -> return $ [ParenthesizedExpr DMap.empty s $3]) }
+  | input_item                             { [$1] }
 
 input_item :: { Expr A0 }
 input_item
-  : variable                                      { $1 }
+  : srcloc '(' variable ')'                { %getSrcSpan $1 >>= (\s -> return $ ParenthesizedExpr DMap.empty s $3)}
+  | variable                               { $1 }
 
 
 --  | io_implied_do

@@ -8,9 +8,6 @@ module module_LES_write_netcdf
 
   use netcdf
   use common_sn
-#ifdef MPI
-    use communication_helper_real
-#endif
   implicit none
   integer :: ncid, ncid_p, ncid_u,ncid_v,ncid_w,ncid_uvwsum
   integer :: pres_varid, pres_varid_p
@@ -127,9 +124,7 @@ subroutine init_netcdf_file()
     if (isMaster()) then
 #endif
      ! Create the file.
-#ifdef VERBOSE
 print *,'nf90_create()'
-#endif
       call check( nf90_create( FILE_NAME, NF90_CLOBBER,  ncid) )
 
       call check( nf90_create( FILE_NAME_P, NF90_CLOBBER,  ncid_p) )
@@ -141,9 +136,7 @@ print *,'nf90_create()'
       ! Define the dimensions. The record dimension is defined to have
       ! unlimited length - it can grow as needed. In this example it is
       ! the time dimension.
-#ifdef VERBOSE
 print *,'nf90_def_dim()'
-#endif
       call check( nf90_def_dim(ncid, LVL_NAME, NLVLS_P_UV, lvl_dimid) )
       call check( nf90_def_dim(ncid, LAT_NAME, NLATS_P_UVW, lat_dimid) )
       call check( nf90_def_dim(ncid, LON_NAME, NLONS_P, lon_dimid) )
@@ -180,9 +173,7 @@ print *,'nf90_def_dim()'
       ! since coordinate variables only have one dimension, we can
       ! simply provide the address of that dimension ID (lat_dimid) and
       ! similarly for (lon_dimid).
-#ifdef VERBOSE
 print*,'nf90_def_var()'
-#endif
       call check( nf90_def_var(ncid, LAT_NAME, NF90_REAL, lat_dimid, lat_varid) )
       call check( nf90_def_var(ncid, LON_NAME, NF90_REAL, lon_dimid, lon_varid) )
       call check( nf90_def_var(ncid, TIME_SERIES_NAME, NF90_DOUBLE, time_series_dimid,  time_series_varid) )
@@ -207,9 +198,8 @@ print*,'nf90_def_var()'
       call check( nf90_def_var(ncid_uvwsum, LON_NAME, NF90_REAL, lon_dimid_uvwsum, lon_varid_uvwsum) )
       call check( nf90_def_var(ncid_uvwsum, TIME_SERIES_NAME, NF90_DOUBLE, time_series_dimid_uvwsum,  time_series_varid_uvwsum) )
 
-#ifdef VERBOSE
 print*,'nf90_put_att()'
-#endif
+
       ! Assign units attributes to coordinate variables.
       call check( nf90_put_att(ncid, lat_varid, UNITS, LAT_UNITS) )
       call check( nf90_put_att(ncid, lon_varid, UNITS, LON_UNITS) )
@@ -247,9 +237,7 @@ print*,'nf90_put_att()'
       dimids_v = (/ lon_dimid_v, lat_dimid_v, lvl_dimid_v, time_series_dimid_v /)
       dimids_w = (/ lon_dimid_w, lat_dimid_w, lvl_dimid_w, time_series_dimid_w /)
       dimids_uvwsum = (/ lon_dimid_uvwsum, lat_dimid_uvwsum, lvl_dimid_uvwsum, time_series_dimid_uvwsum /)
-#ifdef VERBOSE
 print*,'nf90_def_var(p,u,v,w,uvwsum)'
-#endif
       ! Define the netCDF variables for the pressure and velocity data.
       call check( nf90_def_var(ncid, PRES_NAME, NF90_REAL, dimids, pres_varid) )
 
@@ -260,9 +248,7 @@ print*,'nf90_def_var(p,u,v,w,uvwsum)'
       call check( nf90_def_var(ncid_uvwsum, VELSUM_X_NAME, NF90_REAL, dimids, velsum_x_varid_uvwsum) )
       call check( nf90_def_var(ncid_uvwsum, VELSUM_Y_NAME, NF90_REAL, dimids, velsum_y_varid_uvwsum) )
       call check( nf90_def_var(ncid_uvwsum, VELSUM_Z_NAME, NF90_REAL, dimids, velsum_z_varid_uvwsum) )
-#ifdef VERBOSE
 print*,'nf90_put_att(UNITS)'
-#endif
       ! Assign units attributes to the netCDF variables.
       call check( nf90_put_att(ncid, pres_varid, UNITS, PRES_UNITS) )
 
@@ -273,9 +259,8 @@ print*,'nf90_put_att(UNITS)'
       call check( nf90_put_att(ncid_uvwsum, velsum_x_varid_uvwsum, UNITS, VEL_UNITS) )
       call check( nf90_put_att(ncid_uvwsum, velsum_y_varid_uvwsum, UNITS, VEL_UNITS) )
       call check( nf90_put_att(ncid_uvwsum, velsum_z_varid_uvwsum, UNITS, VEL_UNITS) )
-#ifdef VERBOSE
+
 print*,'nf90_enddef()'
-#endif
       ! End define mode.
       call check( nf90_enddef(ncid) )
 
@@ -284,9 +269,9 @@ print*,'nf90_enddef()'
       call check( nf90_enddef(ncid_v) )
       call check( nf90_enddef(ncid_w) )
       call check( nf90_enddef(ncid_uvwsum) )
-#ifdef VERBOSE
+
 print*,'Create lat/lon/times arrays'
-#endif
+
        ! Create arrays for lat and long
        ! Kyoto/Uji from northwest to southeast 35.0, 135.7 - 34.9, 135.8 => .1 degree is 150, so we need to do 34.9+0.1*lat/NLATS, 135.7+0.1*lon/NLONS
        do lat = 1, NLATS_P_UVW
@@ -308,48 +293,36 @@ print*,'Create lat/lon/times arrays'
        do t = 1, NTIMESTEPS
           times(t) = t
        end do
-#ifdef VERBOSE
+
 print*,'nf90_put_var()'
-#endif
       ! Write the coordinate variable data. This will put the latitudes
       ! and longitudes of our data grid into the netCDF file.
       call check( nf90_put_var(ncid, lat_varid, lats_p_uvw) )
       call check( nf90_put_var(ncid, lon_varid, lons_p) )
       call check( nf90_put_var(ncid, time_series_varid, times) )
-#ifdef VERBOSE
 print*,'nf90_put_var(p)'
-#endif
       call check( nf90_put_var(ncid_p, lat_varid_p, lats_p_uvw) )
       call check( nf90_put_var(ncid_p, lon_varid_p, lons_p) )
       call check( nf90_put_var(ncid_p, time_series_varid_p, times) )
-#ifdef VERBOSE
 print*,'nf90_put_var(u)'
-#endif
       call check( nf90_put_var(ncid_u, lat_varid_u, lats_p_uvw) )
       call check( nf90_put_var(ncid_u, lon_varid_u, lons_uvw) )
       call check( nf90_put_var(ncid_u, time_series_varid_u, times) )
-#ifdef VERBOSE
 print*,'nf90_put_var(v)'
-#endif
       call check( nf90_put_var(ncid_v, lat_varid_v, lats_p_uvw) )
       call check( nf90_put_var(ncid_v, lon_varid_v, lons_uvw) )
       call check( nf90_put_var(ncid_v, time_series_varid_v, times) )
-#ifdef VERBOSE
 print*,'nf90_put_var(w)'
-#endif
       call check( nf90_put_var(ncid_w, lat_varid_w, lats_p_uvw) )
       call check( nf90_put_var(ncid_w, lon_varid_w, lons_uvw) )
       call check( nf90_put_var(ncid_w, time_series_varid_w, times) )
-#ifdef VERBOSE
 print*,'nf90_put_var(uvwsum)'
-#endif
       call check( nf90_put_var(ncid_uvwsum, lat_varid_uvwsum, lats_uvwsum) )
       call check( nf90_put_var(ncid_uvwsum, lon_varid_uvwsum, lons_uvwsum) )
       call check( nf90_put_var(ncid_uvwsum, time_series_varid_uvwsum, times) )
 
-#ifdef VERBOSE
 print*,'Create count*/start'
-#endif
+
       count = (/ NLONS_P, NLATS_P_UVW, NLVLS_P_UV, 1 /)
 
       count_p = (/ NLONS_P, NLATS_P_UVW, NLVLS_P_UV, 1 /)
@@ -403,9 +376,8 @@ subroutine write_to_netcdf_file(p,u,v,w,usum,vsum,wsum,n)
         ! of data. We will just rewrite the same data for each timestep. In
         ! a real :: application, the data would change between timesteps.
         start(4) = n
-#ifdef VERBOSE
         print *, 'ncid: ',ncid,'pres_varid: ',pres_varid
-#endif
+
         write(*,*) 'test1'
 
         call check( nf90_put_var(ncid, pres_varid, pTot,  start, count) )
@@ -432,9 +404,8 @@ subroutine write_to_netcdf_file(p,u,v,w,usum,vsum,wsum,n)
     ! of data. We will just rewrite the same data for each timestep. In
     ! a real :: application, the data would change between timesteps.
     start(4) = n
-#ifdef VERBOSE
     print *, 'ncid: ',ncid,'pres_varid: ',pres_varid
-#endif
+
 !    write(*,*) 'test1'
 
     call check( nf90_put_var(ncid, pres_varid, p,  start, count) )
@@ -442,9 +413,8 @@ subroutine write_to_netcdf_file(p,u,v,w,usum,vsum,wsum,n)
 !    write(*,*) 'test2'
 
     call check( nf90_put_var(ncid_p, pres_varid, p,  start, count_p) )
-#ifdef VERBOSE
+
     print *, 'ncid_u: ',ncid_u,'vel_x_varid_u: ',vel_x_varid_u
-#endif
     call check( nf90_put_var(ncid_u, vel_x_varid_u, u, start, count_u) )
     call check( nf90_put_var(ncid_v, vel_y_varid_v, v, start, count_v) )
     call check( nf90_put_var(ncid_w, vel_z_varid_w, w, start, count_w) )

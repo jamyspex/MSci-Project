@@ -1,6 +1,7 @@
 module module_grid
  contains
       subroutine grid(dx1,dxl,dy1,dyl,z2,dzn,dzs,dxs,dys)
+      use common_sn 
         real(kind=4), dimension(-1:ip+1) , intent(Out) :: dx1
         real(kind=4), dimension(0:ip) , intent(Out) :: dxl
         real(kind=4), dimension(0:ip) , intent(Out) :: dxs
@@ -10,26 +11,27 @@ module module_grid
         real(kind=4), dimension(-1:kp+2) , intent(Out) :: dzn
         real(kind=4), dimension(-1:kp+2) , intent(Out) :: dzs
         real(kind=4), dimension(0:kp+2) , intent(Out) :: z2
-        do i = -1,ip+1
-            dx1(i) = dxgrid
-        end do
+      do i = -1,ip+1
+       dx1(i) = 4.
+      end do
       dxl(0) = 0.
       do i = 1,ip
        dxl(i) = dxl(i-1)+dx1(i)
       end do
       do j = 0,jp+1
-            dy1(j) = dygrid
+       dy1(j) = 4.
       end do
       dyl(0) = 0.
       do j = 1,jp
        dyl(j) = dyl(j-1)+dy1(j)
       end do
-        z2(0)= 0.
+        z2(0)= 1.
         dzn(0)= 1.
         z2(1)= 1.
         dzn(1)= 1.
       do k=2,15
         dzn(k)=dzn(k-1)*1.1
+        write(*,*) 'dzn=',dzn(k)
       end do
       do k=16,44
         dzn(k)=4.
@@ -43,8 +45,11 @@ module module_grid
       do k=2,kp+2
         z2(k)=z2(k-1)+dzn(k) 
       end do
+    if (isMaster()) then
       do k=1,kp
+        write(*,*) 'z2grid=',z2(k)
       end do
+    end if
       dzn(kp+1) = dzn(kp)
       dzn(kp+2) = dzn(kp+1)
       dzn(0) = dzn(1)

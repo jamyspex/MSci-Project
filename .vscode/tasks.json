@@ -12,7 +12,10 @@
             "options": {
                 "cwd": "F4"
             },
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         }
     ]

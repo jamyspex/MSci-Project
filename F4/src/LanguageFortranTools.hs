@@ -38,30 +38,34 @@ nullSrcSpan = (NoSrcLoc, NoSrcLoc)
 
 
 --    Taken from language-fortran example. Runs preprocessor on target source and then parses the result, returning an AST.
-parseFile :: [String] -> [String] -> Bool -> String -> IO ( (Program Anno, [String]) , (String, CodeStash), ModuleVarsTable)
-parseFile cppDArgs cppXArgs fixedForm filename = do
-    (preproc_inp, stash,moduleVarTable) <- preProcessingHelper cppDArgs cppXArgs fixedForm True filename
+parseFile :: [String] -> [String] -> Bool -> String -> String -> IO ( (Program Anno, [String]) , (String, CodeStash), ModuleVarsTable)
+parseFile cppDArgs cppXArgs fixedForm dir filename = do
+    (preproc_inp, stash,moduleVarTable) <- preProcessingHelper cppDArgs cppXArgs fixedForm True dir filename
     let
         preproc_inp_lines = lines preproc_inp
-    return ((warning (parse preproc_inp) ("Parsing "++filename), preproc_inp_lines),(filename, stash),moduleVarTable)
+        path = dir ++ "/" ++ filename
+    return ((warning (parse preproc_inp) ("Parsing " ++ path), preproc_inp_lines),(filename, stash),moduleVarTable)
     --return (parse  preproc_inp, preproc_inp_lines) -- ,(filename, stash))
     -- return ()
 
-runCpp :: [String] -> [String] -> Bool -> String -> IO String
-runCpp cppDArgs cppXArgs fixedForm filename = do
-    (preproc_inp, _, _) <- preProcessingHelper cppDArgs cppXArgs fixedForm False filename
+runCpp :: [String] -> [String] -> Bool -> String -> String -> IO String
+runCpp cppDArgs cppXArgs fixedForm dir filename = do
+    (preproc_inp, _, _) <- preProcessingHelper cppDArgs cppXArgs fixedForm False dir filename
     return preproc_inp
 
-preProcessingHelper :: [String] -> [String] -> Bool -> Bool -> String -> IO (String, CodeStash, ModuleVarsTable)
-preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
+preProcessingHelper :: [String] -> [String] -> Bool -> Bool -> String -> String -> IO (String, CodeStash, ModuleVarsTable)
+preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     let
+        filePrefix = case dir of
+            "" -> "./"
+            _  -> dir ++ "/"
         dFlagList = if length cppDArgs > 0
             then foldl (\accum item -> accum ++ ["-D"++item]) [] cppDArgs
             else  []
         dFlagStr = if length dFlagList == 0
             then  ""
             else unwords dFlagList
-    inp <- readFile filename
+    inp <- readFile (filePrefix ++ filename)
 
     let
         filename_no_dot
@@ -69,7 +73,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
             | otherwise = filename
         filename_noext = head $ split '.' filename_no_dot
 
-    writeFile ("./" ++ filename_noext ++ "_just_read.f95") inp
+    writeFile (filePrefix ++ filename_noext ++ "_just_read.f95") inp
 
     let
         contentLines = lines inp
@@ -80,13 +84,13 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
     -- Then we preprocess, which should remove blank lines
         (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
     -- Write this out to a file so we can call cpp on it via the shell
-    writeFile ("./"++filename_noext++"_tmp.f95") preproc_inp
+    writeFile (filePrefix ++ filename_noext ++ "_tmp.f95") preproc_inp
     -- Apply the C preprocessor on the temporary file and remove the blank lines
-    let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " ./"++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
+    let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " " ++ filePrefix ++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
     -- putStrLn cpp_cmd
     putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
-    writeFile ("./" ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
+    writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
     -- Language.Fortran.Parser borks on lines starting with !# and on trailing comments
@@ -94,14 +98,14 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules filename = do
     -- I also skip any blank lines
         exp_inp_lines'' = removeBlankLines exp_inp_lines_no_comments
 
-    writeFile ("./" ++ filename_noext ++ "_blank_lines_removed.f95") $ unlines exp_inp_lines''
+    writeFile (filePrefix ++ filename_noext ++ "_blank_lines_removed.f95") $ unlines exp_inp_lines''
         -- exp_inp_lines'' = filter ( /= "") exp_inp_lines_no_comments
     -- First declarations from used modules are inlined. Why first? Surely it would be better to do that *after* running CPP?
-    (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
-    writeFile ("./" ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
+    (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules dir True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
+    writeFile (filePrefix ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
     let
         preproc_inp'' = unlines exp_inp_lines'
-    writeFile ("./" ++ filename_noext ++ "_after_inling.f95") preproc_inp''
+    writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
     return (preproc_inp'', stash,moduleVarTable)
 
 
@@ -943,14 +947,10 @@ isUseDecl line = let
     in
         if ((not (null chunks)) && (head chunks == "use")) then True else False -- init (tail (chunks !! 1)) else ""
 
-
-
-
-
 -- WV This is weak because I assume the module name is the file name. I should at least try and remove "module_" from the name TODO
 -- WV But even then, this should only really be done for modules that only contain declarations, so I should check that TODO
-readUsedModuleDecls :: String -> [String] -> [String] -> Bool -> IO ([String],(String,[String]))
-readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
+readUsedModuleDecls :: String -> String -> [String] -> [String] -> Bool -> IO ([String],(String,[String]))
+readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm =
     let
         chunks = filter (not . null) $ words line
         module_name_maybe_commment = chunks !! 1
@@ -962,29 +962,36 @@ readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
 --        module_name = chunks !! 1
     in
         do
-            test1 <- doesFileExist (module_name ++ ".f95")
-            test2 <- doesFileExist (file_name_root ++ ".f95")
-            -- print $ "Test1: "++module_name ++ ".f95 "++(show test1)
-            -- print $ "Test2: "++file_name_root ++ ".f95 "++(show test2)
+            -- putStrLn $ "readUsedModuleDecls: " ++ line
+            test1 <- doesFileExist (sourceDir ++ "/" ++ module_name ++ ".f95")
+            test2 <- doesFileExist (sourceDir ++ "/" ++ file_name_root ++ ".f95")
+            putStrLn $ "Test1: "++ sourceDir ++ "/" ++ module_name ++ ".f95 "++(show test1)
+            putStrLn $ "Test2: "++ sourceDir ++ "/" ++ file_name_root ++ ".f95 "++(show test2)
             -- FIXME: I am simply ignoring stash and moduleVarTable for now!
             (module_content_str, stash,moduleVarTable) <- if test1
                 then
                         -- readFile (module_name ++ ".f95")
-                        preProcessingHelper cppDArgs cppXArgs fixedForm True (module_name ++ ".f95")
+                        preProcessingHelper cppDArgs cppXArgs fixedForm True sourceDir (module_name ++ ".f95")
                 else
                     if test2
                         then
+                            do
+                                -- putStrLn "passed test 2"
                             -- OK, this file exists. read it and check if it is decl-only
                             -- we do this by checking for "contains" and "subroutine "
                             -- readFile (file_name_root ++ ".f95")
-                            preProcessingHelper cppDArgs cppXArgs fixedForm True (file_name_root ++ ".f95")
+                                preProcessingHelper cppDArgs cppXArgs fixedForm True sourceDir (file_name_root ++ ".f95")
                         else
-                            return ("",DMap.empty,DMap.empty)
+                            do
+                                -- putStrLn "failed test 2"
+                                return ("",DMap.empty,DMap.empty)
             let test3 = isDeclOnly module_content_str
-            -- print $ "Test3: "++(show test3)++" "++line
+            putStrLn $ "Module content " ++ module_content_str
+            putStrLn $ "Test3: "++(show test3)++" "++line
             if test3
                 then
                     do
+                        -- putStrLn "passed test 3"
                         let
                             module_lines = lines module_content_str
                             (decl_lines, other_lines) = partition findDeclLine module_lines
@@ -992,7 +999,9 @@ readUsedModuleDecls line cppDArgs cppXArgs fixedForm =
                             vars = foldl (++) [] vars_per_line
                         return (decl_lines,(module_name,vars)) -- here we should also return the module, and preferably a list of all declared vars in the module
                 else
-                    return ([line],("",[])) -- ++" ! "++(show (test1,test2,test3))]
+                    do
+                        -- putStrLn "failed test 3"
+                        return ([line],("",[])) -- ++" ! "++(show (test1,test2,test3))]
 
 isDeclOnly module_content_str = let
     module_lines = lines module_content_str
@@ -1023,12 +1032,12 @@ isRelevantModuleLine line
 -- WV: refined this: any "implicit none" after the "use" should come before the inline
 -- The proper way is to check for the presence of such a line, remove it, and in a second pass add it before the first decl / after the last use
 -- Also, we need to build a database of the modules and the declarations taken from each module
-inlineDeclsFromUsedModules :: Bool -> [String] ->[String] ->[String] -> Bool -> IO ([String], ModuleVarsTable)
-inlineDeclsFromUsedModules False contentLines _ _ _ = return (contentLines, DMap.empty)
-inlineDeclsFromUsedModules True contentLines cppDArgs cppXArgs fixedForm = do
+inlineDeclsFromUsedModules :: String -> Bool -> [String] ->[String] ->[String] -> Bool -> IO ([String], ModuleVarsTable)
+inlineDeclsFromUsedModules sourceDir False contentLines _ _ _ = return (contentLines, DMap.empty)
+inlineDeclsFromUsedModules sourceDir True contentLines cppDArgs cppXArgs fixedForm = do
                 let
                     hasImplicitNone = length (filter isImplicitNoneDecl contentLines) > 0
-                expandedContentLines' <- mapM (\line -> if (isUseDecl line) then (readUsedModuleDecls line cppDArgs cppXArgs fixedForm) else return ([ line ],("",[]))) (filter (not . isImplicitNoneDecl) contentLines)
+                expandedContentLines' <- mapM (\line -> if (isUseDecl line) then (readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm) else return ([ line ],("",[]))) (filter (not . isImplicitNoneDecl) contentLines)
                 let
                     (expandedContentLines,moduleVarTupleList) = unzip expandedContentLines'
                 let

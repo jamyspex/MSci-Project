@@ -19,7 +19,12 @@ Fixed form: False
 Loop fusion bound: Nothing
 CPP Defines: 
 CPP Excludes:
-
+    ! read(31) (((f(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
+        ! read(31) (((g(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
+        ! read(31) (((h(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
+        ! read(31) (((fold(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
+        ! read(31) (((gold(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
+        ! read
 Parsing ./Shallow-Water-2D/main.f95
 Parsing ./Shallow-Water-2D/dyn.f95
 Parsing ./Shallow-Water-2D/init.f95
