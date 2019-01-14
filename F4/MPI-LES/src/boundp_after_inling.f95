@@ -1,7 +1,6 @@
 module module_boundp
  contains
 subroutine boundp2(jm,im,p,km)
-    use common_sn 
       implicit none
     integer, intent(In) :: im
     integer, intent(In) :: jm
@@ -16,7 +15,6 @@ subroutine boundp2(jm,im,p,km)
     end do
 end subroutine boundp2
 subroutine boundp1(km,jm,p,im)
-    use common_sn 
     integer, intent(In) :: im
     integer, intent(In) :: jm
     integer, intent(In) :: km

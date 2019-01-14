@@ -1,7 +1,6 @@
 module module_adam
  contains
 subroutine adam(n,nmax,data21,fold,im,jm,km,gold,hold,fghold,f,g,h)
-    use common_sn 
     character(len=70), intent(In) :: data21
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: f
     real(kind=4), dimension(ip,jp,kp) , intent(In) :: fghold

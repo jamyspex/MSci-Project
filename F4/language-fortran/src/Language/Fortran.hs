@@ -245,8 +245,14 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
 
+data StencilIndex = Constant Int | Offset Int deriving (Typeable, Data, Eq)
+
+instance Show StencilIndex where
+    show (Constant val) = "C=" ++ show val
+    show (Offset val)   = show val
+
                         -- dimensions, stencil points, co ords, array name
-data Stencil p = Stencil p Int Int [[Int]] (VarName p)
+data Stencil p = Stencil p Int Int [[StencilIndex]] (VarName p)
                 deriving (Show, Functor, Typeable, Data, Eq)
 
 -- type Bound    = ((Expr p),(Expr p))

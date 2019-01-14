@@ -1,7 +1,6 @@
 module module_bondFG
  contains
 subroutine bondfg(km,jm,f,im,g,h)
-    use common_sn 
       implicit none
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: f
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: g

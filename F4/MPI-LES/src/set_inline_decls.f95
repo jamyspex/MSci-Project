@@ -2,7 +2,6 @@ module module_set
  contains
       subroutine set(data10,data11,data20,data21,data22,data23,data24,data25,data26,data27,data30, &
       data31,im,jm,km,ifbf,ianime,ical,n0,n1,nmax,dt,ro,vn,alpha,beta,data12,data13,data14,idata24,nspec,jdata24)
-      use common_sn 
         real(kind=4), intent(Out) :: alpha
         real(kind=4), intent(Out) :: beta
         character(len=70), intent(InOut) :: data10

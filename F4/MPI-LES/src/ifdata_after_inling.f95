@@ -1,6 +1,5 @@
 module module_ifdata
       use module_bondv1
-      use module_velFG
       use module_les
       use module_boundp
       use module_feedbfm
@@ -11,7 +10,6 @@ module module_ifdata
               diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9, &
               nou1,nou2,nou3,nou4,nou5,nou6,nou7,nou8,nou9 &
               )
-      use common_sn
         real(kind=4), dimension(-1:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov1
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov2
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov3
@@ -109,7 +107,6 @@ module module_ifdata
       delx1,dx1,dy1,dzn,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm,f,g,h,z2,dt, &
       dxs,cov1,cov2,cov3,dfu1,vn,cov4,cov5,cov6,dfv1,cov7,cov8,cov9,dfw1,dzs,nou1,nou5,nou9,nou2, &
       nou3,nou4,nou6,nou7,nou8,bmask1,cmask1,dmask1,alpha,beta,fx,fy,fz,amask1,zbm,ical)
-      use common_sn 
         character(len=70), intent(In) :: data30
         character(len=70), intent(In) :: data31
         real(kind=4), dimension(ip,jp,kp) , intent(InOut) :: fghold

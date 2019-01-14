@@ -7,13 +7,10 @@ program main
     use module_ifdata
     use module_velnw
     use module_bondv1
-    use module_bondv1_data24
-    use module_velFG
     use module_feedbf
     use module_les
     use module_press
     use module_adam
-    use common_sn
     real(kind=4) :: alpha
     integer :: ianime
     integer :: ical

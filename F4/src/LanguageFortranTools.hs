@@ -965,8 +965,8 @@ readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm =
             -- putStrLn $ "readUsedModuleDecls: " ++ line
             test1 <- doesFileExist (sourceDir ++ "/" ++ module_name ++ ".f95")
             test2 <- doesFileExist (sourceDir ++ "/" ++ file_name_root ++ ".f95")
-            putStrLn $ "Test1: "++ sourceDir ++ "/" ++ module_name ++ ".f95 "++(show test1)
-            putStrLn $ "Test2: "++ sourceDir ++ "/" ++ file_name_root ++ ".f95 "++(show test2)
+            -- putStrLn $ "Test1: "++ sourceDir ++ "/" ++ module_name ++ ".f95 "++(show test1)
+            -- putStrLn $ "Test2: "++ sourceDir ++ "/" ++ file_name_root ++ ".f95 "++(show test2)
             -- FIXME: I am simply ignoring stash and moduleVarTable for now!
             (module_content_str, stash,moduleVarTable) <- if test1
                 then
@@ -986,8 +986,8 @@ readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm =
                                 -- putStrLn "failed test 2"
                                 return ("",DMap.empty,DMap.empty)
             let test3 = isDeclOnly module_content_str
-            putStrLn $ "Module content " ++ module_content_str
-            putStrLn $ "Test3: "++(show test3)++" "++line
+            -- putStrLn $ "Module content " ++ module_content_str
+            -- putStrLn $ "Test3: "++(show test3)++" "++line
             if test3
                 then
                     do
@@ -1068,34 +1068,34 @@ addImplicitNone contentLines =
 
 
 
--- splitDelim :: String -> String -> [String]
--- splitDelim patt line =
---     let
---         (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch ->
---                     if Data.List.isPrefixOf patt rest_of_line
---                         then
---                             let
---                                  rest_of_line' = case Data.List.stripPrefix patt rest_of_line of
---                                     Just r  -> r
---                                     Nothing -> rest_of_line
---                             in
---                                 (chunks++[current_chunk],"",rest_of_line')
---                         else
---                             if length rest_of_line > 0
---                             then
---                                 let
---                                     ch':rest_of_line' = rest_of_line
---                                     current_chunk' = current_chunk++[ch']
---                                 in
---                                     (chunks, current_chunk', rest_of_line')
---                             else
---                                  (chunks, current_chunk, rest_of_line)
---                 ) ([],"",line) line
---     in
---         chunks++[ last_chunk ]
-
 splitDelim :: String -> String -> [String]
-splitDelim delim str = LS.splitOn delim str -- (find_delim delim str [])
+splitDelim patt line =
+    let
+        (chunks,last_chunk,_) = foldl (\ (chunks,current_chunk,rest_of_line) ch ->
+                    if Data.List.isPrefixOf patt rest_of_line
+                        then
+                            let
+                                 rest_of_line' = case Data.List.stripPrefix patt rest_of_line of
+                                    Just r  -> r
+                                    Nothing -> rest_of_line
+                            in
+                                (chunks++[current_chunk],"",rest_of_line')
+                        else
+                            if length rest_of_line > 0
+                            then
+                                let
+                                    ch':rest_of_line' = rest_of_line
+                                    current_chunk' = current_chunk++[ch']
+                                in
+                                    (chunks, current_chunk', rest_of_line')
+                            else
+                                 (chunks, current_chunk, rest_of_line)
+                ) ([],"",line) line
+    in
+        chunks++[ last_chunk ]
+
+-- splitDelim :: String -> String -> [String]
+-- splitDelim delim str = LS.splitOn delim str -- (find_delim delim str [])
 
 {-
 

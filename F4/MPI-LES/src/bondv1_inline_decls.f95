@@ -1,7 +1,6 @@
 module module_bondv1
  contains
 subroutine bondv1(jm,u,z2,dzn,v,w,km,n,im,dt,dxs)
-    use common_sn 
       implicit none
     real(kind=4), intent(In) :: dt
     real(kind=4), dimension(0:ip) , intent(In) :: dxs

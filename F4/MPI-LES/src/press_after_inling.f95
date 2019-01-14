@@ -4,7 +4,6 @@ module module_press
  contains
 subroutine press(km,jm,im,rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,cn4s, &
                  n,nmax,data20,usum,vsum,wsum)
-    use common_sn 
     real(kind=4), dimension(ip,jp,kp) , intent(In) :: cn1
     real(kind=4), dimension(ip) , intent(In) :: cn2l
     real(kind=4), dimension(ip) , intent(In) :: cn2s

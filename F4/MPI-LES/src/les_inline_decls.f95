@@ -3,7 +3,6 @@ module module_les
  contains
       subroutine les(km,delx1,dx1,dy1,dzn,jm,im,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm,f,g, &
       h,uspd,vspd,dxs,dys)
-      use common_sn 
         real(kind=4), dimension(kp) , intent(Out) :: delx1
         real(kind=4), dimension(-1:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu1
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(In) :: diu2

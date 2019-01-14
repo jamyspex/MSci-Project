@@ -1,7 +1,6 @@
 module module_velnw
  contains
       subroutine velnw(km,jm,im,p,ro,dxs,u,dt,f,dys,v,g,dzs,w,h)
-      use common_sn 
         real(kind=4), intent(In) :: dt
         real(kind=4), dimension(0:ip) , intent(In) :: dxs
         real(kind=4), dimension(0:jp) , intent(In) :: dys

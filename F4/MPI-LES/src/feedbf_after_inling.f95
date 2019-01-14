@@ -2,7 +2,6 @@ module module_feedbf
  contains
 subroutine feedbf(km,jm,im,usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
                   dt,beta,fx,fy,fz,f,g,h)
-    use common_sn 
     real(kind=4), intent(In) :: alpha
     real(kind=4), intent(In) :: beta
     real(kind=4), dimension(-1:ip+1,0:jp+1,0:kp+1) , intent(In) :: bmask1

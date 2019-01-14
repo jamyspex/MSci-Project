@@ -1,7 +1,6 @@
 module module_boundsm
  contains
 subroutine boundsm(km,jm,sm,im)
-    use common_sn 
       implicit none
     integer, intent(In) :: im
     integer, intent(In) :: jm

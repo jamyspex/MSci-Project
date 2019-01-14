@@ -1,7 +1,6 @@
 module module_grid
  contains
       subroutine grid(dx1,dxl,dy1,dyl,z2,dzn,dzs,dxs,dys)
-      use common_sn 
         real(kind=4), dimension(-1:ip+1) , intent(Out) :: dx1
         real(kind=4), dimension(0:ip) , intent(Out) :: dxl
         real(kind=4), dimension(0:ip) , intent(Out) :: dxs

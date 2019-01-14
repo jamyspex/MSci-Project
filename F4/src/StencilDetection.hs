@@ -61,13 +61,14 @@ createOneStencilRecord arrayDecl stencilArrayAccesses = Stencil nullAnno dimensi
         offsets =  map (getOffsets . idxVarQuery) stencilArrayAccesses
         dimensions = arrDimensions arrayDecl
 
-getOffsets :: [Expr Anno] -> [Int]
+getOffsets :: [Expr Anno] -> [StencilIndex]
 getOffsets indices = map getOffset indices
 
-getOffset :: Expr Anno -> Int
-getOffset (Bin _ _ (Plus _) loopVar (Con _ _ offset))  = read offset
-getOffset (Bin _ _ (Minus _) loopVar (Con _ _ offset)) = negate $ read offset
-getOffset (Var _ _ loopVar) = 0
+getOffset :: Expr Anno -> StencilIndex
+getOffset (Bin _ _ (Plus _) loopVar (Con _ _ offset))  = Offset $ read offset
+getOffset (Bin _ _ (Minus _) loopVar (Con _ _ offset)) = Offset (negate $ read offset)
+getOffset (Var _ _ loopVar) = Offset 0
+getOffset (Con _ _ val) = Constant $ read val
 getOffset missing@_ = error ("getOffset pattern miss for: " ++ show missing)
 
 arrayFromDecl :: Decl Anno -> Array
@@ -97,8 +98,9 @@ isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
 
 findStencilAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body
-findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
+-- findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body
+-- findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
+-- findStencilAccesses arrays (OpenCLStencil _ _ _ body) = findStencilAccesses arrays body
 findStencilAccesses arrays body = arrayAccesses
     where
         arrayAccesses = everything (++) (mkQ [] (getArrayReadsQuery arrays)) body
@@ -201,7 +203,10 @@ getArrayReadsQuery arrays fortran = allReadExprs
                                     (Just body) -> recursiveCall body
                                     _           -> []
                         (NullStmt _ _) -> []
-                        missing@_ -> error ("Unimplemented Fortran Statement " ++ show missing)
+                        (OpenCLStencil _ _ _ body) -> recursiveCall body
+                        (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
+                        (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
+                        missing@_ -> error ("Unimplemented Fortran Statement " ++ miniPPF missing)
         recursiveCall = getArrayReadsQuery arrays
 
 

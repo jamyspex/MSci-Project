@@ -1,12 +1,9 @@
-module module_velFG_init
-
-      use module_vel2_init
-contains
-
-      subroutine velfg_init(km,jm,im,dx1,cov1,cov2,cov3,dfu1,diu1,diu2,dy1,diu3,dzn,vn,f,cov4,cov5,cov6, &
+module module_velFG
+      use module_vel2 
+ contains
+      subroutine velfg(km,jm,im,dx1,cov1,cov2,cov3,dfu1,diu1,diu2,dy1,diu3,dzn,vn,f,cov4,cov5,cov6, &
       dfv1,diu4,diu5,diu6,g,cov7,cov8,cov9,dfw1,diu7,diu8,diu9,dzs,h,nou1,u,nou5,v,nou9,w,nou2, &
-      nou3,nou4,nou6,nou7,nou8)
-      use common_sn ! create_new_include_statements() line 102
+      nou3,nou4,nou6,nou7,nou8,uspd,vspd)
         real(kind=4), dimension(-1:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov1
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov2
         real(kind=4), dimension(0:ip+2,0:jp+2,0:kp+2) , intent(Out) :: cov3
@@ -51,12 +48,10 @@ contains
         real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
         real(kind=4), intent(In) :: vn
         real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In) :: w
-!
-!
-      print *, 'before vel2_init:',dy1(0)
-      call vel2_init(km,jm,im,nou1,u,diu1,dx1,nou5,v,diu5,dy1,nou9,w,diu9,dzn,cov1,cov5,cov9,nou2,diu2, &
-      cov2,nou3,diu3,dzs,cov3,nou4,diu4,cov4,nou6,diu6,cov6,nou7,diu7,cov7,nou8,diu8,cov8)
-! --u velocity
+        real(kind=4), dimension(0:ip+1,0:jp+1) , intent(out) :: uspd
+        real(kind=4), dimension(0:ip+1,0:jp+1) , intent(out) :: vspd
+      call vel2(km,jm,im,nou1,u,diu1,dx1,nou5,v,diu5,dy1,nou9,w,diu9,dzn,cov1,cov5,cov9,nou2,diu2, &
+           cov2,nou3,diu3,dzs,cov3,nou4,diu4,cov4,nou6,diu6,cov6,nou7,diu7,cov7,nou8,diu8,cov8,uspd,vspd)
       do k = 1,km
       do j = 1,jm
       do i = 1,im
@@ -64,15 +59,13 @@ contains
         covy1 = (cov2(i,j,k)+cov2(i,j+1,k))/2.
         covz1 = (cov3(i,j,k)+cov3(i,j,k+1))/2.
         covc = covx1+covy1+covz1
-        dfu1(i,j,k) = 2.*(-diu1(i,j,k)+diu1(i+1,j,k))/(dx1(i)+dx1(i+1))  +   (-diu2(i,j,k)+diu2(i, &
-      j+1,k))/dy1(j) +   (-diu3(i,j,k)+diu3(i,j,k+1))/dzn(k)
+        dfu1(i,j,k) = 2.*(-diu1(i,j,k)+diu1(i+1,j,k))/(dx1(i)+dx1(i+1)) + (-diu2(i,j,k)+diu2(i, &
+      j+1,k))/dy1(j) + (-diu3(i,j,k)+diu3(i,j,k+1))/dzn(k)
         df = vn*dfu1(i,j,k)
         f(i,j,k) = (-covc+df)
       end do
       end do
       end do
-! =======================================
-! --v velocity
       do k = 1,km
       do j = 1,jm
       do i = 1,im
@@ -80,16 +73,13 @@ contains
         covy1 = (dy1(j+1)*cov5(i,j,k)+dy1(j)*cov5(i,j+1,k)) /(dy1(j)+dy1(j+1))
         covz1 = (cov6(i,j,k)+cov6(i,j,k+1))/2.
         covc = covx1+covy1+covz1
-        dfv1(i,j,k) = (-diu4(i,j,k)+diu4(i+1,j,k))/dx1(i)  +2.*(-diu5(i,j,k)+diu5(i,j+1, &
+        dfv1(i,j,k) = (-diu4(i,j,k)+diu4(i+1,j,k))/dx1(i) +2.*(-diu5(i,j,k)+diu5(i,j+1, &
       k))/(dy1(j)+dy1(j+1)) +(-diu6(i,j,k)+diu6(i,j,k+1))/dzn(k)
         df = vn*dfv1(i,j,k)
         g(i,j,k) = (-covc+df)
       end do
       end do
       end do
-!
-! =======================================
-! --w velocity
       do k = 1,km-1
       do j = 1,jm
       do i = 1,im
@@ -97,19 +87,13 @@ contains
        covy1 = (cov8(i,j,k)+cov8(i,j+1,k))/2.
        covz1 = (dzn(k+1)*cov9(i,j,k)+dzn(k)*cov9(i,j,k+1)) /(dzn(k)+dzn(k+1))
        covc = covx1+covy1+covz1
-        dfw1(i,j,k) = (-diu7(i,j,k)+diu7(i+1,j,k))/dx1(i)  +(-diu8(i,j,k)+diu8(i,j+1, &
+        dfw1(i,j,k) = (-diu7(i,j,k)+diu7(i+1,j,k))/dx1(i) +(-diu8(i,j,k)+diu8(i,j+1, &
       k))/dy1(j) +(-diu9(i,j,k)+diu9(i,j,k+1))/dzs(k)
         df = vn*dfw1(i,j,k)
         h(i,j,k) = (-covc+df)
       end do
       end do
       end do
-!
-! =======================================
       return
-      end
-
-
-
-
-end module module_velFG_init
+      end subroutine velFG
+end module module_velFG
