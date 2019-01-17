@@ -19,88 +19,24 @@ Fixed form: False
 Loop fusion bound: Nothing
 CPP Defines: 
 CPP Excludes:
-    ! read(31) (((f(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
-        ! read(31) (((g(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
-        ! read(31) (((h(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
-        ! read(31) (((fold(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
-        ! read(31) (((gold(i,j,k),i=1,ipmax),j=1,jpmax),k=1,kp)
-        ! read
+
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/main_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/sub_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/init_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./Shallow-Water-2D/main.f95
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./Shallow-Water-2D/dyn.f95
-Parsing ./Shallow-Water-2D/init.f95
 Parsing ./Shallow-Water-2D/shapiro.f95
 Parsing ./Shallow-Water-2D/vernieuw.f95
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  Subroutines not for offload 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-================================================================================
-Subroutine name: init
-Filename: ./Shallow-Water-2D/init.f95
-Source:
-subroutine init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real, intent(InOut) :: hmin
-      real, intent(Out) :: dx
-      real, intent(Out) :: dy
-      real, intent(Out) :: dt
-      real, intent(Out) :: g
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: hzero
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: eta
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: etan
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: h
-      integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: u
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: vn
-    hmin = 0.05
-    dx = 10.0
-    dy = 10.0
-    dt = 0.1
-    g = 9.81
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                hzero(j,k) = 10.0
-        end do
-    end do
-    do k = 0, nx+1, 1
-        hzero(0,k) = -10.0
-        hzero(ny+1,k) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        hzero(j,0) = -10.0
-        hzero(j,nx+1) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                eta(j,k) = -min(0.0,hzero(j,k))
-                etan(j,k) = eta(j,k)
-        end do
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = 0.
-                un(j,k) = 0.
-                v(j,k) = 0.
-                vn(j,k) = 0.
-        end do
-    end do
-end subroutine init
-
-Argument translations:
-
-This subroutine will not be offloaded to the FPGA
-================================================================================
 
 ================================================================================
 Subroutine name: wave2d
@@ -205,24 +141,6 @@ Argument translations:
 	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
 	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	init->
-	    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	shapiro->
 	    call shapiro(j, k, wet, etan, eps, eta)
 	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
@@ -485,14 +403,14 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
       real, dimension(0:ny+1,0:nx+1), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
-    do j = 1, ny, 1
-        do k = 1, nx, 1
+    do j = 1, 500.0, 1
+        do k = 1, 500.0, 1
                 du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
                 dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
         end do
     end do
-    do j = 1, ny, 1
-        do k = 1, nx, 1
+    do j = 1, 500.0, 1
+        do k = 1, 500.0, 1
                 un(j,k) = 0.0
                 uu = u(j,k)
                 duu = du(j,k)
@@ -519,8 +437,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 end if
         end do
     end do
-    do j = 1, ny, 1
-        do k = 1, nx, 1
+    do j = 1, 500.0, 1
+        do k = 1, 500.0, 1
                 hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
                 hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
                 hue = hep+hen
@@ -536,8 +454,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end do
     end do
-    do j = 1, ny, 1
-        do k = 1, nx, 1
+    do j = 1, 500.0, 1
+        do k = 1, 500.0, 1
                 if (wet(j,k)==1) then
                                 term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
                                 term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
@@ -548,8 +466,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 end if
         end do
     end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
+    do j = 0, 501, 1
+        do k = 0, 501, 1
                 h(j,k) = hzero(j,k)+eta(j,k)
                 wet(j,k) = 1
                 if (h(j,k)<hmin) then
@@ -565,73 +483,6 @@ end module module_dyn_shapiro_vernieuw_merged
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
-================================================================================
-
-================================================================================
-Subroutine name: init
-Filename: ./Shallow-Water-2D/init.f95
-Source:
-subroutine init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real, intent(InOut) :: hmin
-      real, intent(Out) :: dx
-      real, intent(Out) :: dy
-      real, intent(Out) :: dt
-      real, intent(Out) :: g
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: hzero
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: eta
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: etan
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: h
-      integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: u
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: vn
-    hmin = 0.05
-    dx = 10.0
-    dy = 10.0
-    dt = 0.1
-    g = 9.81
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                hzero(j,k) = 10.0
-        end do
-    end do
-    do k = 0, nx+1, 1
-        hzero(0,k) = -10.0
-        hzero(ny+1,k) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        hzero(j,0) = -10.0
-        hzero(j,nx+1) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                eta(j,k) = -min(0.0,hzero(j,k))
-                etan(j,k) = eta(j,k)
-        end do
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = 0.
-                un(j,k) = 0.
-                v(j,k) = 0.
-                vn(j,k) = 0.
-        end do
-    end do
-end subroutine init
-
-Argument translations:
-
-This subroutine will not be offloaded to the FPGA
 ================================================================================
 
 ================================================================================
@@ -737,24 +588,6 @@ Argument translations:
 	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
 	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	init->
-	    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	shapiro->
 	    call shapiro(j, k, wet, etan, eps, eta)
 	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
@@ -901,8 +734,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     end if
 !}
 !}
-! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,500.0+1,1)","(k,0,500.0+1,1)"],[]) {
-! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,500.0+1,1)"],[]) {
+! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
     if (h(j,k)<hmin) then
@@ -1054,8 +887,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 !}
 !}    
 !}
-! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,500.0+1,1)","(k,0,500.0+1,1)"],[]) {
-! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,500.0+1,1)"],[]) {
+! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
     if (h(j,k)<hmin) then
@@ -1071,73 +904,6 @@ end module module_dyn_shapiro_vernieuw_merged
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
-================================================================================
-
-================================================================================
-Subroutine name: init
-Filename: ./Shallow-Water-2D/init.f95
-Source:
-subroutine init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real, intent(InOut) :: hmin
-      real, intent(Out) :: dx
-      real, intent(Out) :: dy
-      real, intent(Out) :: dt
-      real, intent(Out) :: g
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: hzero
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: eta
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: etan
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: h
-      integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: u
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: vn
-    hmin = 0.05
-    dx = 10.0
-    dy = 10.0
-    dt = 0.1
-    g = 9.81
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                hzero(j,k) = 10.0
-        end do
-    end do
-    do k = 0, nx+1, 1
-        hzero(0,k) = -10.0
-        hzero(ny+1,k) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        hzero(j,0) = -10.0
-        hzero(j,nx+1) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                eta(j,k) = -min(0.0,hzero(j,k))
-                etan(j,k) = eta(j,k)
-        end do
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = 0.
-                un(j,k) = 0.
-                v(j,k) = 0.
-                vn(j,k) = 0.
-        end do
-    end do
-end subroutine init
-
-Argument translations:
-
-This subroutine will not be offloaded to the FPGA
 ================================================================================
 
 ================================================================================
@@ -1243,24 +1009,6 @@ Argument translations:
 	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
 	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	init->
-	    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	shapiro->
 	    call shapiro(j, k, wet, etan, eps, eta)
 	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
@@ -1418,7 +1166,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     end if
 !}    
 !}
-! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,500.0+1,1)","(k,0,500.0+1,1)"],[]) {
+! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
     if (h(j,k)<hmin) then
@@ -1433,73 +1181,6 @@ end module module_dyn_shapiro_vernieuw_merged
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
-================================================================================
-
-================================================================================
-Subroutine name: init
-Filename: ./Shallow-Water-2D/init.f95
-Source:
-subroutine init(hmin,dx,dy,dt,g,j,k,hzero,eta,etan,h,wet,u,un,v,vn)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real, intent(InOut) :: hmin
-      real, intent(Out) :: dx
-      real, intent(Out) :: dy
-      real, intent(Out) :: dt
-      real, intent(Out) :: g
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: hzero
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: eta
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: etan
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: h
-      integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: u
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: vn
-    hmin = 0.05
-    dx = 10.0
-    dy = 10.0
-    dt = 0.1
-    g = 9.81
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                hzero(j,k) = 10.0
-        end do
-    end do
-    do k = 0, nx+1, 1
-        hzero(0,k) = -10.0
-        hzero(ny+1,k) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        hzero(j,0) = -10.0
-        hzero(j,nx+1) = -10.0
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                eta(j,k) = -min(0.0,hzero(j,k))
-                etan(j,k) = eta(j,k)
-        end do
-    end do
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = 0.
-                un(j,k) = 0.
-                v(j,k) = 0.
-                vn(j,k) = 0.
-        end do
-    end do
-end subroutine init
-
-Argument translations:
-
-This subroutine will not be offloaded to the FPGA
 ================================================================================
 
 ================================================================================
@@ -1605,24 +1286,6 @@ Argument translations:
 	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
 	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	init->
-	    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
 	shapiro->
 	    call shapiro(j, k, wet, etan, eps, eta)
 	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}

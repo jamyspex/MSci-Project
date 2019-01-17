@@ -1,7 +1,9 @@
 module module_feedbf
  contains
-subroutine feedbf(km,jm,im,usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
-                  dt,beta,fx,fy,fz,f,g,h)
+subroutine feedbf(usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
+                  dt,beta,fx,fy,fz,f,g,h,n)
+    use common_sn 
+      implicit none
     real(kind=4), intent(In) :: alpha
     real(kind=4), intent(In) :: beta
     real(kind=4), dimension(-1:ip+1,0:jp+1,0:kp+1) , intent(In) :: bmask1
@@ -12,20 +14,20 @@ subroutine feedbf(km,jm,im,usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(Out) :: fx
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(Out) :: fy
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(Out) :: fz
+    integer, intent(In) :: n
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: g
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: h
-    integer, intent(In) :: im
-    integer, intent(In) :: jm
-    integer, intent(In) :: km
     real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: usum
     real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: vsum
     real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In) :: w
     real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: wsum
-    do k = 1,km
-        do j = 1,jm
-            do i = 1,im
+    integer :: i,j,k
+    real(kind=4) :: f1x,f1y,f1z,f2x,f2y,f2z
+    do k = 1,kp
+        do j = 1,jp
+            do i = 1,ip
                 usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
                 vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
                 wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
@@ -41,9 +43,9 @@ subroutine feedbf(km,jm,im,usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
             end do
         end do
     end do
-    do k = 1,km
-        do j = 1,jm
-            do i = 1,im
+    do k = 1,kp
+        do j = 1,jp
+            do i = 1,ip
                 f(i,j,k) = f(i,j,k)+fx(i,j,k)
                 g(i,j,k) = g(i,j,k)+fy(i,j,k)
                 h(i,j,k) = h(i,j,k)+fz(i,j,k)

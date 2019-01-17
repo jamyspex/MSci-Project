@@ -8,9 +8,11 @@ import           Data.Generics        (everything, everywhere, gmapQ, gmapT,
 import           Data.List
 import qualified Data.Map             as DMap
 import           Data.Maybe
+import           Debug.Trace
 import           Language.Fortran
 
 import           LanguageFortranTools
+import           Utils
 
 -- type Constants = DMap.Map (VarName Anno) (Expr Anno)
 
@@ -24,7 +26,7 @@ import           LanguageFortranTools
 --    +    Return the transformed AST.
 
 foldConstants :: ProgUnit Anno -> ProgUnit Anno
-foldConstants codeSeg = replaceVarsWithConstants codeSeg constants_assgs
+foldConstants codeSeg = everywhere (mkT computeSimpleExprs) contantsReplaced
         where
             --    1. Collect all of the declarations in the program unit before using those declarations to begin
             --    building up a table of constants.
@@ -41,7 +43,7 @@ foldConstants codeSeg = replaceVarsWithConstants codeSeg constants_assgs
             assigneeVarNames = map extractAssigneeVarName varAssignments
             allowedAssignments = listSubtract (listExtractSingleAppearances assigneeVarNames) (map (\x -> VarName nullAnno x) (DMap.keys constants_decls))
             constants_assgs = addAssignmentsToConstants varAssignments allowedAssignments constants_decls constants_decls
-
+            contantsReplaced = replaceVarsWithConstants codeSeg constants_assgs
 
 
 addDeclsToConstants :: [Decl Anno] -> ValueTable -> ValueTable
@@ -58,6 +60,11 @@ addDeclsToConstants ((Decl _ _ lst typ):followingDecls) constants = addDeclsToCo
             newConstants = foldl (\accum (assignee, assignment) -> addToValueTable_type assignee assignment (extractBaseType typ) accum) constants evaluatedAssignments
 addDeclsToConstants [] constants = constants
 addDeclsToConstants (x:xs) constants =  addDeclsToConstants xs constants
+
+computeSimpleExprs :: Expr Anno -> Expr Anno
+computeSimpleExprs (Bin _ _ (Plus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readIndex one + readIndex two)
+computeSimpleExprs (Bin _ _ (Minus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readIndex one - readIndex two)
+computeSimpleExprs expr = expr
 
 addAssignmentsToConstants :: [Fortran Anno] -> [VarName Anno] -> ValueTable -> ValueTable -> ValueTable
 addAssignmentsToConstants ((Assg _ _ expr1 expr2):followingAssgs) allowedAssignments valTable constants     |    evaluated_bool && onlyAssignment = addAssignmentsToConstants followingAssgs allowedAssignments newValTable newConstants_added

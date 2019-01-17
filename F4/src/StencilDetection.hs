@@ -11,6 +11,7 @@ import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Parser
+import           Text.Read
 import           Utils
 
 data Array = Array {
@@ -26,9 +27,19 @@ detectStencilsInSubsToBeParallelise srt = updatedSrt
         updatedSrt = foldr (\cur acc -> DMap.insert (subName cur) cur acc) srt withStencilsDetect
 
 detectStencils :: SubRec -> SubRec
-detectStencils subrec = addStencilNodes arraysInSub subrec
+detectStencils subrec = removeRedundantStencilNodes $ addStencilNodes arraysInSub subrec
     where
         arraysInSub = map arrayFromDecl $ getArrayDecls subrec
+
+removeRedundantStencilNodes :: SubRec -> SubRec
+removeRedundantStencilNodes subRec = subRec { subAst = everywhere (mkT removeStencilQuery) $ subAst subRec}
+    where
+        removeStencilQuery :: Fortran Anno -> Fortran Anno
+        removeStencilQuery (OpenCLStencil anno srcspan stencils body) = OpenCLStencil anno srcspan stencils $ everywhere (mkT removeInnerStenQuery) body
+        removeStencilQuery curVal = curVal
+        removeInnerStenQuery :: Fortran Anno -> Fortran Anno
+        removeInnerStenQuery (OpenCLStencil _ _ _ body) = body
+        removeInnerStenQuery curVal                     = curVal
 
 addStencilNodes :: [Array] -> SubRec -> SubRec
 addStencilNodes arrays subRec = subRec { subAst = everywhere (mkT addNodeQuery) $ subAst subRec }
@@ -66,10 +77,10 @@ getOffsets :: [Expr Anno] -> [StencilIndex]
 getOffsets indices = map getOffset indices
 
 getOffset :: Expr Anno -> StencilIndex
-getOffset (Bin _ _ (Plus _) loopVar (Con _ _ offset))  = Offset $ read offset
-getOffset (Bin _ _ (Minus _) loopVar (Con _ _ offset)) = Offset (negate $ read offset)
-getOffset (Var _ _ loopVar) = Offset 0
-getOffset (Con _ _ val) = Constant $ read val
+getOffset t@(Bin _ _ (Plus _) loopVar (Con _ _ offset))  = Offset $ readIndex offset
+getOffset t@(Bin _ _ (Minus _) loopVar (Con _ _ offset)) = Offset (negate $ readIndex offset)
+getOffset t@(Var _ _ loopVar) = Offset 0
+getOffset t@(Con _ _ val) = Constant $ readIndex val
 getOffset missing@_ = error ("getOffset pattern miss for: " ++ show missing)
 
 arrayFromDecl :: Decl Anno -> Array
@@ -99,8 +110,8 @@ isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
 
 findStencilAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = trace ("trace:: \n" ++ miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
-findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = trace ("trace:: \n" ++  miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body -- trace ("trace:: \n" ++ miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body -- trace ("trace:: \n" ++  miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
 -- findStencilAccesses arrays (OpenCLStencil _ _ _ body) = findStencilAccesses arrays body
 findStencilAccesses arrays body = arrayAccesses
     where
@@ -204,7 +215,7 @@ getArrayReadsQuery arrays fortran = allReadExprs
                                     (Just body) -> recursiveCall body
                                     _           -> []
                         (NullStmt _ _) -> []
-                        (OpenCLStencil _ _ _ body) -> recursiveCall body
+                        -- (OpenCLStencil _ _ _ body) -> recursiveCall body
                         -- (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
                         -- (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
                         missing@_ -> [] --error ("Unimplemented Fortran Statement " ++ miniPPF missing)

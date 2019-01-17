@@ -6,6 +6,7 @@ module MergeSubroutines
 where
 
 
+import           ConstantFolding      (foldConstants)
 import           Data.Function
 import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
@@ -47,8 +48,9 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         sub =  Sub nullAnno nullSrcSpan Nothing (SubName nullAnno mergedName) combinedArgs block
         modName = (SubName nullAnno ("module_" ++ mergedName))
         mod = Module nullAnno nullSrcSpan modName (UseNil nullAnno) (ImplicitNull nullAnno) (NullDecl nullAnno nullSrcSpan) [sub]
+        modWithConstantsFolded = foldConstants mod
         mergedSubRec = MkSubRec {
-            subAst = mod,
+            subAst = modWithConstantsFolded,
             subSrcFile = "",
             subSrcLines = [],
             subName  = mergedName,

@@ -849,74 +849,7 @@ Argument translations:
 	    call temp(km, delx1, dx1, dy1, dzn, jm, im, diu1, diu2, diu3, diu4, diu5, diu6, diu7, diu8, diu9, sm, f, g, h, uspd, vspd, dxs, dys)
 	ArgTrans {parameter = ArgName (fromList []) "km", argument = VarName (fromList []) "km"}
 	ArgTrans {parameter = ArgName (fromList []) "delx1", argument = VarName (fromList []) "delx1"}
-	ArgTrans {parameter = ArgName (fromLtrace:: 
-    evsx2 = sm(i+1,j,k)
-    evsx1 = sm(i,j,k)
-    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-    visux2 = (evsx2)*2.*diu1(i+1,j,k)
-    visux1 = (evsx1)*2.*diu1(i,j,k)
-    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-    f(i,j,k) = (f(i,j,k)+vfu)
-::trace
-trace:: 
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!    ){
-! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
-    evsx2 = sm(i+1,j,k)
-    evsx1 = sm(i,j,k)
-    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-    visux2 = (evsx2)*2.*diu1(i+1,j,k)
-    visux1 = (evsx1)*2.*diu1(i,j,k)
-    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-    f(i,j,k) = (f(i,j,k)+vfu)
-!}    
-!}
-::trace
-trace:: 
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!        2 point stencil on 1D array dy1: [[0],[1]]
-!    ){
-! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!    ){
-! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
-    evsx2 = sm(i+1,j,k)
-    evsx1 = sm(i,j,k)
-    evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-    evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-    visux2 = (evsx2)*2.*diu1(i+1,j,k)
-    visux1 = (evsx1)*2.*diu1(i,j,k)
-    visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-    visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-    visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-    visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-    vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-    f(i,j,k) = (f(i,j,k)+vfu)
-!}    
-!}
-!}    
-!}
-::trace
-ist []) "dx1", argument = VarName (fromList []) "dx1"}
+	ArgTrans {parameter = ArgName (fromList []) "dx1", argument = VarName (fromList []) "dx1"}
 	ArgTrans {parameter = ArgName (fromList []) "dy1", argument = VarName (fromList []) "dy1"}
 	ArgTrans {parameter = ArgName (fromList []) "dzn", argument = VarName (fromList []) "dzn"}
 	ArgTrans {parameter = ArgName (fromList []) "jm", argument = VarName (fromList []) "jm"}
@@ -974,26 +907,8 @@ subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dx
       real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
       real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
     cs0 = .1
-! OpenCLStencil (
-!        2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
-!        2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
-!        2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
-!        2 point stencil on 3D array diu4: [[1,0,0],[1,-1,0]]
-!        2 point stencil on 3D array diu7: [[1,0,0],[1,0,-1]]
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!        2 point stencil on 1D array dy1: [[0],[1]]
-!        3 point stencil on 1D array dzn: [[0],[1],[-1]]
-!        10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
-!    ){
 ! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)","(i,1,im,1)"],[]) {
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!        2 point stencil on 1D array dy1: [[0],[1]]
-!    ){
 ! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!    ){
 ! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
     evsx2 = sm(i+1,j,k)
     evsx1 = sm(i,j,k)
@@ -1009,11 +924,8 @@ subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dx
     visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
     vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
     f(i,j,k) = (f(i,j,k)+vfu)
-!}    
 !}
-!}    
 !}
-!}    
 !}
 end subroutine temp_merged
 
@@ -1264,27 +1176,7 @@ subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dx
       real(4), dimension(0:ip+1,0:jp+1), intent(In) :: uspd
       real(4), dimension(0:ip+1,0:jp+1), intent(In) :: vspd
     cs0 = .1
-! OpenCLStencil (
-!        2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
-!        2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
-!        2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
-!        2 point stencil on 3D array diu4: [[1,0,0],[1,-1,0]]
-!        2 point stencil on 3D array diu7: [[1,0,0],[1,0,-1]]
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!        2 point stencil on 1D array dy1: [[0],[1]]
-!        3 point stencil on 1D array dzn: [[0],[1],[-1]]
-!        10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
-!    ){
-! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)","(i,1,im,1)"],[]) {
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!        2 point stencil on 1D array dy1: [[0],[1]]
-!    ){
-! OpenCLMap ( ["jm","sm","diu1","dxs","dy1","dzn"],[],["(j,1,jm,1)","(i,1,im,1)"],[]) {
-! OpenCLStencil (
-!        2 point stencil on 1D array dx1: [[0],[1]]
-!    ){
-! OpenCLMap ( ["im","sm","diu1","dxs","dy1","dzn"],[],["(i,1,im,1)"],[]) {
+! OpenCLMap ( ["km","sm","diu1","dxs","dy1","dzn","jm","im"],[],["(k,2,km,1)","(j,1,jm,1)","(i,1,im,1)"],[]) {
     evsx2 = sm(i+1,j,k)
     evsx1 = sm(i,j,k)
     evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
@@ -1299,11 +1191,6 @@ subroutine temp_merged(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,dx1,dx
     visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
     vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
     f(i,j,k) = (f(i,j,k)+vfu)
-!}    
-!}
-!}    
-!}
-!}    
 !}
 end subroutine temp_merged
 

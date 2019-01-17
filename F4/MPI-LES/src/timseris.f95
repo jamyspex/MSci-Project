@@ -3,7 +3,12 @@ module module_timseris
 contains
 
       subroutine timseris(n,dt,u,v,w)
-      use common_sn
+#ifdef WV_NEW
+    use params_common_sn
+    implicit none
+#else
+    use common_sn ! create_new_include_statements() line 102
+#endif
         real(kind=4), intent(In) :: dt
         integer, intent(In) :: n
         real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
