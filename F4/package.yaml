@@ -30,7 +30,8 @@ dependencies:
 - optparse-applicative
 - split
 - filepath
- 
+- MissingH
+
 library:
   source-dirs: src
 

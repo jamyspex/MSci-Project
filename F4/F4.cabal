@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d315295436ccbfa427c4a9c7d7d7085ca7b7a421f96048c4f601d35d6c182f43
+-- hash: 7fe250cad7b94c8ca134c7b5257e9ca0b08846d3d753f9da2ac1ca6d4bdaa691
 
 name:           F4
 version:        0.1.0.0
@@ -54,7 +54,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      Unique
+      MissingH
+    , Unique
     , base >=4.7 && <5
     , containers
     , directory
@@ -75,6 +76,7 @@ executable F4-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , MissingH
     , Unique
     , base >=4.7 && <5
     , containers
@@ -97,6 +99,7 @@ test-suite F4-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       F4
+    , MissingH
     , Unique
     , base >=4.7 && <5
     , containers

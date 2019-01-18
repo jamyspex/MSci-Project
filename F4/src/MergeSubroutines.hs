@@ -49,14 +49,19 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         modName = (SubName nullAnno ("module_" ++ mergedName))
         mod = Module nullAnno nullSrcSpan modName (UseNil nullAnno) (ImplicitNull nullAnno) (NullDecl nullAnno nullSrcSpan) [sub]
         modWithConstantsFolded = foldConstants mod
+        returnsRemoved = everywhere (mkT removeReturns) modWithConstantsFolded
         mergedSubRec = MkSubRec {
-            subAst = modWithConstantsFolded,
+            subAst = returnsRemoved,
             subSrcFile = "",
             subSrcLines = [],
             subName  = mergedName,
             argTranslations = DMap.empty,
             parallelise = True
         }
+
+removeReturns :: Fortran Anno -> Fortran Anno
+removeReturns (Return anno srcSpan _) = NullStmt anno srcSpan
+removeReturns val                     = val
 
 fst3 (a, _, _) = a
 

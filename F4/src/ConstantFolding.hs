@@ -1,3 +1,5 @@
+{-# LANGUAGE TypeOperators #-}
+
 module ConstantFolding                 (foldConstants)
 
 where
@@ -8,10 +10,11 @@ import           Data.Generics        (everything, everywhere, gmapQ, gmapT,
 import           Data.List
 import qualified Data.Map             as DMap
 import           Data.Maybe
+import           Data.String.Utils
 import           Debug.Trace
 import           Language.Fortran
-
 import           LanguageFortranTools
+import           MiniPP
 import           Utils
 
 -- type Constants = DMap.Map (VarName Anno) (Expr Anno)
@@ -61,9 +64,12 @@ addDeclsToConstants ((Decl _ _ lst typ):followingDecls) constants = addDeclsToCo
 addDeclsToConstants [] constants = constants
 addDeclsToConstants (x:xs) constants =  addDeclsToConstants xs constants
 
+readF :: String -> Float
+readF val = read val ::Float
+
 computeSimpleExprs :: Expr Anno -> Expr Anno
-computeSimpleExprs (Bin _ _ (Plus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readIndex one + readIndex two)
-computeSimpleExprs (Bin _ _ (Minus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readIndex one - readIndex two)
+computeSimpleExprs (Bin _ _ (Plus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readF one + readF two)
+computeSimpleExprs (Bin _ _ (Minus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readF one - readF two)
 computeSimpleExprs expr = expr
 
 addAssignmentsToConstants :: [Fortran Anno] -> [VarName Anno] -> ValueTable -> ValueTable -> ValueTable
@@ -113,14 +119,42 @@ declsFilterNothingEvaluations ((assignee, assignment):lst) = case assignment of
                                                         Just a -> [(assignee, a)] ++ declsFilterNothingEvaluations lst
 declsFilterNothingEvaluations [] = []
 
+-- replaceVarsInDecls :: ProgUnit Anno -> ValueTable -> ProgUnit Anno
+-- replaceVarsInDecls codeSeg constants = everywhere (mkT (replaceVarsWithConstants_expr constants)) codeSeg
+
+-- replaceVarsWithConstants_decl :: ValueTable -> Decl Anno -> Decl Anno
+-- replaceVarsWithConstants_decl constants decl = case decl of
+
 replaceVarsWithConstants :: ProgUnit Anno -> ValueTable -> ProgUnit Anno
-replaceVarsWithConstants codeSeg constants = everywhere (mkT (replaceVarsWithConstants_fortran constants)) codeSeg
+replaceVarsWithConstants codeSeg constants = declNameChangedBack -- everywhere (mkT (replaceVarsWithConstants_expr constants)) codeSeg
+    where
+        declNameChanged = everywhere (mkT addNonceToDeclNames) codeSeg
+        constantsSubstitued = everywhere (mkT (replaceVarsWithConstants_expr constants)) declNameChanged
+        declNameChangedBack =  everywhere (mkT (removeNonceFromDeclNames)) constantsSubstitued
+
 
 --    All appearences of a variable that appears in the constant table are replaced with a 'Con _ _ _' node OTHER THAN when those variables
 --    appear on the left side of an assignment operations
-replaceVarsWithConstants_fortran :: ValueTable -> Fortran Anno -> Fortran Anno
-replaceVarsWithConstants_fortran constants (Assg src anno expr1 expr2) = Assg src anno (replaceArrayAccessesWithConstants_expr constants expr1) (replaceVarsWithConstants_expr constants expr2)
-replaceVarsWithConstants_fortran constants codeSeg = gmapT (mkT (replaceVarsWithConstants_expr constants)) codeSeg
+-- replaceVarsWithConstants_fortran :: ValueTable -> Fortran Anno -> Fortran Anno
+-- replaceVarsWithConstants_fortran constants (Assg src anno expr1 expr2) = Assg src anno (replaceArrayAccessesWithConstants_expr constants expr1) (replaceVarsWithConstants_expr constants expr2)
+-- replaceVarsWithConstants_fortran constants codeSeg = gmapT (mkT (replaceVarsWithConstants_expr constants)) codeSeg
+
+-- this method chanages the decl names from X to X_jkladaSurelyNoVarsWillHaveThisValuekalfjajksa so the transform
+-- doesn't replace the Var in the Decl with the variables value.
+-- The suffix is removed immediately after the constants are inserted
+addNonceToDeclNames :: Decl Anno -> Decl Anno
+addNonceToDeclNames (Decl declAnno declSrcSpan ((Var varAnno varSrcSpan (((VarName varNameAnno name), varNameExprList):varLs), exprList, declInt):declLs) declType) =
+    Decl declAnno declSrcSpan (((Var varAnno varSrcSpan ((updatedVarName, varNameExprList):varLs)), exprList, declInt):declLs) declType
+    where
+        updatedVarName = (VarName varNameAnno (name ++ "_jkladaSurelyNoVarsWillHaveThisValuekalfjajksa"))
+addNonceToDeclNames decl = decl
+
+removeNonceFromDeclNames :: Decl Anno -> Decl Anno
+removeNonceFromDeclNames (Decl declAnno declSrcSpan ((Var varAnno varSrcSpan (((VarName varNameAnno name), varNameExprList):varLs), exprList, declInt):declLs) declType) =
+    Decl declAnno declSrcSpan (((Var varAnno varSrcSpan ((updatedVarName, varNameExprList):varLs)), exprList, declInt):declLs) declType
+    where
+        updatedVarName = (VarName varNameAnno (replace "_jkladaSurelyNoVarsWillHaveThisValuekalfjajksa" "" name))
+removeNonceFromDeclNames decl = decl
 
 replaceVarsWithConstants_expr :: ValueTable -> Expr Anno ->  Expr Anno
 replaceVarsWithConstants_expr constants expr = case expr of
