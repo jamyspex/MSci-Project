@@ -45,8 +45,10 @@ module module_les
         real(kind=4), dimension(0:ip,0:jp,0:kp) , intent(InOut) :: h
         real(kind=4), dimension(-1:ip+1,-1:jp+1,0:kp+1) , intent(Out) :: sm
         real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
-        real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
+        real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v 
+#ifdef WV_NEW_LES
         real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In)  :: w
+#endif
 #ifndef WV_NEW_LES
 !wall function
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(in) :: uspd

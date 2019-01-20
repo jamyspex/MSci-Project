@@ -73,7 +73,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
             | otherwise = filename
         filename_noext = head $ split '.' filename_no_dot
 
-    writeFile (filePrefix ++ filename_noext ++ "_just_read.f95") inp
+    -- writeFile (filePrefix ++ filename_noext ++ "_just_read.f95") inp
 
     let
         contentLines = lines inp
@@ -84,13 +84,16 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     -- Then we preprocess, which should remove blank lines
         (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
     -- Write this out to a file so we can call cpp on it via the shell
-    writeFile (filePrefix ++ filename_noext ++ "_tmp.f95") preproc_inp
+    let tempFileName = (filePrefix ++ filename_noext ++ "_tmp.f95")
+    writeFile  preproc_inp
     -- Apply the C preprocessor on the temporary file and remove the blank lines
     let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " " ++ filePrefix ++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
     -- putStrLn cpp_cmd
     putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
-    writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
+
+    removeFile
+    -- writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
     -- Language.Fortran.Parser borks on lines starting with !# and on trailing comments
@@ -98,14 +101,14 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     -- I also skip any blank lines
         exp_inp_lines'' = removeBlankLines exp_inp_lines_no_comments
 
-    writeFile (filePrefix ++ filename_noext ++ "_blank_lines_removed.f95") $ unlines exp_inp_lines''
+    -- writeFile (filePrefix ++ filename_noext ++ "_blank_lines_removed.f95") $ unlines exp_inp_lines''
         -- exp_inp_lines'' = filter ( /= "") exp_inp_lines_no_comments
     -- First declarations from used modules are inlined. Why first? Surely it would be better to do that *after* running CPP?
     (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules dir True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
-    writeFile (filePrefix ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
+    -- writeFile (filePrefix ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
     let
         preproc_inp'' = unlines exp_inp_lines'
-    writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
+    -- writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
     return (preproc_inp'', stash,moduleVarTable)
 
 
@@ -425,11 +428,14 @@ generateVar varname = Var nullAnno nullSrcSpan [(varname, [])]
 generateArrayVar :: VarName Anno -> [Expr Anno] -> Expr Anno
 generateArrayVar varname exprs = Var nullAnno nullSrcSpan [(varname, exprs)]
 
-generateIntConstant :: Int -> Expr Anno
-generateIntConstant value = Con nullAnno nullSrcSpan (show value)
+generateConstant :: String -> Expr Anno
+generateConstant value = Con nullAnno nullSrcSpan value
 
-generateFloatConstant :: Float -> Expr Anno
-generateFloatConstant value = Con nullAnno nullSrcSpan (show value)
+-- generateIntConstant :: Int -> Expr Anno
+-- generateIntConstant value = Con nullAnno nullSrcSpan (show value)
+
+-- generateFloatConstant :: Float -> Expr Anno
+-- generateFloatConstant value = Con nullAnno nullSrcSpan (show value)
 
 -- generateArrayVar :: VarName Anno -> Expr Anno -> Expr Anno
 -- generateArrayVar varname access = Var nullAnno nullSrcSpan [(varname, [access])]
@@ -819,6 +825,18 @@ lookupValueTable :: String -> ValueTable -> Maybe(Float)
 lookupValueTable str table = value
             where
                 (value, typ) =  case lookupValueTable_type str table of
+                                    Nothing     -> (Nothing, Nothing)
+                                    Just (v, t) -> (Just v, Just t)
+
+
+lookupValueTableToConstantString :: String -> ValueTable -> Maybe String
+lookupValueTableToConstantString str table = constString
+            where
+                constString = case tableValue of
+                                (Just val, Just (Integer _)) -> Just $ ((show . round) val)
+                                (Just val, Just (Real _   )) -> Just $ show val
+                                _         -> Nothing -- "Error getting constant value"
+                tableValue =  case lookupValueTable_type str table of
                                     Nothing     -> (Nothing, Nothing)
                                     Just (v, t) -> (Just v, Just t)
 

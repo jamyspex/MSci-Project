@@ -64,12 +64,12 @@ addDeclsToConstants ((Decl _ _ lst typ):followingDecls) constants = addDeclsToCo
 addDeclsToConstants [] constants = constants
 addDeclsToConstants (x:xs) constants =  addDeclsToConstants xs constants
 
-readF :: String -> Float
-readF val = read val ::Float
+readI :: String -> Int
+readI = read
 
 computeSimpleExprs :: Expr Anno -> Expr Anno
-computeSimpleExprs (Bin _ _ (Plus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readF one + readF two)
-computeSimpleExprs (Bin _ _ (Minus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readF one - readF two)
+computeSimpleExprs (Bin _ _ (Plus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readI one + readI two)
+computeSimpleExprs (Bin _ _ (Minus _) (Con _ _ one) (Con _ _ two)) = Con nullAnno nullSrcSpan $ show (readI one - readI two)
 computeSimpleExprs expr = expr
 
 addAssignmentsToConstants :: [Fortran Anno] -> [VarName Anno] -> ValueTable -> ValueTable -> ValueTable
@@ -163,10 +163,10 @@ replaceVarsWithConstants_expr constants expr = case expr of
         where
             varnames = extractVarNames expr
             varName_str = if (length varnames == 0) then "" else varNameStr $ head varnames
-            lookup = if varName_str == "" then Nothing else lookupValueTable varName_str constants
+            lookup = if varName_str == "" then Nothing else lookupValueTableToConstantString varName_str constants
             transformed = case lookup of
                             Nothing -> replaceArrayAccessesWithConstants_expr constants expr
-                            Just val -> generateFloatConstant val
+                            Just val -> generateConstant val
 
 replaceArrayAccessesWithConstants_expr :: ValueTable -> Expr Anno -> Expr Anno
 replaceArrayAccessesWithConstants_expr constants (Var anno src lst) = Var anno src (map (replaceArrayAccessesWithConstants_varExprList constants) lst)

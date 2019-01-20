@@ -15,6 +15,7 @@ import           Data.Char
 import           Data.List
 import           Language.Fortran
 import           LanguageFortranTools
+import           Prelude              hiding (truncate)
 
 {-
 WV: I know Language.Fortran provides a pretty-printer but getting it to work on the recent version of ghc is too much work so I wrote my own, workmanlike, no fancy features at all.
@@ -55,6 +56,23 @@ data ArgList  p = ArgList p (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
 -}
+
+truncate = truncateAtLength 72
+
+truncateAtLength :: Int -> String -> String
+truncateAtLength lineLength file = unlines $ concatMap (truncateLine False lineLength) fileLines
+    where
+        fileLines = lines file
+        truncateLine :: Bool -> Int -> String -> [String]
+        truncateLine previousTrunc lineLength line
+            | all isSpace line = []
+            | head (dropWhile isSpace line) == '!' && previousTrunc = ["&" ++ line] -- don't truncate comments
+            | length line <= lineLength && previousTrunc = ["&" ++ line]
+            | previousTrunc = [ "&" ++ (take lineLength line) ++ "&" ] ++ truncateLine True lineLength (drop lineLength line)
+            | head (dropWhile isSpace line) == '!' = [line] -- don't truncate comments
+            | length line <= lineLength = [line]
+            | not $ all isSpace (drop lineLength line) = [ (take lineLength line) ++ "&" ] ++ truncateLine True lineLength (drop lineLength line)
+            | otherwise = [line]
 
 showSubName (SubName _ s)   = s
 showSubName (NullSubName _) = ""
@@ -157,7 +175,7 @@ miniPPProgUnit prog = case prog of
                     (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ showArg args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
                     -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
                     (Module _ _ (SubName _ moduleName) _ _ _ p) ->
-                        "module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName
+                        truncate ("module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName)
                     _ -> "program anno unsuppported"
                     -- (BlockData _ _ _ _ _ _) -> []
                     -- (PSeq _ _ p1 p2) -> getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
@@ -209,7 +227,7 @@ miniPPFT stmt tab = case stmt of
                  _ -> "! UNSUPPORTED in miniPPF ! "++(show stmt)
 
 showStencils tab [(Stencil _ dimen points coords (VarName _ name))]
-    = "!" ++ tab ++ tab ++ (show points) ++ " point stencil on " ++ (show dimen) ++ "D array " ++ name ++ ": " ++ (show coords)
+    = "!" ++ "\t" ++ (show points) ++ " point stencil on " ++ (show dimen) ++ "D array " ++ name ++ ": " ++ (show coords)
 showStencils tab (s:ss) = showStencils tab [s] ++ "\n" ++ showStencils tab ss
 
 miniPPSpecs :: [Spec Anno] -> String -> String
