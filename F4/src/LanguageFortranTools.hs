@@ -85,14 +85,14 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
         (preproc_inp, stash) = preProcess fixedForm cppXArgs inp'
     -- Write this out to a file so we can call cpp on it via the shell
     let tempFileName = (filePrefix ++ filename_noext ++ "_tmp.f95")
-    writeFile  preproc_inp
+    writeFile tempFileName preproc_inp
     -- Apply the C preprocessor on the temporary file and remove the blank lines
     let cpp_cmd = "cpp -Wno-invalid-pp-token -P "++dFlagStr++ " " ++ filePrefix ++filename_noext++"_tmp.f95 | grep -v -E '^\\s*$' "
     -- putStrLn cpp_cmd
     putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
 
-    removeFile
+    removeFile tempFileName
     -- writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
