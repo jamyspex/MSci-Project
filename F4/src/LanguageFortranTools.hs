@@ -92,7 +92,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
 
-    -- removeFile tempFileName
+    removeFile tempFileName
     -- writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
@@ -107,7 +107,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules dir True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
     let
         preproc_inp'' = unlines exp_inp_lines'
-    writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
+    -- writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
     return (preproc_inp'', stash,moduleVarTable)
 
 
