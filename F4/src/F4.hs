@@ -7,6 +7,7 @@ import           Parser                  (SubRec (..),
                                           debug_displaySubRoutineTable,
                                           parseProgramData)
 
+import           AddKernelLoopGuards
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
 import           Data.Generics           (everything, everywhere, everywhereM,
@@ -91,6 +92,10 @@ compilerMain args = do
     let srtAfterKernelCombination = DMap.union combinedKernelSubroutines srtAfterStenDetect
 
     debug_displaySubRoutineTable srtAfterKernelCombination
+
+    let combinedOffloadSub = srtAfterKernelCombination DMap.! (head mergedOffloadName)
+
+    addLoopGuards combinedOffloadSub
 
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
     --     (DMap.toList combinedKernelSubroutines)

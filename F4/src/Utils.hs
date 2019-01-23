@@ -36,6 +36,8 @@ getDeclNames  (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) = map (getNameFromVarName 
     where
         declStatements = everything (++) (mkQ [] declNameQuery) $ decls
 
+getAllVarNames expr = everything (++) (mkQ [] extractVarNamesFromExpr) expr
+
 getVarName decl = head $ everything (++) (mkQ [] extractVarNamesFromExpr) decl
 getNameFromVarName (VarName _ name) = name
 
@@ -62,15 +64,25 @@ data Array = Array {
     arrDimensions :: Int
 } deriving Show
 
+arrayReadQuery :: [Array] -> Expr Anno -> [Expr Anno]
+arrayReadQuery arrays expr = case expr of
+    var@(Var _ _ ((VarName _ name, (idx:_)):_)) -> if (name `elem` arrayNames) then [var] else []
+    _                            -> []
+    where
+        arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
+
+getAllArrayAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
+getAllArrayAccesses arrays fortran = concatMap (arrayReadQuery arrays) allVars
+    where
+        allVars = everything (++) (mkQ [] (allVarsQuery)) fortran
+        allVarsQuery expr = case expr of
+                            v@(Var _ _ _) -> [v]
+                            _             -> []
+
 getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
 getArrayReadsQuery arrays fortran = allReadExprs
     where
-        arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
-        arrayReadQuery expr = case expr of
-                                var@(Var _ _ ((VarName _ name, (idx:_)):_)) ->
-                                    if (name `elem` arrayNames) then [var] else []
-                                _                            -> []
-        allReadExprs = everything (++) (mkQ [] arrayReadQuery) readExprsFromFortran
+        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) readExprsFromFortran
         readExprsFromFortran = case fortran of
                         (Assg _ _ _ rhs) -> [rhs]
                         (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
