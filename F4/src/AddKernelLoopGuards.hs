@@ -22,6 +22,4 @@ addLoopGuards subRec =
 addLoopGuardToMap :: Fortran Anno -> Fortran Anno 
 addLoopGuardToMap OpenCLMap _ _ _ _ loopVars _ body = 
 addLopoGuardToMap OpenCLReduce _ _ _ _ loopVars _ _ body =
-    where
-        loopVars
-        loopIndexesUsed =  
+    where 

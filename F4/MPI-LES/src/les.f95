@@ -38,9 +38,9 @@ contains
         real(kind=4) :: diu1_i_j_1, diu1_ip1_j_1, diu2_i_j_1, diu2_i_jp1_1, diu4_ip1_j_1, diu2_im1_jp1_1
         real(kind=4) :: diu3_i_j_2, diu4_i_j_1, diu4_ip1_jm1_1, diu5_i_jp1_1, diu5_i_j_1, diu6_i_j_2, diu7_ip1_j_1, diu8_i_jp1_1
 #endif
-
+#ifdef WV_NEW_LES
         real(kind=4), dimension(-1:kp+2)  :: dzs
-
+#endif
         real(kind=4), dimension(-1:ip+1) , intent(In) :: dx1
         real(kind=4), dimension(0:jp+1) , intent(In) :: dy1
         real(kind=4), dimension(-1:kp+2) , intent(In) :: dzn
@@ -51,7 +51,9 @@ contains
 
         real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: u
         real(kind=4), dimension(0:ip+1,-1:jp+1,0:kp+1) , intent(In) :: v
+#ifdef WV_NEW_LES
         real(kind=4), dimension(0:ip+1,-1:jp+1,-1:kp+1) , intent(In)  :: w
+#endif
 #ifndef WV_NEW_LES
 !wall function
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(in) :: uspd

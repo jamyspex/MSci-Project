@@ -117,9 +117,6 @@ contains
 !wall function
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(out) :: uspd
         real(kind=4), dimension(0:ip+1,0:jp+1) , intent(out) :: vspd
-#else
-        real(kind=4) :: uspd
-        real(kind=4) :: vspd
 #endif
         integer :: i,j,k
         real(kind=4) :: covc,covx1,covy1,covz1
