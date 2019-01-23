@@ -92,7 +92,7 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
     putStrLn cpp_cmd
     preproc_inp' <- readCreateProcess (shell cpp_cmd) ""
 
-    removeFile tempFileName
+    -- removeFile tempFileName
     -- writeFile (filePrefix ++ filename_noext ++ "_cpp_output.f95") preproc_inp'
     let
     -- Remove all comments
@@ -105,10 +105,9 @@ preProcessingHelper cppDArgs cppXArgs fixedForm inlineModules dir filename = do
         -- exp_inp_lines'' = filter ( /= "") exp_inp_lines_no_comments
     -- First declarations from used modules are inlined. Why first? Surely it would be better to do that *after* running CPP?
     (exp_inp_lines',moduleVarTable) <- inlineDeclsFromUsedModules dir True exp_inp_lines'' cppDArgs cppXArgs fixedForm -- FIXME: should this not be inlineModules instead of True?
-    -- writeFile (filePrefix ++ filename_noext ++ "_inline_decls.f95") $ unlines exp_inp_lines'
     let
         preproc_inp'' = unlines exp_inp_lines'
-    -- writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
+    writeFile (filePrefix ++ filename_noext ++ "_after_inling.f95") preproc_inp''
     return (preproc_inp'', stash,moduleVarTable)
 
 
@@ -1019,7 +1018,7 @@ readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm =
                 else
                     do
                         -- putStrLn "failed test 3"
-                        return ([line],("",[])) -- ++" ! "++(show (test1,test2,test3))]
+                        return ([line],("",[])) -- ++" ! "++(show (test1,test2,test3))
 
 isDeclOnly module_content_str = let
     module_lines = lines module_content_str

@@ -56,3 +56,63 @@ buildAstSeq constructor nullNode (statement:statements) = constructor statement 
 
 readIndex :: String -> Int
 readIndex = (round . read)
+
+data Array = Array {
+    varName       :: VarName Anno,
+    arrDimensions :: Int
+} deriving Show
+
+getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
+getArrayReadsQuery arrays fortran = allReadExprs
+    where
+        arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
+        arrayReadQuery expr = case expr of
+                                var@(Var _ _ ((VarName _ name, (idx:_)):_)) ->
+                                    if (name `elem` arrayNames) then [var] else []
+                                _                            -> []
+        allReadExprs = everything (++) (mkQ [] arrayReadQuery) readExprsFromFortran
+        readExprsFromFortran = case fortran of
+                        (Assg _ _ _ rhs) -> [rhs]
+                        (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
+                        (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
+                        (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
+                        (If _ _ cond branch elseIfs elseBranch) ->
+                            [cond] ++ recursiveCall branch ++ elseBranchResult
+                            ++ branchConds ++ concatMap recursiveCall branchBodys
+                            where
+                                (branchConds, branchBodys) = unzip elseIfs
+                                elseBranchResult = case elseBranch of
+                                    (Just body) -> recursiveCall body
+                                    _           -> []
+                        (NullStmt _ _) -> []
+                        -- (OpenCLStencil _ _ _ body) -> recursiveCall body
+                        -- (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
+                        -- (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
+                        missing@_ -> [] --error ("Unimplemented Fortran Statement " ++ miniPPF missing)
+        recursiveCall = getArrayReadsQuery arrays
+
+arrayFromDecl :: Decl Anno -> Array
+arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}
+    where
+        numberOfDimensions = length $ getArrayDimensions typeDecl
+        name = getVarName decl
+
+getArrayDimensions :: Type Anno -> [(Expr Anno, Expr Anno)]
+getArrayDimensions declType = case declType of
+                                (ArrayT _ dimensions _ _ _ _) -> dimensions
+                                (BaseType _ _ attrs _ _) -> concatMap id $ concatMap getDimensionAttrs attrs
+    where
+        getDimensionAttrs attr = case attr of
+            (Dimension _ dimensions) -> [dimensions]
+            _                        -> []
+
+getArrayDecls :: ProgUnit Anno -> [Decl Anno]
+getArrayDecls progUnit = arrayDecls
+    where
+        arrayDecls = filter (isArrayDecl) $ getDecls progUnit
+
+getDeclType :: Decl Anno -> Type Anno
+getDeclType (Decl _ _ _ typeDecl) = typeDecl
+
+isArrayDecl :: Decl Anno -> Bool
+isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
