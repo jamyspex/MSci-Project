@@ -5181,12 +5181,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     h(i,j,k) = (h(i,j,k)+vfw)
 !}    
 !}
-! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,[[("dxs","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)]]
-[[("dys","j",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)]]
-[[("dzs","k",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)]]
-[[("dzn","k",Just 0)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("z2","k",Just 0)]]
-[[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)]]
-1)","(i,1,300,1)"],[]) {
+! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     fd = f(i,j,k)
     gd = g(i,j,k)
     hd = h(i,j,k)
@@ -5338,78 +5333,51 @@ This subroutine will be offloaded to the FPGA
     u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
+dxs idx var = i position = 0
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+p idx var = i position = 1
+p idx var = j position = 2
+p idx var = k position = 3
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["ro","dys","dt","k","j"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
     v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
+dys idx var = j position = 0
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+p idx var = i position = 1
+p idx var = j position = 2
+p idx var = k position = 3
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["ro","dzs","dt","k","j"],["w"],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
     w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
+dzs idx var = k position = 0
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+p idx var = i position = 1
+p idx var = j position = 2
+p idx var = k position = 3
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( [],["u","w","v"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)"],[]) {
     u_val = 5.*((z2(k)+0.5*dzn(k))/600.)**0.2
@@ -5418,33 +5386,18 @@ all indexes valid
     w(i,j,k) = 0.0
 !}
 idx positions
-z2 idx var = i position = Nothing
-z2 idx var = k position = Just 0
-z2 idx var = j position =[[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)]]
-[[("u","k",Just 2)],[("u","j",Just 1)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","k",Just 2)],[("u","j",Just 1)]]
-[[("v","k",Just 2)],[("v","j",Just 1)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","k",Just 2)],[("v","j",Just 1)]]
-[[("w","k",Just 2)],[("w","j",Just 1)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","k",Just 2)],[("w","j",Just 1)]]
-[[("u","k",Just 2)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","i",Just 0)]]
-[[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)]]
-[[("w","k",Just 2)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","i",Just 0)]]
-[[("u","j",Just 1)],[("u","i",Just 0)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","j",Just 1)],[("u","i",Just 0)]]
-[[("v","j",Just 1)],[("v","i",Just 0)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","j",Just 1)],[("v","i",Just 0)]]
-[[("w","j",Just 1)],[("w","i",Just 0)],[("w","j",Just 1)],[("w","i",Just 0)]]
- Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
+dzn idx var = k position = 0
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
+z2 idx var = k position = 0
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["i"],["u","v","w"],["(i,0,1,1)","(k,79,80,1)","(j,1,300,1)"],[]) {
     u(i,j,k) = u(i,j,77)
@@ -5452,20 +5405,16 @@ all indexes valid
     w(i,j,k) = 0.0
 !}
 idx positions
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Nothing
-u idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k","j"],["u","v","w"],["(k,1,80,1)","(j,1,300,1)","(i,2,300,1)"],[]) {
     u(i,j,k) = u(1,j,k)
@@ -5473,169 +5422,94 @@ all indexes valid
     w(i,j,k) = w(1,j,k)
 !}
 idx positions
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Nothing
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dt","uout","dxs","k"],["u"],["(k,1,80,1)","(j,1,300,1)"],[]) {
     u(300,j,k) = u(300,j,k)-dt*uout*(u(300,j,k)-u(299,j,k))/dxs(300)
 !}
 idx positions
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
+u idx var = j position = 1
+u idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dt","uout","dxs","k"],["v"],["(k,1,80,1)","(j,1,300,1)"],[]) {
     v(301,j,k) = v(301,j,k)-dt*uout*(v(301,j,k)-v(300,j,k))/dxs(300)
 !}
 idx positions
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
+v idx var = j position = 1
+v idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dt","uout","dxs","k"],["w"],["(k,1,80,1)","(j,1,300,1)"],[]) {
     w(301,j,k) = w(301,j,k)-dt*uout*(w(301,j,k)-w(300,j,k))/dxs(300)
 !}
 idx positions
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["u"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     u(i,0,k) = u(i,300,k)
     u(i,301,k) = u(i,1,k)
 !}
 idx positions
-u idx var = k position = Just 2
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = i position = Just 0
+u idx var = i position = 0
+u idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["v"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     v(i,0,k) = v(i,300,k)
     v(i,301,k) = v(i,1,k)
 !}
 idx positions
-v idx var = k position = Just 2
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = i position = Just 0
+v idx var = i position = 0
+v idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],[],["(k,0,80,1)","(i,0,301,1)"],[]) {
     w(i,0,k) = w(i,300,k)
     w(i,301,k) = w(i,1,k)
 !}
 idx positions
-w idx var = k position = Just 2
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = i position = Just 0
+w idx var = i position = 0
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["j"],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
     u(i,j,0) = -u(i,j,1)
     u(i,j,81) = u(i,j,80)
 !}
 idx positions
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = j position = Just 1
-u idx var = i position = Just 0
+u idx var = i position = 0
+u idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["j"],["v"],["(j,0,301,1)","(i,0,301,1)"],[]) {
     v(i,j,0) = -v(i,j,1)
     v(i,j,81) = v(i,j,80)
 !}
 idx positions
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = j position = Just 1
-v idx var = i position = Just 0
+v idx var = i position = 0
+v idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( [],[],["(j,-1,301,1)","(i,0,301,1)"],[]) {
     w(i,j,0) = 0.0
     w(i,j,80) = 0.0
 !}
 idx positions
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = j position = Just 1
-w idx var = i position = Just 0
+w idx var = i position = 0
+w idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dx1","dzs","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     nou1_ = (u(i-1,j,k)+u(i,j,k))/2.
@@ -5676,225 +5550,22 @@ all indexes valid
     f(i,j,k) = (-covc)
 !}
 idx positions
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position [[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dzs","k",Just 0),("dzs","k",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","j",Just 1)],[("u","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","j",Just 1)],[("w","i",Just 0)]]
-= Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Nothing
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Nothing
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Nothing
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Nothing
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Nothing
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-w idx var = k position = Nothing
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-u idx var = k position = Nothing
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzn idx var = k position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dzs idx var = k position = 0
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dy1","dzs","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     nou4_ = (dy1(j+1)*u(i-1,j,k)+dy1(j)*u(i-1,j+1,k))/(dy1(j)+dy1(j+1))
@@ -5935,210 +5606,22 @@ all indexes valid
     g(i,j,k) = (-covc)
 !}
 idx positions
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var[[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dzs","k",Just 0),("dzs","k",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","j",Just 1)],[("v","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","j",Just 1)],[("w","i",Just 0)]]
- = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Nothing
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Nothing
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-v idx var = k position = Nothing
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzn idx var = k position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dzs idx var = k position = 0
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dzn","k","j"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     nou7_ = (dzn(k+1)*u(i-1,j,k)+dzn(k)*u(i-1,j,k+1))/(dzn(k)+dzn(k+1))
@@ -6174,241 +5657,47 @@ all indexes valid
     h(i,j,k) = (-covc)
 !}
 idx positions
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-u idx var [[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)]]
-[[("f","k",Just 2)],[("f","j",Just 1)],[("f","k",Just 2)],[("f","j",Just 1)]]
-[[("g","k",Just 2)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","i",Just 0)]]
-[[("h","j",Just 1)],[("h","i",Just 0)],[("h","j",Just 1)],[("h","i",Just 0)]]
-= k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = k position = Just 2
-v idx var = j position = Nothing
-v idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Nothing
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Nothing
-w idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Nothing
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Nothing
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dzn idx var = k position = 0
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
     f(0,j,k) = f(1,j,k)
 !}
 idx positions
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = k position = Just 2
-f idx var = j position = Just 1
+f idx var = j position = 1
+f idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(i,1,300,1)"],[]) {
     g(i,0,k) = g(i,300,k)
 !}
 idx positions
-g idx var = k position = Just 2
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = i position = Just 0
+g idx var = i position = 0
+g idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( [],[],["(j,1,300,1)","(i,1,300,1)"],[]) {
     h(i,j,0) = 0.0
     h(i,j,80) = 0.0
 !}
 idx positions
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = j position = Just 1
-h idx var = i position = Just 0
+h idx var = i position = 0
+h idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","k","j","fx","fy","fz"],["fx","fy","fz","g"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
@@ -6428,124 +5717,60 @@ all indexes valid
     h(i,j,k) = h(i,j,k)+fz(i,j,k)
 !}
 idx positions
-usum idx var = k position = Just 2
-usum idx var = j position = Just 1
-usum idx var = i position = Just 0
-usum idx var = k position = Just 2
-usum idx var = j posi[[("bmask1","k",Just 2)],[("bmask1","j",Just 1)],[("bmask1","i",Just 0)],[("bmask1","k",Just 2)],[("bmask1","j",Just 1)],[("bmask1","i",Just 0)],[("cmask1","k",Just 2)],[("cmask1","j",Just 1)],[("cmask1","i",Just 0)],[("cmask1","k",Just 2)],[("cmask1","j",Just 1)],[("cmask1","i",Just 0)],[("dmask1","k",Just 2)],[("dmask1","j",Just 1)],[("dmask1","i",Just 0)],[("dmask1","k",Just 2)],[("dmask1","j",Just 1)],[("dmask1","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("fx","k",Just 2)],[("fx","j",Just 1)],[("fx","i",Just 0)],[("fx","k",Just 2)],[("fx","j",Just 1)],[("fx","i",Just 0)],[("fy","k",Just 2)],[("fy","j",Just 1)],[("fy","i",Just 0)],[("fy","k",Just 2)],[("fy","j",Just 1)],[("fy","i",Just 0)],[("fz","k",Just 2)],[("fz","j",Just 1)],[("fz","i",Just 0)],[("fz","k",Just 2)],[("fz","j",Just 1)],[("fz","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("usum","k",Just 2)],[("usum","j",Just 1)],[("usum","i",Just 0)],[("usum","k",Just 2)],[("usum","j",Just 1)],[("usum","i",Just 0)],[("usum","k",Just 2)],[("usum","j",Just 1)],[("usum","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("vsum","k",Just 2)],[("vsum","j",Just 1)],[("vsum","i",Just 0)],[("vsum","k",Just 2)],[("vsum","j",Just 1)],[("vsum","i",Just 0)],[("vsum","k",Just 2)],[("vsum","j",Just 1)],[("vsum","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("wsum","k",Just 2)],[("wsum","j",Just 1)],[("wsum","i",Just 0)],[("wsum","k",Just 2)],[("wsum","j",Just 1)],[("wsum","i",Just 0)],[("wsum","k",Just 2)],[("wsum","j",Just 1)],[("wsum","i",Just 0)]]
-[[("delx1","k",Just 0)],[("dzn","k",Just 0)]]
-[[("delx1","k",Just 0)],[("diu1","k",Just 2)],[("diu1","j",Just 1)],[("diu1","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu5","k",Just 2)],[("diu5","j",Just 1)],[("diu5","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu9","k",Just 2)],[("diu9","j",Just 1)],[("diu9","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)]]
-[[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","k",Just 2)],[("sm","j",Just 1)]]
-[[("sm","k",Just 2)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","i",Just 0)]]
-[[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)]]
-tion = Just 1
-usum idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-bmask1 idx var = k position = Just 2
-bmask1 idx var = j position = Just 1
-bmask1 idx var = i position = Just 0
-vsum idx var = k position = Just 2
-vsum idx var = j position = Just 1
-vsum idx var = i position = Just 0
-vsum idx var = k position = Just 2
-vsum idx var = j position = Just 1
-vsum idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-cmask1 idx var = k position = Just 2
-cmask1 idx var = j position = Just 1
-cmask1 idx var = i position = Just 0
-wsum idx var = k position = Just 2
-wsum idx var = j position = Just 1
-wsum idx var = i position = Just 0
-wsum idx var = k position = Just 2
-wsum idx var = j position = Just 1
-wsum idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dmask1 idx var = k position = Just 2
-dmask1 idx var = j position = Just 1
-dmask1 idx var = i position = Just 0
-usum idx var = k position = Just 2
-usum idx var = j position = Just 1
-usum idx var = i position = Just 0
-vsum idx var = k position = Just 2
-vsum idx var = j position = Just 1
-vsum idx var = i position = Just 0
-wsum idx var = k position = Just 2
-wsum idx var = j position = Just 1
-wsum idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-bmask1 idx var = k position = Just 2
-bmask1 idx var = j position = Just 1
-bmask1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-cmask1 idx var = k position = Just 2
-cmask1 idx var = j position = Just 1
-cmask1 idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dmask1 idx var = k position = Just 2
-dmask1 idx var = j position = Just 1
-dmask1 idx var = i position = Just 0
-fx idx var = k position = Just 2
-fx idx var = j position = Just 1
-fx idx var = i position = Just 0
-fy idx var = k position = Just 2
-fy idx var = j position = Just 1
-fy idx var = i position = Just 0
-fz idx var = k position = Just 2
-fz idx var = j position = Just 1
-fz idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-fx idx var = k position = Just 2
-fx idx var = j position = Just 1
-fx idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-fy idx var = k position = Just 2
-fy idx var = j position = Just 1
-fy idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-fz idx var = k position = Just 2
-fz idx var = j position = Just 1
-fz idx var = i position = Just 0
+bmask1 idx var = i position = 0
+bmask1 idx var = j position = 1
+bmask1 idx var = k position = 2
+cmask1 idx var = i position = 0
+cmask1 idx var = j position = 1
+cmask1 idx var = k position = 2
+dmask1 idx var = i position = 0
+dmask1 idx var = j position = 1
+dmask1 idx var = k position = 2
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+fx idx var = i position = 0
+fx idx var = j position = 1
+fx idx var = k position = 2
+fy idx var = i position = 0
+fy idx var = j position = 1
+fy idx var = k position = 2
+fz idx var = i position = 0
+fz idx var = j position = 1
+fz idx var = k position = 2
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+usum idx var = i position = 0
+usum idx var = j position = 1
+usum idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+vsum idx var = i position = 0
+vsum idx var = j position = 1
+vsum idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
+wsum idx var = i position = 0
+wsum idx var = j position = 1
+wsum idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( [],[],["(k,1,80,1)"],[]) {
     delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
 !}
 idx positions
-delx1 idx var = k position = Just 0
-dx1 idx var = k position = Nothing
-dy1 idx var = k position = Nothing
-dzn idx var = k position = Just 0
+delx1 idx var = k position = 0
+dzn idx var = k position = 0
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["diu1","diu5","diu9","k","j"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     dudxx1 = diu1(i,j,k)
@@ -6561,143 +5786,65 @@ all indexes valid
     sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dvdzx1)**2+(dudzx1+dwdxx1)**2)
 !}
 idx positions
-diu1 idx var = k position = Just 2
-diu1 idx var = j position = Just 1
-diu1 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu5 idx var = k position = Just 2
-diu5 idx var = j position = Just 1
-diu5 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu9 idx var = k position = Just 2
-diu9 idx var = j position = Just 1
-diu9 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-delx1 idx var = k position = Just 0
-delx1 idx var = j position = Nothing
-delx1 idx var = i position = Nothing
+delx1 idx var = k position = 0
+diu1 idx var = i position = 0
+diu1 idx var = j position = 1
+diu1 idx var = k position = 2
+diu2 idx var = i position = 0
+diu2 idx var = j position = 1
+diu2 idx var = k position = 2
+diu3 idx var = i position = 0
+diu3 idx var = j position = 1
+diu3 idx var = k position = 2
+diu4 idx var = i position = 0
+diu4 idx var = j position = 1
+diu4 idx var = k position = 2
+diu5 idx var = i position = 0
+diu5 idx var = j position = 1
+diu5 idx var = k position = 2
+diu6 idx var = i position = 0
+diu6 idx var = j position = 1
+diu6 idx var = k position = 2
+diu7 idx var = i position = 0
+diu7 idx var = j position = 1
+diu7 idx var = k position = 2
+diu8 idx var = i position = 0
+diu8 idx var = j position = 1
+diu8 idx var = k position = 2
+diu9 idx var = i position = 0
+diu9 idx var = j position = 1
+diu9 idx var = k position = 2
+sm idx var = i position = 0
+sm idx var = j position = 1
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["sm"],["(k,0,81,1)","(j,-1,301,1)"],[]) {
     sm(0,j,k) = sm(1,j,k)
     sm(301,j,k) = sm(300,j,k)
 !}
 idx positions
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
+sm idx var = j position = 1
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["sm"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     sm(i,301,k) = sm(i,300,k)
     sm(i,0,k) = sm(i,1,k)
 !}
 idx positions
-sm idx var = k position = Just 2
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = i position = Just 0
+sm idx var = i position = 0
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["j"],["sm"],["(j,-1,301,1)","(i,0,301,1)"],[]) {
     sm(i,j,0) = -sm(i,j,1)
     sm(i,j,81) = sm(i,j,80)
 !}
 idx positions
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
+sm idx var = i position = 0
+sm idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn","k","j"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     evsx2 = sm(i+1,j,k)
@@ -6716,253 +5863,32 @@ all indexes valid
     f(i,j,k) = (f(i,j,k)+vfu)
 !}
 idx positions
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var [[("diu1","k",Just 2)],[("diu1","j",Just 1)],[("diu1","i",Just 0)],[("diu1","k",Just 2)],[("diu1","j",Just 1)],[("diu1","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dxs","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)]]
-[[("diu1","j",Just 1)],[("diu1","i",Just 0)],[("diu1","j",Just 1)],[("diu1","i",Just 0)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dxs","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","j",Just 1)],[("f","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("u","j",Just 1)],[("u","i",Just 0)],[("uspd","j",Just 1)],[("uspd","i",Just 0)],[("uspd","j",Just 1)],[("uspd","i",Just 0)]]
-= k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-diu1 idx var = k position = Just 2
-diu1 idx var = j position = Just 1
-diu1 idx var = i position = Just 0
-diu1 idx var = k position = Just 2
-diu1 idx var = j position = Just 1
-diu1 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
+diu1 idx var = i position = 0
+diu1 idx var = j position = 1
+diu1 idx var = k position = 2
+diu2 idx var = i position = 0
+diu2 idx var = j position = 1
+diu2 idx var = k position = 2
+diu3 idx var = i position = 0
+diu3 idx var = j position = 1
+diu3 idx var = k position = 2
+diu4 idx var = i position = 0
+diu4 idx var = j position = 1
+diu4 idx var = k position = 2
+diu7 idx var = i position = 0
+diu7 idx var = j position = 1
+diu7 idx var = k position = 2
+dx1 idx var = i position = 0
+dxs idx var = i position = 0
+dy1 idx var = j position = 0
+dzn idx var = k position = 0
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+sm idx var = i position = 0
+sm idx var = j position = 1
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn","j"],["f"],["(j,1,300,1)","(i,1,300,1)"],[]) {
     evsx2 = sm(i+1,j,1)
@@ -6980,149 +5906,34 @@ all indexes valid
     f(i,j,1) = (f(i,j,1)+vfu)
 !}
 idx positions
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-diu1 idx var = j position = Just 1
-diu1 idx var = i position = Just 0
-diu1 idx var = j position = Just 1
-diu1 idx var = i position = Just 0
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-uspd idx var = j position = Just 1
-uspd idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-uspd idx var = j position = Just 1
-uspd idx var = i position = Just 0
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-f idx var = j position = Just 1
-f idx var = i position = Just 0
+diu1 idx var = i position = 0
+diu1 idx var = j position = 1
+diu2 idx var = i position = 0
+diu2 idx var = j position = 1
+diu3 idx var = i position = 0
+diu3 idx var = j position = 1
+diu4 idx var = i position = 0
+diu4 idx var = j position = 1
+diu7 idx var = i position = 0
+diu7 idx var = j position = 1
+dx1 idx var = i position = 0
+dxs idx var = i position = 0
+dy1 idx var = j position = 0
+f idx var = i position = 0
+f idx var = j position = 1
+sm idx var = i position = 0
+sm idx var = j position = 1
+u idx var = i position = 0
+u idx var = j position = 1
+uspd idx var = i position = 0
+uspd idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn","k","j"],["g"],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     evsy2 = sm(i,j+1,k)
     evsy1 = sm(i,j,k)
     evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-    evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(d[[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","k",Just 2)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","k",Just 2)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu5","k",Just 2)],[("diu5","j",Just 1)],[("diu5","i",Just 0)],[("diu5","k",Just 2)],[("diu5","j",Just 1)],[("diu5","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dys","j",Just 0)],[("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)]]
-y1(j)+dy1(j+1))
+    evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
     evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
     evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
     visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
@@ -7135,252 +5946,32 @@ y1(j)+dy1(j+1))
     g(i,j,k) = (g(i,j,k)+vfv)
 !}
 idx positions
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu2 idx var = k position = Just 2
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = k position = Just 2
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu5 idx var = k position = Just 2
-diu5 idx var = j position = Just 1
-diu5 idx var = i position = Just 0
-diu5 idx var = k position = Just 2
-diu5 idx var = j position = Just 1
-diu5 idx var = i position = Just 0
-diu6 idx var = k positio[[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu2","j",Just 1)],[("diu2","i",Just 0)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu4","j",Just 1)],[("diu4","i",Just 0)],[("diu5","j",Just 1)],[("diu5","i",Just 0)],[("diu5","j",Just 1)],[("diu5","i",Just 0)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dys","j",Just 0)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","j",Just 1)],[("g","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("v","j",Just 1)],[("v","i",Just 0)],[("vspd","j",Just 1)],[("vspd","i",Just 0)],[("vspd","j",Just 1)],[("vspd","i",Just 0)]]
-n = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
+diu2 idx var = i position = 0
+diu2 idx var = j position = 1
+diu2 idx var = k position = 2
+diu4 idx var = i position = 0
+diu4 idx var = j position = 1
+diu4 idx var = k position = 2
+diu5 idx var = i position = 0
+diu5 idx var = j position = 1
+diu5 idx var = k position = 2
+diu6 idx var = i position = 0
+diu6 idx var = j position = 1
+diu6 idx var = k position = 2
+diu8 idx var = i position = 0
+diu8 idx var = j position = 1
+diu8 idx var = k position = 2
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dys idx var = j position = 0
+dzn idx var = k position = 0
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+sm idx var = i position = 0
+sm idx var = j position = 1
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn","j"],[],["(j,1,300,1)","(i,1,300,1)"],[]) {
     evsy2 = sm(i,j+1,1)
@@ -7398,142 +5989,28 @@ all indexes valid
     g(i,j,1) = (g(i,j,1)+vfv)
 !}
 idx positions
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu2 idx var = j position = Just 1
-diu2 idx var = i position = Just 0
-diu4 idx var = j position = Just 1
-diu4 idx var = i position = Just 0
-diu5 idx var = j position = Just 1
-diu5 idx var = i position = Just 0
-diu5 idx var = j position = Just 1
-diu5 idx var = i position = Just 0
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-vspd idx var = j position = Just 1
-vspd idx var = i position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-vspd idx var = j position = Just 1
-vspd idx var = i position = Just 0
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-g idx var = j position = Just 1
-g idx var = i position = Just 0
+diu2 idx var = i position = 0
+diu2 idx var = j position = 1
+diu4 idx var = i position = 0
+diu4 idx var = j position = 1
+diu5 idx var = i position = 0
+diu5 idx var = j position = 1
+diu6 idx var = i position = 0
+diu6 idx var = j position = 1
+diu8 idx var = i position = 0
+diu8 idx var = j position = 1
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dys idx var = j position = 0
+g idx var = i position = 0
+g idx var = j position = 1
+sm idx var = i position = 0
+sm idx var = j position = 1
+v idx var = i position = 0
+v idx var = j position = 1
+vspd idx var = i position = 0
+vspd idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     evsz2 = sm(i,j,k+1)
@@ -7552,260 +6029,33 @@ all indexes valid
     h(i,j,k) = (h(i,j,k)+vfw)
 !}
 idx positions
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothin[[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu3","k",Just 2)],[("diu3","j",Just 1)],[("diu3","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu6","k",Just 2)],[("diu6","j",Just 1)],[("diu6","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu7","k",Just 2)],[("diu7","j",Just 1)],[("diu7","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu8","k",Just 2)],[("diu8","j",Just 1)],[("diu8","i",Just 0)],[("diu9","k",Just 2)],[("diu9","j",Just 1)],[("diu9","i",Just 0)],[("diu9","k",Just 2)],[("diu9","j",Just 1)],[("diu9","i",Just 0)],[("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0),("dy1","j",Just 0)],[("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0),("dzn","k",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)],[("sm","k",Just 2)],[("sm","j",Just 1)],[("sm","i",Just 0)]]
-g
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-sm idx var = k position = Just 2
-sm idx var = j position = Just 1
-sm idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu3 idx var = k position = Just 2
-diu3 idx var = j position = Just 1
-diu3 idx var = i position = Just 0
-diu7 idx var = k position = Just 2
-diu7 idx var = j position = Just 1
-diu7 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu6 idx var = k position = Just 2
-diu6 idx var = j position = Just 1
-diu6 idx var = i position = Just 0
-diu8 idx var = k position = Just 2
-diu8 idx var = j position = Just 1
-diu8 idx var = i position = Just 0
-diu9 idx var = k position = Just 2
-diu9 idx var = j position = Just 1
-diu9 idx var = i position = Just 0
-diu9 idx var = k position = Just 2
-diu9 idx var = j position = Just 1
-diu9 idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
+diu3 idx var = i position = 0
+diu3 idx var = j position = 1
+diu3 idx var = k position = 2
+diu6 idx var = i position = 0
+diu6 idx var = j position = 1
+diu6 idx var = k position = 2
+diu7 idx var = i position = 0
+diu7 idx var = j position = 1
+diu7 idx var = k position = 2
+diu8 idx var = i position = 0
+diu8 idx var = j position = 1
+diu8 idx var = k position = 2
+diu9 idx var = i position = 0
+diu9 idx var = j position = 1
+diu9 idx var = k position = 2
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dzn idx var = k position = 0
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+sm idx var = i position = 0
+sm idx var = j position = 1
+sm idx var = k position = 2
 
-all indexes valid
 -----------------------------
-! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[[[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("fold","k",Just 2)],[("fold","j",Just 1)],[("fold","i",Just 0)],[("fold","k",Just 2)],[("fold","j",Just 1)],[("fold","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("gold","k",Just 2)],[("gold","j",Just 1)],[("gold","i",Just 0)],[("gold","k",Just 2)],[("gold","j",Just 1)],[("gold","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("hold","k",Just 2)],[("hold","j",Just 1)],[("hold","i",Just 0)],[("hold","k",Just 2)],[("hold","j",Just 1)],[("hold","i",Just 0)]]
-[[("f","k",Just 2)],[("f","j",Just 1)],[("f","k",Just 2)],[("f","j",Just 1)]]
-[[("g","k",Just 2)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","i",Just 0)]]
-[[("h","j",Just 1)],[("h","i",Just 0)],[("h","j",Just 1)],[("h","i",Just 0)]]
-[[("dx1","i",Just 0),("dx1","i",Just 0)],[("dy1","j",Just 0),("dy1","j",Just 0)],[("dzn","k",Just 0),("dzn","k",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("f","k",Just 2)],[("f","j",Just 1)],[("f","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("g","k",Just 2)],[("g","j",Just 1)],[("g","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("h","k",Just 2)],[("h","j",Just 1)],[("h","i",Just 0)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("u","k",Just 2)],[("u","j",Just 1)],[("u","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("v","k",Just 2)],[("v","j",Just 1)],[("v","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)],[("w","k",Just 2)],[("w","j",Just 1)],[("w","i",Just 0)]]
-[[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)]]
-]) {
+! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     fd = f(i,j,k)
     gd = g(i,j,k)
     hd = h(i,j,k)
@@ -7817,171 +6067,90 @@ all indexes valid
     hold(i,j,k) = hd
 !}
 idx positions
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-fold idx var = k position = Just 2
-fold idx var = j position = Just 1
-fold idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-gold idx var = k position = Just 2
-gold idx var = j position = Just 1
-gold idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-hold idx var = k position = Just 2
-hold idx var = j position = Just 1
-hold idx var = i position = Just 0
-fold idx var = k position = Just 2
-fold idx var = j position = Just 1
-fold idx var = i position = Just 0
-gold idx var = k position = Just 2
-gold idx var = j position = Just 1
-gold idx var = i position = Just 0
-hold idx var = k position = Just 2
-hold idx var = j position = Just 1
-hold idx var = i position = Just 0
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+fold idx var = i position = 0
+fold idx var = j position = 1
+fold idx var = k position = 2
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+gold idx var = i position = 0
+gold idx var = j position = 1
+gold idx var = k position = 2
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+hold idx var = i position = 0
+hold idx var = j position = 1
+hold idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
     f(0,j,k) = f(1,j,k)
 !}
 idx positions
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = k position = Just 2
-f idx var = j position = Just 1
+f idx var = j position = 1
+f idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(i,1,300,1)"],[]) {
     g(i,0,k) = g(i,300,k)
 !}
 idx positions
-g idx var = k position = Just 2
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = i position = Just 0
+g idx var = i position = 0
+g idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( [],[],["(j,1,300,1)","(i,1,300,1)"],[]) {
     h(i,j,0) = 0.0
     h(i,j,80) = 0.0
 !}
 idx positions
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = j position = Just 1
-h idx var = i position = Just 0
+h idx var = i position = 0
+h idx var = j position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dx1","dy1","dzn","dt","k","j"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
     rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
 !}
 idx positions
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-u idx var = k position = Just 2
-u idx var = j position = Just 1
-u idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-v idx var = k position = Just 2
-v idx var = j position = Just 1
-v idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-w idx var = k position = Just 2
-w idx var = j position = Just 1
-w idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-f idx var = k position = Just 2
-f idx var = j position = Just 1
-f idx var = i position = Just 0
-dx1 idx var = k position = Nothing
-dx1 idx var = j position = Nothing
-dx1 idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-g idx var = k position = Just 2
-g idx var = j position = Just 1
-g idx var = i position = Just 0
-dy1 idx var = k position = Nothing
-dy1 idx var = j position = Just 0
-dy1 idx var = i position = Nothing
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-h idx var = k position = Just 2
-h idx var = j position = Just 1
-h idx var = i position = Just 0
-dzn idx var = k position = Just 0
-dzn idx var = j position = Nothing
-dzn idx var = i position = Nothing
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
+dx1 idx var = i position = 0
+dy1 idx var = j position = 0
+dzn idx var = k position = 0
+f idx var = i position = 0
+f idx var = j position = 1
+f idx var = k position = 2
+g idx var = i position = 0
+g idx var = j position = 1
+g idx var = k position = 2
+h idx var = i position = 0
+h idx var = j position = 1
+h idx var = k position = 2
+rhs idx var = i position = 0
+rhs idx var = j position = 1
+rhs idx var = k position = 2
+u idx var = i position = 0
+u idx var = j position = 1
+u idx var = k position = 2
+v idx var = i position = 0
+v idx var = j position = 1
+v idx var = k position = 2
+w idx var = i position = 0
+w idx var = j position = 1
+w idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["rhsav","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     rhs(i,j,k) = rhs(i,j,k)-rhsav
 !}
 idx positions
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
+rhs idx var = i position = 0
+rhs idx var = j position = 1
+rhs idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["dzs","nrd","k","j"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
     dz1 = dzs(k-1)
@@ -8002,238 +6171,182 @@ all indexes valid
     end if
 !}
 idx positions
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dzs idx var = k position = Just 0
-dzs idx var = j position = Nothing
-dzs idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dxs idx var = k position = Nothing
-dxs idx var = j position = Nothing
-dxs idx var = i position = Just 0
-dys idx var = k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-dys idx var = [[("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0),("dxs","i",Just 0)],[("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0),("dys","j",Just 0)],[("dzs","k",Just 0),("dzs","k",Just 0)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)],[("rhs","k",Just 2)],[("rhs","j",Just 1)],[("rhs","i",Just 0)]]
-[[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)]]
-[[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)]]
-[[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)]]
-[[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","i",Just 1)]]
-[[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)],[("p","k",Just 3)],[("p","j",Just 2)]]
-[[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)],[("p","k",Just 3)],[("p","i",Just 1)]]
-[[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)],[("p","j",Just 2)],[("p","i",Just 1)]]
-k position = Nothing
-dys idx var = j position = Just 0
-dys idx var = i position = Nothing
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-rhs idx var = k position = Just 2
-rhs idx var = j position = Just 1
-rhs idx var = i position = Just 0
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
+dxs idx var = i position = 0
+dys idx var = j position = 0
+dzs idx var = k position = 0
+p idx var = i position = 1
+p idx var = j position = 2
+p idx var = k position = 3
+rhs idx var = i position = 0
+rhs idx var = j position = 1
+rhs idx var = k position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
     p(0,0,j,k) = p(0,1,j,k)
     p(0,301,j,k) = p(0,300,j,k)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
+p idx var = j position = 2
+p idx var = k position = 3
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
     p(0,i,0,k) = p(0,i,300,k)
     p(0,i,301,k) = p(0,i,1,k)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
+p idx var = i position = 1
+p idx var = k position = 3
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["j"],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
     p(0,i,j,0) = p(0,i,j,1)
     p(0,i,j,81) = p(0,i,j,80)
 !}
 idx positions
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
+p idx var = i position = 1
+p idx var = j position = 2
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["pav","k","j"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     p(0,i,j,k) = p(0,i,j,k)-pav
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = i position = Just 1
+p idx var = i position = 1
+p idx var = j position = 2
+p idx var = k position = 3
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
     p(0,0,j,k) = p(0,1,j,k)
     p(0,301,j,k) = p(0,300,j,k)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
-p idx var = k position = Just 3
-p idx var = j position = Just 2
+p idx var = j position = 2
+p idx var = k position = 3
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     p(0,i,0,k) = p(0,i,300,k)
     p(0,i,301,k) = p(0,i,1,k)
 !}
 idx positions
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
-p idx var = k position = Just 3
-p idx var = i position = Just 1
+p idx var = i position = 1
+p idx var = k position = 3
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["j"],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
     p(0,i,j,0) = p(0,i,j,1)
     p(0,i,j,81) = p(0,i,j,80)
 !}
 idx positions
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
-p idx var = j position = Just 2
-p idx var = i position = Just 1
+p idx var = i position = 1
+p idx var = j position = 2
 
-all indexes valid
 -----------------------------
+
+("bmask1",0) ----> (-1,301)
+("bmask1",1) ----> (0,301)
+("bmask1",2) ----> (0,81)
+("cmask1",0) ----> (0,301)
+("cmask1",1) ----> (-1,301)
+("cmask1",2) ----> (0,81)
+("delx1",0) ----> (1,80)
+("diu1",0) ----> (-1,302)
+("diu1",1) ----> (0,302)
+("diu1",2) ----> (0,82)
+("diu2",0) ----> (0,302)
+("diu2",1) ----> (0,302)
+("diu2",2) ----> (0,82)
+("diu3",0) ----> (0,302)
+("diu3",1) ----> (0,302)
+("diu3",2) ----> (0,82)
+("diu4",0) ----> (0,302)
+("diu4",1) ----> (0,302)
+("diu4",2) ----> (0,82)
+("diu5",0) ----> (-1,302)
+("diu5",1) ----> (0,302)
+("diu5",2) ----> (0,82)
+("diu6",0) ----> (0,302)
+("diu6",1) ----> (0,302)
+("diu6",2) ----> (0,82)
+("diu7",0) ----> (0,302)
+("diu7",1) ----> (0,302)
+("diu7",2) ----> (0,82)
+("diu8",0) ----> (0,302)
+("diu8",1) ----> (0,302)
+("diu8",2) ----> (0,82)
+("diu9",0) ----> (0,302)
+("diu9",1) ----> (0,302)
+("diu9",2) ----> (0,82)
+("dmask1",0) ----> (0,301)
+("dmask1",1) ----> (0,301)
+("dmask1",2) ----> (0,81)
+("dx1",0) ----> (-1,301)
+("dxs",0) ----> (0,300)
+("dy1",0) ----> (0,301)
+("dys",0) ----> (0,300)
+("dzn",0) ----> (-1,82)
+("dzs",0) ----> (-1,82)
+("f",0) ----> (0,300)
+("f",1) ----> (0,300)
+("f",2) ----> (0,80)
+("fold",0) ----> (1,300)
+("fold",1) ----> (1,300)
+("fold",2) ----> (1,80)
+("fx",0) ----> (0,300)
+("fx",1) ----> (0,300)
+("fx",2) ----> (0,80)
+("fy",0) ----> (0,300)
+("fy",1) ----> (0,300)
+("fy",2) ----> (0,80)
+("fz",0) ----> (0,300)
+("fz",1) ----> (0,300)
+("fz",2) ----> (0,80)
+("g",0) ----> (0,300)
+("g",1) ----> (0,300)
+("g",2) ----> (0,80)
+("gold",0) ----> (1,300)
+("gold",1) ----> (1,300)
+("gold",2) ----> (1,80)
+("h",0) ----> (0,300)
+("h",1) ----> (0,300)
+("h",2) ----> (0,80)
+("hold",0) ----> (1,300)
+("hold",1) ----> (1,300)
+("hold",2) ----> (1,80)
+("p",0) ----> (0,1)
+("p",1) ----> (0,302)
+("p",2) ----> (0,302)
+("p",3) ----> (0,81)
+("rhs",0) ----> (0,301)
+("rhs",1) ----> (0,301)
+("rhs",2) ----> (0,81)
+("sm",0) ----> (-1,301)
+("sm",1) ----> (-1,301)
+("sm",2) ----> (0,81)
+("u",0) ----> (0,301)
+("u",1) ----> (-1,301)
+("u",2) ----> (0,81)
+("uspd",0) ----> (0,301)
+("uspd",1) ----> (0,301)
+("usum",0) ----> (0,300)
+("usum",1) ----> (0,300)
+("usum",2) ----> (0,80)
+("v",0) ----> (0,301)
+("v",1) ----> (-1,301)
+("v",2) ----> (0,81)
+("vspd",0) ----> (0,301)
+("vspd",1) ----> (0,301)
+("vsum",0) ----> (0,300)
+("vsum",1) ----> (0,300)
+("vsum",2) ----> (0,80)
+("w",0) ----> (0,301)
+("w",1) ----> (-1,301)
+("w",2) ----> (-1,81)
+("wsum",0) ----> (0,300)
+("wsum",1) ----> (0,300)
+("wsum",2) ----> (0,80)
+("z2",0) ----> (0,82)
 

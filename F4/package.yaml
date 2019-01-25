@@ -30,6 +30,7 @@ dependencies:
 - optparse-applicative
 - split
 - filepath
+- ilist
 - MissingH
 
 library:

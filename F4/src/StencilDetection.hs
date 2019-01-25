@@ -160,34 +160,3 @@ findStencils arrays fortran = moreThanOneAccess
         groupedByArray = groupBy groupByArray sortedByVarName
         groupByArray var1 var2 = arrayName var1 == arrayName var2
         moreThanOneAccess = filter (\grp -> length grp > 1) groupedByArray
-
--- getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
--- getArrayReadsQuery arrays fortran = allReadExprs
---     where
---         arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
---         arrayReadQuery expr = case expr of
---                                 var@(Var _ _ ((VarName _ name, (idx:_)):_)) ->
---                                     if (name `elem` arrayNames) then [var] else []
---                                 _                            -> []
---         allReadExprs = everything (++) (mkQ [] arrayReadQuery) readExprsFromFortran
---         readExprsFromFortran = case fortran of
---                         (Assg _ _ _ rhs) -> [rhs]
---                         (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
---                         (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
---                         (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
---                         (If _ _ cond branch elseIfs elseBranch) ->
---                             [cond] ++ recursiveCall branch ++ elseBranchResult
---                             ++ branchConds ++ concatMap recursiveCall branchBodys
---                             where
---                                 (branchConds, branchBodys) = unzip elseIfs
---                                 elseBranchResult = case elseBranch of
---                                     (Just body) -> recursiveCall body
---                                     _           -> []
---                         (NullStmt _ _) -> []
---                         -- (OpenCLStencil _ _ _ body) -> recursiveCall body
---                         -- (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
---                         -- (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
---                         missing@_ -> [] --error ("Unimplemented Fortran Statement " ++ miniPPF missing)
---         recursiveCall = getArrayReadsQuery arrays
-
-

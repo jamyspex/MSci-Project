@@ -4,6 +4,7 @@ import           Data.Data
 import           Data.Generics         (Data, Typeable, everything, everywhere,
                                         gmapQ, gmapT, mkQ, mkT)
 import           Data.List
+import           Data.List.Index
 import qualified Data.Map              as DMap
 import           Data.Maybe
 import           Debug.Trace
@@ -17,29 +18,43 @@ import           Utils
 
 addLoopGuards :: SubRec -> IO (SubRec)
 addLoopGuards subRec = do
-    putStrLn $ concatMap showPositions positions
+    putStrLn $ concatMap showUsagePositions positions
+    putStrLn $ showDeclRangeMap declRangeMap
     return subRec
     where
         ast = subAst subRec
-        arrays = map arrayFromDecl $ getArrayDecls ast
+        arrayDecls = getArrayDecls ast
+        arrays = map arrayFromDecl arrayDecls
         allMaps = everything (++) (mkQ [] oclMapQuery) ast
         positions = map (addLoopGuardToMap arrays) allMaps
+        declRangeMap = getDimensionPositionMap arrayDecls
 
-showPositions (fortran, positionList) = miniPPF fortran ++ "\nidx positions\n" ++
-                                            concatMap (\(arrayName, idx, pos) -> arrayName ++ " idx var = " ++
-                                            idx ++ " position = " ++ show pos ++ "\n") positionList ++ "\n"
-                                            ++ (if validateIndexing positionList then "all indexes valid" else "error in indexes")
+showDeclRangeMap :: DMap.Map (String, Int) (Int, Int) -> String
+showDeclRangeMap declRangeMap = concatMap (\(key, val) -> show key ++ " ----> " ++ show val ++ "\n") $ DMap.toList declRangeMap
+
+
+showUsagePositions (fortran, positionList) = miniPPF fortran ++ "\nidx positions\n" ++
+                                            (concatMap (\(arrayName, idx, pos) -> arrayName ++ " idx var = " ++
+                                            idx ++ " position = " ++ show pos ++ "\n") $ validateIndexingAndMakeUnique positionList)
                                             ++ "\n-----------------------------\n"
-
 
 -- this may need update so it respects square arrays, e.g. using
 -- indices in different orders is valid as long as they have the same range
-validateIndexing :: [(String, String, Maybe Int)] -> Bool
-validateIndexing positions = all (\grp -> all (== head grp) (tail grp)) groupedByArrayNameAndIdxName
+validateIndexingAndMakeUnique :: [(String, String, Maybe Int)] -> [(String, String, Int)]
+validateIndexingAndMakeUnique positions = if valid then unique else error "Index ordering not consistent"
     where
         indexNotUsedRemove = filter (\(_, _, pos) -> isJust pos) positions
-        sortedByArrayName = sortBy (\(an1, _, _) (an2, _, _) -> an1 `compare` an2) indexNotUsedRemove
-        groupedByArrayNameAndIdxName = groupBy (\(an1, in1, _) (an2, in2, _) -> an1 == an2 && in1 == in2) sortedByArrayName
+        maybeRemoved = map (\(arrayName, idxName, Just pos) -> (arrayName, idxName, pos)) indexNotUsedRemove
+        groupedByArrayNameAndIdxName = groupByArrayAndIndex maybeRemoved
+        valid = all (\grp -> all (== head grp) (tail grp)) groupedByArrayNameAndIdxName
+        unique = map head groupedByArrayNameAndIdxName
+-- trace (show groupedByArrayNameAndIdxName)
+
+
+groupByArrayAndIndex :: [(String, String, Int)] -> [[(String, String, Int)]]
+groupByArrayAndIndex input = groupBy (\(an1, in1, _) (an2, in2, _) -> an1 == an2 && in1 == in2) sortedByArrayName
+    where
+        sortedByArrayName = sortBy (\(an1, in1, _) (an2, in2, _) -> (an1 `compare` an2) <> (in1 `compare` in2)) input
 
 oclMapQuery fortran = case fortran of
                         (OpenCLMap _ _ _ _ _ _ _) -> [fortran]
@@ -52,6 +67,27 @@ addLoopGuardToMap arrays fortran@(OpenCLMap _ _ _ _ loopVars _ body) = (fortran,
         loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
         indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
 
+getDimensionPositionMap :: [Decl Anno] -> DMap.Map (String, Int) (Int, Int)
+getDimensionPositionMap decls = DMap.fromList allItems
+    where
+        allItems = concatMap getDimensionPosition decls
+
+getDimensionPosition :: Decl Anno -> [((String, Int), (Int, Int))]
+getDimensionPosition decl = arrayDimensionsMapItem
+    where
+        name = (getNameFromVarName . getVarName) decl
+        arrayDimensionsMapItem = imap (\pos dims -> ((name, pos), getArrayDimensionConstants decl dims)) arrayDimensionsExpr
+        arrayDimensionsExpr = (getArrayDimensions . getDeclType) decl
+
+getArrayDimensionConstants :: Decl Anno -> (Expr Anno, Expr Anno) -> (Int, Int)
+getArrayDimensionConstants decl (expr1, expr2) = (getSingleConstant decl expr1, getSingleConstant decl expr2)
+
+getSingleConstant :: Decl Anno -> Expr Anno -> Int
+getSingleConstant decl expr = case expr of
+    (Con _ _ val) -> read val :: Int
+    (Unary _ _ _ (Con _ _ val)) -> negate $ read val :: Int
+    (NullExpr _ _) -> 1 -- when array declared with starting index omitted, fortran defaults to 1
+    _ -> error ("Expr other than constant in array dimensions. \n" ++ miniPPD decl)
 
 getLoopIndexPosition ::  [VarName Anno] -> Expr Anno -> [(String, String, Maybe Int)]
 getLoopIndexPosition varNames (Var _ _ (((VarName _ arrayName), indexList):_)) =

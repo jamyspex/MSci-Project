@@ -1338,20 +1338,13 @@ This subroutine will not be offloaded to the FPGA
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
 !}
 idx positions
-du idx var = j position = Just 0
-du idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-dv idx var = j position = Just 0
-dv idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
+du idx var = j position = 0
+du idx var = k position = 1
+dv idx var = j position = 0
+dv idx var = k position = 1
+eta idx var = j position = 0
+eta idx var = k position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
     un(j,k) = 0.0
@@ -1380,40 +1373,21 @@ all indexes valid
     end if
 !}
 idx positions
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-u idx var = j position = Just 0
-u idx var = k position = Just 1
-du idx var = j position = Just 0
-du idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-v idx var = j position = Just 0
-v idx var = k position = Just 1
-dv idx var = j position = Just 0
-dv idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
+du idx var = j position = 0
+du idx var = k position = 1
+dv idx var = j position = 0
+dv idx var = k position = 1
+u idx var = j position = 0
+u idx var = k position = 1
+un idx var = j position = 0
+un idx var = k position = 1
+v idx var = j position = 0
+v idx var = k position = 1
+vn idx var = j position = 0
+vn idx var = k position = 1
+wet idx var = j position = 0
+wet idx var = k position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
     hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
@@ -1431,60 +1405,17 @@ all indexes valid
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}
 idx positions
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
+eta idx var = j position = 0
+eta idx var = k position = 1
+etan idx var = j position = 0
+etan idx var = k position = 1
+h idx var = j position = 0
+h idx var = k position = 1
+un idx var = j position = 0
+un idx var = k position = 1
+vn idx var = j position = 0
+vn idx var = k position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if (wet(j,k)==1) then
@@ -1497,42 +1428,13 @@ all indexes valid
     end if
 !}
 idx positions
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-etan idx var = j position = Just 0
-etan idx var = k position = Just 1
+eta idx var = j position = 0
+eta idx var = k position = 1
+etan idx var = j position = 0
+etan idx var = k position = 1
+wet idx var = j position = 0
+wet idx var = k position = 1
 
-all indexes valid
 -----------------------------
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
@@ -1544,27 +1446,45 @@ all indexes valid
     v(j,k) = vn(j,k)
 !}
 idx positions
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-hzero idx var = j position = Just 0
-hzero idx var = k position = Just 1
-eta idx var = j position = Just 0
-eta idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-h idx var = j position = Just 0
-h idx var = k position = Just 1
-wet idx var = j position = Just 0
-wet idx var = k position = Just 1
-u idx var = j position = Just 0
-u idx var = k position = Just 1
-un idx var = j position = Just 0
-un idx var = k position = Just 1
-v idx var = j position = Just 0
-v idx var = k position = Just 1
-vn idx var = j position = Just 0
-vn idx var = k position = Just 1
+eta idx var = j position = 0
+eta idx var = k position = 1
+h idx var = j position = 0
+h idx var = k position = 1
+hzero idx var = j position = 0
+hzero idx var = k position = 1
+u idx var = j position = 0
+u idx var = k position = 1
+un idx var = j position = 0
+un idx var = k position = 1
+v idx var = j position = 0
+v idx var = k position = 1
+vn idx var = j position = 0
+vn idx var = k position = 1
+wet idx var = j position = 0
+wet idx var = k position = 1
 
-all indexes valid
 -----------------------------
+
+("du",0) ----> (0,501)
+("du",1) ----> (0,501)
+("dv",0) ----> (0,501)
+("dv",1) ----> (0,501)
+("eta",0) ----> (0,501)
+("eta",1) ----> (0,501)
+("etan",0) ----> (0,501)
+("etan",1) ----> (0,501)
+("h",0) ----> (0,501)
+("h",1) ----> (0,501)
+("hzero",0) ----> (0,501)
+("hzero",1) ----> (0,501)
+("u",0) ----> (0,501)
+("u",1) ----> (0,501)
+("un",0) ----> (0,501)
+("un",1) ----> (0,501)
+("v",0) ----> (0,501)
+("v",1) ----> (0,501)
+("vn",0) ----> (0,501)
+("vn",1) ----> (0,501)
+("wet",0) ----> (0,501)
+("wet",1) ----> (0,501)
 
