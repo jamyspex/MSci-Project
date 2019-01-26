@@ -61,11 +61,32 @@ oclMapQuery fortran = case fortran of
                         _                         -> []
 
 addLoopGuardToMap :: [Array] -> Fortran Anno -> (Fortran Anno, [(String, String, Maybe Int)])
-addLoopGuardToMap arrays fortran@(OpenCLMap _ _ _ _ loopVars _ body) = (fortran, indexPositions)
+addLoopGuardToMap arrays fortran@(OpenCLMap _ _ _ _ loopVars _ body) = (bodyWithGuards, indexPositions)
     where
         allArrayAcceses = getAllArrayAccesses arrays fortran
         loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
         indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
+        loopVarsWithExprsAsConsts = map (\(loopVarName, lowerB, upperB, _) ->
+            (loopVarName, getSingleConstant lowerB, getSingleConstant upperB)) loopVars
+        singleConditions = concatMap (\(loopVarName, lowerB, upperB) ->
+            [buildLowB loopVarName lowerB, buildUppB loopVarName upperB]) loopVarsWithExprsAsConsts
+        conditionExpr = combineWithAnd singleConditions
+        bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
+
+combineWithAnd :: [Expr Anno] -> Expr Anno
+combineWithAnd conditions =
+    buildAstSeq (Bin nullAnno nullSrcSpan (And nullAnno)) (NullExpr nullAnno nullSrcSpan) conditions
+
+buildUppB = buildLoopGuard (RelLE nullAnno)
+
+buildLowB = buildLoopGuard (RelGE nullAnno)
+
+buildLoopGuard :: BinOp Anno -> VarName Anno -> Int -> Expr Anno
+buildLoopGuard operator loopVarName bound = ParenthesizedExpr nullAnno nullSrcSpan comparison
+    where
+        const = Con nullAnno nullSrcSpan $ show bound
+        loopVar = Var nullAnno nullSrcSpan [(loopVarName, [])]
+        comparison = Bin nullAnno nullSrcSpan operator loopVar const
 
 getDimensionPositionMap :: [Decl Anno] -> DMap.Map (String, Int) (Int, Int)
 getDimensionPositionMap decls = DMap.fromList allItems
@@ -76,18 +97,18 @@ getDimensionPosition :: Decl Anno -> [((String, Int), (Int, Int))]
 getDimensionPosition decl = arrayDimensionsMapItem
     where
         name = (getNameFromVarName . getVarName) decl
-        arrayDimensionsMapItem = imap (\pos dims -> ((name, pos), getArrayDimensionConstants decl dims)) arrayDimensionsExpr
+        arrayDimensionsMapItem = imap (\pos dims -> ((name, pos), getArrayDimensionConstants dims)) arrayDimensionsExpr
         arrayDimensionsExpr = (getArrayDimensions . getDeclType) decl
 
-getArrayDimensionConstants :: Decl Anno -> (Expr Anno, Expr Anno) -> (Int, Int)
-getArrayDimensionConstants decl (expr1, expr2) = (getSingleConstant decl expr1, getSingleConstant decl expr2)
+getArrayDimensionConstants :: (Expr Anno, Expr Anno) -> (Int, Int)
+getArrayDimensionConstants (expr1, expr2) = (getSingleConstant expr1, getSingleConstant expr2)
 
-getSingleConstant :: Decl Anno -> Expr Anno -> Int
-getSingleConstant decl expr = case expr of
+getSingleConstant :: Expr Anno -> Int
+getSingleConstant expr = case expr of
     (Con _ _ val) -> read val :: Int
     (Unary _ _ _ (Con _ _ val)) -> negate $ read val :: Int
     (NullExpr _ _) -> 1 -- when array declared with starting index omitted, fortran defaults to 1
-    _ -> error ("Expr other than constant in array dimensions. \n" ++ miniPPD decl)
+    _ -> error ("Expr other than constant in array dimensions. \n")
 
 getLoopIndexPosition ::  [VarName Anno] -> Expr Anno -> [(String, String, Maybe Int)]
 getLoopIndexPosition varNames (Var _ _ (((VarName _ arrayName), indexList):_)) =
