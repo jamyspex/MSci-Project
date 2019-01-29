@@ -63,13 +63,13 @@ compilerMain args = do
     debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged
 
     let mergedForOffload = DMap.filter (\subRec -> parallelise subRec) subroutineTableWithOffloadSubsMerged
-    let mergedOffloadName = DMap.keys mergedForOffload
+    let mergedOffloadName = head $ DMap.keys mergedForOffload
 
     putStrLn ((rule '+') ++ " Map + Fold Detection " ++ (rule '+'))
 
     -- < STEP 4 : Parallelise the loops >
     -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) subroutineTableWithOffloadSubsMerged) (DMap.empty, []) mergedOffloadName
+    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) subroutineTableWithOffloadSubsMerged) (DMap.empty, []) [mergedOffloadName]
 
     debug_displaySubRoutineTable parallelisedSubroutines
 
@@ -85,7 +85,7 @@ compilerMain args = do
     debug_displaySubRoutineTable srtAfterStenDetect
 
     -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-    let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (srtAfterStenDetect, []) mergedOffloadName
+    let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (srtAfterStenDetect, []) [mergedOffloadName]
 
     putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
 
@@ -93,9 +93,13 @@ compilerMain args = do
 
     debug_displaySubRoutineTable srtAfterKernelCombination
 
-    let combinedOffloadSub = srtAfterKernelCombination DMap.! (head mergedOffloadName)
+    let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
 
-    addLoopGuards combinedOffloadSub
+    let withGuards = addLoopGuards combinedOffloadSub
+
+    let srtWithGuards = DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
+
+    debug_displaySubRoutineTable srtWithGuards
 
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
     --     (DMap.toList combinedKernelSubroutines)
