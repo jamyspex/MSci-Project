@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8208a1916fac591c8eadc0b5ae9bbbb8d9e2ba82459467424a9dff2a821e056b
+-- hash: 2f7979bbf41482244daa0676b7e654ac5aa31185c53bf7ad90501f9329f0f687
 
 name:           F4
 version:        0.1.0.0
@@ -38,6 +38,7 @@ library
       MergeSubroutines
       MiniPP
       Parser
+      Pipeline
       Platform
       PreProcessor
       SanityChecks

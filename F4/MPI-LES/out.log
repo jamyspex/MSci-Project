@@ -1627,6 +1627,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
       real(4), dimension(0:82), intent(In) :: z2
+! Original Subroutine Name: velnw {
     do k = 1, 80, 1
         do j = 1, 300, 1
                 do i = 1, 300, 1
@@ -1654,6 +1655,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 end do
         end do
     end do
+!}
+! Original Subroutine Name: bondv1 {
     do i = 0, 1, 1
         do k = 1, 78, 1
                 do j = 1, 300, 1
@@ -1757,6 +1760,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 w(i,j,80) = 0.0
         end do
     end do
+!}
+! Original Subroutine Name: velfg {
     do j = 1, 300, 1
         do i = 1, 300, 1
                 if (j==300/2 .and. i==300/2) then
@@ -1952,6 +1957,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 h(i,j,80) = 0.0
         end do
     end do
+!}
+! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
                 do i = 1, 300, 1
@@ -1982,6 +1989,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 end do
         end do
     end do
+!}
+! Original Subroutine Name: les {
     do k = 1, 80, 1
         delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
     end do
@@ -2177,6 +2186,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 end do
         end do
     end do
+!}
+! Original Subroutine Name: adam {
     do k = 1, 80, 1
         do j = 1, 300, 1
                 do i = 1, 300, 1
@@ -2192,6 +2203,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 end do
         end do
     end do
+!}
+! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
                 f(0,j,k) = f(1,j,k)
@@ -2360,6 +2373,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
                 p(0,i,j,81) = p(0,i,j,80)
         end do
     end do
+!}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 end module module_velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
@@ -2477,6 +2491,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
       real(4), dimension(0:82), intent(In) :: z2
+! Original Subroutine Name: velnw {
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["ro","dxs","k","dt"],["u"],["(j,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["ro","dxs","j","k","u","dt"],["u"],["(i,1,300,1)"],[]) {
@@ -2501,6 +2516,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: bondv1 {
 ! OpenCLMap ( [],["u"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( [],["u","w"],["(k,1,78,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( [],["u","v","w"],["(j,1,300,1)"],[]) {
@@ -2597,6 +2614,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     w(i,j,80) = 0.0
 !}
 !}
+!}
+! Original Subroutine Name: velfg {
     do j = 1, 300, 1
         do i = 1, 300, 1
                 if (j==300/2 .and. i==300/2) then
@@ -2750,6 +2769,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     h(i,j,80) = 0.0
 !}
 !}
+!}
+! Original Subroutine Name: feedbf {
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["k","bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(j,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["j","k","bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(i,1,300,1)"],[]) {
@@ -2777,6 +2798,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: les {
 ! OpenCLMap ( [],[],["(k,1,80,1)"],[]) {
     delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
 !}
@@ -2959,6 +2982,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: adam {
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["k","f","g","h","fold","gold","hold"],["f","g","h"],["(j,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["j","k","f","g","h","fold","gold","hold"],["f","g","h"],["(i,1,300,1)"],[]) {
@@ -2974,6 +2999,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: press {
 ! OpenCLMap ( [],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( ["k"],[],["(j,1,300,1)"],[]) {
     f(0,j,k) = f(1,j,k)
@@ -3102,6 +3129,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 ! OpenCLMap ( ["j"],[],["(i,0,301,1)"],[]) {
     p(0,i,j,0) = p(0,i,j,1)
     p(0,i,j,81) = p(0,i,j,80)
+!}
 !}
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
@@ -3470,6 +3498,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
       real(4), dimension(0:82), intent(In) :: z2
+! Original Subroutine Name: velnw {
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,0,0]]
 !    ){
@@ -3506,6 +3535,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}    
 !}
+!}
+! Original Subroutine Name: bondv1 {
 ! OpenCLMap ( [],["u"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( [],["u","w"],["(k,1,78,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( [],["u","v","w"],["(j,1,300,1)"],[]) {
@@ -3634,6 +3665,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     w(i,j,80) = 0.0
 !}
 !}
+!}
+! Original Subroutine Name: velfg {
     do j = 1, 300, 1
         do i = 1, 300, 1
                 if (j==300/2 .and. i==300/2) then
@@ -3814,6 +3847,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     h(i,j,80) = 0.0
 !}
 !}
+!}
+! Original Subroutine Name: feedbf {
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["k","bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(j,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["j","k","bmask1","cmask1","dmask1","alpha","dt","beta"],["fx","fy","fz"],["(i,1,300,1)"],[]) {
@@ -3841,6 +3876,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: les {
 ! OpenCLMap ( [],[],["(k,1,80,1)"],[]) {
     delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
 !}
@@ -4100,6 +4137,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}    
 !}
+!}
+! Original Subroutine Name: adam {
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["k","f","g","h","fold","gold","hold"],["f","g","h"],["(j,1,300,1)","(i,1,300,1)"],[]) {
 ! OpenCLMap ( ["j","k","f","g","h","fold","gold","hold"],["f","g","h"],["(i,1,300,1)"],[]) {
@@ -4115,6 +4154,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 !}
 !}
+!}
+! Original Subroutine Name: press {
 ! OpenCLMap ( [],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
 ! OpenCLMap ( ["k"],[],["(j,1,300,1)"],[]) {
     f(0,j,k) = f(1,j,k)
@@ -4284,6 +4325,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     p(0,i,j,81) = p(0,i,j,80)
 !}
 !}    
+!}
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 end module module_velnw_bondv1_velfg_feedbf_les_adam_press_merged
@@ -4651,6 +4693,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
       real(4), dimension(0:82), intent(In) :: z2
+! Original Subroutine Name: velnw {
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,0,0]]
 !    ){
@@ -4675,6 +4718,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
 !}    
 !}
+!}
+! Original Subroutine Name: bondv1 {
 ! OpenCLMap ( [],["u","w","v"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)"],[]) {
     u_val = 5.*((z2(k)+0.5*dzn(k))/600.)**0.2
     u(i,j,k) = u_val
@@ -4769,6 +4814,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     w(i,j,0) = 0.0
     w(i,j,80) = 0.0
 !}
+!}
+! Original Subroutine Name: velfg {
     do j = 1, 300, 1
         do i = 1, 300, 1
                 if (j==300/2 .and. i==300/2) then
@@ -4931,6 +4978,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     h(i,j,0) = 0.0
     h(i,j,80) = 0.0
 !}
+!}
+! Original Subroutine Name: feedbf {
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","k","j","fx","fy","fz"],["fx","fy","fz","g"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
     vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
@@ -4948,6 +4997,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     g(i,j,k) = g(i,j,k)+fy(i,j,k)
     h(i,j,k) = h(i,j,k)+fz(i,j,k)
 !}
+!}
+! Original Subroutine Name: les {
 ! OpenCLMap ( [],[],["(k,1,80,1)"],[]) {
     delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
 !}
@@ -5181,6 +5232,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     h(i,j,k) = (h(i,j,k)+vfw)
 !}    
 !}
+!}
+! Original Subroutine Name: adam {
 ! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     fd = f(i,j,k)
     gd = g(i,j,k)
@@ -5192,6 +5245,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     gold(i,j,k) = gd
     hold(i,j,k) = hd
 !}
+!}
+! Original Subroutine Name: press {
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
     f(0,j,k) = f(1,j,k)
 !}
@@ -5319,6 +5374,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     p(0,i,j,0) = p(0,i,j,1)
     p(0,i,j,81) = p(0,i,j,80)
 !}    
+!}
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 end module module_velnw_bondv1_velfg_feedbf_les_adam_press_merged
@@ -5681,6 +5737,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
       real(4), dimension(0:82), intent(In) :: z2
+! Original Subroutine Name: velnw {
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,0,0]]
 !    ){
@@ -5714,6 +5771,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     end if
 !}    
 !}
+!}
+! Original Subroutine Name: bondv1 {
 ! OpenCLMap ( [],["u","w","v"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)"],[]) {
     if ((i<=1) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=78)) t&
 &hen
@@ -5829,6 +5888,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     w(i,j,0) = 0.0
     w(i,j,80) = 0.0
 !}
+!}
+! Original Subroutine Name: velfg {
     do j = 1, 300, 1
         do i = 1, 300, 1
                 if (j==300/2 .and. i==300/2) then
@@ -6020,6 +6081,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
         h(i,j,80) = 0.0
     end if
 !}
+!}
+! Original Subroutine Name: feedbf {
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","k","j","fx","fy","fz"],["fx","fy","fz","g"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
 &and. (k<=80)) then
@@ -6040,6 +6103,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
         h(i,j,k) = h(i,j,k)+fz(i,j,k)
     end if
 !}
+!}
+! Original Subroutine Name: les {
 ! OpenCLMap ( [],[],["(k,1,80,1)"],[]) {
     if ((k>=1) .and. (k<=80)) then
         delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
@@ -6295,6 +6360,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     end if
 !}    
 !}
+!}
+! Original Subroutine Name: adam {
 ! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
     if ((i>=1) .and. (j>=1) .and. (k>=1)) then
         fd = f(i,j,k)
@@ -6308,6 +6375,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
         hold(i,j,k) = hd
     end if
 !}
+!}
+! Original Subroutine Name: press {
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
     if ((j>=1) .and. (k>=1)) then
         f(0,j,k) = f(1,j,k)
@@ -6467,6 +6536,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
         p(0,i,j,81) = p(0,i,j,80)
     end if
 !}    
+!}
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 end module module_velnw_bondv1_velfg_feedbf_les_adam_press_merged

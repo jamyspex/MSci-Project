@@ -404,6 +404,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real, dimension(0:501,0:501), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
                 du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
@@ -461,6 +462,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end do
     end do
+!}
+! Original Subroutine Name: shapiro {
     do j = 1, 500, 1
         do k = 1, 500, 1
                 if (wet(j,k)==1) then
@@ -476,6 +479,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 end if
         end do
     end do
+!}
+! Original Subroutine Name: vernieuw {
     do j = 0, 501, 1
         do k = 0, 501, 1
                 h(j,k) = hzero(j,k)+eta(j,k)
@@ -487,6 +492,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 v(j,k) = vn(j,k)
         end do
     end do
+!}
 end subroutine dyn_shapiro_vernieuw_merged
 end module module_dyn_shapiro_vernieuw_merged
 
@@ -682,6 +688,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real, dimension(0:501,0:501), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(k,1,500,1)"],[]) {
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
@@ -733,6 +740,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}
 !}
+!}
+! Original Subroutine Name: shapiro {
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(k,1,500,1)"],[]) {
     if (wet(j,k)==1) then
@@ -746,6 +755,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
 !}
 !}
+!}
+! Original Subroutine Name: vernieuw {
 ! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
 ! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
@@ -755,6 +766,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
     u(j,k) = un(j,k)
     v(j,k) = vn(j,k)
+!}
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
@@ -818,6 +830,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real, dimension(0:501,0:501), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
 ! OpenCLStencil (
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
@@ -883,6 +896,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}    
 !}
+!}
+! Original Subroutine Name: shapiro {
 ! OpenCLStencil (
 !	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -901,6 +916,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}    
 !}
+!}
+! Original Subroutine Name: vernieuw {
 ! OpenCLMap ( ["hzero","h","hmin","un","vn"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
 ! OpenCLMap ( ["hzero","eta","h","hmin","un","vn"],["h","wet","u","v"],["(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
@@ -910,6 +927,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
     u(j,k) = un(j,k)
     v(j,k) = vn(j,k)
+!}
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
@@ -1107,6 +1125,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real, dimension(0:501,0:501), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
 ! OpenCLStencil (
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
@@ -1166,6 +1185,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}    
 !}
+!}
+! Original Subroutine Name: shapiro {
 ! OpenCLStencil (
 !	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1182,6 +1203,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
 !}    
 !}
+!}
+! Original Subroutine Name: vernieuw {
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
@@ -1190,6 +1213,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
     u(j,k) = un(j,k)
     v(j,k) = vn(j,k)
+!}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 end module module_dyn_shapiro_vernieuw_merged
@@ -1381,6 +1405,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real, dimension(0:501,0:501), intent(InOut) :: vn
       real :: vv
       integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
 ! OpenCLStencil (
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
@@ -1446,6 +1471,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
 !}    
 !}
+!}
+! Original Subroutine Name: shapiro {
 ! OpenCLStencil (
 !	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1466,6 +1493,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
 !}    
 !}
+!}
+! Original Subroutine Name: vernieuw {
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
@@ -1474,6 +1503,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end if
     u(j,k) = un(j,k)
     v(j,k) = vn(j,k)
+!}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 end module module_dyn_shapiro_vernieuw_merged

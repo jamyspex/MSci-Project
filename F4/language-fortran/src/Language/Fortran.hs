@@ -242,6 +242,9 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                 | OpenCLStencil p SrcSpan               -- JAMES ADDED
                   [Stencil p]
                   (Fortran p)
+                | MergedSubContainer p                  -- JAMES ADDED used to preserve method names
+                  String                                -- for when merged subs are resplit into kernels
+                  (Fortran p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
 

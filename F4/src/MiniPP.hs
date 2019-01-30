@@ -220,6 +220,7 @@ miniPPFT stmt tab = case stmt of
                  OpenCLStencil _ _ stencils stmt1 -> "! OpenCLStencil (\n" ++ showStencils tab stencils ++ "\n" ++ "!" ++ tab ++ "){\n" ++ miniPPFT stmt1 tab ++ tab ++ "\n!}"
                  OpenCLBufferWrite _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
+                 MergedSubContainer _ subName body -> "! Original Subroutine Name: " ++ subName ++ " {\n" ++ miniPPFT body tab ++ "\n!}"
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
                  Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
                  Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"

@@ -39,7 +39,7 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         uniqueDecls = sortBy getDeclOrdering $ getUniqueDecls $ getAllDecls subsWithParamsReplaced
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
-        combinedBody = combineBodies bodies
+        combinedBody = combineBodies bodies -- $ trace (concatMap (\b -> miniPPF b ++ "\n\n") bodies)
         bodies = map getSubroutineBody subsWithParamsReplaced
         combinedDeclNode = combineDecls uniqueDecls
         combinedArgs = combineArgs uniqueArgs
@@ -125,9 +125,10 @@ getSubCalls :: SubRec -> [String]
 getSubCalls subrec = DMap.keys (argTranslations subrec)
 
 getSubroutineBody :: SubRec -> Fortran Anno
-getSubroutineBody subrec = (getBody . getBlock) ast
+getSubroutineBody subrec = MergedSubContainer nullAnno name $ (getBody . getBlock) ast
     where
         ast = subAst subrec
+        name = subName subrec
         getBlock (Sub _ _ _ _ _ block) = block
         getBlock _ = error "Tried to get block from element other than Sub"
         getBody (Block _ _ _ _ _ body) = body
