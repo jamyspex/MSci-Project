@@ -5715,8 +5715,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}    
 !}
 ! OpenCLMap ( [],["u","w","v"],["(i,0,1,1)","(k,1,78,1)","(j,1,300,1)"],[]) {
-    if ((i>=0) .and. (i<=1) .and. (j>=1) .and. (j<=300) .and. (k>=1) .an&
-&d. (k<=78)) then
+    if ((i<=1) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=78)) t&
+&hen
         u_val = 5.*((z2(k)+0.5*dzn(k))/600.)**0.2
         u(i,j,k) = u_val
         v(i,j,k) = 0.0
@@ -5724,8 +5724,8 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     end if
 !}
 ! OpenCLMap ( ["i"],["u","v","w"],["(i,0,1,1)","(k,79,80,1)","(j,1,300,1)"],[]) {
-    if ((i>=0) .and. (i<=1) .and. (j>=1) .and. (j<=300) .and. (k>=79) .a&
-&nd. (k<=80)) then
+    if ((i<=1) .and. (j>=1) .and. (j<=300) .and. (k>=79) .and. (k<=80)) &
+&then
         u(i,j,k) = u(i,j,77)
         v(i,j,k) = 0.0
         w(i,j,k) = 0.0
@@ -5809,7 +5809,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 3D array u: [[0,0,C=1],[0,0,C=80]]
 !    ){
 ! OpenCLMap ( ["j"],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((j>=0) .and. (j<=301)) then
+    if ((j>=0)) then
         u(i,j,0) = -u(i,j,1)
         u(i,j,81) = u(i,j,80)
     end if
@@ -5819,7 +5819,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 3D array v: [[0,0,C=1],[0,0,C=80]]
 !    ){
 ! OpenCLMap ( ["j"],["v"],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((j>=0) .and. (j<=301)) then
+    if ((j>=0)) then
         v(i,j,0) = -v(i,j,1)
         v(i,j,81) = v(i,j,80)
     end if
@@ -6005,17 +6005,17 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}    
 !}
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
-    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+    if ((j>=1) .and. (k>=1)) then
         f(0,j,k) = f(1,j,k)
     end if
 !}
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (i<=300) .and. (k>=1) .and. (k<=80)) then
+    if ((i>=1) .and. (k>=1)) then
         g(i,0,k) = g(i,300,k)
     end if
 !}
 ! OpenCLMap ( [],[],["(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300)) then
+    if ((i>=1) .and. (j>=1)) then
         h(i,j,0) = 0.0
         h(i,j,80) = 0.0
     end if
@@ -6089,7 +6089,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 3D array sm: [[0,C=1,0],[0,C=300,0]]
 !    ){
 ! OpenCLMap ( ["k"],["sm"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i>=0) .and. (i<=301)) then
+    if ((i>=0)) then
         sm(i,301,k) = sm(i,300,k)
         sm(i,0,k) = sm(i,1,k)
     end if
@@ -6099,7 +6099,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 3D array sm: [[0,0,C=1],[0,0,C=80]]
 !    ){
 ! OpenCLMap ( ["j"],["sm"],["(j,-1,301,1)","(i,0,301,1)"],[]) {
-    if ((i>=0) .and. (i<=301)) then
+    if ((i>=0)) then
         sm(i,j,0) = -sm(i,j,1)
         sm(i,j,81) = sm(i,j,80)
     end if
@@ -6296,8 +6296,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}    
 !}
 ! OpenCLMap ( ["f","g","h","fold","gold","hold","k","j"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
-&and. (k<=80)) then
+    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -6310,17 +6309,17 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     end if
 !}
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(j,1,300,1)"],[]) {
-    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+    if ((j>=1) .and. (k>=1)) then
         f(0,j,k) = f(1,j,k)
     end if
 !}
 ! OpenCLMap ( ["k"],[],["(k,1,80,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (i<=300) .and. (k>=1) .and. (k<=80)) then
+    if ((i>=1) .and. (k>=1)) then
         g(i,0,k) = g(i,300,k)
     end if
 !}
 ! OpenCLMap ( [],[],["(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300)) then
+    if ((i>=1) .and. (j>=1)) then
         h(i,j,0) = 0.0
         h(i,j,80) = 0.0
     end if
@@ -6398,7 +6397,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !                ){
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j>=0) .and. (j<=301)) then
+                if ((j<=301)) then
                                 p(0,0,j,k) = p(0,1,j,k)
                                 p(0,301,j,k) = p(0,300,j,k)
                 end if
@@ -6408,7 +6407,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !                ){
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i>=0) .and. (i<=301)) then
+                if ((i<=301)) then
                                 p(0,i,0,k) = p(0,i,300,k)
                                 p(0,i,301,k) = p(0,i,1,k)
                 end if
@@ -6419,7 +6418,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( ["j"],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+        if ((i<=301) .and. (j<=301)) then
                 p(0,i,j,0) = p(0,i,j,1)
                 p(0,i,j,81) = p(0,i,j,80)
         end if
@@ -6443,7 +6442,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j>=0) .and. (j<=301)) then
+    if ((j<=301)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -6453,7 +6452,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( ["k"],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i>=0) .and. (i<=301)) then
+    if ((i<=301)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -6463,7 +6462,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( ["j"],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+    if ((i<=301) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if

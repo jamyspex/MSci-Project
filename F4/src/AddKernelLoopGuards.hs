@@ -38,11 +38,9 @@ addLoopGuardToMap arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan r
         loopVarsWithExprsAsConsts = map getLoopVarAsConstant loopVars
         arrayAccessDimMap = buildArrayAccessDimMap loopVarsWithExprsAsConsts indexPositions
         combinedMap = DMap.intersectionWith combineMapItems arrayDeclDimMap arrayAccessDimMap
-        requiredConditionList = filter (\((_, _), cmbnMpItm) -> not $ dimsEqual cmbnMpItm) $ DMap.toList combinedMap
-        toCreateConditionsWith = map formatMapEntries requiredConditionList
-        duplicatesRemoved = removeDuplicates (\(loopVar, _, _) -> loopVar) toCreateConditionsWith
-        singleConditions = concatMap (\(loopVarName, lowerB, upperB) ->
-            [buildLowB loopVarName lowerB, buildUppB loopVarName upperB]) duplicatesRemoved
+        requiredConditionList = getRequiredGuards $ DMap.elems combinedMap
+        duplicatesRemoved = removeDuplicates (\(loopVar, bound) -> loopVar ++ show bound) requiredConditionList
+        singleConditions = map (\(loopVarName, bound) -> buildLoopGuard loopVarName bound) duplicatesRemoved
         conditionExpr = combineWithAnd singleConditions
         bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
         newBody = if length duplicatesRemoved > 0 then bodyWithGuards else body
@@ -73,12 +71,23 @@ formatMapEntries ((_, _), cmi) = (loopVarName, accessLWB, accessUPB)
     where
         (loopVarName, (accessLWB, accessUPB)) = accessItem cmi
 
--- check if the accessed dimensions of an array match its declared dimensions
-dimsEqual :: CombinedMapItem -> Bool
-dimsEqual combineMapItem = declLWB == accessLWB && declUPB == accessUPB
+-- Used to represent whether a bound is an upper or lower
+data Bound = LWB Int | UPB Int deriving Show
+
+-- Take all the pairs of combined access/decl dimensions and remove those
+-- where the dimensions are equal and guards are not required. For those
+-- that do require guards return (Loop var name, Bound) tuples to be
+-- converted to conditions in the inserted guard.
+getRequiredGuards :: [CombinedMapItem] -> [(String, Bound)]
+getRequiredGuards combinedMapItems = concatMap processOneCMI combinedMapItems
     where
-        (declLWB, declUPB) = declItem combineMapItem
-        (_, (accessLWB, accessUPB)) = accessItem combineMapItem
+        processOneCMI :: CombinedMapItem -> [(String, Bound)]
+        processOneCMI combinedMapItem = potentialLowerBound ++ potentialUpperBound
+            where
+                potentialLowerBound = if declLWB == accessLWB then [] else [(loopVarName, LWB accessLWB)]
+                potentialUpperBound = if declUPB == accessUPB then [] else [(loopVarName, UPB accessUPB)]
+                (declLWB, declUPB) = declItem combinedMapItem
+                (loopVarName, (accessLWB, accessUPB)) = accessItem combinedMapItem
 
 -- data type to hold accessed dimensions along side declared dimensions
 data CombinedMapItem = CMI {
@@ -114,17 +123,16 @@ combineWithAnd :: [Expr Anno] -> Expr Anno
 combineWithAnd conditions =
     buildAstSeq (Bin nullAnno nullSrcSpan (And nullAnno)) (NullExpr nullAnno nullSrcSpan) conditions
 
--- build one condition of the form (<loop variable> <=/>= <const>) and helper functions
-buildLoopGuard :: BinOp Anno -> String -> Int -> Expr Anno
-buildLoopGuard operator loopVarName bound = ParenthesizedExpr nullAnno nullSrcSpan comparison
+-- build one condition of the form (<loop variable> <=/>= <const>)
+buildLoopGuard :: String -> Bound -> Expr Anno
+buildLoopGuard loopVarName bound = ParenthesizedExpr nullAnno nullSrcSpan comparison
     where
-        const = Con nullAnno nullSrcSpan $ show bound
+        (operator, boundVal) = case bound of
+            UPB boundVal -> (RelLE nullAnno, boundVal)
+            LWB boundVal -> (RelGE nullAnno, boundVal)
+        const = Con nullAnno nullSrcSpan $ show boundVal
         loopVar = Var nullAnno nullSrcSpan [(VarName nullAnno loopVarName, [])]
         comparison = Bin nullAnno nullSrcSpan operator loopVar const
-
-buildUppB = buildLoopGuard (RelLE nullAnno)
-
-buildLowB = buildLoopGuard (RelGE nullAnno)
 
 -- returns a map of (array name, index position/dimension) -> (upperbound, lowerbound)
 getDimensionPositionMap :: [Decl Anno] -> DMap.Map (String, Int) (Int, Int)
