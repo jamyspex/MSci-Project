@@ -4,6 +4,30 @@ import           Data.Generics
 import qualified Data.Map             as DMap
 import           Language.Fortran
 import           LanguageFortranTools
+import           MiniPP
+
+
+type SubNameStr = String
+type SrcName = String
+data SubRec = MkSubRec {
+       subAst          :: ProgUnit Anno,
+       subSrcFile      :: String,
+       subSrcLines     :: [String],
+       subName         :: String,
+       argTranslations :: ArgumentTranslationTable,
+       parallelise     :: Bool
+}
+
+data ArgumentTranslation = ArgTrans {
+    parameter :: ArgName Anno,
+    argument  :: VarName Anno
+} deriving Show
+
+
+type ArgumentTranslationTable = DMap.Map SubNameStr ((Fortran Anno), [ArgumentTranslation])
+
+
+type SubroutineTable = DMap.Map SubNameStr SubRec
 
 removeDuplicates :: Ord a => (b -> a) -> [b] -> [b]
 removeDuplicates getKey input = DMap.elems uniqueMap
@@ -12,6 +36,16 @@ removeDuplicates getKey input = DMap.elems uniqueMap
         uniqueMap = foldr addToMap DMap.empty pairsForMap
         addToMap :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
         addToMap (key, val) map = DMap.insert key val map
+
+getSubroutineBody :: SubRec -> Fortran Anno
+getSubroutineBody subrec = (getBody . getBlock) ast
+    where
+        ast = subAst subrec
+        name = subName subrec
+        getBlock (Sub _ _ _ _ _ block) = block
+        getBlock (Module _ _ _ _ _ _ progunits) = getBlock $ head progunits
+        getBlock _ = error "Tried to get block from element other than Sub"
+        getBody (Block _ _ _ _ _ body) = body
 
 
 getAttrs typeDecl = case typeDecl of
@@ -128,3 +162,44 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl decl = (not . null . getArrayDimensions . getDeclType) decl
+
+debug_displaySubRoutineTable :: SubroutineTable -> Bool -> IO ()
+debug_displaySubRoutineTable srt withAst = case withAst of
+    False -> mapM_ debug_displaySubTableEntry asList
+    True  -> mapM_ debug_displaySubTableEntryWithAst asList
+    where
+        asList = map (\(_, value) -> value) $ DMap.toList srt
+
+debug_displaySubTableEntry :: SubRec -> IO ()
+debug_displaySubTableEntry sr = do
+    putStrLn $ hl
+    putStrLn $ "Subroutine name: " ++ (subName sr)
+    putStrLn $ "Filename: " ++ (subSrcFile sr)
+    putStrLn $ "Source:"
+    putStrLn $ miniPPProgUnit (subAst sr)
+    putStrLn $ "Argument translations:"
+    putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
+        "\t" ++ miniPPF callStatement ++ "\n" ++
+        (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
+    putStrLn (if (parallelise sr) then "This subroutine will be offloaded to the FPGA" else "This subroutine will not be offloaded to the FPGA")
+    putStrLn $ hl ++ "\n"
+    where
+        hl = (take 80 $ repeat '=')
+
+debug_displaySubTableEntryWithAst :: SubRec -> IO ()
+debug_displaySubTableEntryWithAst sr = do
+    putStrLn $ hl
+    putStrLn $ "Subroutine name: " ++ (subName sr)
+    putStrLn $ "Filename: " ++ (subSrcFile sr)
+    putStrLn $ "Source:"
+    putStrLn $ miniPPProgUnit (subAst sr)
+    putStrLn $ "AST: "
+    putStrLn $ show (subAst sr)
+    putStrLn $ "Argument translations:"
+    putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
+        "\t" ++ miniPPF callStatement ++ "\n" ++
+        (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
+    putStrLn (if (parallelise sr) then "This subroutine will be offloaded to the FPGA" else "This subroutine will not be offloaded to the FPGA")
+    putStrLn $ hl ++ "\n"
+    where
+        hl = (take 80 $ repeat '=')

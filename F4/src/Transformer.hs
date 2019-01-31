@@ -32,7 +32,7 @@ import           LoopAnalysis            (analyseLoop_map, analyseLoop_reduce,
                                           getErrorAnnotations, getReads,
                                           getReductionVarNames, getWrites)
 import           MiniPP                  (miniPPF)
-import           Parser                  (SubRec (..), SubroutineTable)
+import           Utils                   (SubRec (..), SubroutineTable)
 import           VarAccessAnalysis       (VarAccessAnalysis,
                                           analyseAllVarAccess_progUnit,
                                           getNonTempVars, getPrexistingVars,

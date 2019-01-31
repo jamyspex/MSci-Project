@@ -40,7 +40,7 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
         combinedBody = combineBodies bodies -- $ trace (concatMap (\b -> miniPPF b ++ "\n\n") bodies)
-        bodies = map getSubroutineBody subsWithParamsReplaced
+        bodies = map getSubBodyWithOriginalNameNode subsWithParamsReplaced
         combinedDeclNode = combineDecls uniqueDecls
         combinedArgs = combineArgs uniqueArgs
         useBlock = (UseBlock (UseNil nullAnno) NoSrcLoc)
@@ -58,6 +58,16 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
             argTranslations = DMap.empty,
             parallelise = True
         }
+
+
+-- Gets the subroutine body from the subRec and enclose it in a meta
+-- node which simply holds its the subroutines original name so this
+-- can be used to build up a more logical kernel name in the output
+getSubBodyWithOriginalNameNode :: SubRec -> Fortran Anno
+getSubBodyWithOriginalNameNode subrec = MergedSubContainer nullAnno name body
+    where
+        body = getSubroutineBody subrec
+        name = subName subrec
 
 removeReturns :: Fortran Anno -> Fortran Anno
 removeReturns (Return anno srcSpan _) = NullStmt anno srcSpan
@@ -123,15 +133,6 @@ getSubRoutinesThatMakeCalls srt = filter (\subrec -> numberOfCallsMade subrec > 
 
 getSubCalls :: SubRec -> [String]
 getSubCalls subrec = DMap.keys (argTranslations subrec)
-
-getSubroutineBody :: SubRec -> Fortran Anno
-getSubroutineBody subrec = MergedSubContainer nullAnno name $ (getBody . getBlock) ast
-    where
-        ast = subAst subrec
-        name = subName subrec
-        getBlock (Sub _ _ _ _ _ block) = block
-        getBlock _ = error "Tried to get block from element other than Sub"
-        getBody (Block _ _ _ _ _ body) = body
 
 resolveConflictsWithLocalDecls :: [([ArgumentTranslation], SubRec)] -> [([ArgumentTranslation], SubRec)]
 resolveConflictsWithLocalDecls pairs =

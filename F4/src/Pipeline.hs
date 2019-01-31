@@ -9,7 +9,7 @@ data Pipeline a = Kernel {
         inputStreams  :: [Stream],
         outputStreams :: [Stream],
         kernelName    :: String,
-        body          :: Fortran Anno,
+        body          :: ProgUnit Anno,
         nextStage     :: Pipeline a,
         sharedData    :: a
     } | SmartCache {
@@ -43,3 +43,4 @@ data FPGAMemArray = FPGAMemArray {
 data SharedPipelineData = SPD {
     driverLoopSize :: Int
 } deriving Show
+

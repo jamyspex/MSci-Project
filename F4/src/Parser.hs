@@ -19,31 +19,10 @@ import           System.FilePath      (FilePath, (</>))
 import           System.IO.Unsafe
 import           Utils
 
-type SubNameStr = String
-type SrcName = String
-data SubRec = MkSubRec {
-       subAst          :: ProgUnit Anno,
-       subSrcFile      :: String,
-       subSrcLines     :: [String],
-       subName         :: String,
-       argTranslations :: ArgumentTranslationTable,
-       parallelise     :: Bool
-}
-
-type ArgumentTranslationTable = DMap.Map SubNameStr ((Fortran Anno), [ArgumentTranslation])
-
-
-type SubroutineTable = DMap.Map SubNameStr SubRec
-
-data ArgumentTranslation = ArgTrans {
-    parameter :: ArgName Anno,
-    argument  :: VarName Anno
-} deriving Show
-
-data InitialProgramData = InitialProgramData {
-    mainParseResult       :: (Program Anno, [String], String),
-    forOffloadParseResult :: [(Program Anno, [String], String)]
-}
+-- data InitialProgramData = InitialProgramData {
+--     mainParseResult       :: (Program Anno, [String], String),
+--     forOffloadParseResult :: [(Program Anno, [String], String)]
+-- }
 
 type ParseResult = (Program Anno, [String], String)
 
@@ -231,29 +210,6 @@ debug_displaySubRecAnalysis sra = do
 --     argTranslations :: ArgumentTranslationTable,
 --     parallelise     :: Bool
 -- }
-
-debug_displaySubRoutineTable :: SubroutineTable -> IO ()
-debug_displaySubRoutineTable srt = mapM_ debug_displaySubTableEntry asList
-    where
-        asList = map (\(_, value) -> value) $ DMap.toList srt
-
-debug_displaySubTableEntry :: SubRec -> IO ()
-debug_displaySubTableEntry sr = do
-    putStrLn $ hl
-    putStrLn $ "Subroutine name: " ++ (subName sr)
-    putStrLn $ "Filename: " ++ (subSrcFile sr)
-    putStrLn $ "Source:"
-    putStrLn $ miniPPProgUnit (subAst sr)
-    -- putStrLn $ "AST: "
-    -- putStrLn $ show (subAst sr)
-    putStrLn $ "Argument translations:"
-    putStrLn $ concatMap (\(subname, (callStatement, argTransList)) -> "\t" ++ subname ++ "->\n" ++
-        "\t" ++ miniPPF callStatement ++ "\n" ++
-        (concatMap (\argTrans -> "\t" ++ show argTrans ++ "\n") argTransList)) $ DMap.toList (argTranslations sr)
-    putStrLn (if (parallelise sr) then "This subroutine will be offloaded to the FPGA" else "This subroutine will not be offloaded to the FPGA")
-    putStrLn $ hl ++ "\n"
-    where
-        hl = (take 80 $ repeat '=')
 
 --                                                                          AST           Lines    Filename
 parseFile :: [String] -> [String] -> Bool -> String -> String -> IO ((Program Anno, [String], String))

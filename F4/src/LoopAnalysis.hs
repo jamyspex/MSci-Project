@@ -20,7 +20,7 @@ import           Utils
 
 import           F95IntrinsicFunctions (f95IntrinsicFunctions)
 import           LanguageFortranTools
-import           Parser                (SubRec (..), SubroutineTable)
+import           Utils                 (SubRec (..), SubroutineTable)
 import           VarAccessAnalysis     (VarAccessAnalysis, isFunctionCall)
 import           VarDependencyAnalysis (VarDependencyAnalysis,
                                         isIndirectlyDependentOn)
