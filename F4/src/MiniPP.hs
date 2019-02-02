@@ -169,13 +169,12 @@ miniPPProgram :: Program Anno -> String
 miniPPProgram prog = concatMap miniPPProgUnit prog
 
 miniPPProgUnit :: ProgUnit Anno -> String
-miniPPProgUnit prog = case prog of
+miniPPProgUnit prog = truncate $ case prog of
                     (Main _ _ (SubName _ subname) args b p) ->
                         "program " ++ subname ++ "\n" ++ showArg args ++ printBlock b ++ "\n" ++ concatMap miniPPProgUnit p ++ "\nend program " ++ subname
                     (Sub _ _ _ (SubName _ subname) args b) -> "subroutine " ++ subname ++ showArg args ++ "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
                     -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
-                    (Module _ _ (SubName _ moduleName) _ _ _ p) ->
-                        truncate ("module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName)
+                    (Module _ _ (SubName _ moduleName) _ _ _ p) -> ("module " ++ moduleName ++ "\ncontains\n" ++ concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName)
                     _ -> "program anno unsuppported"
                     -- (BlockData _ _ _ _ _ _) -> []
                     -- (PSeq _ _ p1 p2) -> getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
@@ -220,7 +219,7 @@ miniPPFT stmt tab = case stmt of
                  OpenCLStencil _ _ stencils stmt1 -> "! OpenCLStencil (\n" ++ showStencils tab stencils ++ "\n" ++ "!" ++ tab ++ "){\n" ++ miniPPFT stmt1 tab ++ tab ++ "\n!}"
                  OpenCLBufferWrite _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
                  OpenCLBufferRead _ _ (VarName _ v) -> tab++"oclWriteBuffer("++v++")" -- FIXME! Should have type info etc
-                 MergedSubContainer _ subName body -> "! Original Subroutine Name: " ++ subName ++ " {\n" ++ miniPPFT body tab ++ "\n!}"
+                 OriginalSubContainer _ subName body -> "! Original Subroutine Name: " ++ subName ++ " {\n" ++ miniPPFT body tab ++ "\n!}"
                  Return _ _ expr -> tab ++ "return "++(miniPP expr)
                  Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
                  Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"

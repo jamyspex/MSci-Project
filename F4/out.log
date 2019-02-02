@@ -73,7 +73,8 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
+&, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -113,7 +114,8 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
+&k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -122,8 +124,8 @@ program wave2d
         write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
     end do
     write(6, *)("Data output at time = ", time/60.0, " min")
-
 end program wave2d
+
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -229,11 +231,14 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
                 duu = du(j,k)
                 if (wet(j,k)==1) then
                                 if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                                                un(j,k) = uu+duu
+                                                                un(j,k) &
+&= uu+duu
                                 end if
                 else
-                                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                                                un(j,k) = uu+duu
+                                if ((wet(j,k+1)==1) .and. (duu<0.0)) the&
+&n
+                                                                un(j,k) &
+&= uu+duu
                                 end if
                 end if
                 vv = v(j,k)
@@ -241,11 +246,14 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
                 vn(j,k) = 0.0
                 if (wet(j,k)==1) then
                                 if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                                                vn(j,k) = vv+dvv
+                                                                vn(j,k) &
+&= vv+dvv
                                 end if
                 else
-                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                                                vn(j,k) = vv+dvv
+                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) the&
+&n
+                                                                vn(j,k) &
+&= vv+dvv
                                 end if
                 end if
         end do
@@ -293,9 +301,12 @@ subroutine shapiro(j,k,wet,etan,eps,eta)
     do j = 1, ny, 1
         do k = 1, nx, 1
                 if (wet(j,k)==1) then
-                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,&
+&k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)&
+&+wet(j,k-1)*etan(j,k-1))
+                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)&
+&+wet(j-1,k)*etan(j-1,k))
                                 eta(j,k) = term1+term2+term3
                 else
                                 eta(j,k) = etan(j,k)
@@ -313,7 +324,8 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: vernieuw
 Filename: ./Shallow-Water-2D/vernieuw.f95
 Source:
-subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
+subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,w&
+&et)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -360,8 +372,6 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-module module_dyn_shapiro_vernieuw_merged
-contains
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -374,7 +384,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:501,0:501) :: eta
+      real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501) :: etan
       real :: g
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -392,8 +402,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: hwn
       real :: hwp
       real, dimension(0:501,0:501), intent(In) :: hzero
-      integer :: j
-      integer :: k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
       real :: term1
       real :: term2
       real :: term3
@@ -494,7 +504,6 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     end do
 !}
 end subroutine dyn_shapiro_vernieuw_merged
-end module module_dyn_shapiro_vernieuw_merged
 
 Argument translations:
 
@@ -536,7 +545,8 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
+&, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -576,7 +586,8 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
+&k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -585,8 +596,8 @@ program wave2d
         write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
     end do
     write(6, *)("Data output at time = ", time/60.0, " min")
-
 end program wave2d
+
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -644,8 +655,6 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-module module_dyn_shapiro_vernieuw_merged
-contains
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -658,7 +667,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:501,0:501) :: eta
+      real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501) :: etan
       real :: g
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -676,8 +685,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: hwn
       real :: hwp
       real, dimension(0:501,0:501), intent(In) :: hzero
-      integer :: j
-      integer :: k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
       real :: term1
       real :: term2
       real :: term3
@@ -770,7 +779,6 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
-end module module_dyn_shapiro_vernieuw_merged
 
 Argument translations:
 
@@ -786,8 +794,6 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-module module_dyn_shapiro_vernieuw_merged
-contains
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -800,7 +806,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:501,0:501) :: eta
+      real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501) :: etan
       real :: g
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -818,8 +824,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: hwn
       real :: hwp
       real, dimension(0:501,0:501), intent(In) :: hzero
-      integer :: j
-      integer :: k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
       real :: term1
       real :: term2
       real :: term3
@@ -931,7 +937,6 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
-end module module_dyn_shapiro_vernieuw_merged
 
 Argument translations:
 
@@ -973,7 +978,8 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
+&, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1013,7 +1019,8 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
+&k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1022,8 +1029,8 @@ program wave2d
         write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
     end do
     write(6, *)("Data output at time = ", time/60.0, " min")
-
 end program wave2d
+
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1081,8 +1088,6 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-module module_dyn_shapiro_vernieuw_merged
-contains
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -1095,7 +1100,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:501,0:501) :: eta
+      real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501) :: etan
       real :: g
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -1113,8 +1118,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: hwn
       real :: hwp
       real, dimension(0:501,0:501), intent(In) :: hzero
-      integer :: j
-      integer :: k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
       real :: term1
       real :: term2
       real :: term3
@@ -1216,7 +1221,6 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
-end module module_dyn_shapiro_vernieuw_merged
 
 Argument translations:
 
@@ -1258,7 +1262,8 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
+&, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1298,7 +1303,8 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
+&k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1307,8 +1313,8 @@ program wave2d
         write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
     end do
     write(6, *)("Data output at time = ", time/60.0, " min")
-
 end program wave2d
+
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1366,8 +1372,6 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-module module_dyn_shapiro_vernieuw_merged
-contains
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -1380,7 +1384,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:501,0:501) :: eta
+      real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501) :: etan
       real :: g
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -1398,8 +1402,8 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
       real :: hwn
       real :: hwp
       real, dimension(0:501,0:501), intent(In) :: hzero
-      integer :: j
-      integer :: k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
       real :: term1
       real :: term2
       real :: term3
@@ -1511,7 +1515,6 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
-end module module_dyn_shapiro_vernieuw_merged
 
 Argument translations:
 
@@ -1553,7 +1556,8 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
+&, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1593,7 +1597,8 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
+&k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1602,8 +1607,8 @@ program wave2d
         write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
     end do
     write(6, *)("Data output at time = ", time/60.0, " min")
-
 end program wave2d
+
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1659,7 +1664,16 @@ This subroutine will not be offloaded to the FPGA
 
 
 --------------------
-! Original Subroutine Name: dyn {
+subroutine dyn_0(dt,dx,dy,eta,g,j,k)
+      real :: dt
+      real, dimension(0:501,0:501) :: du
+      real, dimension(0:501,0:501) :: dv
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real :: g
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
 ! OpenCLStencil (
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
@@ -1670,12 +1684,26 @@ This subroutine will not be offloaded to the FPGA
     end if
 !}    
 !}
-!}
+end subroutine dyn_0
+
 ======================
 
 
 --------------------
-! Original Subroutine Name: dyn {
+subroutine dyn_1(j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501) :: du
+      real :: duu
+      real, dimension(0:501,0:501) :: dv
+      real :: dvv
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real :: uu
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real :: vv
+      integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 !    ){
@@ -1708,12 +1736,35 @@ This subroutine will not be offloaded to the FPGA
     end if
 !}    
 !}
-!}
+end subroutine dyn_1
+
 ======================
 
 
 --------------------
-! Original Subroutine Name: dyn {
+subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
+      real :: dt
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real :: hen
+      real :: hep
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(InOut) :: vn
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	2 point stencil on 2D array un: [[0,0],[0,-1]]
@@ -1737,12 +1788,22 @@ This subroutine will not be offloaded to the FPGA
     end if
 !}    
 !}
-!}
+end subroutine dyn_2
+
 ======================
 
 
 --------------------
-! Original Subroutine Name: shapiro {
+subroutine shapiro(eps,eta,etan,j,k,wet)
+      real :: eps
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLStencil (
 !	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1750,9 +1811,12 @@ This subroutine will not be offloaded to the FPGA
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
+&wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
+&(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
+&(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -1760,12 +1824,24 @@ This subroutine will not be offloaded to the FPGA
     end if
 !}    
 !}
-!}
+end subroutine shapiro
+
 ======================
 
 
 --------------------
-! Original Subroutine Name: vernieuw {
+subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real, intent(In) :: hmin
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h(j,k) = hzero(j,k)+eta(j,k)
     wet(j,k) = 1
@@ -1775,7 +1851,8 @@ This subroutine will not be offloaded to the FPGA
     u(j,k) = un(j,k)
     v(j,k) = vn(j,k)
 !}
-!}
+end subroutine vernieuw
+
 ======================
 
-length of allOldSubNameAndBodies: 3
+no. of kernels: 5

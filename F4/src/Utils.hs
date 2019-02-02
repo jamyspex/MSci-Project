@@ -47,6 +47,25 @@ getSubroutineBody subrec = (getBody . getBlock) ast
         getBlock _ = error "Tried to get block from element other than Sub"
         getBody (Block _ _ _ _ _ body) = body
 
+getArgName (ArgName _ name) = name
+
+getArgs :: ProgUnit Anno -> [ArgName Anno]
+getArgs (Sub _ _ return _ args _) =
+    if return /= Nothing then
+        error "Only subroutines with Nothing as their return type can be merged"
+    else
+        everything (++) (mkQ [] argNameQuery) args
+    where
+        argNameQuery :: ArgName Anno -> [ArgName Anno]
+        argNameQuery input = case input of
+                        argname@(ArgName _ name) -> [argname]
+                        _                        -> []
+getArgs _ = error "Passed something other than a Sub to getArgs"
+
+getArgsAsString :: ProgUnit Anno -> [String]
+getArgsAsString sub = map getArgName $ getArgs sub
+gerArgsAsString = error "Passed something other than a Sub to getArgsAsString"
+
 
 getAttrs typeDecl = case typeDecl of
     (BaseType _ _ attrs _ _) -> attrs
@@ -109,9 +128,10 @@ getAllArrayAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
 getAllArrayAccesses arrays fortran = concatMap (arrayReadQuery arrays) allVars
     where
         allVars = everything (++) (mkQ [] (allVarsQuery)) fortran
-        allVarsQuery expr = case expr of
-                            v@(Var _ _ _) -> [v]
-                            _             -> []
+
+allVarsQuery expr = case expr of
+                    v@(Var _ _ _) -> [v]
+                    _             -> []
 
 getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
 getArrayReadsQuery arrays fortran = allReadExprs
@@ -203,3 +223,8 @@ debug_displaySubTableEntryWithAst sr = do
     putStrLn $ hl ++ "\n"
     where
         hl = (take 80 $ repeat '=')
+
+
+
+-- null nodes useful AST construction
+nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc

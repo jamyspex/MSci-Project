@@ -41,15 +41,12 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
         combinedBody = combineBodies bodies -- $ trace (concatMap (\b -> miniPPF b ++ "\n\n") bodies)
         bodies = map getSubBodyWithOriginalNameNode subsWithParamsReplaced
-        combinedDeclNode = combineDecls uniqueDecls
+        combinedDeclNode = (combineDecls . seperateDecls) uniqueDecls
         combinedArgs = combineArgs uniqueArgs
-        useBlock = (UseBlock (UseNil nullAnno) NoSrcLoc)
-        block =  Block nullAnno  useBlock (ImplicitNull nullAnno) nullSrcSpan combinedDeclNode combinedBody
+        block =  Block nullAnno  nullUseBlock (ImplicitNull nullAnno) nullSrcSpan combinedDeclNode combinedBody
         sub =  Sub nullAnno nullSrcSpan Nothing (SubName nullAnno mergedName) combinedArgs block
-        modName = (SubName nullAnno ("module_" ++ mergedName))
-        mod = Module nullAnno nullSrcSpan modName (UseNil nullAnno) (ImplicitNull nullAnno) (NullDecl nullAnno nullSrcSpan) [sub]
-        modWithConstantsFolded = foldConstants mod
-        returnsRemoved = everywhere (mkT removeReturns) modWithConstantsFolded
+        subWithConstantsFolded = foldConstants sub
+        returnsRemoved = everywhere (mkT removeReturns) subWithConstantsFolded
         mergedSubRec = MkSubRec {
             subAst = returnsRemoved,
             subSrcFile = "",
@@ -60,11 +57,20 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         }
 
 
+-- Seperate decl statements, so that they all appear on their own line
+-- otherwise causes issues when seperating into kernels
+seperateDecls :: [Decl Anno] -> [Decl Anno]
+seperateDecls inputDecls = concatMap seperateOne inputDecls
+    where
+        seperateOne :: Decl Anno -> [Decl Anno]
+        seperateOne (Decl anno srcSpan declList declType)
+            = map (\item -> Decl anno srcSpan [item] declType) declList
+
 -- Gets the subroutine body from the subRec and enclose it in a meta
 -- node which simply holds its the subroutines original name so this
 -- can be used to build up a more logical kernel name in the output
 getSubBodyWithOriginalNameNode :: SubRec -> Fortran Anno
-getSubBodyWithOriginalNameNode subrec = MergedSubContainer nullAnno name body
+getSubBodyWithOriginalNameNode subrec = OriginalSubContainer nullAnno name body
     where
         body = getSubroutineBody subrec
         name = subName subrec
@@ -185,11 +191,11 @@ orderDeclsByIntents (Decl _ _ _ typeDecl1) (Decl _ _ _ typeDecl2) =
     case results of
         (Just (In _), Just (Out _))    -> GT
         (Just (In _), Just (InOut _))  -> GT
-        (Just (Out _), Just (In _))    -> LT
+        (Just (Out _), Just (In _))    -> GT
         (Just (Out _), Just (InOut _)) -> GT
         (Just (InOut _), Just (In _))  -> LT
         (Just (InOut _), Just (Out _)) -> LT
-        (Nothing, Just _)              -> LT
+        (Nothing, Just _)              -> GT
         (Just _, Nothing)              -> GT
         (_, _)                         -> EQ
     where
@@ -204,7 +210,7 @@ orderDeclsByIntents _ _ = error "Can't get ordering for declarations other than 
 
 getUniqueDecls :: [Decl Anno] -> [Decl Anno]
 getUniqueDecls decls = map (\(key, val) -> head val) $ DMap.toList mapValsSorted
-    where
+   where
         mapValsSorted = DMap.map (sortBy orderDeclsByIntents) declMap
         pairsForMap = map (\item -> ((getNameFromVarName . getVarName) item, item)) decls
         initialMap = DMap.fromList $ map (\key -> (key, [])) uniqueKeys
@@ -218,24 +224,6 @@ getUniqueArgTrans argTrans = removeDuplicates argument argTrans
 
 getAllDecls :: [SubRec] -> [Decl Anno]
 getAllDecls subrecs = concatMap (\subrec -> getDecls $ subAst subrec) subrecs
-
-getArgs :: ProgUnit Anno -> [ArgName Anno]
-getArgs (Sub _ _ return _ args _) =
-    if return /= Nothing then
-        error "Only subroutines with Nothing as their return type can be merged"
-    else
-        everything (++) (mkQ [] argNameQuery) args
-    where
-        argNameQuery :: ArgName Anno -> [ArgName Anno]
-        argNameQuery input = case input of
-                        argname@(ArgName _ name) -> [argname]
-                        _                        -> []
-getArgs _ = error "Passed something other than a Sub to getArgs"
-
-getArgsAsString :: ProgUnit Anno -> [String]
-getArgsAsString sub = map getArgName $ getArgs sub
-gerArgsAsString = error "Passed something other than a Sub to getArgsAsString"
-
 
 replaceParametersWithArgumentNames :: [ArgumentTranslation] -> SubRec -> SubRec
 replaceParametersWithArgumentNames argTransForCall callee = updatedAst
@@ -259,8 +247,6 @@ replaceOneParamUsageWithArg argTrans subRec = subRec { subAst = everywhere (mkT 
             | ((name == (getArgName $ parameter argTrans)) && (not . hasBeenUpdated) anno)
                  = VarName updatedAnno $ getNameFromVarName (argument argTrans)
             | otherwise = curVal
-
-getArgName (ArgName _ name) = name
 
 updatedAnno :: Anno
 updatedAnno = DMap.singleton (mergeSubsAnnoKey) []
