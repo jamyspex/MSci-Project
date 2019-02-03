@@ -48,7 +48,7 @@ addLoopGuardToMap arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan r
 addLoopGuardToMap _ _ fortran = fortran
 
 -- this function ensures that loop variables are used in a consistent order
--- e.g. a loop variable is always used to access the same array in the position/dimension
+-- e.g. a loop variable is always used to access the same array in the same position/dimension
 -- this may need update so it respects square arrays, e.g. using
 -- indices in different orders is valid as long as they have the same range
 validateIndexingAndMakeUnique :: [(String, String, Maybe Int)] -> [(String, String, Int)]

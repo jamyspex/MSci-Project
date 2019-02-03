@@ -37,6 +37,10 @@ removeDuplicates getKey input = DMap.elems uniqueMap
         addToMap :: Ord a => (a, b) -> DMap.Map a b -> DMap.Map a b
         addToMap (key, val) map = DMap.insert key val map
 
+-- validate that a large expression only contains certain allowed types of sub expression
+validateExprListContents :: (Expr Anno -> [Bool]) -> Expr Anno -> Bool
+validateExprListContents subExprQuery expr = foldr (&&) True $ everything (++) (mkQ [] subExprQuery) expr
+
 getSubroutineBody :: SubRec -> Fortran Anno
 getSubroutineBody subrec = (getBody . getBlock) ast
     where
@@ -133,12 +137,14 @@ allVarsQuery expr = case expr of
                     v@(Var _ _ _) -> [v]
                     _             -> []
 
-getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
-getArrayReadsQuery arrays fortran = allReadExprs
+data ArrayAccess = ArrayRead | ArrayWrite
+
+getArrayAccessQuery :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
+getArrayAccessQuery readOrWrite arrays fortran = allReadExprs
     where
-        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) readExprsFromFortran
-        readExprsFromFortran = case fortran of
-                        (Assg _ _ _ rhs) -> [rhs]
+        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) exprsFromFortran
+        exprsFromFortran = case fortran of
+                        (Assg _ _ lhs rhs) -> case readOrWrite of ArrayRead -> [rhs]; ArrayWrite -> [lhs]
                         (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
                         (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
                         (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
@@ -151,11 +157,12 @@ getArrayReadsQuery arrays fortran = allReadExprs
                                     (Just body) -> recursiveCall body
                                     _           -> []
                         (NullStmt _ _) -> []
-                        -- (OpenCLStencil _ _ _ body) -> recursiveCall body
-                        -- (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
-                        -- (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
-                        missing@_ -> [] --error ("Unimplemented Fortran Statement " ++ miniPPF missing)
+                        missing@_ -> []
         recursiveCall = getArrayReadsQuery arrays
+
+
+getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
+getArrayReadsQuery arrays fortran = getArrayAccessQuery ArrayRead arrays fortran
 
 arrayFromDecl :: Decl Anno -> Array
 arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}

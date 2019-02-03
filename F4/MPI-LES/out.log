@@ -7945,8 +7945,8 @@ end subroutine velfg_5
 
 
 --------------------
-subroutine feedbf_0(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,&
-&usum,v,vsum,w,wsum)
+subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,us&
+&um,v,vsum,w,wsum)
       real(4), intent(In) :: alpha
       real(4), intent(In) :: beta
       real(4), dimension(-1:301,0:301,0:81), intent(In) :: bmask1
@@ -7994,7 +7994,7 @@ subroutine feedbf_0(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,&
         h(i,j,k) = h(i,j,k)+fz(i,j,k)
     end if
 !}
-end subroutine feedbf_0
+end subroutine feedbf
 
 ======================
 
@@ -8497,7 +8497,7 @@ end subroutine les_9
 
 
 --------------------
-subroutine adam_0(f,fold,g,gold,h,hold)
+subroutine adam(f,fold,g,gold,h,hold)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: f
       real(4) :: fd
       real(4) :: gd
@@ -8523,7 +8523,7 @@ subroutine adam_0(f,fold,g,gold,h,hold)
         hold(i,j,k) = hd
     end if
 !}
-end subroutine adam_0
+end subroutine adam
 
 ======================
 

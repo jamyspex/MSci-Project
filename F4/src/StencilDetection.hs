@@ -116,23 +116,15 @@ usesIndexVariablesAndConstantOffset idxVars stencilAccesses = getStencilsOnly si
         simpleOpsOnly
             = filter (\(_, indices) -> foldr (&&) True (map stencilOnlyContainsValidOps indices)) stencilsUsingLoopVarsAndIdxExprs
 
--- this might have to do constant folding at some point
 stencilOnlyContainsValidOps :: Expr Anno -> Bool
-stencilOnlyContainsValidOps index = foldr (&&) True $ map convertToBools getAllExpr
-    where
-        getAllExpr = everything (++) (mkQ [] getSimpleExprsQuery) index
-        getSimpleExprsQuery :: Expr Anno -> [Expr Anno]
-        getSimpleExprsQuery expr = case expr of
-                                    e@(Bin _ _ _ _ _) -> [e]
-                                    e@(Con _ _ _)     -> [e]
-                                    e@(Var _ _ _)     -> [e]
-                                    _                 -> []
-        convertToBools expr = case expr of
-                                (Bin _ _ _ _ _) -> True
-                                (Con _ _ _)     -> True
-                                (Var _ _ _)     -> True
-                                _               -> False
+stencilOnlyContainsValidOps index = validateExprListContents getSimpleExprsQuery index
 
+getSimpleExprsQuery :: Expr Anno -> [Bool]
+getSimpleExprsQuery expr = case expr of
+                            (Bin _ _ _ _ _) -> [True]
+                            (Con _ _ _)     -> [True]
+                            (Var _ _ _)     -> [True]
+                            _               -> [False]
 
 idxVarQuery :: Expr Anno -> [Expr Anno]
 idxVarQuery (Var _ _ [(_,indices)]) = indices

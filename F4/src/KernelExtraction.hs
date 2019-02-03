@@ -8,6 +8,26 @@ import           MiniPP
 import           Parser
 import           Utils
 
+-- data Kernel = Kernel {
+--     inputStreams  :: [Stream],
+--     outputStreams :: [Stream],
+--     kernelName    :: String,
+--     body          :: ProgUnit Anno,
+--     order         :: Int
+-- }
+
+-- data Stream = Stream
+--                 String           -- name
+--                 StreamValueType  -- value type
+--                 [(Int, Int)]     -- dimensions
+--             | StencilStream
+--                 String           -- name
+--                 StreamValueType  -- value type
+--                 Stencil          -- stencil offsets
+--                 [(Int, Int)]     -- dimensions
+--                 deriving Show
+
+data StreamValueType = Float deriving Show
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines
@@ -96,3 +116,28 @@ getKernelBody name fortran = case fortran of
     reduce@(OpenCLReduce _ _ _ _ _ _ _ _) -> [(OriginalSubContainer nullAnno name reduce)]
     stencil@(OpenCLStencil _ _ _ _)       -> [(OriginalSubContainer nullAnno name stencil)]
     _                                     -> []
+
+
+-- Analyse the kernel and deteremine what streams it needs as input
+-- and what streams it produces as output. This is based on array accesses
+-- and stencil accesses.
+-- At this point we know two things for sure:
+-- 1) usesIndexVariablesAndConstantOffset in StencilDetection.hs ensures
+-- that the stencils only use the loop variables then +/- an offset
+-- 2) validateIndexingAndMakeUnique in AddKernelLoopGuards.hs ensures that
+-- the loop variables are used in a consistent order across a given array
+-- These things combined give us some faith that any streams we generate will be
+-- "coherent" don't quite know what that means at this point but definitely is important
+-- The only thing left to check is that all the array writes use only loop vars the
+-- mechanics of usesIndexVariablesAndConstantOffset can be used to do this. The function
+-- validateExprListContents in Utils.hs can be used
+buildKernels :: (ProgUnit Anno, Int) -> Kernel
+buildKernels (sub, order) =
+    where
+        subBody = 
+        allArrayReads = getArray
+        stencils =
+        allArrayWrites =
+
+
+
