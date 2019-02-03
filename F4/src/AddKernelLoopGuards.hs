@@ -18,7 +18,7 @@ import           Utils
 
 -- Wrapper function that uses everywhere to operate on the supplied subroutine
 addLoopGuards :: SubRec -> SubRec
-addLoopGuards subRec = subRec { subAst = everywhere (mkT (addLoopGuardToMap declRangeMap arrays)) ast }
+addLoopGuards subRec = subRec { subAst = everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast }
     where
         ast = subAst subRec
         arrayDecls = getArrayDecls ast
@@ -29,15 +29,15 @@ addLoopGuards subRec = subRec { subAst = everywhere (mkT (addLoopGuardToMap decl
 -- if statement with appropriate conditions to guard against access to indices that were originally
 -- controlled by the loop(s) the OpenCLMap has replaced. Only inserts and if statement if the orignal
 -- loops bounds do not match the dimensions of the arrays accessed using the loop variables.
-addLoopGuardToMap :: DMap.Map (String, Int) (Int, Int) -> [Array] -> Fortran Anno -> Fortran Anno
-addLoopGuardToMap arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars body) = newOclMap
+addLoopGuardToMapOrReduce :: DMap.Map (String, Int) (Int, Int) -> [Array] -> Fortran Anno -> Fortran Anno
+addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars body) = newOclMap
     where
         allArrayAcceses = getAllArrayAccesses arrays fortran
         loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
         indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
         loopVarsWithExprsAsConsts = map getLoopVarAsConstant loopVars
         arrayAccessDimMap = buildArrayAccessDimMap loopVarsWithExprsAsConsts indexPositions
-        combinedMap = DMap.intersectionWith combineMapItems arrayDeclDimMap arrayAccessDimMap
+        combinedMap = DMap.intersectionWith CMI arrayDeclDimMap arrayAccessDimMap
         requiredConditionList = getRequiredGuards $ DMap.elems combinedMap
         duplicatesRemoved = removeDuplicates (\(loopVar, bound) -> loopVar ++ show bound) requiredConditionList
         singleConditions = map (\(loopVarName, bound) -> buildLoopGuard loopVarName bound) duplicatesRemoved
@@ -45,7 +45,22 @@ addLoopGuardToMap arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan r
         bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
         newBody = if length duplicatesRemoved > 0 then bodyWithGuards else body
         newOclMap = OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars newBody
-addLoopGuardToMap _ _ fortran = fortran
+addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars body) = newOclReduce
+    where
+        allArrayAcceses = getAllArrayAccesses arrays fortran
+        loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
+        indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
+        loopVarsWithExprsAsConsts = map getLoopVarAsConstant loopVars
+        arrayAccessDimMap = buildArrayAccessDimMap loopVarsWithExprsAsConsts indexPositions
+        combinedMap = DMap.intersectionWith CMI arrayDeclDimMap arrayAccessDimMap
+        requiredConditionList = getRequiredGuards $ DMap.elems combinedMap
+        duplicatesRemoved = removeDuplicates (\(loopVar, bound) -> loopVar ++ show bound) requiredConditionList
+        singleConditions = map (\(loopVarName, bound) -> buildLoopGuard loopVarName bound) duplicatesRemoved
+        conditionExpr = combineWithAnd singleConditions
+        bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
+        newBody = if length duplicatesRemoved > 0 then bodyWithGuards else body
+        newOclReduce = OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars newBody
+addLoopGuardToMapOrReduce _ _ fortran = fortran
 
 -- this function ensures that loop variables are used in a consistent order
 -- e.g. a loop variable is always used to access the same array in the same position/dimension
@@ -82,8 +97,9 @@ getRequiredGuards :: [CombinedMapItem] -> [(String, Bound)]
 getRequiredGuards combinedMapItems = concatMap processOneCMI combinedMapItems
     where
         processOneCMI :: CombinedMapItem -> [(String, Bound)]
-        processOneCMI combinedMapItem = potentialLowerBound ++ potentialUpperBound
+        processOneCMI combinedMapItem = trace traceString (potentialLowerBound ++ potentialUpperBound)
             where
+                traceString = loopVarName ++ " " ++ show declUPB ++ " == " ++ show accessUPB ++ " && " ++ show declLWB ++ " == " ++ show accessLWB
                 potentialLowerBound = if declLWB == accessLWB then [] else [(loopVarName, LWB accessLWB)]
                 potentialUpperBound = if declUPB == accessUPB then [] else [(loopVarName, UPB accessUPB)]
                 (declLWB, declUPB) = declItem combinedMapItem
@@ -93,12 +109,12 @@ getRequiredGuards combinedMapItems = concatMap processOneCMI combinedMapItems
 data CombinedMapItem = CMI {
     declItem   :: (Int, Int),
     accessItem :: (String, (Int, Int))
-} deriving (Show)
+} deriving Show
 
--- take an item from the map of array accesses and an item from the map of array decls
--- and combine them to form a CombineMapItem. Will be used with intersectionWith
-combineMapItems :: (Int, Int) -> (String, (Int, Int)) -> CombinedMapItem
-combineMapItems declItem accessItem = CMI declItem accessItem
+-- -- take an item from the map of array accesses and an item from the map of array decls
+-- -- and combine them to form a CombineMapItem. Will be used with intersectionWith
+-- combineMapItems :: (Int, Int) -> (String, (Int, Int)) -> CombinedMapItem
+-- combineMapItems declItem accessItem = CMI declItem accessItem
 
 -- Take a loopVar tuple from the OpenCLMap node and convert it to someting more ammeanable.
 -- This discards increment atm
@@ -146,20 +162,9 @@ getDimensionPositionMap decls = DMap.fromList allItems
 getDimensionPosition :: Decl Anno -> [((String, Int), (Int, Int))]
 getDimensionPosition decl = arrayDimensionsMapItem
     where
-        name = (getNameFromVarName . getVarName) decl
+        name = declNameAsString decl
         arrayDimensionsMapItem = imap (\pos dims -> ((name, pos), getArrayDimensionConstants dims)) arrayDimensionsExpr
         arrayDimensionsExpr = (getArrayDimensions . getDeclType) decl
-
-getArrayDimensionConstants :: (Expr Anno, Expr Anno) -> (Int, Int)
-getArrayDimensionConstants (expr1, expr2) = (getSingleConstant expr1, getSingleConstant expr2)
-
--- get an int from a an expr defining array dimensions
-getSingleConstant :: Expr Anno -> Int
-getSingleConstant expr = case expr of
-    (Con _ _ val) -> read val :: Int
-    (Unary _ _ _ (Con _ _ val)) -> negate $ read val :: Int
-    (NullExpr _ _) -> 1 -- when array declared with starting index omitted, fortran defaults to 1
-    _ -> error ("Expr other than constant in array dimensions. \n")
 
 -- function takes a list of loop variables and an array access expr and then returns a list of tuples of
 -- the form (array name, loop variable name, maybe (position loop var is used in), nothing if it is not used)

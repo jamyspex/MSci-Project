@@ -79,12 +79,11 @@ getOffset t@(Con _ _ val) = Constant $ readIndex val
 getOffset missing@_ = error ("getOffset pattern miss for: " ++ show missing)
 
 findStencilAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
-findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body -- trace ("trace:: \n" ++ miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
-findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body -- trace ("trace:: \n" ++  miniPPF body ++ "\n::trace") $ findStencilAccesses arrays body
--- findStencilAccesses arrays (OpenCLStencil _ _ _ body) = findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLMap _ _ _ _ _ _ body) = findStencilAccesses arrays body
+findStencilAccesses arrays (OpenCLReduce _ _ _ _ _ _ _ body) = findStencilAccesses arrays body
 findStencilAccesses arrays body = arrayAccesses
     where
-        arrayAccesses = everything (++) (mkQ [] (getArrayReadsQuery arrays)) body
+        arrayAccesses = everything (++) (mkQ [] (getArrayReads arrays)) body
 
 
 arrayName = (getNameFromVarName . getVarName)
@@ -125,9 +124,6 @@ getSimpleExprsQuery expr = case expr of
                             (Con _ _ _)     -> [True]
                             (Var _ _ _)     -> [True]
                             _               -> [False]
-
-idxVarQuery :: Expr Anno -> [Expr Anno]
-idxVarQuery (Var _ _ [(_,indices)]) = indices
 
 stencilToIndexExprs sten = (sten, idxVarQuery sten)
 stencilToStencilIdxNames sten = (sten, map getNameFromVarName $ everything (++) (mkQ [] extractVarNamesFromExpr) $ idxVarQuery sten)
