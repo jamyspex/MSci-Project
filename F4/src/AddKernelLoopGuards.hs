@@ -32,9 +32,9 @@ addLoopGuards subRec = subRec { subAst = everywhere (mkT (addLoopGuardToMapOrRed
 addLoopGuardToMapOrReduce :: DMap.Map (String, Int) (Int, Int) -> [Array] -> Fortran Anno -> Fortran Anno
 addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars body) = newOclMap
     where
-        allArrayAcceses = getAllArrayAccesses arrays fortran
+        allArrayAccesses = getAllArrayAccesses arrays fortran
         loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
-        indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
+        indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAccesses
         loopVarsWithExprsAsConsts = map getLoopVarAsConstant loopVars
         arrayAccessDimMap = buildArrayAccessDimMap loopVarsWithExprsAsConsts indexPositions
         combinedMap = DMap.intersectionWith CMI arrayDeclDimMap arrayAccessDimMap
@@ -97,9 +97,8 @@ getRequiredGuards :: [CombinedMapItem] -> [(String, Bound)]
 getRequiredGuards combinedMapItems = concatMap processOneCMI combinedMapItems
     where
         processOneCMI :: CombinedMapItem -> [(String, Bound)]
-        processOneCMI combinedMapItem = trace traceString (potentialLowerBound ++ potentialUpperBound)
+        processOneCMI combinedMapItem = potentialLowerBound ++ potentialUpperBound
             where
-                traceString = loopVarName ++ " " ++ show declUPB ++ " == " ++ show accessUPB ++ " && " ++ show declLWB ++ " == " ++ show accessLWB
                 potentialLowerBound = if declLWB == accessLWB then [] else [(loopVarName, LWB accessLWB)]
                 potentialUpperBound = if declUPB == accessUPB then [] else [(loopVarName, UPB accessUPB)]
                 (declLWB, declUPB) = declItem combinedMapItem
@@ -176,5 +175,5 @@ getLoopIndexPosition varNames (Var _ _ (((VarName _ arrayName), indexList):_)) =
         getIndexPos loopVariableName [] _ = Nothing
         getIndexPos loopVariableName (idx:idxs) position
             | null $ getAllVarNames idx = getIndexPos loopVariableName idxs (position + 1)
-            | (getNameFromVarName . getVarName) idx == loopVariableName = Just position
+            | (getNameFromVarName . getVarNameG) idx == loopVariableName = Just position
             | otherwise = getIndexPos loopVariableName idxs (position + 1)
