@@ -25,12 +25,32 @@ addLoopGuards subRec = subRec { subAst = everywhere (mkT (addLoopGuardToMapOrRed
         arrays = map arrayFromDecl arrayDecls
         declRangeMap = getDimensionPositionMap arrayDecls
 
+-- Wrapper to let the main function below work with maps and folds
+addLoopGuardToMapOrReduce :: DMap.Map (String, Int) (Int, Int) -> [Array] -> Fortran Anno -> Fortran Anno
+addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLMap _ _ _ _ _ _ _) =
+    let
+        (OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars body) = fortran
+        newBody =  addLoopGuardToMapOrReduce' arrayDeclDimMap arrays fortran loopVars body
+    in
+        OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars newBody
+addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLReduce _ _ _ _ _ _ _ _) =
+    let
+        (OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars body) = fortran
+        newBody =  addLoopGuardToMapOrReduce' arrayDeclDimMap arrays fortran loopVars body
+    in
+        OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars newBody
+addLoopGuardToMapOrReduce _ _ fortran = fortran
+
 -- Main function used in everywhere query. Replaces OpenCLMap bodies with ones contained in an
 -- if statement with appropriate conditions to guard against access to indices that were originally
 -- controlled by the loop(s) the OpenCLMap has replaced. Only inserts and if statement if the orignal
 -- loops bounds do not match the dimensions of the arrays accessed using the loop variables.
-addLoopGuardToMapOrReduce :: DMap.Map (String, Int) (Int, Int) -> [Array] -> Fortran Anno -> Fortran Anno
-addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars body) = newOclMap
+addLoopGuardToMapOrReduce' :: DMap.Map (String, Int) (Int, Int)
+                           -> [Array] -> Fortran Anno
+                           -> [(VarName Anno, Expr Anno, Expr Anno, Expr Anno)]
+                           -> Fortran Anno
+                           -> Fortran Anno
+addLoopGuardToMapOrReduce' arrayDeclDimMap arrays fortran loopVars body = newBody
     where
         allArrayAccesses = getAllArrayAccesses arrays fortran
         loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
@@ -44,23 +64,6 @@ addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLMap oclAnno oclS
         conditionExpr = combineWithAnd singleConditions
         bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
         newBody = if length duplicatesRemoved > 0 then bodyWithGuards else body
-        newOclMap = OpenCLMap oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars newBody
-addLoopGuardToMapOrReduce arrayDeclDimMap arrays fortran@(OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars body) = newOclReduce
-    where
-        allArrayAcceses = getAllArrayAccesses arrays fortran
-        loopVarNames = map (\(varname, _, _, _) -> varname) loopVars
-        indexPositions = concatMap (getLoopIndexPosition loopVarNames) allArrayAcceses
-        loopVarsWithExprsAsConsts = map getLoopVarAsConstant loopVars
-        arrayAccessDimMap = buildArrayAccessDimMap loopVarsWithExprsAsConsts indexPositions
-        combinedMap = DMap.intersectionWith CMI arrayDeclDimMap arrayAccessDimMap
-        requiredConditionList = getRequiredGuards $ DMap.elems combinedMap
-        duplicatesRemoved = removeDuplicates (\(loopVar, bound) -> loopVar ++ show bound) requiredConditionList
-        singleConditions = map (\(loopVarName, bound) -> buildLoopGuard loopVarName bound) duplicatesRemoved
-        conditionExpr = combineWithAnd singleConditions
-        bodyWithGuards = If nullAnno nullSrcSpan conditionExpr body [] Nothing
-        newBody = if length duplicatesRemoved > 0 then bodyWithGuards else body
-        newOclReduce = OpenCLReduce oclAnno oclSrcSpan readVars writtenVars loopVars enclosedLoopVars reductionVars newBody
-addLoopGuardToMapOrReduce _ _ fortran = fortran
 
 -- this function ensures that loop variables are used in a consistent order
 -- e.g. a loop variable is always used to access the same array in the same position/dimension
