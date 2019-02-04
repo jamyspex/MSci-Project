@@ -113,11 +113,6 @@ data CombinedMapItem = CMI {
     accessItem :: (String, (Int, Int))
 } deriving Show
 
--- -- take an item from the map of array accesses and an item from the map of array decls
--- -- and combine them to form a CombineMapItem. Will be used with intersectionWith
--- combineMapItems :: (Int, Int) -> (String, (Int, Int)) -> CombinedMapItem
--- combineMapItems declItem accessItem = CMI declItem accessItem
-
 -- Take a loopVar tuple from the OpenCLMap node and convert it to someting more ammeanable.
 -- This discards increment atm
 getLoopVarAsConstant :: (VarName Anno, Expr Anno, Expr Anno, Expr Anno) -> (String, Int, Int)
