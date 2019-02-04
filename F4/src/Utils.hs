@@ -79,6 +79,8 @@ getSubBody :: ProgUnit Anno -> Fortran Anno
 getSubBody (Sub _ _ _ _ _ (Block _ _ _ _ _ fortran)) = fortran
 getSubBody (Module _ _ _ _ _ _ progUnits) = head $ map getSubBody progUnits
 
+getSubName (Sub _ _ _ (SubName _ name) _ _) = name
+
 getDecls :: ProgUnit Anno -> [Decl Anno]
 getDecls (Sub _ _ _ _ _ (Block _ _ _ _ decls _))  = everything (++) (mkQ [] getDeclsQuery) decls
 getDecls (Module _ _ _ _ _ _ progUnits) = concatMap getDecls progUnits

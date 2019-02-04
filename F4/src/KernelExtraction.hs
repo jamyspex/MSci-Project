@@ -5,6 +5,7 @@ import           Data.List
 import           Data.List.Index
 import qualified Data.Map             as DMap
 import           Data.Ord
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -18,6 +19,29 @@ data Kernel = Kernel {
     body          :: ProgUnit Anno,
     order         :: Int
 }
+
+instance Show Kernel where
+    show kernel = " ! ==============================================\n" ++
+                  " ! Name: " ++ name ++ " Order: " ++ (show o) ++ "\n" ++
+                  " ! Input streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS) ++
+                  " ! Output streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS) ++
+                  " ! --------------------------------------------\n" ++
+                  (miniPPProgUnit b) ++
+                  " ! ==============================================\n\n"
+                    where
+                        inS = inputStreams kernel
+                        outS = outputStreams kernel
+                        name = kernelName kernel
+                        b = body kernel
+                        o = order kernel
+
+printStream (Stream name valueType dims) =
+    "Stream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims
+printStream (StencilStream name valueType dims stencil) =
+    "StencilStream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims ++
+    (showStencils "\t" [stencil])
 
 data Stream p = Stream
                 String           -- name
@@ -36,8 +60,9 @@ data StreamValueType = Float deriving Show
 -- for each map/fold returns a module containing all the appropriate subroutines
 getKernels :: SubRec -> IO ()
 getKernels subrec = do
-    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubs
-    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubs
+    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
+    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
+    putStrLn $ concatMap show kernels
     return ()
     where
         allDecls = getDecls $ subAst subrec
@@ -47,7 +72,8 @@ getKernels subrec = do
         kernelBodies = map (getKernelsQuery False) allOldSubNameAndBodies
         globablyOrdered = indexed $ concatMap prepareForKernelBuilder kernelBodies
         curriedKernelBuilder = makeKernelSub allDecls allArgs
-        kernelSubs = map (\(globalOrder, builderInput) -> curriedKernelBuilder builderInput globalOrder) globablyOrdered
+        kernelSubsAndOrder = map (\(globalOrder, builderInput) -> curriedKernelBuilder builderInput globalOrder) globablyOrdered
+        kernels = map buildKernel kernelSubsAndOrder
 
 -- strip of the OriginalSubContainer wrapper from the kernels and produce
 -- tuples of (body, (name, maybe splitNum)) splitNum = what part of the
@@ -135,20 +161,47 @@ getKernelBody name fortran = case fortran of
 -- mechanics of usesIndexVariablesAndConstantOffset can be used to do this. The function
 -- validateExprListContents in Utils.hs can be used. Along with a check that the variables
 -- used to index the array are the loop variables.
--- buildKernel :: (ProgUnit Anno, Int) -> Kernel
--- buildKernel (sub, order) = if arrayWritesValid then kernel else error "Array write invalid"
---     where
---         subBody = getSubBody sub
---         allArrays = map arrayFromDecl $ getArrayDeclsWithRanges True sub
---         arrayReads = getArrayAccess ArrayRead allArrays subBody
---         arrayWrites = getArrayAccess ArrayWrite allArrays subBody
---         stencils = everything (++) (mkQ [] getStencilsQuery) subBody
---         loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
---         arrayWritesValid = validateArrayWrites loopVariables arrayWrites
---         (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
---         inputStreams = getInputStreams combined arrayReads
---         outputStreams = map arrayToStream arrayWrites
---         kernel =
+buildKernel :: (Int, ProgUnit Anno) -> Kernel
+buildKernel (order, sub) = if arrayWritesValid then kernel else error "Array write invalid"
+    where
+        subBody = getSubBody sub
+        allDecls = getArrayDecls sub
+        allArrays = map (arrayFromDeclWithRanges True) allDecls
+        temp = trace ("allArrays length = " ++ ((show . length) allArrays)) allArrays -- TODO this isn't getting executed
+        arrayReadExprs = getArrayAccesses ArrayRead temp subBody
+        readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
+        arrayReads = filter (filterAllArrays readArrayNames) allArrays
+        arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
+        writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs
+        arrayWrites = filter (filterAllArrays writtenArrayNames) allArrays
+        stencils = everything (++) (mkQ [] getStencilsQuery) subBody
+        loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
+        arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
+        (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
+        inputStreams = getInputStreams stencilArrays arraysNoStencils
+        outputStreams = map arrayToStream arrayWrites
+        kernel = Kernel {
+            inputStreams = inputStreams,
+            outputStreams = outputStreams,
+            body = sub,
+            order = order,
+            kernelName = getSubName sub
+        }
+
+        -- data Kernel = Kernel {
+        --     inputStreams  :: [Stream Anno],
+        --     outputStreams :: [Stream Anno],
+        --     kernelName    :: String,
+        --     body          :: ProgUnit Anno,
+        --     order         :: Int
+        -- }
+
+--
+filterAllArrays :: [String] -> Array -> Bool
+filterAllArrays wanted candidate = name `elem` wanted
+    where
+        (VarName _ name) = varName candidate
+
 
 arrayToStream :: Array -> Stream Anno
 arrayToStream array = Stream (name array) Float (dims array)
