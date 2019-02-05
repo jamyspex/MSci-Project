@@ -225,10 +225,9 @@ getMapEntries :: ParseResult -> ((String, ProgUnit Anno), (String, String), (Str
 getMapEntries (ast, lines, filename) = ((subname, subAst), (subname, filename), (subname, lines))
     where
         subAst = getFileAst ast
-        subname = getSubName subAst
+        subname = extractProgUnitName subAst
 
 getFileAst = head . extractMainProgUnit
-getSubName = extractProgUnitName
 
 populateSubCalls :: F4Opts -> SubRecAnalysis -> SubRecAnalysis
 populateSubCalls opts sra = sra { subroutineToCalls = DMap.fromList subnamesToCallsMap}

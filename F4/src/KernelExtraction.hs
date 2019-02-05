@@ -1,31 +1,58 @@
 module KernelExtraction where
 
 import           Data.Generics
+import           Data.List
 import           Data.List.Index
+import qualified Data.Map             as DMap
+import           Data.Ord
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Parser
 import           Utils
 
--- data Kernel = Kernel {
---     inputStreams  :: [Stream],
---     outputStreams :: [Stream],
---     kernelName    :: String,
---     body          :: ProgUnit Anno,
---     order         :: Int
--- }
+data Kernel = Kernel {
+    inputStreams  :: [Stream Anno],
+    outputStreams :: [Stream Anno],
+    kernelName    :: String,
+    body          :: ProgUnit Anno,
+    order         :: Int
+}
 
--- data Stream = Stream
---                 String           -- name
---                 StreamValueType  -- value type
---                 [(Int, Int)]     -- dimensions
---             | StencilStream
---                 String           -- name
---                 StreamValueType  -- value type
---                 Stencil          -- stencil offsets
---                 [(Int, Int)]     -- dimensions
---                 deriving Show
+instance Show Kernel where
+    show kernel = " ! ==============================================\n" ++
+                  " ! Name: " ++ name ++ " Order: " ++ (show o) ++ "\n" ++
+                  " ! Input streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS) ++
+                  " ! Output streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS) ++
+                  " ! --------------------------------------------\n" ++
+                  (miniPPProgUnit b) ++
+                  " ! ==============================================\n\n"
+                    where
+                        inS = inputStreams kernel
+                        outS = outputStreams kernel
+                        name = kernelName kernel
+                        b = body kernel
+                        o = order kernel
+
+printStream (Stream name valueType dims) =
+    "Stream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims
+printStream (StencilStream name valueType dims stencil) =
+    "StencilStream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims ++
+    (showStencils "\t" [stencil])
+
+data Stream p = Stream
+                String           -- name
+                StreamValueType  -- value type
+                [(Int, Int)]     -- dimensions
+            | StencilStream
+                String           -- name
+                StreamValueType  -- value type
+                [(Int, Int)]     -- dimensions
+                (Stencil p)      -- stencil offsets
+                deriving Show
 
 data StreamValueType = Float deriving Show
 
@@ -33,8 +60,9 @@ data StreamValueType = Float deriving Show
 -- for each map/fold returns a module containing all the appropriate subroutines
 getKernels :: SubRec -> IO ()
 getKernels subrec = do
-    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubs
-    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubs
+    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
+    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
+    putStrLn $ concatMap show kernels
     return ()
     where
         allDecls = getDecls $ subAst subrec
@@ -44,7 +72,8 @@ getKernels subrec = do
         kernelBodies = map (getKernelsQuery False) allOldSubNameAndBodies
         globablyOrdered = indexed $ concatMap prepareForKernelBuilder kernelBodies
         curriedKernelBuilder = makeKernelSub allDecls allArgs
-        kernelSubs = map (\(globalOrder, builderInput) -> curriedKernelBuilder builderInput globalOrder) globablyOrdered
+        kernelSubsAndOrder = map (\(globalOrder, builderInput) -> curriedKernelBuilder builderInput globalOrder) globablyOrdered
+        kernels = map buildKernel kernelSubsAndOrder
 
 -- strip of the OriginalSubContainer wrapper from the kernels and produce
 -- tuples of (body, (name, maybe splitNum)) splitNum = what part of the
@@ -77,7 +106,7 @@ makeKernelSub decls args (body, (originalName, splitNum)) globalOrder =
     (globalOrder, Sub nullAnno nullSrcSpan Nothing name argList block)
     where
         argsComparable = getComparableItems args getArgName
-        declComparable = getComparableItems decls (getNameFromVarName . getVarName . declNameQuery)
+        declComparable = getComparableItems decls declNameAsString
         allVarsNamesInBody = map getNameFromVarName $ getAllVarNames body
         subRequiredArgs = map snd $ filter (\(argName, _) -> argName `elem` allVarsNamesInBody) argsComparable
         subRequiredDecls = map snd $ filter (\(declName, _) -> declName `elem` allVarsNamesInBody) declComparable
@@ -130,14 +159,109 @@ getKernelBody name fortran = case fortran of
 -- "coherent" don't quite know what that means at this point but definitely is important
 -- The only thing left to check is that all the array writes use only loop vars the
 -- mechanics of usesIndexVariablesAndConstantOffset can be used to do this. The function
--- validateExprListContents in Utils.hs can be used
-buildKernels :: (ProgUnit Anno, Int) -> Kernel
-buildKernels (sub, order) =
+-- validateExprListContents in Utils.hs can be used. Along with a check that the variables
+-- used to index the array are the loop variables.
+buildKernel :: (Int, ProgUnit Anno) -> Kernel
+buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kernel else error "Array write invalid")
     where
-        subBody = 
-        allArrayReads = getArray
-        stencils =
-        allArrayWrites =
+        subBody = getSubBody sub
+        allDecls = getArrayDecls sub
+        allArrays = map (arrayFromDeclWithRanges True) allDecls
+        temp = trace ("allArrays length = " ++ ((show . length) allArrays)) allArrays -- TODO this isn't getting executed
+        arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
+        readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
+        temp2 = trace ("arrayReadExprs length = " ++ (show . length) arrayReadExprs ++ " readArrayNames = " ++ (show readArrayNames)) readArrayNames
+        arrayReads = filter (filterAllArrays readArrayNames) allArrays
+        arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
+        writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs
+        arrayWrites = filter (filterAllArrays writtenArrayNames) allArrays
+        stencils = everything (++) (mkQ [] getStencilsQuery) subBody
+        loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
+        arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
+        (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
+        inputStreams = getInputStreams stencilArrays arraysNoStencils
+        outputStreams = map arrayToStream arrayWrites
+        kernel = Kernel {
+            inputStreams = inputStreams,
+            outputStreams = outputStreams,
+            body = sub,
+            order = order,
+            kernelName = getSubName sub
+        }
+
+        -- data Kernel = Kernel {
+        --     inputStreams  :: [Stream Anno],
+        --     outputStreams :: [Stream Anno],
+        --     kernelName    :: String,
+        --     body          :: ProgUnit Anno,
+        --     order         :: Int
+        -- }
+
+--
+filterAllArrays :: [String] -> Array -> Bool
+filterAllArrays wanted candidate = name `elem` wanted
+    where
+        (VarName _ name) = varName candidate
 
 
+arrayToStream :: Array -> Stream Anno
+arrayToStream array = Stream (name array) Float (dims array)
 
+name array = (getNameFromVarName . varName) array
+dims array = dimensionRanges array
+
+getInputStreams :: [(Array, [Stencil Anno])] -> [Array] -> [Stream Anno]
+getInputStreams requiredStencils requiredArrays = stencilStreams ++ arrayStreams
+    where
+        arrayStreams = map arrayToStream requiredArrays
+        stencilStreams = concatMap getStencilStreams requiredStencils
+        getStencilStreams (array, stencils) = map curriedCon stencils
+            where
+                curriedCon = StencilStream (name array) Float (dims array)
+
+
+stencilArrayName (Stencil _ _ _ _ (VarName _ name)) = name
+
+-- match stencils to arrays and then return two lists
+-- ([(array, [stencils])], [arrays not accessed with stencils])
+-- build a two maps one of name -> array and another of name -> [stencil]
+-- then take the union of these to produce a name -> (array, [stencil]) map
+-- then return the elems of that combined map
+matchArraysToStencils :: [Array] -> [Stencil Anno] -> ([(Array, [Stencil Anno])], [Array])
+matchArraysToStencils arrays stencils = (DMap.elems stencilArrayMap, DMap.elems arrayOnlyMap)
+    where
+        stencilsGrouped = groupBy (\s1 s2 -> stencilArrayName s1 == stencilArrayName s2) stencilsSorted
+        stencilsSorted = sortBy (comparing (\s -> stencilArrayName s)) stencils
+        arrayMap = DMap.fromList $ map (\a -> ((getNameFromVarName . varName) a, a)) arrays
+        stencilMap = DMap.fromList $ map (\grp -> ((stencilArrayName . head) grp, grp)) stencilsGrouped
+        stencilArrayMap = DMap.intersectionWith (\array stencil -> (array, stencil)) arrayMap stencilMap
+        arrayOnlyMap = DMap.difference arrayMap stencilMap
+
+-- check the array writes index expr are only Con/loop vars
+validateArrayWrites :: [String] -> [Expr Anno] -> Bool
+validateArrayWrites loopVars arrayWrites = simpleExprOnly && onlyUsesLoopVars
+    where
+        allIndexExprs = concatMap idxVarQuery arrayWrites
+        simpleExprResults = map (validateExprListContents arrayWritesUseLoopVarsOrConOnly) allIndexExprs
+        simpleExprOnly = foldr (&&) True simpleExprResults
+        allUsedIndexVarNames = map getNameFromVarName $ concatMap extractVarNamesFromExpr allIndexExprs
+        onlyUsesLoopVars = all (\var -> var `elem` loopVars) allUsedIndexVarNames
+
+arrayWritesUseLoopVarsOrConOnly :: Expr Anno ->  [Bool]
+arrayWritesUseLoopVarsOrConOnly expr = case expr of
+                            (Con _ _ _) -> [True]
+                            (Var _ _ _) -> [True]
+                            _           -> [False]
+
+getStencilsQuery :: Fortran Anno -> [Stencil Anno]
+getStencilsQuery fortran = case fortran of
+    (OpenCLStencil _ _ stencils _) -> stencils
+    _                              -> []
+
+
+getLoopVarNames :: Fortran Anno -> [String]
+getLoopVarNames subBody = case subBody of
+        OpenCLMap _ _ _ _ loopVars _ _      ->  map getVarName loopVars
+        OpenCLReduce _ _ _ _ loopVars _ _ _ -> map getVarName loopVars
+    where
+        getVarName (varname, _, _, _) = getNameFromVarName varname

@@ -7,7 +7,8 @@ module MiniPP (
     miniPPProgUnit,
     miniPPP,
     showVarLst,
-    showSubName
+    showSubName,
+    showStencils
     )
 where
 

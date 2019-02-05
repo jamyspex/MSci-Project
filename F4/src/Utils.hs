@@ -2,6 +2,7 @@ module Utils where
 
 import           Data.Generics
 import qualified Data.Map             as DMap
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -41,15 +42,14 @@ removeDuplicates getKey input = DMap.elems uniqueMap
 validateExprListContents :: (Expr Anno -> [Bool]) -> Expr Anno -> Bool
 validateExprListContents subExprQuery expr = foldr (&&) True $ everything (++) (mkQ [] subExprQuery) expr
 
+-- get index expr from array accesses
+idxVarQuery :: Expr Anno -> [Expr Anno]
+idxVarQuery (Var _ _ [(_,indices)]) = indices
+
 getSubroutineBody :: SubRec -> Fortran Anno
-getSubroutineBody subrec = (getBody . getBlock) ast
+getSubroutineBody subrec = getSubBody ast
     where
         ast = subAst subrec
-        name = subName subrec
-        getBlock (Sub _ _ _ _ _ block) = block
-        getBlock (Module _ _ _ _ _ _ progunits) = getBlock $ head progunits
-        getBlock _ = error "Tried to get block from element other than Sub"
-        getBody (Block _ _ _ _ _ body) = body
 
 getArgName (ArgName _ name) = name
 
@@ -79,6 +79,8 @@ getSubBody :: ProgUnit Anno -> Fortran Anno
 getSubBody (Sub _ _ _ _ _ (Block _ _ _ _ _ fortran)) = fortran
 getSubBody (Module _ _ _ _ _ _ progUnits) = head $ map getSubBody progUnits
 
+getSubName (Sub _ _ _ (SubName _ name) _ _) = name
+
 getDecls :: ProgUnit Anno -> [Decl Anno]
 getDecls (Sub _ _ _ _ _ (Block _ _ _ _ decls _))  = everything (++) (mkQ [] getDeclsQuery) decls
 getDecls (Module _ _ _ _ _ _ progUnits) = concatMap getDecls progUnits
@@ -95,8 +97,14 @@ getDeclNames  (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) = map (getNameFromVarName 
 
 getAllVarNames expr = everything (++) (mkQ [] extractVarNamesFromExpr) expr
 
-getVarName decl = head $ everything (++) (mkQ [] extractVarNamesFromExpr) decl
+
+getVarName (Var _ _ ((varname, _):_)) = varname
+
+getVarNameG expr = head $ everything (++) (mkQ [] extractVarNamesFromExpr) expr
+
 getNameFromVarName (VarName _ name) = name
+
+declNameAsString = getNameFromVarName . getVarName . head . declNameQuery
 
 declNameQuery :: Decl Anno -> [Expr Anno]
 declNameQuery decl = case decl of
@@ -117,8 +125,9 @@ readIndex :: String -> Int
 readIndex = (round . read)
 
 data Array = Array {
-    varName       :: VarName Anno,
-    arrDimensions :: Int
+    varName         :: VarName Anno,
+    arrDimensions   :: Int,
+    dimensionRanges :: [(Int, Int)]
 } deriving Show
 
 arrayReadQuery :: [Array] -> Expr Anno -> [Expr Anno]
@@ -137,16 +146,22 @@ allVarsQuery expr = case expr of
                     v@(Var _ _ _) -> [v]
                     _             -> []
 
-data ArrayAccess = ArrayRead | ArrayWrite
+data ArrayAccess = ArrayRead | ArrayWrite deriving Show
 
-getArrayAccessQuery :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
-getArrayAccessQuery readOrWrite arrays fortran = allReadExprs
+getArrayAccesses :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
+getArrayAccesses readOrWrite arrays fortran = trace ("arrays length = " ++ ((show . length) arrays) ++ "\tallReadExprs length = " ++ ((show . length) allReadExprs) ++ "\n" ++ miniPPF fortran ++ "\n--------------------------") allReadExprs
     where
-        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) exprsFromFortran
+        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) (trace ("exprsFromFortran length = " ++ (show . length) exprsFromFortran) exprsFromFortran)
         exprsFromFortran = case fortran of
-                        (Assg _ _ lhs rhs) -> case readOrWrite of ArrayRead -> [rhs]; ArrayWrite -> [lhs]
+            (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
+            (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
+            (OpenCLStencil _ _ _ body) -> recursiveCall body
+            _ -> case readOrWrite of
+                ArrayRead ->
+                    case fortran of
+                        (Assg _ _ _ rhs) -> [rhs]
                         (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
-                        (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
+                        (DoWhile _ _ bound body) -> bound:recursiveCall body
                         (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
                         (If _ _ cond branch elseIfs elseBranch) ->
                             [cond] ++ recursiveCall branch ++ elseBranchResult
@@ -157,18 +172,43 @@ getArrayAccessQuery readOrWrite arrays fortran = allReadExprs
                                     (Just body) -> recursiveCall body
                                     _           -> []
                         (NullStmt _ _) -> []
-                        missing@_ -> []
-        recursiveCall = getArrayReadsQuery arrays
+                        _ -> []
+                ArrayWrite ->
+                    case fortran of
+                        (Assg _ _ lhs _) -> [lhs]
+                        _                -> []
+        arrayNames = map (\a -> let (VarName _ name) = varName a in name) arrays
+        recursiveCall = getArrayAccesses readOrWrite arrays
 
 
-getArrayReadsQuery :: [Array] -> Fortran Anno -> [Expr Anno]
-getArrayReadsQuery arrays fortran = getArrayAccessQuery ArrayRead arrays fortran
+getArrayReads :: [Array] -> Fortran Anno -> [Expr Anno]
+getArrayReads arrays fortran = getArrayAccesses ArrayRead arrays fortran
 
 arrayFromDecl :: Decl Anno -> Array
-arrayFromDecl decl@(Decl _ _ _ typeDecl) = Array { varName = name, arrDimensions = numberOfDimensions}
+arrayFromDecl decl = arrayFromDeclWithRanges False decl
+
+arrayFromDeclWithRanges :: Bool -> Decl Anno -> Array
+arrayFromDeclWithRanges withRanges decl@(Decl _ _ _ typeDecl) = Array {
+        varName = name,
+        arrDimensions = numberOfDimensions,
+        dimensionRanges = if withRanges then dimInts else []
+    }
     where
+        dimExprs = getArrayDimensions typeDecl
+        dimInts = map getArrayDimensionConstants dimExprs
         numberOfDimensions = length $ getArrayDimensions typeDecl
-        name = getVarName decl
+        name = (getVarName . head . declNameQuery) decl
+
+getArrayDimensionConstants :: (Expr Anno, Expr Anno) -> (Int, Int)
+getArrayDimensionConstants (expr1, expr2) = (getSingleConstant expr1, getSingleConstant expr2)
+
+-- get an int from a an expr defining array dimensions
+getSingleConstant :: Expr Anno -> Int
+getSingleConstant expr = case expr of
+    (Con _ _ val) -> read val :: Int
+    (Unary _ _ _ (Con _ _ val)) -> negate $ read val :: Int
+    (NullExpr _ _) -> 1 -- when array declared with starting index omitted, fortran defaults to 1
+    _ -> error ("Expr other than constant in array dimensions. \n")
 
 getArrayDimensions :: Type Anno -> [(Expr Anno, Expr Anno)]
 getArrayDimensions declType = case declType of

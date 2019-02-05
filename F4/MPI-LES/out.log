@@ -6535,12 +6535,16 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     end if
     aaa = 0.0
 ! OpenCLReduce ( ["u"],["aaa"],["(k,1,80,1)","(j,1,300,1)"],[],["(aaa,0.0)"]) {
-    aaa = amax1(aaa,u(300,j,k))
+    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+        aaa = amax1(aaa,u(300,j,k))
+    end if
 !}
     gaaa = aaa
     bbb = 1e38
 ! OpenCLReduce ( ["u"],["bbb"],["(k,1,80,1)","(j,1,300,1)"],[],["(bbb,1e38)"]) {
-    bbb = amin1(bbb,u(300,j,k))
+    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+        bbb = amin1(bbb,u(300,j,k))
+    end if
 !}
     gbbb = bbb
     uout = (gaaa+gbbb)/2.
@@ -7147,8 +7151,11 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs","i","j","k"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
-    area = area+dx1(i)*dy1(j)*dzn(k)
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
+&and. (k<=80)) then
+        rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
+        area = area+dx1(i)*dy1(j)*dzn(k)
+    end if
 !}
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
@@ -7230,8 +7237,11 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p","dx1","dy1","dzn","i","j","k"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-    pco = pco+dx1(i)*dy1(j)*dzn(k)
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
+&and. (k<=80)) then
+        pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+        pco = pco+dx1(i)*dy1(j)*dzn(k)
+    end if
 !}
     pav = pav/pco
 ! OpenCLMap ( ["pav","k","j"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
@@ -7421,7 +7431,9 @@ subroutine bondv1_2(u)
       integer :: k
       real(4), dimension(0:301,-1:301,0:81), intent(InOut) :: u
 ! OpenCLReduce ( ["u"],["aaa"],["(k,1,80,1)","(j,1,300,1)"],[],["(aaa,0.0)"]) {
-    aaa = amax1(aaa,u(300,j,k))
+    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+        aaa = amax1(aaa,u(300,j,k))
+    end if
 !}
 end subroutine bondv1_2
 
@@ -7435,7 +7447,9 @@ subroutine bondv1_3(u)
       integer :: k
       real(4), dimension(0:301,-1:301,0:81), intent(InOut) :: u
 ! OpenCLReduce ( ["u"],["bbb"],["(k,1,80,1)","(j,1,300,1)"],[],["(bbb,1e38)"]) {
-    bbb = amin1(bbb,u(300,j,k))
+    if ((j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+        bbb = amin1(bbb,u(300,j,k))
+    end if
 !}
 end subroutine bondv1_3
 
@@ -8625,8 +8639,11 @@ subroutine press_4(dx1,dy1,dzn,rhs)
       real(4) :: rhsav
       real(4) :: area
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs","i","j","k"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
-    area = area+dx1(i)*dy1(j)*dzn(k)
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
+&and. (k<=80)) then
+        rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
+        area = area+dx1(i)*dy1(j)*dzn(k)
+    end if
 !}
 end subroutine press_4
 
@@ -8663,8 +8680,11 @@ subroutine press_6(dx1,dy1,dzn,p)
       real(4) :: pav
       real(4) :: pco
 ! OpenCLReduce ( ["p","dx1","dy1","dzn","i","j","k"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-    pco = pco+dx1(i)*dy1(j)*dzn(k)
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .&
+&and. (k<=80)) then
+        pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+        pco = pco+dx1(i)*dy1(j)*dzn(k)
+    end if
 !}
 end subroutine press_6
 

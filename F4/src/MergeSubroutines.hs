@@ -39,7 +39,7 @@ mergeSubs argTransToSubRecs = (uniqueArgTrans, mergedSubRec)
         uniqueDecls = sortBy getDeclOrdering $ getUniqueDecls $ getAllDecls subsWithParamsReplaced
         uniqueArgs = getUniqueArgs $ getAllArgs subsWithParamsReplaced
         uniqueArgTrans = getUniqueArgTrans $ concatMap (\(argTrans, _) -> argTrans) argTransToSubRecs
-        combinedBody = combineBodies bodies -- $ trace (concatMap (\b -> miniPPF b ++ "\n\n") bodies)
+        combinedBody = combineBodies bodies
         bodies = map getSubBodyWithOriginalNameNode subsWithParamsReplaced
         combinedDeclNode = (combineDecls . seperateDecls) uniqueDecls
         combinedArgs = combineArgs uniqueArgs
@@ -212,9 +212,9 @@ getUniqueDecls :: [Decl Anno] -> [Decl Anno]
 getUniqueDecls decls = map (\(key, val) -> head val) $ DMap.toList mapValsSorted
    where
         mapValsSorted = DMap.map (sortBy orderDeclsByIntents) declMap
-        pairsForMap = map (\item -> ((getNameFromVarName . getVarName) item, item)) decls
+        pairsForMap = map (\item -> (declNameAsString item, item)) decls
         initialMap = DMap.fromList $ map (\key -> (key, [])) uniqueKeys
-        uniqueKeys = map (getNameFromVarName . getVarName) $ removeDuplicates (getNameFromVarName . getVarName) decls
+        uniqueKeys = map declNameAsString $ removeDuplicates declNameAsString decls
         declMap = foldr updateMap initialMap pairsForMap
         updateMap :: (String, Decl Anno) -> DMap.Map String [Decl Anno] -> DMap.Map String [Decl Anno]
         updateMap (key, val) map = DMap.adjust ([val] ++) key map
