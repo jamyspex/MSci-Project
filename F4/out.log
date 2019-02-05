@@ -1859,6 +1859,7 @@ no. of kernels: 5
  ! ==============================================
  ! Name: dyn_0 Order: 0
  ! Input streams:
+ !	StencilStream: eta type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
  ! Output streams:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
@@ -1887,6 +1888,11 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
+ !	StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	Stream: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
@@ -1941,6 +1947,10 @@ end subroutine dyn_1
  ! ==============================================
  ! Name: dyn_2 Order: 2
  ! Input streams:
+ !	StencilStream: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+ !	StencilStream: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+ !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
@@ -1995,6 +2005,8 @@ end subroutine dyn_2
  ! ==============================================
  ! Name: shapiro Order: 3
  ! Input streams:
+ !	StencilStream: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
@@ -2033,6 +2045,11 @@ end subroutine shapiro
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: hzero type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)

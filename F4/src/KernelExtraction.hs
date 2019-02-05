@@ -162,14 +162,15 @@ getKernelBody name fortran = case fortran of
 -- validateExprListContents in Utils.hs can be used. Along with a check that the variables
 -- used to index the array are the loop variables.
 buildKernel :: (Int, ProgUnit Anno) -> Kernel
-buildKernel (order, sub) = if arrayWritesValid then kernel else error "Array write invalid"
+buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kernel else error "Array write invalid")
     where
         subBody = getSubBody sub
         allDecls = getArrayDecls sub
         allArrays = map (arrayFromDeclWithRanges True) allDecls
         temp = trace ("allArrays length = " ++ ((show . length) allArrays)) allArrays -- TODO this isn't getting executed
-        arrayReadExprs = getArrayAccesses ArrayRead temp subBody
+        arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
         readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
+        temp2 = trace ("arrayReadExprs length = " ++ (show . length) arrayReadExprs ++ " readArrayNames = " ++ (show readArrayNames)) readArrayNames
         arrayReads = filter (filterAllArrays readArrayNames) allArrays
         arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
         writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs

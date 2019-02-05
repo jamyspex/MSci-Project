@@ -146,33 +146,38 @@ allVarsQuery expr = case expr of
                     v@(Var _ _ _) -> [v]
                     _             -> []
 
-data ArrayAccess = ArrayRead | ArrayWrite
+data ArrayAccess = ArrayRead | ArrayWrite deriving Show
 
 getArrayAccesses :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
-getArrayAccesses readOrWrite arrays fortran = allReadExprs
+getArrayAccesses readOrWrite arrays fortran = trace ("arrays length = " ++ ((show . length) arrays) ++ "\tallReadExprs length = " ++ ((show . length) allReadExprs) ++ "\n" ++ miniPPF fortran ++ "\n--------------------------") allReadExprs
     where
-        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) exprsFromFortran
-        exprsFromFortran = case readOrWrite of
-            ArrayRead ->
-                case fortran of
-                    (Assg _ _ _ rhs) -> [rhs]
-                    (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
-                    (DoWhile _ _ bound body) -> [bound] ++ recursiveCall body
-                    (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
-                    (If _ _ cond branch elseIfs elseBranch) ->
-                        [cond] ++ recursiveCall branch ++ elseBranchResult
-                        ++ branchConds ++ concatMap recursiveCall branchBodys
-                        where
-                            (branchConds, branchBodys) = unzip elseIfs
-                            elseBranchResult = case elseBranch of
-                                (Just body) -> recursiveCall body
-                                _           -> []
-                    (NullStmt _ _) -> []
-                    _ -> []
-            ArrayWrite ->
-                case fortran of
-                    (Assg _ _ lhs _) -> [lhs]
-                    _                -> []
+        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) (trace ("exprsFromFortran length = " ++ (show . length) exprsFromFortran) exprsFromFortran)
+        exprsFromFortran = case fortran of
+            (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
+            (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
+            (OpenCLStencil _ _ _ body) -> recursiveCall body
+            _ -> case readOrWrite of
+                ArrayRead ->
+                    case fortran of
+                        (Assg _ _ _ rhs) -> [rhs]
+                        (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
+                        (DoWhile _ _ bound body) -> bound:recursiveCall body
+                        (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
+                        (If _ _ cond branch elseIfs elseBranch) ->
+                            [cond] ++ recursiveCall branch ++ elseBranchResult
+                            ++ branchConds ++ concatMap recursiveCall branchBodys
+                            where
+                                (branchConds, branchBodys) = unzip elseIfs
+                                elseBranchResult = case elseBranch of
+                                    (Just body) -> recursiveCall body
+                                    _           -> []
+                        (NullStmt _ _) -> []
+                        _ -> []
+                ArrayWrite ->
+                    case fortran of
+                        (Assg _ _ lhs _) -> [lhs]
+                        _                -> []
+        arrayNames = map (\a -> let (VarName _ name) = varName a in name) arrays
         recursiveCall = getArrayAccesses readOrWrite arrays
 
 
