@@ -158,6 +158,9 @@ getArrayAccesses readOrWrite arrays fortran = allArrayExprs -- trace ("arrays le
             (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
             (OpenCLStencil _ _ _ body) -> recursiveCall body
             _ -> case readOrWrite of
+                -- Array reads are basically anywhere but the left hand side of a assignment
+                -- so include all expression nodes from the fortran nodes EXCEPT the lhs of an
+                -- assigment
                 ArrayRead ->
                     case fortran of
                         (Assg _ _ _ rhs) -> [rhs]
@@ -171,13 +174,24 @@ getArrayAccesses readOrWrite arrays fortran = allArrayExprs -- trace ("arrays le
                                 elseBranchResult = case elseBranch of
                                     (Just body) -> recursiveCall body
                                     _           -> []
-                        (NullStmt _ _) -> []
                         _ -> []
+                -- Array writes are only on the left hand side of an assignment
+                -- so only include the lhs of assignment nodes. Using the recursive call
+                -- to inspection all the Fortran node sub children
                 ArrayWrite ->
                     case fortran of
                         (Assg _ _ lhs _) -> [lhs]
-                        _                -> []
-        arrayNames = map (\a -> let (VarName _ name) = varName a in name) arrays
+                        (For _ _ _ _ _ _ body) -> recursiveCall body
+                        (DoWhile _ _ _ body) -> recursiveCall body
+                        (If _ _ _ branch elseIfs elseBranch) ->
+                         recursiveCall branch ++ elseBranchResult
+                         ++ concatMap recursiveCall branchBodys
+                            where
+                                (_, branchBodys) = unzip elseIfs
+                                elseBranchResult = case elseBranch of
+                                    (Just body) -> recursiveCall body
+                                    _           -> []
+                        _ -> []
         recursiveCall = getArrayAccesses readOrWrite arrays
 
 
