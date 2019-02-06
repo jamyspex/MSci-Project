@@ -167,20 +167,20 @@ buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kerne
         subBody = getSubBody sub
         allDecls = getArrayDecls sub
         allArrays = map (arrayFromDeclWithRanges True) allDecls
-        temp = trace ("allArrays length = " ++ ((show . length) allArrays)) allArrays -- TODO this isn't getting executed
         arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
         readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
-        temp2 = trace ("arrayReadExprs length = " ++ (show . length) arrayReadExprs ++ " readArrayNames = " ++ (show readArrayNames)) readArrayNames
         arrayReads = filter (filterAllArrays readArrayNames) allArrays
         arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
         writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs
-        arrayWrites = filter (filterAllArrays writtenArrayNames) allArrays
+        temp2 = trace ("writtenArrayNames = " ++ (show writtenArrayNames)) writtenArrayNames
+        arrayWrites = filter (filterAllArrays temp2) allArrays
         stencils = everything (++) (mkQ [] getStencilsQuery) subBody
         loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
         arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
         (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
         inputStreams = getInputStreams stencilArrays arraysNoStencils
-        outputStreams = map arrayToStream arrayWrites
+        temp = trace ("arrayWrites length = " ++ ((show . length) arrayWrites)) arrayWrites
+        outputStreams = map arrayToStream temp
         kernel = Kernel {
             inputStreams = inputStreams,
             outputStreams = outputStreams,
@@ -189,15 +189,7 @@ buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kerne
             kernelName = getSubName sub
         }
 
-        -- data Kernel = Kernel {
-        --     inputStreams  :: [Stream Anno],
-        --     outputStreams :: [Stream Anno],
-        --     kernelName    :: String,
-        --     body          :: ProgUnit Anno,
-        --     order         :: Int
-        -- }
-
---
+-- used for filtering all array declarations to writes/reads
 filterAllArrays :: [String] -> Array -> Bool
 filterAllArrays wanted candidate = name `elem` wanted
     where

@@ -130,15 +130,15 @@ data Array = Array {
     dimensionRanges :: [(Int, Int)]
 } deriving Show
 
-arrayReadQuery :: [Array] -> Expr Anno -> [Expr Anno]
-arrayReadQuery arrays expr = case expr of
+arrayExprQuery :: [Array] -> Expr Anno -> [Expr Anno]
+arrayExprQuery arrays expr = case expr of
     var@(Var _ _ ((VarName _ name, (idx:_)):_)) -> if (name `elem` arrayNames) then [var] else []
     _                            -> []
     where
         arrayNames = map (\array -> let (VarName _ name) = (varName array) in name) arrays
 
 getAllArrayAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
-getAllArrayAccesses arrays fortran = concatMap (arrayReadQuery arrays) allVars
+getAllArrayAccesses arrays fortran = concatMap (arrayExprQuery arrays) allVars
     where
         allVars = everything (++) (mkQ [] (allVarsQuery)) fortran
 
@@ -149,10 +149,11 @@ allVarsQuery expr = case expr of
 data ArrayAccess = ArrayRead | ArrayWrite deriving Show
 
 getArrayAccesses :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
-getArrayAccesses readOrWrite arrays fortran = trace ("arrays length = " ++ ((show . length) arrays) ++ "\tallReadExprs length = " ++ ((show . length) allReadExprs) ++ "\n" ++ miniPPF fortran ++ "\n--------------------------") allReadExprs
+getArrayAccesses readOrWrite arrays fortran = allArrayExprs -- trace ("arrays length = " ++ ((show . length) arrays) ++ "\tallArrayExprs length = " ++ ((show . length) allArrayExprs) ++ "\n" ++ miniPPF fortran ++ "\n--------------------------") allArrayExprs
     where
-        allReadExprs = everything (++) (mkQ [] (arrayReadQuery arrays)) (trace ("exprsFromFortran length = " ++ (show . length) exprsFromFortran) exprsFromFortran)
+        allArrayExprs = everything (++) (mkQ [] (arrayExprQuery arrays)) exprsFromFortran
         exprsFromFortran = case fortran of
+            (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
             (OpenCLMap _ _ _ _ _ _ body) -> recursiveCall body
             (OpenCLReduce _ _ _ _ _ _ _ body) -> recursiveCall body
             (OpenCLStencil _ _ _ body) -> recursiveCall body
@@ -162,7 +163,6 @@ getArrayAccesses readOrWrite arrays fortran = trace ("arrays length = " ++ ((sho
                         (Assg _ _ _ rhs) -> [rhs]
                         (For _ _ _ start bound incre body) -> (start:bound:incre:(recursiveCall body))
                         (DoWhile _ _ bound body) -> bound:recursiveCall body
-                        (FSeq _ _ fst snd) -> recursiveCall fst ++ recursiveCall snd
                         (If _ _ cond branch elseIfs elseBranch) ->
                             [cond] ++ recursiveCall branch ++ elseBranchResult
                             ++ branchConds ++ concatMap recursiveCall branchBodys

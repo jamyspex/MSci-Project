@@ -2051,6 +2051,10 @@ end subroutine shapiro
  !	Stream: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
+ !	Stream: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet type: Float dimensions: [(0,501),(0,501)]
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
