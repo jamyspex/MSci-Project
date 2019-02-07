@@ -8778,6 +8778,7 @@ no. of kernels: 45
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_0(dt,dxs,f,p,ro,u)
       real(4), intent(In) :: dt
@@ -8813,6 +8814,7 @@ end subroutine velnw_0
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_1(dt,dys,g,p,ro,v)
       real(4), intent(In) :: dt
@@ -8848,6 +8850,7 @@ end subroutine velnw_1
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  ! Output streams:
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_2(dt,dzs,h,p,ro,w)
       real(4), intent(In) :: dt
@@ -8883,6 +8886,7 @@ end subroutine velnw_2
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_0(dzn,u,v,w,z2)
       real(4), dimension(-1:82), intent(In) :: dzn
@@ -8914,6 +8918,7 @@ end subroutine bondv1_0
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_1(u,v,w)
       integer :: i
@@ -8938,6 +8943,8 @@ end subroutine bondv1_1
  ! Input streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
+ ! Output Reduction Variables:
+ !	"aaa"
  ! --------------------------------------------
 subroutine bondv1_2(u)
       real(4) :: aaa
@@ -8957,6 +8964,8 @@ end subroutine bondv1_2
  ! Input streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
+ ! Output Reduction Variables:
+ !	"bbb"
  ! --------------------------------------------
 subroutine bondv1_3(u)
       real(4) :: bbb
@@ -8978,6 +8987,7 @@ end subroutine bondv1_3
  !	Stream: dxs type: Float dimensions: [(0,300)]
  ! Output streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_4(dt,dxs,u)
       real(4) :: uout
@@ -9005,6 +9015,7 @@ end subroutine bondv1_4
  !	Stream: dxs type: Float dimensions: [(0,300)]
  ! Output streams:
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_5(dt,dxs,v)
       real(4) :: uout
@@ -9032,6 +9043,7 @@ end subroutine bondv1_5
  !	Stream: dxs type: Float dimensions: [(0,300)]
  ! Output streams:
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_6(dt,dxs,w)
       real(4) :: uout
@@ -9058,6 +9070,7 @@ end subroutine bondv1_6
  !	StencilStream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array u: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_7(u)
       integer :: i
@@ -9080,6 +9093,7 @@ end subroutine bondv1_7
  !	StencilStream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array v: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_8(v)
       integer :: i
@@ -9102,6 +9116,7 @@ end subroutine bondv1_8
  !	StencilStream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	2 point stencil on 3D array w: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_9(w)
       integer :: i
@@ -9126,6 +9141,7 @@ end subroutine bondv1_9
  !	StencilStream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array u: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
  !	Stream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_10(u)
       integer :: i
@@ -9150,6 +9166,7 @@ end subroutine bondv1_10
  !	StencilStream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array v: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
  !	Stream: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_11(v)
       integer :: i
@@ -9173,6 +9190,7 @@ end subroutine bondv1_11
  ! Input streams:
  ! Output streams:
  !	Stream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine bondv1_12(w)
       integer :: i
@@ -9197,6 +9215,7 @@ end subroutine bondv1_12
  !	Stream: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_0(dx1,dy1,dzn,dzs,f,u,v,w)
       real(4) :: cov1_i
@@ -9303,6 +9322,7 @@ end subroutine velfg_0
  !	Stream: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_1(dx1,dy1,dzn,dzs,g,u,v,w)
       real(4) :: cov4_i
@@ -9407,6 +9427,7 @@ end subroutine velfg_1
  !	StencilStream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	9 point stencil on 3D array w: [[1,0,0],[0,C=0,0],[0,C=1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0],[-1,0,0]]
  ! Output streams:
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_2(dx1,dy1,dzn,h,u,v,w)
       real(4) :: cov7_i
@@ -9500,6 +9521,7 @@ end subroutine velfg_2
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_3(f)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: f
@@ -9519,6 +9541,7 @@ end subroutine velfg_3
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_4(g)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: g
@@ -9537,6 +9560,7 @@ end subroutine velfg_4
  ! Input streams:
  ! Output streams:
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velfg_5(h)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: h
@@ -9579,6 +9603,7 @@ end subroutine velfg_5
  !	Stream: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,us&
 &um,v,vsum,w,wsum)
@@ -9640,6 +9665,7 @@ end subroutine feedbf
  !	Stream: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
  !	Stream: delx1 type: Float dimensions: [(1,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_0(delx1,dx1,dy1,dzn)
       real(4), dimension(80), intent(Out) :: delx1
@@ -9670,6 +9696,7 @@ end subroutine les_0
  !	Stream: diu9 type: Float dimensions: [(0,302),(0,302),(0,82)]
  ! Output streams:
  !	Stream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_1(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
       real(4) :: csx1
@@ -9737,6 +9764,7 @@ end subroutine les_1
  !	StencilStream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[C=1,0,0],[C=300,0,0]]
  ! Output streams:
  !	Stream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_2(sm)
       integer :: j
@@ -9759,6 +9787,7 @@ end subroutine les_2
  !	StencilStream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	Stream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_3(sm)
       integer :: i
@@ -9783,6 +9812,7 @@ end subroutine les_3
  !	StencilStream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
  !	Stream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_4(sm)
       integer :: i
@@ -9817,6 +9847,7 @@ end subroutine les_4
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_5(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
       real(4), dimension(-1:302,0:302,0:82), intent(In) :: diu1
@@ -9907,6 +9938,7 @@ end subroutine les_5
  !	Stream: uspd type: Float dimensions: [(0,301),(0,301)]
  ! Output streams:
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_6(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm,u,uspd)
       real(4), dimension(-1:302,0:302,0:82), intent(In) :: diu1
@@ -9990,6 +10022,7 @@ end subroutine les_6
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_7(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
       real(4), dimension(0:302,0:302,0:82), intent(In) :: diu2
@@ -10080,6 +10113,7 @@ end subroutine les_7
  !	Stream: vspd type: Float dimensions: [(0,301),(0,301)]
  ! Output streams:
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_8(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm,v,vspd)
       real(4), dimension(0:302,0:302,0:82), intent(In) :: diu2
@@ -10162,6 +10196,7 @@ end subroutine les_8
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_9(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
       real(4), dimension(0:302,0:302,0:82), intent(In) :: diu3
@@ -10249,6 +10284,7 @@ end subroutine les_9
  !	Stream: gold type: Float dimensions: [(1,300),(1,300),(1,80)]
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: hold type: Float dimensions: [(1,300),(1,300),(1,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine adam(f,fold,g,gold,h,hold)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: f
@@ -10285,6 +10321,7 @@ end subroutine adam
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_0(f)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: f
@@ -10304,6 +10341,7 @@ end subroutine press_0
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_1(g)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: g
@@ -10322,6 +10360,7 @@ end subroutine press_1
  ! Input streams:
  ! Output streams:
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_2(h)
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: h
@@ -10351,6 +10390,7 @@ end subroutine press_2
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_3(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
       real(4), intent(In) :: dt
@@ -10396,6 +10436,9 @@ end subroutine press_3
  !	Stream: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
+ ! Output Reduction Variables:
+ !	"rhsav"
+ !	"area"
  ! --------------------------------------------
 subroutine press_4(dx1,dy1,dzn,rhs)
       real(4), dimension(-1:301), intent(In) :: dx1
@@ -10423,6 +10466,7 @@ end subroutine press_4
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_5(rhs)
       integer :: i
@@ -10447,6 +10491,9 @@ end subroutine press_5
  !	Stream: dzn type: Float dimensions: [(-1,82)]
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
+ ! Output Reduction Variables:
+ !	"pav"
+ !	"pco"
  ! --------------------------------------------
 subroutine press_6(dx1,dy1,dzn,p)
       real(4), dimension(-1:301), intent(In) :: dx1
@@ -10474,6 +10521,7 @@ end subroutine press_6
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_7(p)
       integer :: i
@@ -10496,6 +10544,7 @@ end subroutine press_7
  !	StencilStream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
  ! Output streams:
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_8(p)
       integer :: j
@@ -10520,6 +10569,7 @@ end subroutine press_8
  !	StencilStream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
  ! Output streams:
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_9(p)
       integer :: i
@@ -10544,6 +10594,7 @@ end subroutine press_9
  !	StencilStream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
  ! Output streams:
  !	Stream: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_10(p)
       integer :: i

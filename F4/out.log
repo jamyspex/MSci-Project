@@ -1863,6 +1863,7 @@ no. of kernels: 5
  ! Output streams:
  !	Stream: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
       real :: dt
@@ -1898,6 +1899,7 @@ end subroutine dyn_0
  ! Output streams:
  !	Stream: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501) :: du
@@ -1957,6 +1959,7 @@ end subroutine dyn_1
  !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
       real :: dt
@@ -2014,6 +2017,7 @@ end subroutine dyn_2
  !	StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
       real :: eps
@@ -2061,6 +2065,7 @@ end subroutine shapiro
  !	Stream: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
