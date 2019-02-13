@@ -1,6 +1,6 @@
 module KernelExtraction where
 
-import Data.Generics
+import           Data.Generics
 import           Data.List
 import           Data.List.Index
 import qualified Data.Map             as DMap
@@ -9,15 +9,15 @@ import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
+import           Parser
 import           Utils
 
 data Kernel = Kernel {
-    inputStreams        :: [Stream Anno],
-    outputStreams       :: [Stream Anno],
-    outputReductionVars :: [String],
-    kernelName          :: String,
-    body                :: ProgUnit Anno,
-    order               :: Int
+    inputStreams  :: [Stream Anno],
+    outputStreams :: [Stream Anno],
+    kernelName    :: String,
+    body          :: ProgUnit Anno,
+    order         :: Int
 }
 
 instance Show Kernel where
@@ -27,15 +27,12 @@ instance Show Kernel where
                   (concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS) ++
                   " ! Output streams:\n" ++
                   (concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS) ++
-                  " ! Output Reduction Variables:\n" ++
-                  (concatMap (\r -> " !\t" ++ show r ++ "\n") outR) ++
                   " ! --------------------------------------------\n" ++
                   (miniPPProgUnit b) ++
                   " ! ==============================================\n\n"
                     where
                         inS = inputStreams kernel
                         outS = outputStreams kernel
-                        outR = outputReductionVars kernel
                         name = kernelName kernel
                         b = body kernel
                         o = order kernel
@@ -61,12 +58,12 @@ data StreamValueType = Float deriving Show
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines
-getKernels :: SubRec -> IO ()
-getKernels subrec = do
-    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
-    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
-    putStrLn $ concatMap show kernels
-    return ()
+getKernels :: SubRec -> [(Int, ProgUnit Anno)]
+getKernels subrec = kernelSubsAndOrder
+--    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
+--    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
+--    putStrLn $ concatMap show kernels
+--    return ()
     where
         allDecls = getDecls $ subAst subrec
         allArgs = getArgs $ subAst subrec
@@ -165,27 +162,27 @@ getKernelBody name fortran = case fortran of
 -- validateExprListContents in Utils.hs can be used. Along with a check that the variables
 -- used to index the array are the loop variables.
 buildKernel :: (Int, ProgUnit Anno) -> Kernel
-buildKernel (order, sub) = if arrayWritesValid then kernel else error "Array write invalid"
+buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kernel else error "Array write invalid")
     where
         subBody = getSubBody sub
         allDecls = getArrayDecls sub
-        reductionVarNames = everything (++) (mkQ [] getReductionVarNamesQuery) subBody
         allArrays = map (arrayFromDeclWithRanges True) allDecls
         arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
         readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
         arrayReads = filter (filterAllArrays readArrayNames) allArrays
         arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
         writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs
-        arrayWrites = filter (filterAllArrays writtenArrayNames) allArrays
+        temp2 = trace ("writtenArrayNames = " ++ (show writtenArrayNames)) writtenArrayNames
+        arrayWrites = filter (filterAllArrays temp2) allArrays
         stencils = everything (++) (mkQ [] getStencilsQuery) subBody
-        loopVariables = everything (++) (mkQ [] getLoopVarNamesQuery) subBody
+        loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
         arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
         (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
         inputStreams = getInputStreams stencilArrays arraysNoStencils
-        outputStreams = map arrayToStream arrayWrites
+        temp = trace ("arrayWrites length = " ++ ((show . length) arrayWrites)) arrayWrites
+        outputStreams = map arrayToStream temp
         kernel = Kernel {
             inputStreams = inputStreams,
-            outputReductionVars = reductionVarNames,
             outputStreams = outputStreams,
             body = sub,
             order = order,
@@ -253,17 +250,11 @@ getStencilsQuery fortran = case fortran of
     (OpenCLStencil _ _ stencils _) -> stencils
     _                              -> []
 
-getReductionVarNamesQuery :: Fortran Anno -> [String]
-getReductionVarNamesQuery fortran = case fortran of
-        OpenCLReduce _ _ _ _ _ _ reductionVars _  -> map getVarName reductionVars
-        _ -> []
-    where
-        getVarName (varname, _) = getNameFromVarName varname
 
-getLoopVarNamesQuery :: Fortran Anno -> [String]
-getLoopVarNamesQuery fortran = case fortran of
+getLoopVarNames :: Fortran Anno -> [String]
+getLoopVarNames subBody = case subBody of
         OpenCLMap _ _ _ _ loopVars _ _      ->  map getVarName loopVars
         OpenCLReduce _ _ _ _ loopVars _ _ _ -> map getVarName loopVars
-        _                                   -> []
+--        _ -> []
     where
         getVarName (varname, _, _, _) = getNameFromVarName varname

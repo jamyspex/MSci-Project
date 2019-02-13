@@ -8,6 +8,7 @@ import           Utils                   (SubRec (..),
                                           debug_displaySubRoutineTable)
 
 import           AddKernelLoopGuards
+import           AddSmartCaches
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
 import           Data.Generics           (everything, everywhere, everywhereM,
@@ -108,8 +109,9 @@ compilerMain args = do
 
     let guardedMerged = srtWithGuards DMap.! mergedOffloadName
 
-    getKernels guardedMerged
+    let kernelsAndOrders = getKernels guardedMerged
 
+    let kernelsAndSmartCaches = insertSmartCaches kernelsAndOrders
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
     --     (DMap.toList combinedKernelSubroutines)
 
