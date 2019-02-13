@@ -109,9 +109,9 @@ compilerMain args = do
 
     let guardedMerged = srtWithGuards DMap.! mergedOffloadName
 
-    let kernelsAndOrders = getKernels guardedMerged
+    let kernels = getKernels guardedMerged
 
-    let kernelsAndSmartCaches = insertSmartCaches kernelsAndOrders
+    -- let kernelsAndSmartCaches = insertSmartCaches kernels
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
     --     (DMap.toList combinedKernelSubroutines)
 

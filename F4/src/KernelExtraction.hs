@@ -13,35 +13,14 @@ import           Parser
 import           Utils
 
 data Kernel = Kernel {
-    inputStreams  :: [Stream Anno],
-    outputStreams :: [Stream Anno],
-    kernelName    :: String,
-    body          :: ProgUnit Anno,
-    order         :: Int
+    inputStreams        :: [Stream Anno],
+    outputStreams       :: [Stream Anno],
+    kernelName          :: String,
+    outputReductionVars :: [String],
+    body                :: ProgUnit Anno,
+    order               :: Int
 }
 
-instance Show Kernel where
-    show kernel = " ! ==============================================\n" ++
-                  " ! Name: " ++ name ++ " Order: " ++ (show o) ++ "\n" ++
-                  " ! Input streams:\n" ++
-                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS) ++
-                  " ! Output streams:\n" ++
-                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS) ++
-                  " ! --------------------------------------------\n" ++
-                  (miniPPProgUnit b) ++
-                  " ! ==============================================\n\n"
-                    where
-                        inS = inputStreams kernel
-                        outS = outputStreams kernel
-                        name = kernelName kernel
-                        b = body kernel
-                        o = order kernel
-
-printStream (Stream name valueType dims) =
-    "Stream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims
-printStream (StencilStream name valueType dims stencil) =
-    "StencilStream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims ++
-    (showStencils "\t" [stencil])
 
 data Stream p = Stream
                 String           -- name
@@ -58,8 +37,8 @@ data StreamValueType = Float deriving Show
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines
-getKernels :: SubRec -> [(Int, ProgUnit Anno)]
-getKernels subrec = kernelSubsAndOrder
+getKernels :: SubRec -> [Kernel]
+getKernels subrec = kernels
 --    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
 --    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
 --    putStrLn $ concatMap show kernels
@@ -166,6 +145,7 @@ buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kerne
     where
         subBody = getSubBody sub
         allDecls = getArrayDecls sub
+        reductionVars = everything (++) (mkQ [] getReductionVarNameQuery) subBody
         allArrays = map (arrayFromDeclWithRanges True) allDecls
         arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
         readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
@@ -184,6 +164,7 @@ buildKernel (order, sub) = trace ("buildKernel") (if arrayWritesValid then kerne
         kernel = Kernel {
             inputStreams = inputStreams,
             outputStreams = outputStreams,
+            outputReductionVars = reductionVars,
             body = sub,
             order = order,
             kernelName = getSubName sub
@@ -255,6 +236,39 @@ getLoopVarNames :: Fortran Anno -> [String]
 getLoopVarNames subBody = case subBody of
         OpenCLMap _ _ _ _ loopVars _ _      ->  map getVarName loopVars
         OpenCLReduce _ _ _ _ loopVars _ _ _ -> map getVarName loopVars
---        _ -> []
+        _                                   -> []
     where
         getVarName (varname, _, _, _) = getNameFromVarName varname
+
+getReductionVarNameQuery :: Fortran Anno -> [String]
+getReductionVarNameQuery fortran = case fortran of
+                                     OpenCLReduce _ _ _ _ _ _ redVar _ -> map getVarName redVar
+                                     _ -> []
+                                where
+                                    getVarName (varname, _) = getNameFromVarName varname
+
+instance Show Kernel where
+    show kernel = " ! ==============================================\n" ++
+                  " ! Name: " ++ name ++ " Order: " ++ (show o) ++ "\n" ++
+                  " ! Input streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS) ++
+                  " ! Output streams:\n" ++
+                  (concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS) ++
+                  " ! Output Reduction Variables:\n" ++
+                  (concatMap (\r -> "! \t" ++ show r  ++ "\n") outR) ++
+                  " ! --------------------------------------------\n" ++
+                  (miniPPProgUnit b) ++
+                  " ! ==============================================\n\n"
+                    where
+                        inS = inputStreams kernel
+                        outS = outputStreams kernel
+                        name = kernelName kernel
+                        outR = outputReductionVars kernel
+                        b = body kernel
+                        o = order kernel
+
+printStream (Stream name valueType dims) =
+    "Stream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims
+printStream (StencilStream name valueType dims stencil) =
+    "StencilStream: " ++ name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims ++
+    (showStencils "\t" [stencil])
