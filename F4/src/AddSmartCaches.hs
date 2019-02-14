@@ -6,71 +6,54 @@ import           Debug.Trace
 import qualified KernelExtraction     as K
 import           Language.Fortran
 import           LanguageFortranTools
+import           MiniPP
 import           Pipeline
--- data Pipeline a = Map {
---         inputStreams  :: [Stream],
---         outputStreams :: [Stream],
---         kernelName    :: String,
---         body          :: ProgUnit Anno,
---         nextStage     :: Pipeline a,
---         sharedData    :: a
---     } | Reduce {
---         inputStreams  :: [Stream],
---         outputStreams :: [Stream],
---         kernelName    :: String,
---         body          :: ProgUnit Anno,
---         nextStage     :: Pipeline a,
---         sharedData    :: a
---     } | SmartCache {
---         inputStreams   :: [Stream],
---         stencils       :: [Stencil Anno],
---         outputStreams  :: [Stream],
---         smartCachename :: String,
---         nextStage      :: Pipeline a,
---         sharedData     :: a
---     } | MemoryReader {
---         memMapToOutputStreams :: [(FPGAMemArray, Stream)],
---         nextStage             :: Pipeline a,
---         memReaderName         :: String,
---         sharedData            :: a
---     } | MemoryWriter {
---         inputStreamsToMemMap :: [(Stream, FPGAMemArray)],
---         memWriterName        :: String,
---         sharedData           :: a
---     } deriving Show
 
 
--- data Kernel = Kernel {
---     inputStreams        :: [Stream Anno],
---     outputStreams       :: [Stream Anno],
---     kernelName          :: String,
---     outputReductionVars :: [String],
---     body                :: ProgUnit Anno,
---     order               :: Int
--- }
+-- data SmartCacheInfo = SCI {
+--     stencil :: Stencil,
+--
+--                           }
 
 -- This module anlayses the list of kernel subroutines and their required
 -- input streams. If it finds StencilStream inputs it constructs an appropriate smart cache
 -- and inserts it into the list with the appropriate position value set.
 insertSmartCaches :: [K.Kernel] -> IO ()
 insertSmartCaches kernels = do
-    putStrLn output
-    print $ getStencilReachWithArrayDimens testData
+    mapM_ processOneKernel kernels
     return ()
     where
-        output = concatMap (\k -> "\n" ++ show k ++ "\n" ++ "stencil size = " ++ show stenSize) kernelsRequiringSmartCache
-        kernelsRequiringSmartCache = filter getKernelsRequiringSmartCaches kernels
         stenSize = getSmartCacheSize testData
 
-getKernelsRequiringSmartCaches :: K.Kernel -> Bool
-getKernelsRequiringSmartCaches kern = numberOfStenStreams > 0
-    where
-        isStencil stream = case stream of
-                          K.Stream {}        -> []
-                          K.StencilStream {} -> [True]
-        isStencilStream = concatMap isStencil $ K.inputStreams kern
-        numberOfStenStreams = length isStencilStream
+-- THE PLAN :
+-- 1) Assume all the arrays are square and of equal side
+-- 2) Work out the most disparate StencilIndices
+-- 3) Find the index of the indices that differ e.g. (0, -1) and (0, 1) the index that differs is 1
+-- 4) Use the array dimensions to work out the size of the smart cache needed
 
+processOneKernel :: K.Kernel -> IO ()
+processOneKernel k = do
+    putStrLn "--------------------------------\n"
+    print k
+    mapM_ (\s -> putStrLn (getStreamName s ++ " : " ++ show (getLargestStencilReach s))) requiredStencilStreams
+    putStrLn "================================\n"
+    return ()
+    where
+        requiredStencilStreams = filter isStencil $ K.inputStreams k
+
+getStreamName (K.Stream name _ _)          = name
+getStreamName (K.StencilStream name _ _ _) = name
+
+-- getKernelsRequiringSmartCaches :: K.Kernel -> Bool
+-- getKernelsRequiringSmartCaches kern = numberOfStenStreams > 0
+--     where
+--         isStencilStream = concatMap isStencil $ K.inputStreams kern
+--         numberOfStenStreams = length isStencilStream
+
+
+isStencil stream = case stream of
+                          K.Stream {}        -> False
+                          K.StencilStream {} -> True
 
 testData = K.StencilStream "test" K.Float [(0, 400), (1, 500), (0, 300)]
     (Stencil nullAnno 3 2 [[Offset (-1), Offset (-2), Offset 0], [Offset 1, Offset 2, Offset 0],
@@ -88,12 +71,12 @@ getSmartCacheSize (K.StencilStream name _ arrayDimens stencil) = trace
 -- list of typles [((lower bound, upper bound), (most extreme pair of opposite
 -- stencil points)) in the testData example this would be [((0, 400), (Offset -1, Offset 1)),
 -- ((1, 500), (Offset -2, Offset 2))]
-getStencilReachWithArrayDimens :: K.Stream Anno -> ([StencilIndex], [StencilIndex]) --[((Int, Int), (StencilIndex, StencilIndex))]
-getStencilReachWithArrayDimens stream@(K.StencilStream _ _ arrayDimens stencil) =
-    if trace ("allOffsets = " ++ show allOffsets ++ " sameLength = " ++ show sameLength) valid then
-        trace ("most distant points = " ++ show mostDistantPair) mostDistantPair
+getLargestStencilReach :: K.Stream Anno -> ([StencilIndex], [StencilIndex])
+getLargestStencilReach stream@(K.StencilStream _ _ arrayDimens stencil) =
+    if valid then
+        mostDistantPair
     else
-        error "Stencil indices invalid"
+        error ("Stencil indices invalid: sameLength = " ++ show sameLength ++ " allOffsets = " ++ show allOffsets)
     where
         (Stencil _ _ _ stencilIndices _) = stencil
         valid = allOffsets && sameLength
@@ -111,13 +94,19 @@ getMostDistantStencilPoints input = head sorted
         sorted = sortBy (\(p1s1, p1s2) (p2s1, p2s2) ->
             compare (calculateDistance p2s1 p2s2) (calculateDistance p1s1 p1s2)) allPairs
 
-
+-- Calculate the distance between two stencil indices
 calculateDistance :: [StencilIndex] -> [StencilIndex] -> Int
 calculateDistance i1 i2 = distance
     where
         valid = length i1 == length i2
-        coordPairs = map (\idx -> (i1!!idx, i2!!idx)) (range (0,length i1 - 1))
-        distance = foldr (\((Offset v1), (Offset v2)) acc -> acc + (v1 - v2)^2) 0 coordPairs
+        -- This is here to make it respect the stream direction so what dimension the streaming is preformed in
+        -- e.g. along dimension 1 then dimension 2 then dimension 3 up to dimension N. A more concrete example
+        -- would be in the case of a 2D array do you stream cols then rows or rows then cols?
+        -- In an ideal world this would be chosen by the compiler after it works out the smallest
+        -- overall stencil usage based on trying different possiblities but that seems like "Future Work" to me
+        streamDir = (0, 0) -- This means compare only the left most column of any coords
+        coordPairs = map (\idx -> (i1!!idx, i2!!idx)) (range streamDir)
+        distance = foldr (\(Offset v1, Offset v2) acc -> acc + (v1 - v2)^2) 0 coordPairs
 
 -- getOneStencilReachItem :: [[StencilIndex]] -> ((Int, Int), Int) -> (Int, (Int, Int), (StencilIndex, StencilIndex))
 -- getOneStencilReachItem stencilIndices ((lwb, upb), idx) =

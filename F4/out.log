@@ -2097,6 +2097,7 @@ end subroutine vernieuw
  With Smart Caches 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+--------------------------------
 
  ! ==============================================
  ! Name: dyn_0 Order: 0
@@ -2131,7 +2132,11 @@ end subroutine dyn_0
  ! ==============================================
 
 
-stencil size = 0
+eta : ([1,0],[0,0])
+================================
+
+--------------------------------
+
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
@@ -2195,7 +2200,11 @@ end subroutine dyn_1
  ! ==============================================
 
 
-stencil size = 0
+wet : ([1,0],[0,0])
+================================
+
+--------------------------------
+
  ! ==============================================
  ! Name: dyn_2 Order: 2
  ! Input streams:
@@ -2257,7 +2266,13 @@ end subroutine dyn_2
  ! ==============================================
 
 
-stencil size = 0
+h : ([1,0],[-1,0])
+un : ([0,0],[0,-1])
+vn : ([0,0],[-1,0])
+================================
+
+--------------------------------
+
  ! ==============================================
  ! Name: shapiro Order: 3
  ! Input streams:
@@ -2301,5 +2316,51 @@ end subroutine shapiro
  ! ==============================================
 
 
-stencil size = 0
-([-1,-2,0],[1,2,0])
+etan : ([1,0],[-1,0])
+wet : ([1,0],[-1,0])
+================================
+
+--------------------------------
+
+ ! ==============================================
+ ! Name: vernieuw Order: 4
+ ! Input streams:
+ !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: hzero type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real, intent(In) :: hmin
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+    h(j,k) = hzero(j,k)+eta(j,k)
+    wet(j,k) = 1
+    if (h(j,k)<hmin) then
+        wet(j,k) = 0
+    end if
+    u(j,k) = un(j,k)
+    v(j,k) = vn(j,k)
+!}
+end subroutine vernieuw
+ ! ==============================================
+
+
+================================
+

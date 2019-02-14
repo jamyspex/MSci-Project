@@ -22,8 +22,7 @@ data Kernel = Kernel {
 }
 
 
-data Stream p = Stream
-                String           -- name
+data Stream p = Stream String           -- name
                 StreamValueType  -- value type
                 [(Int, Int)]     -- dimensions
             | StencilStream
