@@ -2302,3 +2302,4 @@ end subroutine shapiro
 
 
 stencil size = 0
+([-1,-2,0],[1,2,0])
