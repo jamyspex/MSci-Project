@@ -109,7 +109,11 @@ compilerMain args = do
 
     let guardedMerged = srtWithGuards DMap.! mergedOffloadName
 
-    let kernels = getKernels guardedMerged
+    kernels <- getKernels guardedMerged
+
+    putStrLn ((rule '+') ++ " With Smart Caches " ++ (rule '+'))
+
+    insertSmartCaches kernels
 
     -- let kernelsAndSmartCaches = insertSmartCaches kernels
     -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))

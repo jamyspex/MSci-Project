@@ -37,12 +37,12 @@ data StreamValueType = Float deriving Show
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines
-getKernels :: SubRec -> [Kernel]
-getKernels subrec = kernels
---    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
---    putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
---    putStrLn $ concatMap show kernels
---    return ()
+getKernels :: SubRec -> IO ([Kernel])
+getKernels subrec = do
+    mapM_ (\(_, b) -> putStrLn ("\n--------------------\n" ++ miniPPProgUnit b ++ "\n======================\n")) kernelSubsAndOrder
+    putStrLn ("no. of kernels: " ++ ((show . length) kernelSubsAndOrder))
+    putStrLn $ concatMap show kernels
+    return (kernels)
     where
         allDecls = getDecls $ subAst subrec
         allArgs = getArgs $ subAst subrec
