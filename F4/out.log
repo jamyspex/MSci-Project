@@ -2267,7 +2267,7 @@ end subroutine dyn_2
 
 
 h : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
-un : stencilReach = ([0,0],[0,-1]) smartCacheSize = 0
+un : stencilReach = ([0,0],[0,-1]) smartCacheSize = 501
 vn : stencilReach = ([0,0],[-1,0]) smartCacheSize = 501
 ================================
 

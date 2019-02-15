@@ -93,7 +93,11 @@ getSmartCacheSize stenStream@(K.StencilStream name _ arrayDimens stencil) =
   stencilReach =
     abs (stenIdx1 !! differentIndex) + abs (stenIdx2 !! differentIndex)
   (lwb, upb) = arrayDimens !! differentIndex
-  -- TODO need to do something here to account for non-symetrical stencils
+  -- TODO need to do something here to account for stencils that go up
+  -- the column e.g.
+  --       X              X
+  --    X  X  X works but X  X  X doesn't as you need 2 extra smache spaces
+  --       X                    X
   sizeInDim  = upb - lwb
 
 
@@ -105,7 +109,7 @@ findLargestDifferentIndex i1 i2 = go (i1, i2) 0 0 0
   go (i1 : i1s, i2 : i2s) idx largestSoFar largestIdxSoFar =
     if thisDifference > largestSoFar
       then go (i1s, i2s) (idx + 1) thisDifference idx
-      else go (i1s, i2s) idx largestSoFar largestIdxSoFar
+      else go (i1s, i2s) (idx + 1) largestSoFar largestIdxSoFar
     where thisDifference = abs i1 + abs i2
   go ([], []) _ _ largestIdxSoFar = largestIdxSoFar
 
