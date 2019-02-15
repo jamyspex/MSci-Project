@@ -19,7 +19,7 @@
 #else
  #define ABS fabs
 #endif
- 
+
 // -------------------------------
 // AOCL specific
 // -------------------------------
@@ -27,14 +27,14 @@
 
 
 #if TARGET==AOCL
-#if NUM_COMPUTE_UNITS>1 
+#if NUM_COMPUTE_UNITS>1
   __attribute__((num_compute_units(NUM_COMPUTE_UNITS)))
 #endif
-  
+
 #if NUM_SIMD_ITEMS>1
   __attribute__((num_simd_work_items(NUM_SIMD_ITEMS)))
 #endif
-  
+
   //#ifdef REQ_WORKGROUP_SIZE
   //  __attribute__((reqd_work_group_size(REQ_WORKGROUP_SIZE)))
   //#endif
@@ -44,7 +44,7 @@
 // SDACCEL specific
 // -------------------------------
 #if TARGET==SDACCEL
-#endif    
+#endif
 
 // -------------------------------
 // GENERIC attributes/opimizations
@@ -58,7 +58,7 @@
 // -------------------------------
 //if stencil is required on any stream between two kernels, then
 //we insert a "smache" module in-between, which requires two versions of each
-//channel... pre and post 
+//channel... pre and post
 //the post channel will also contain any additional channels for stencil elements
 
 
@@ -164,8 +164,8 @@ __kernel void kernel_mem_rd( __global stypeDevice * restrict u
                       ) {
   uint j, k, index;
 
-//  for (index=0; index < (SIZE + COLS); index++) {     
-  for (index=0; index < SIZE; index++) {     
+//  for (index=0; index < (SIZE + COLS); index++) {
+  for (index=0; index < SIZE; index++) {
       stypeDevice u_data = u[index];
       stypeDevice v_data = v[index];
       stypeDevice h_data = h[index];
@@ -186,7 +186,7 @@ __kernel void kernel_mem_rd( __global stypeDevice * restrict u
       write_channel_altera(eta_memrd_2_dyn1_pre   ,eta_data );    mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera(etan_memrd_2_dyn1_pre  ,etan_data );   mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera(wet_memrd_2_dyn1_pre   ,wet_data );    mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera(hzero_memrd_2_dyn1_pre ,hzero_data );  
+      write_channel_altera(hzero_memrd_2_dyn1_pre ,hzero_data );
 
       //#ifdef DEBUG_KERNEL
       //printf("kernel_mem_rd: count = index = %d, wet = %f\n", index, wet_data);
@@ -202,27 +202,27 @@ __kernel void kernel_mem_rd( __global stypeDevice * restrict u
 //If there is a stencil/offset required on an stream between 2 kernels,
 //then we introduce this "SMACH" module. This makes the design cleaner and more modular,
 //and also make it easier to incorporate tytra-smache approach later on
-__kernel void kernel_smache_memrd_2_dyn1 (){   
+__kernel void kernel_smache_memrd_2_dyn1 (){
   //common parameters
   //-----------------
   const int arrsize   = SIZE; //Size of  input array(s)
-  
+
   //TODO: I should be able to derive these parameters from given offsets, but this should
   // be a compile-time constant, otherwise I will needlessly waste processing on it
-  const int ker_maxoffpos     = COLS; 
-  const int ker_maxoffneg     = 0;    
+  const int ker_maxoffpos     = COLS;
+  const int ker_maxoffneg     = 0;
   const int nloop             = arrsize + ker_maxoffpos;
-  
+
   const int ker_buffsize  = ker_maxoffpos + ker_maxoffneg + 1;
   //const int ind_j_k       = ker_buffsize - 1 - ker_maxoffneg;
   const int ind_j_k       = ker_buffsize - 1 - ker_maxoffpos;
-  const int ind_jp1_k     = ind_j_k + COLS;  
-  const int ind_j_kp1     = ind_j_k + 1;     
-  const int ind_jm1_k     = ind_j_k - COLS;  
-  const int ind_j_km1     = ind_j_k - 1;     
-  
+  const int ind_jp1_k     = ind_j_k + COLS;
+  const int ind_j_kp1     = ind_j_k + 1;
+  const int ind_jm1_k     = ind_j_k - COLS;
+  const int ind_j_km1     = ind_j_k - 1;
+
   //buffers
-  //-------- 
+  //--------
   stypeDevice     u_buffer [ker_buffsize];
   stypeDevice     v_buffer [ker_buffsize];
   stypeDevice     h_buffer [ker_buffsize];
@@ -243,25 +243,25 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
   stypeDevice wet_j_kp1;
   stypeDevice wet_jp1_k;
   stypeDevice hzero_j_k;
-  
+
   int count, compindex, count_backup;
   //loop for the entire array + offset buffer
-  for (count=0; count < nloop ; count++) {  
-  //for (int dcount=0; dcount < nloop*2 ; dcount = dcount + 2) {  
+  for (count=0; count < nloop ; count++) {
+  //for (int dcount=0; dcount < nloop*2 ; dcount = dcount + 2) {
     //count = dcount / 2;
     compindex = count - ker_maxoffpos;
 
     //count_backup = count; //as count keeps getting corrupted!
 
     //#ifdef DEBUG_KERNEL
-    //printf("kernel_smache_memrd_2_dyn1-READ-A\t: nloop = %d, count = %d\n", 
+    //printf("kernel_smache_memrd_2_dyn1-READ-A\t: nloop = %d, count = %d\n",
     //        nloop, count);
     //#endif
 
 
     //this unrolled loop implements a SHIFT-RIGHT register for the buffer, which is (should be)
     //more effecient than a naive buffer that is written in a RAM fashion
-    #pragma unroll 
+    #pragma unroll
      for (int i = 0; i < ker_buffsize-1 ; ++i) {
               u_buffer[i] =     u_buffer[i + 1];
               v_buffer[i] =     v_buffer[i + 1];
@@ -273,22 +273,22 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
          //#ifdef DEBUG_KERNEL
          //printf("kernel_smache_memrd_2_dyn1: count = %d, wet_buffer[%d] = %f\n", count, i, wet_buffer[i]);
          //#endif
-      }    
-      
+      }
+
     //#ifdef DEBUG_KERNEL
     //printf("kernel_smache_memrd_2_dyn1-READ-B\t: count = %d\n", count);
     //#endif
-      
+
     //we read into MS-word of buffers until count reaches limit of input array
-    if(count < arrsize) {   
+    if(count < arrsize) {
          u_buffer[ker_buffsize-1] = read_channel_altera(u_memrd_2_dyn1_pre     );  mem_fence(CLK_CHANNEL_MEM_FENCE);
          v_buffer[ker_buffsize-1] = read_channel_altera(v_memrd_2_dyn1_pre     );  mem_fence(CLK_CHANNEL_MEM_FENCE);
          h_buffer[ker_buffsize-1] = read_channel_altera(h_memrd_2_dyn1_pre     );  mem_fence(CLK_CHANNEL_MEM_FENCE);
        eta_buffer[ker_buffsize-1] = read_channel_altera(eta_memrd_2_dyn1_pre   );  mem_fence(CLK_CHANNEL_MEM_FENCE);
       etan_buffer[ker_buffsize-1] = read_channel_altera(etan_memrd_2_dyn1_pre  );  mem_fence(CLK_CHANNEL_MEM_FENCE);
        wet_buffer[ker_buffsize-1] = read_channel_altera(wet_memrd_2_dyn1_pre   );  mem_fence(CLK_CHANNEL_MEM_FENCE);
-     hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_memrd_2_dyn1_pre );  
-      
+     hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_memrd_2_dyn1_pre );
+
       //#ifdef DEBUG_KERNEL
       //printf("kernel_smache_memrd_2_dyn1: count = %d, wet[%d] = %f\n", count, (ker_buffsize-1), wet_buffer[ker_buffsize-1]);
       //#endif
@@ -297,7 +297,7 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
     //printf("kernel_smache_memrd_2_dyn1-READ-C\t: count = %d\n", count);
     //#endif
    }//if
-    
+
     //count = count_backup;//un-corrupt
     //#ifdef DEBUG_KERNEL
     //printf("kernel_smache_memrd_2_dyn1-READ-D\t: count = %d\n", count);
@@ -310,7 +310,7 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
       //printf("kernel_smache_memrd_2_dyn1-WRITE-A\t: count = %d\n", count);
       //#endif
       //get the data and stencil values from buffer
-          u_j_k   =     u_buffer[ind_j_k]; 
+          u_j_k   =     u_buffer[ind_j_k];
           v_j_k   =     v_buffer[ind_j_k];
           h_j_k   =     h_buffer[ind_j_k];
         eta_j_k   =   eta_buffer[ind_j_k];
@@ -326,7 +326,7 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
       //printf("kernel_smache_memrd_2_dyn1: count = %d, compindex = %d,  wet = %f\n", count, compindex,  wet_j_k);
       //#endif
 
-  
+
       write_channel_altera (    u_j_k_memrd_2_dyn1_post,     u_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (    v_j_k_memrd_2_dyn1_post,     v_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (    h_j_k_memrd_2_dyn1_post,     h_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
@@ -337,9 +337,9 @@ __kernel void kernel_smache_memrd_2_dyn1 (){
       write_channel_altera (  wet_j_k_memrd_2_dyn1_post,   wet_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (wet_j_kp1_memrd_2_dyn1_post, wet_j_kp1); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (wet_jp1_k_memrd_2_dyn1_post, wet_jp1_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera (hzero_j_k_memrd_2_dyn1_post, hzero_j_k); 
+      write_channel_altera (hzero_j_k_memrd_2_dyn1_post, hzero_j_k);
     }//if(compindex>=0)
-  }//for     
+  }//for
 }//()
 
 // -------------------------------
@@ -363,8 +363,8 @@ __kernel void kernel_dyn1( const stypeDevice dt
   const int arrsize   = SIZE; //Size of  input array(s)
   const int nloop     = arrsize;
 
-  int compindex; 
-  int j, k;      
+  int compindex;
+  int j, k;
 
   //input from channels
   //-------------------
@@ -382,7 +382,7 @@ __kernel void kernel_dyn1( const stypeDevice dt
 
 
   //loop for the entire array
-  for (int count=0; count < nloop ; count++) {  
+  for (int count=0; count < nloop ; count++) {
     compindex = count;
     j = compindex/COLS;
     k = compindex%COLS;
@@ -401,32 +401,32 @@ __kernel void kernel_dyn1( const stypeDevice dt
     wet_j_k   = read_channel_altera(  wet_j_k_memrd_2_dyn1_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
     wet_j_kp1 = read_channel_altera(wet_j_kp1_memrd_2_dyn1_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
     wet_jp1_k = read_channel_altera(wet_jp1_k_memrd_2_dyn1_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
-    hzero_j_k = read_channel_altera(hzero_j_k_memrd_2_dyn1_post); 
+    hzero_j_k = read_channel_altera(hzero_j_k_memrd_2_dyn1_post);
 
     //#ifdef DEBUG_KERNEL
     //printf("kernel_dyn1-READ-B\t: count = %d\n", count);
     //#endif
-    
+
     stypeDevice un_j_k = 0.0;
     stypeDevice vn_j_k = 0.0;
     //exclude boundaries when computing un and vn
-    if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+    if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {
       //#ifdef DEBUG_KERNEL
       //printf("K_DYN1: l = %d, index = %d, (j,k) = (%d, %d); wet_j_k = %f, wet_jp1_k = %f, wet_j_kp1 = %f \n",l, index, j ,k
       //  , wet_j_k, wet_jp1_k, wet_j_kp1);
       //#endif
 
-      duu  = -dt 
+      duu  = -dt
            * g
            * ( eta_j_kp1
              - eta_j_k
-             ) 
+             )
            / dx;
-      dvv  = -dt 
+      dvv  = -dt
            * g
            * ( eta_jp1_k
              - eta_j_k
-             ) 
+             )
            / dy;
 
       //prediction for u and v (merged loop)
@@ -434,15 +434,15 @@ __kernel void kernel_dyn1( const stypeDevice dt
       uu = u_j_k;
       if (  ( (wet_j_k == 1)
               && ( (wet_j_kp1 == 1) || (duu > 0.0)))
-         || ( (wet_j_kp1 == 1) && (duu < 0.0))     
+         || ( (wet_j_kp1 == 1) && (duu < 0.0))
          ){
           un_j_k = uu+duu;
       }//if
-      
+
       vv = v_j_k;
       if (  (  (wet_j_k == 1)
              && ( (wet_jp1_k == 1) || (dvv > 0.0)))
-         || ((wet_jp1_k == 1) && (dvv < 0.0))     
+         || ((wet_jp1_k == 1) && (dvv < 0.0))
          ){
           vn_j_k = vv+dvv;
       }//if
@@ -452,19 +452,19 @@ __kernel void kernel_dyn1( const stypeDevice dt
       //             ,compindex,j, k, un_j_k, vn_j_k, wet_j_k, wet_jp1_k, wet_j_kp1, eta_j_k,  eta_jp1_k, eta_j_kp1, uu, duu, vv, dvv);
       //#endif
     }//if not boundary
-      
+
    //   #ifdef DEBUG_KERNEL
    //   printf("K_DYN1-WRITE-ATTEMPT: count = %d, buffindex = %d, compindex = %d; j = %d, k = %d; Attempting to READ to channels\n", count, buffindex, compindex, j, k);
-   //   #endif      
-      
+   //   #endif
+
     write_channel_altera(   un_dyn1_2_dyn2_pre ,un_j_k   ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera(   vn_dyn1_2_dyn2_pre ,vn_j_k   ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera(    h_dyn1_2_dyn2_pre ,h_j_k    ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera(  eta_dyn1_2_dyn2_pre ,eta_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera( etan_dyn1_2_dyn2_pre ,etan_j_k ); mem_fence(CLK_CHANNEL_MEM_FENCE);
-    write_channel_altera(  wet_dyn1_2_dyn2_pre ,wet_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE); 
-    write_channel_altera(hzero_dyn1_2_dyn2_pre ,hzero_j_k); 
-    
+    write_channel_altera(  wet_dyn1_2_dyn2_pre ,wet_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE);
+    write_channel_altera(hzero_dyn1_2_dyn2_pre ,hzero_j_k);
+
     //  #ifdef DEBUG_KERNEL
     //  printf("K_DYN1-WRITE_SUCCESS: count = %d, buffindex = %d, compindex = %d; j = %d, k = %d; Attempting to READ to channels\n", count, buffindex, compindex, j, k);
     //  #endif
@@ -477,26 +477,26 @@ __kernel void kernel_dyn1( const stypeDevice dt
 //If there is a stencil/offset required on an stream between 2 kernels,
 //then we introduce this "SMACH" module. This makes the design cleaner and more modular,
 //and also make it easier to incorporate tytra-smache approach later on
-__kernel void kernel_smache_dyn1_2_dyn2 ( 
-                                  ) {  
+__kernel void kernel_smache_dyn1_2_dyn2 (
+                                  ) {
   //common parameters
   //-----------------
   const int arrsize   = SIZE; //Size of  input array(s)
-  
+
   //TODO: I should be able to derive these parameters from given offsets, but this should
   // be a compile-time constant, otherwise I will needlessly waste processing on it
-  const int ker_maxoffpos     = COLS; 
-  const int ker_maxoffneg     = COLS;    
+  const int ker_maxoffpos     = COLS;
+  const int ker_maxoffneg     = COLS;
   const int nloop             = arrsize + ker_maxoffpos;
-  
+
   const int ker_buffsize  = ker_maxoffpos + ker_maxoffneg + 1;
 //  const int ind_j_k       = ker_buffsize - 1 - ker_maxoffneg;
   const int ind_j_k       = ker_buffsize - 1 - ker_maxoffpos;
-  const int ind_jp1_k     = ind_j_k + COLS;  
-  const int ind_j_kp1     = ind_j_k + 1;     
-  const int ind_jm1_k     = ind_j_k - COLS;  
+  const int ind_jp1_k     = ind_j_k + COLS;
+  const int ind_j_kp1     = ind_j_k + 1;
+  const int ind_jm1_k     = ind_j_k - COLS;
   const int ind_j_km1     = ind_j_k - 1;
- 
+
 
  // printf("ker_buffsize %d, ind_j_k %d ,ind_jp1_k %d ,ind_j_kp1 %d ,ind_jm1_k %d ,ind_j_km %d\n"
  //         ,ker_buffsize
@@ -506,7 +506,7 @@ __kernel void kernel_smache_dyn1_2_dyn2 (
  //         ,ind_jm1_k
  //         ,ind_j_km1
  //         );
-  
+
   //buffers
   //--------
   stypeDevice    un_buffer [ker_buffsize];
@@ -533,14 +533,14 @@ __kernel void kernel_smache_dyn1_2_dyn2 (
   stypeDevice   etan_j_k;
   stypeDevice    wet_j_k;
   stypeDevice  hzero_j_k;
-  
+
   //loop for the entire array + offset buffer
-  for (int count=0; count < nloop ; count++) {  
+  for (int count=0; count < nloop ; count++) {
      int compindex = count - ker_maxoffpos;
 
     //this unrolled loop implements a SHIFT-RIGHT register for the buffer, which is (should be)
     //more effecient than a naive buffer that is written in a RAM fashion
-    #pragma unroll 
+    #pragma unroll
      for (int i = 0; i < ker_buffsize-1 ; ++i) {
              un_buffer[i] =    un_buffer[i + 1];
              vn_buffer[i] =    vn_buffer[i + 1];
@@ -549,24 +549,24 @@ __kernel void kernel_smache_dyn1_2_dyn2 (
            etan_buffer[i] =  etan_buffer[i + 1];
             wet_buffer[i] =   wet_buffer[i + 1];
           hzero_buffer[i] = hzero_buffer[i + 1];
-      }    
-      
+      }
+
     //we read into MS-word of buffers until count reaches limit of input array
-    if(count < arrsize) {   
+    if(count < arrsize) {
          un_buffer[ker_buffsize-1] = read_channel_altera(   un_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
          vn_buffer[ker_buffsize-1] = read_channel_altera(   vn_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
           h_buffer[ker_buffsize-1] = read_channel_altera(    h_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
         eta_buffer[ker_buffsize-1] = read_channel_altera(  eta_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
        etan_buffer[ker_buffsize-1] = read_channel_altera( etan_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
         wet_buffer[ker_buffsize-1] = read_channel_altera(  wet_dyn1_2_dyn2_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
-      hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_dyn1_2_dyn2_pre);  
+      hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_dyn1_2_dyn2_pre);
     }//if
-    
+
     //start emitting required data/stencil when compindex reaches 0
     if(compindex>=0) {
       //get the data and stencil values from buffer
-         un_j_k =    un_buffer[ind_j_k]; 
-       un_jm1_k =    un_buffer[ind_jm1_k]; 
+         un_j_k =    un_buffer[ind_j_k];
+       un_jm1_k =    un_buffer[ind_jm1_k];
        un_j_km1 =    un_buffer[ind_j_km1];
          vn_j_k =    vn_buffer[ind_j_k];
        vn_jm1_k =    vn_buffer[ind_jm1_k];
@@ -580,7 +580,7 @@ __kernel void kernel_smache_dyn1_2_dyn2 (
        etan_j_k =  etan_buffer[ind_j_k];
         wet_j_k =   wet_buffer[ind_j_k];
       hzero_j_k = hzero_buffer[ind_j_k];
-  
+
       write_channel_altera (   un_j_k_dyn1_2_dyn2_post,    un_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera ( un_jm1_k_dyn1_2_dyn2_post,  un_jm1_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera ( un_j_km1_dyn1_2_dyn2_post,  un_j_km1); mem_fence(CLK_CHANNEL_MEM_FENCE);
@@ -595,9 +595,9 @@ __kernel void kernel_smache_dyn1_2_dyn2 (
       write_channel_altera (  eta_j_k_dyn1_2_dyn2_post,   eta_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera ( etan_j_k_dyn1_2_dyn2_post,  etan_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (  wet_j_k_dyn1_2_dyn2_post,   wet_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera (hzero_j_k_dyn1_2_dyn2_post, hzero_j_k); 
+      write_channel_altera (hzero_j_k_dyn1_2_dyn2_post, hzero_j_k);
     }//if(compindex>=0)
-  }//for     
+  }//for
 }
 
 // -------------------------------
@@ -610,11 +610,11 @@ __kernel void kernel_dyn2( const stypeDevice dt
 
   //local
   //-----
-  const int arrsize   = SIZE;    
-  const int nloop     = arrsize; 
+  const int arrsize   = SIZE;
+  const int nloop     = arrsize;
 
-  int compindex; 
-  int j, k;      
+  int compindex;
+  int j, k;
 
   stypeDevice hue;
   stypeDevice huw;
@@ -644,9 +644,9 @@ __kernel void kernel_dyn2( const stypeDevice dt
   stypeDevice   eta_j_k;
   stypeDevice  etan_j_k;
   stypeDevice   wet_j_k;
-  stypeDevice hzero_j_k;  
- 
-  for (int count=0; count < nloop; count++) {  
+  stypeDevice hzero_j_k;
+
+  for (int count=0; count < nloop; count++) {
     compindex = count;
     j = compindex/COLS;
     k = compindex%COLS;
@@ -668,30 +668,30 @@ __kernel void kernel_dyn2( const stypeDevice dt
      eta_j_k  = read_channel_altera (  eta_j_k_dyn1_2_dyn2_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
     etan_j_k  = read_channel_altera ( etan_j_k_dyn1_2_dyn2_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
      wet_j_k  = read_channel_altera (  wet_j_k_dyn1_2_dyn2_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
-    hzero_j_k = read_channel_altera (hzero_j_k_dyn1_2_dyn2_post); 
-    
+    hzero_j_k = read_channel_altera (hzero_j_k_dyn1_2_dyn2_post);
+
     //exclude boundaries
-    if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+    if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {
       hep = 0.5*( un_j_k + ABS(un_j_k) ) * h_j_k;
       hen = 0.5*( un_j_k - ABS(un_j_k) ) * h_j_kp1;
       hue = hep+hen;
-  
+
       hwp = 0.5*( un_j_km1 + ABS(un_j_km1) ) * h_j_km1;
       hwn = 0.5*( un_j_km1 - ABS(un_j_km1) ) * h_j_k;
       huw = hwp+hwn;
-  
+
       hnp = 0.5*( vn_j_k + ABS(vn_j_k) ) * h_j_k;
       hnn = 0.5*( vn_j_k - ABS(vn_j_k) ) * h_jp1_k;
       hvn = hnp+hnn;
-  
+
       hsp = 0.5*( vn_jm1_k + ABS(vn_jm1_k) ) * h_jm1_k;
       hsn = 0.5*( vn_jm1_k - ABS(vn_jm1_k) ) * h_j_k;
       hvs = hsp+hsn;
-  
+
       etan_j_k  = eta_j_k
                 - dt*(hue-huw)/dx
                 - dt*(hvn-hvs)/dy;
-                
+
       //#ifdef DEBUG_KERNEL
       //printf("K_DYN2-COMPUTE:count = %d, compindex = %d; computed: j = %d, k = %d, etan_j_k = %f , eta_j_k = %f \n", count_dyn2, compindex, j, k,  etan_j_k, eta_j_k);
       //#endif
@@ -700,15 +700,15 @@ __kernel void kernel_dyn2( const stypeDevice dt
     //#ifdef DEBUG_KERNEL
     //printf("K_DYN2-WRITE-ATTEMPT:count_dyn2 = %d, compindex = %d; j = %d, k = %d; Attempting to write to channels\n", count_dyn2, compindex, j, k);
     //#endif
-    
+
     write_channel_altera(   un_dyn2_2_shapiro_pre ,un_j_k   ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera(   vn_dyn2_2_shapiro_pre ,vn_j_k   ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera(  eta_dyn2_2_shapiro_pre ,eta_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE);
     write_channel_altera( etan_dyn2_2_shapiro_pre ,etan_j_k ); mem_fence(CLK_CHANNEL_MEM_FENCE);
-    write_channel_altera(  wet_dyn2_2_shapiro_pre ,wet_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE); 
-    write_channel_altera(hzero_dyn2_2_shapiro_pre ,hzero_j_k); 
-    
-    
+    write_channel_altera(  wet_dyn2_2_shapiro_pre ,wet_j_k  ); mem_fence(CLK_CHANNEL_MEM_FENCE);
+    write_channel_altera(hzero_dyn2_2_shapiro_pre ,hzero_j_k);
+
+
     //#ifdef DEBUG_KERNEL
     //printf("K_DYN2-ENDOFLOOP: nloop = %d, count_dyn2 = %d, compindex = %d; j = %d, k = %d; \n", nloop, count_dyn2, compindex, j, k);
     //printf("----------------------------------------------------------------------------\n");
@@ -722,26 +722,26 @@ __kernel void kernel_dyn2( const stypeDevice dt
 //If there is a stencil/offset required on an stream between 2 kernels,
 //then we introduce this "SMACH" module. This makes the design cleaner and more modular,
 //and also make it easier to incorporate tytra-smache approach later on
-__kernel void kernel_smache_dyn2_2_shapiro ( 
-                                  ) {  
+__kernel void kernel_smache_dyn2_2_shapiro (
+                                  ) {
   //common parameters
   //-----------------
   const int arrsize   = SIZE; //Size of  input array(s)
-  
+
   //TODO: I should be able to derive these parameters from given offsets, but this should
   // be a compile-time constant, otherwise I will needlessly waste processing on it
-  const int ker_maxoffpos     = COLS; 
-  const int ker_maxoffneg     = COLS;    
+  const int ker_maxoffpos     = COLS;
+  const int ker_maxoffneg     = COLS;
   const int nloop             = arrsize + ker_maxoffpos;
-  
+
   const int ker_buffsize  = ker_maxoffpos + ker_maxoffneg + 1;
   //const int ind_j_k       = ker_buffsize - 1 - ker_maxoffneg;
   const int ind_j_k       = ker_buffsize - 1 - ker_maxoffpos;
-  const int ind_jp1_k     = ind_j_k + COLS;  
-  const int ind_j_kp1     = ind_j_k + 1;     
-  const int ind_jm1_k     = ind_j_k - COLS;  
-  const int ind_j_km1     = ind_j_k - 1;     
-  
+  const int ind_jp1_k     = ind_j_k + COLS;
+  const int ind_j_kp1     = ind_j_k + 1;
+  const int ind_jm1_k     = ind_j_k - COLS;
+  const int ind_j_km1     = ind_j_k - 1;
+
   //buffers
   //--------
   stypeDevice    un_buffer [ker_buffsize];
@@ -767,14 +767,14 @@ __kernel void kernel_smache_dyn2_2_shapiro (
   stypeDevice  wet_j_kp1;
   stypeDevice  wet_jp1_k;
   stypeDevice  hzero_j_k;
-  
+
   //loop for the entire array + offset buffer
-  for (int count=0; count < nloop ; count++) {  
+  for (int count=0; count < nloop ; count++) {
      int compindex = count - ker_maxoffpos;
 
     //this unrolled loop implements a SHIFT-RIGHT register for the buffer, which is (should be)
     //more effecient than a naive buffer that is written in a RAM fashion
-    #pragma unroll 
+    #pragma unroll
      for (int i = 0; i < ker_buffsize-1 ; ++i) {
              un_buffer[i] =    un_buffer[i + 1];
              vn_buffer[i] =    vn_buffer[i + 1];
@@ -782,22 +782,22 @@ __kernel void kernel_smache_dyn2_2_shapiro (
            etan_buffer[i] =  etan_buffer[i + 1];
             wet_buffer[i] =   wet_buffer[i + 1];
           hzero_buffer[i] = hzero_buffer[i + 1];
-      }    
-      
+      }
+
     //we read into MS-word of buffers until count reaches limit of input array
-    if(count < arrsize) {   
+    if(count < arrsize) {
          un_buffer[ker_buffsize-1] = read_channel_altera(   un_dyn2_2_shapiro_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
          vn_buffer[ker_buffsize-1] = read_channel_altera(   vn_dyn2_2_shapiro_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
         eta_buffer[ker_buffsize-1] = read_channel_altera(  eta_dyn2_2_shapiro_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
        etan_buffer[ker_buffsize-1] = read_channel_altera( etan_dyn2_2_shapiro_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
         wet_buffer[ker_buffsize-1] = read_channel_altera(  wet_dyn2_2_shapiro_pre);  mem_fence(CLK_CHANNEL_MEM_FENCE);
-      hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_dyn2_2_shapiro_pre);  
+      hzero_buffer[ker_buffsize-1] = read_channel_altera(hzero_dyn2_2_shapiro_pre);
     }//if
-    
+
     //start emitting required data/stencil when compindex reaches 0
     if(compindex>=0) {
       //get the data and stencil values from buffer
-         un_j_k =    un_buffer[ind_j_k]; 
+         un_j_k =    un_buffer[ind_j_k];
          vn_j_k =    vn_buffer[ind_j_k];
         eta_j_k =   eta_buffer[ind_j_k];
        etan_j_k =  etan_buffer[ind_j_k];
@@ -811,7 +811,7 @@ __kernel void kernel_smache_dyn2_2_shapiro (
       wet_j_kp1 =   wet_buffer[ind_j_kp1];
       wet_jp1_k =   wet_buffer[ind_jp1_k];
       hzero_j_k = hzero_buffer[ind_j_k];
-  
+
       write_channel_altera (    un_j_k_dyn2_2_shapiro_post,     un_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (    vn_j_k_dyn2_2_shapiro_post,     vn_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera (   eta_j_k_dyn2_2_shapiro_post,    eta_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
@@ -825,9 +825,9 @@ __kernel void kernel_smache_dyn2_2_shapiro (
       write_channel_altera ( wet_j_km1_dyn2_2_shapiro_post,  wet_j_km1); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera ( wet_j_kp1_dyn2_2_shapiro_post,  wet_j_kp1); mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera ( wet_jp1_k_dyn2_2_shapiro_post,  wet_jp1_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera ( hzero_j_k_dyn2_2_shapiro_post,  hzero_j_k); 
+      write_channel_altera ( hzero_j_k_dyn2_2_shapiro_post,  hzero_j_k);
     }//if(compindex>=0)
-  }//for     
+  }//for
 }
 
 
@@ -835,20 +835,20 @@ __kernel void kernel_smache_dyn2_2_shapiro (
 //------------------------------------------
 // SHAPIRO KERNEL
 //------------------------------------------
-__kernel void kernel_shapiro  ( const stypeDevice eps 
+__kernel void kernel_shapiro  ( const stypeDevice eps
                               ) {
 
-  const int arrsize   = SIZE;   
+  const int arrsize   = SIZE;
   const int nloop     = arrsize;
 
-  int compindex; 
-                 
-  int j, k;      
+  int compindex;
+
+  int j, k;
 
   //locals
   stypeDevice term1,term2,term3;
 
-  
+
   //input from channels
   stypeDevice     un_j_k;
   stypeDevice     vn_j_k;
@@ -864,14 +864,14 @@ __kernel void kernel_shapiro  ( const stypeDevice eps
   stypeDevice  wet_j_kp1;
   stypeDevice  wet_jp1_k;
   stypeDevice  hzero_j_k;
- 
-  
+
+
   // The main loop //
-  for (int count=0; count < nloop; count++) {  
+  for (int count=0; count < nloop; count++) {
     compindex = count;
     j = compindex/COLS;
     k = compindex%COLS;
-      
+
         un_j_k = read_channel_altera (    un_j_k_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
         vn_j_k = read_channel_altera (    vn_j_k_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
        eta_j_k = read_channel_altera (   eta_j_k_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
@@ -885,17 +885,17 @@ __kernel void kernel_shapiro  ( const stypeDevice eps
      wet_j_km1 = read_channel_altera ( wet_j_km1_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
      wet_j_kp1 = read_channel_altera ( wet_j_kp1_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
      wet_jp1_k = read_channel_altera ( wet_jp1_k_dyn2_2_shapiro_post); mem_fence(CLK_CHANNEL_MEM_FENCE);
-     hzero_j_k = read_channel_altera ( hzero_j_k_dyn2_2_shapiro_post); 
-      
+     hzero_j_k = read_channel_altera ( hzero_j_k_dyn2_2_shapiro_post);
+
       //exclude boundaries
-      if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {      
+      if  ((j>=1) && (k>=1) && (j<= ROWS-2) && (k<=COLS-2)) {
           if (wet_j_k==1) {
           term1 = ( 1.0-0.25*eps
                     * ( wet_j_kp1
                       + wet_j_km1
                       + wet_jp1_k
                       + wet_jm1_k
-                      ) 
+                      )
                   )
                   * etan_j_k;
           term2 = 0.25*eps
@@ -919,20 +919,20 @@ __kernel void kernel_shapiro  ( const stypeDevice eps
 //      #ifdef DEBUG_KERNEL
 //      printf("K_SHAPIRO\t:compindex = %d; computed: j = %d, k = %d, eta = %f, wet_j_k = %f, wet_jp1_k = %f, wet_j_kp1 = %f, wet_jm1_k = %f, wet_j_km1 = %f \n"
 //                      ,compindex, j, k, eta_j_k
-//                      ,wet_j_k                      
-//                      ,wet_jp1_k 
-//                      ,wet_j_kp1 
-//                      ,wet_jm1_k 
-//                      ,wet_j_km1 
+//                      ,wet_j_k
+//                      ,wet_jp1_k
+//                      ,wet_j_kp1
+//                      ,wet_jm1_k
+//                      ,wet_j_km1
 //      );
 //      #endif
 
       }//if not boundary
-    
+
       write_channel_altera(eta_shapiro_2_udpate   , eta_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera(un_shapiro_2_udpate    , un_j_k);    mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera(vn_shapiro_2_udpate    , vn_j_k);    mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera(hzero_shapiro_2_udpate , hzero_j_k); 
+      write_channel_altera(hzero_shapiro_2_udpate , hzero_j_k);
  }//for l
 }//()
 
@@ -953,11 +953,11 @@ __kernel void kernel_updates  ( stypeHost hmin
   stypeDevice wet_j_k   ;
 
   //we need to iterate over the entire space inc boundaries as we are reading from channel and not RAM
-  for (int index=0; index < SIZE; index++) {     
-      eta_j_k   = read_channel_altera(eta_shapiro_2_udpate);   mem_fence(CLK_CHANNEL_MEM_FENCE);  
-      un_j_k    = read_channel_altera(un_shapiro_2_udpate);    mem_fence(CLK_CHANNEL_MEM_FENCE); 
-      vn_j_k    = read_channel_altera(vn_shapiro_2_udpate);    mem_fence(CLK_CHANNEL_MEM_FENCE); 
-      hzero_j_k = read_channel_altera(hzero_shapiro_2_udpate); 
+  for (int index=0; index < SIZE; index++) {
+      eta_j_k   = read_channel_altera(eta_shapiro_2_udpate);   mem_fence(CLK_CHANNEL_MEM_FENCE);
+      un_j_k    = read_channel_altera(un_shapiro_2_udpate);    mem_fence(CLK_CHANNEL_MEM_FENCE);
+      vn_j_k    = read_channel_altera(vn_shapiro_2_udpate);    mem_fence(CLK_CHANNEL_MEM_FENCE);
+      hzero_j_k = read_channel_altera(hzero_shapiro_2_udpate);
 
       int j = index/COLS;
       int k = index%COLS;
@@ -983,10 +983,10 @@ __kernel void kernel_updates  ( stypeHost hmin
  //     #endif
 
       write_channel_altera(u_out_update   , u_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera(v_out_update   , v_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE); 
-      write_channel_altera(h_out_update   , h_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE); 
+      write_channel_altera(v_out_update   , v_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE);
+      write_channel_altera(h_out_update   , h_j_k);   mem_fence(CLK_CHANNEL_MEM_FENCE);
       write_channel_altera(eta_out_update , eta_j_k); mem_fence(CLK_CHANNEL_MEM_FENCE);
-      write_channel_altera(wet_out_update , wet_j_k); 
+      write_channel_altera(wet_out_update , wet_j_k);
   }//for
 }//()
 
@@ -1000,13 +1000,13 @@ kernel void kernel_mem_wr  (__global stypeDevice* restrict u
                            ,__global stypeDevice* restrict eta
                            ,__global stypeDevice* restrict wet
 ) {
-  for (int index=0; index < SIZE; index++) {       
+  for (int index=0; index < SIZE; index++) {
       stypeDevice u_new   = read_channel_altera(u_out_update);   mem_fence(CLK_CHANNEL_MEM_FENCE);
       stypeDevice v_new   = read_channel_altera(v_out_update);   mem_fence(CLK_CHANNEL_MEM_FENCE);
       stypeDevice h_new   = read_channel_altera(h_out_update);   mem_fence(CLK_CHANNEL_MEM_FENCE);
       stypeDevice eta_new = read_channel_altera(eta_out_update); mem_fence(CLK_CHANNEL_MEM_FENCE);
-      stypeDevice wet_new = read_channel_altera(wet_out_update); 
-      
+      stypeDevice wet_new = read_channel_altera(wet_out_update);
+
       u[index] = u_new;
       v[index] = v_new;
       h[index] = h_new;
@@ -1014,4 +1014,3 @@ kernel void kernel_mem_wr  (__global stypeDevice* restrict u
       wet[index] = wet_new;
   }
 }//()
-

@@ -165,3 +165,17 @@ calculateDistance i1 i2 = distance
   coordPairs = map (\idx -> (i1 !! idx, i2 !! idx)) (range streamDir)
   distance =
     foldr (\(Offset v1, Offset v2) acc -> acc + (v1 - v2) ^ 2) 0 coordPairs
+
+getSmartCacheOutputVars :: K.Stream -> Kernel -> [String]
+getSmartCacheOutputVars stream K.Kernel{..} =
+  where
+    
+  
+-- Get the position loopvars are used in the kernel body
+-- At this point we have already check that loop var usage is 
+-- consistent across arrays in a kernel thanks to 
+-- validateIndexingAndMakeUnique in AddKernelLoopGuards.hs
+getLoopVarPosition :: K.Kernel -> [(String, Int)]
+getLoopVarPosition K.Kernel{..} =  
+  where
+     
