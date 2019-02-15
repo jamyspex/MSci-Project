@@ -102,7 +102,7 @@ getSmartCacheSize stenStream@(K.StencilStream name _ arrayDimens stencil) =
 
 
 -- returns the stencil index that differs the most
--- between the pairs
+-- between the argument indices
 findLargestDifferentIndex :: [Int] -> [Int] -> Int
 findLargestDifferentIndex i1 i2 = go (i1, i2) 0 0 0
  where
@@ -138,9 +138,8 @@ getLargestStencilReach stream@(K.StencilStream _ _ arrayDimens stencil) =
     _        -> False
   (stenIdx1, stenIdx2) = getMostDistantStencilPoints stencilIndices
   unwrapStenIdx (Offset val) = val
-        -- idxdDimens = indexed arrayDimens
 
--- sort the
+-- find the most distant stencil points
 getMostDistantStencilPoints
   :: [[StencilIndex]] -> ([StencilIndex], [StencilIndex])
 getMostDistantStencilPoints input = head sorted
@@ -166,13 +165,3 @@ calculateDistance i1 i2 = distance
   coordPairs = map (\idx -> (i1 !! idx, i2 !! idx)) (range streamDir)
   distance =
     foldr (\(Offset v1, Offset v2) acc -> acc + (v1 - v2) ^ 2) 0 coordPairs
-
--- getOneStencilReachItem :: [[StencilIndex]] -> ((Int, Int), Int) -> (Int, (Int, Int), (StencilIndex, StencilIndex))
--- getOneStencilReachItem stencilIndices ((lwb, upb), idx) =
---     where
---         addItem cur acc = if (cur!!idx) `elem` acc then acc else acc ++ cur
---         stencilsOnThisDimension = foldr addItem [] stencilIndices
---         allPairs = [(x, y) | x <- stencilsOnThisDimension, y <- stencilsOnThisDimension]
---         allPairsAndDifference = map (\(of1@(Offset v1),of2@(Offset v2)) -> ((abs v1) + (abs v2), of1, of2)) allPairs
---         largestReach = foldr updateLargest  (0, (Offset 0, Offset 0)) allPairsAndDifference
---         updateLargest (c@(curDif, (of1, of2)) ac@(acDif, _) = if curDif > acDif then c else ac)
