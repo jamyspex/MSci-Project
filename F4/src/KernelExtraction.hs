@@ -18,7 +18,8 @@ data Kernel = Kernel {
     kernelName          :: String,
     outputReductionVars :: [String],
     body                :: ProgUnit Anno,
-    order               :: Int
+    order               :: Int,
+    loopVars            :: [String]
 }
 
 
@@ -172,36 +173,33 @@ getKernelBody name fortran = case fortran of
 -- validateExprListContents in Utils.hs can be used. Along with a check that the variables
 -- used to index the array are the loop variables.
 buildKernel :: (Int, ProgUnit Anno) -> Kernel
-buildKernel (order, sub) = trace
-  "buildKernel"
-  (if arrayWritesValid then kernel else error "Array write invalid")
+buildKernel (order, sub) = if arrayWritesValid
+  then kernel
+  else error "Array write invalid"
  where
-  subBody           = getSubBody sub
-  allDecls          = getArrayDecls sub
-  reductionVars     = everything (++) (mkQ [] getReductionVarNameQuery) subBody
-  allArrays         = map (arrayFromDeclWithRanges True) allDecls
-  arrayReadExprs    = getArrayAccesses ArrayRead allArrays subBody
-  readArrayNames    = map (getNameFromVarName . getVarName) arrayReadExprs
-  arrayReads        = filter (filterAllArrays readArrayNames) allArrays
-  arrayWriteExprs   = getArrayAccesses ArrayWrite allArrays subBody
+  subBody = getSubBody sub
+  allDecls = getArrayDecls sub
+  reductionVars = everything (++) (mkQ [] getReductionVarNameQuery) subBody
+  allArrays = map (arrayFromDeclWithRanges True) allDecls
+  arrayReadExprs = getArrayAccesses ArrayRead allArrays subBody
+  readArrayNames = map (getNameFromVarName . getVarName) arrayReadExprs
+  arrayReads = filter (filterAllArrays readArrayNames) allArrays
+  arrayWriteExprs = getArrayAccesses ArrayWrite allArrays subBody
   writtenArrayNames = map (getNameFromVarName . getVarName) arrayWriteExprs
-  temp2 =
-    trace ("writtenArrayNames = " ++ show writtenArrayNames) writtenArrayNames
-  arrayWrites = filter (filterAllArrays temp2) allArrays
+  arrayWrites = filter (filterAllArrays writtenArrayNames) allArrays
   stencils = everything (++) (mkQ [] getStencilsQuery) subBody
   loopVariables = everything (++) (mkQ [] getLoopVarNames) subBody
   arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
   (stencilArrays, arraysNoStencils) = matchArraysToStencils arrayReads stencils
   inputStreams = getInputStreams stencilArrays arraysNoStencils
-  temp =
-    trace ("arrayWrites length = " ++ (show . length) arrayWrites) arrayWrites
-  outputStreams = map arrayToStream temp
-  kernel        = Kernel
+  outputStreams = map arrayToStream arrayWrites
+  kernel = Kernel
     { inputStreams        = inputStreams
     , outputStreams       = outputStreams
     , outputReductionVars = reductionVars
     , body                = sub
     , order               = order
+    , loopVars            = loopVariables
     , kernelName          = getSubName sub
     }
 
