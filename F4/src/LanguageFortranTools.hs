@@ -1219,7 +1219,7 @@ readUsedModuleDecls sourceDir line cppDArgs cppXArgs fixedForm
           (length "module_")
           module_name
         | otherwise = module_name
-                                            --        module_name = chunks !! 1
+                                                                      --        module_name = chunks !! 1
     in
       do
             -- putStrLn $ "readUsedModuleDecls: " ++ line

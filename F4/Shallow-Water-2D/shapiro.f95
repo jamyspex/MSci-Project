@@ -31,4 +31,3 @@ end do
 end subroutine shapiro
 
 end module module_shapiro
-

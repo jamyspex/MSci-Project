@@ -2,7 +2,11 @@
 
 module AddSmartCaches where
 
+import qualified Data.Map                      as DMap
+import           Data.Maybe
+import           Data.Tuple
 import           Utils
+import           Data.List.Index
 import           Data.Ix
 import           Data.List
 import           Debug.Trace
@@ -179,23 +183,36 @@ getSmartCacheOutputVars (K.StencilStream name _ dims sten) kern = do
     ++ name
     ++ "\n"
     ++ concatMap (\l -> show l ++ "\n") loopVarPos
-    ++ "--------\n"
+    ++ show (getOutputVariableNames loopVarPos sten)
+    ++ "\n--------\n"
     )
   return ()
   where loopVarPos = getLoopVarPositions name kern
 
--- Take the loopvar position list and use it to construct a list of 
--- strings representing the variable names that the smart cache needs to produce
-buildOutputVarNames :: [(String, Maybe Int)] -> Stencil -> [String]
-buildOutputVarNames loopVarPositions stencil = []
-  where
-    buildOne :: [StencilIndex] -> String
-    buildOne stenIdx = imap (\pos stenIdx -> if 
-    getLoopVar pos = loopVarPositions 
-    convertStenIdx (Offset val) | val == 0 = ""
-                                | val < 0 = "m" ++ show val
-                                | val > 0 = "p" ++ show val
-    convertStenIdx (Constant val) = show val
+-- 1) Get the loop vars used to index an array
+-- 2) Order them by the order they are used to access the array e.g. eta(j, k) -> [j, k]
+-- 3) Using the Stencil used to access that array generate the output variables 
+-- a smart cache buffering that array needs to emit
+getOutputVariableNames :: [(String, Maybe Int)] -> Stencil Anno -> [String]
+getOutputVariableNames loopVarsAndPosition (Stencil _ _ _ stenIndices (VarName _ name))
+  = map snd outputVariables
+ where
+  loopVarPosMap =
+    DMap.fromList $ map (swap . (\(f, s) -> (f, fromJust s))) $ filter
+      (isJust . snd)
+      loopVarsAndPosition
+  outputVariables = map (foldl buildVarName (0, name)) stenIndices
+  buildVarName :: (Int, String) -> StencilIndex -> (Int, String)
+  buildVarName (pos, outVarName) cur = case cur of
+    Offset _ ->
+      ( pos + 1
+      , outVarName ++ "_" ++ (loopVarPosMap DMap.! pos) ++ convertStenIdx cur
+      )
+    _ -> (pos + 1, outVarName ++ "_" ++ convertStenIdx cur)
+  convertStenIdx (Offset val) | val == 0 = ""
+                              | val < 0  = "m" ++ (show . abs) val
+                              | val > 0  = "p" ++ show val
+  convertStenIdx (Constant val) = show val
 
 -- Get the position loopvars are used in the kernel body in a
 -- specific stencil. At this point we have already check that 

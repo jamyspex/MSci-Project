@@ -2150,6 +2150,7 @@ eta : stencilReach = ([1,0],[0,0]) smartCacheSize = 501
 eta
 ("j",Just 0)
 ("k",Just 1)
+["eta_jp1_k","eta_j_k","eta_j_kp1"]
 --------
 
 ================================
@@ -2224,6 +2225,7 @@ wet : stencilReach = ([1,0],[0,0]) smartCacheSize = 501
 wet
 ("j",Just 0)
 ("k",Just 1)
+["wet_jp1_k","wet_j_k","wet_j_kp1"]
 --------
 
 ================================
@@ -2296,6 +2298,7 @@ h : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
 h
 ("j",Just 0)
 ("k",Just 1)
+["h_jp1_k","h_j_k","h_j_kp1","h_j_km1","h_jm1_k"]
 --------
 
 un : stencilReach = ([0,0],[0,-1]) smartCacheSize = 501
@@ -2303,6 +2306,7 @@ un : stencilReach = ([0,0],[0,-1]) smartCacheSize = 501
 un
 ("j",Just 0)
 ("k",Just 1)
+["un_j_k","un_j_km1"]
 --------
 
 vn : stencilReach = ([0,0],[-1,0]) smartCacheSize = 501
@@ -2310,6 +2314,7 @@ vn : stencilReach = ([0,0],[-1,0]) smartCacheSize = 501
 vn
 ("j",Just 0)
 ("k",Just 1)
+["vn_j_k","vn_jm1_k"]
 --------
 
 ================================
@@ -2364,6 +2369,7 @@ etan : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
 etan
 ("j",Just 0)
 ("k",Just 1)
+["etan_jp1_k","etan_j_k","etan_j_kp1","etan_j_km1","etan_jm1_k"]
 --------
 
 wet : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
@@ -2371,6 +2377,7 @@ wet : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
 wet
 ("j",Just 0)
 ("k",Just 1)
+["wet_jp1_k","wet_j_k","wet_j_kp1","wet_j_km1","wet_jm1_k"]
 --------
 
 ================================
