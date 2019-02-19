@@ -11,31 +11,31 @@ Files with subroutines to be parallelised:
 	dyn
 	vernieuw
 	shapiro
-File containing main subroutine:
+File containing main subroutine: 
 	main.f95
 Source directory:
 	./Shallow-Water-2D
 Fixed form: False
 Loop fusion bound: Nothing
-CPP Defines:
+CPP Defines: 
 CPP Excludes:
 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/main_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/sub_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/init_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/main_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/sub_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/init_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./Shallow-Water-2D/main.f95
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$'
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./Shallow-Water-2D/dyn.f95
 Parsing ./Shallow-Water-2D/shapiro.f95
 Parsing ./Shallow-Water-2D/vernieuw.f95
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines not for offload
+ Subroutines not for offload 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
@@ -43,8 +43,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -99,7 +99,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop
+        stop 
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -126,6 +126,7 @@ program wave2d
     write(6, *)("Data output at time = ", time/60.0, " min")
 end program wave2d
 
+AST not shown.
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -176,7 +177,7 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines for offload
+ Subroutines for offload 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
@@ -184,8 +185,8 @@ Subroutine name: dyn
 Filename: ./Shallow-Water-2D/dyn.f95
 Source:
 subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
-      integer(4), parameter :: ny = 500
-      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500 
       integer :: j
       integer :: k
       real, intent(In) :: dx
@@ -277,6 +278,7 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
     end do
 end subroutine dyn
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -287,8 +289,8 @@ Subroutine name: shapiro
 Filename: ./Shallow-Water-2D/shapiro.f95
 Source:
 subroutine shapiro(j,k,wet,etan,eps,eta)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       integer, intent(InOut) :: j
       integer, intent(InOut) :: k
       integer, dimension(0:ny+1,0:nx+1), intent(In) :: wet
@@ -315,6 +317,7 @@ subroutine shapiro(j,k,wet,etan,eps,eta)
     end do
 end subroutine shapiro
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -326,8 +329,8 @@ Filename: ./Shallow-Water-2D/vernieuw.f95
 Source:
 subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,w&
 &et)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -358,6 +361,7 @@ subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,w&
     end do
 end subroutine vernieuw
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -365,17 +369,17 @@ This subroutine will be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines for offload merged
+ Subroutines for offload merged 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename:
+Filename: 
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -505,6 +509,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -515,8 +520,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -571,7 +576,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop
+        stop 
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -598,6 +603,7 @@ program wave2d
     write(6, *)("Data output at time = ", time/60.0, " min")
 end program wave2d
 
+AST not shown.
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -648,17 +654,17 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Map + Fold Detection
+ Map + Fold Detection 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename:
+Filename: 
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -780,6 +786,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -787,17 +794,17 @@ This subroutine will be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Stencil Detection
+ Stencil Detection 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename:
+Filename: 
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -845,7 +852,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
 !}
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -877,7 +884,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
         end if
     end if
 !}
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -900,7 +907,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     hvs = hsp+hsn
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -920,7 +927,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
         eta(j,k) = etan(j,k)
     end if
 !}
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -938,6 +945,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -948,8 +956,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -1004,7 +1012,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop
+        stop 
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1031,6 +1039,7 @@ program wave2d
     write(6, *)("Data output at time = ", time/60.0, " min")
 end program wave2d
 
+AST not shown.
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1081,17 +1090,17 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Combined
+ Combined 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename:
+Filename: 
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -1137,7 +1146,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -1167,7 +1176,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 vn(j,k) = vv+dvv
         end if
     end if
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1188,7 +1197,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
     hvs = hsp+hsn
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -1206,7 +1215,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     else
         eta(j,k) = etan(j,k)
     end if
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -1222,6 +1231,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1232,8 +1242,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -1288,7 +1298,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop
+        stop 
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1315,6 +1325,7 @@ program wave2d
     write(6, *)("Data output at time = ", time/60.0, " min")
 end program wave2d
 
+AST not shown.
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1365,17 +1376,17 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Loop Guards
+ With Loop Guards 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename:
+Filename: 
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 &ero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -1423,7 +1434,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -1455,7 +1466,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 end if
         end if
     end if
-!}
+!}    
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1478,7 +1489,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -1500,7 +1511,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}
+!}    
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -1516,6 +1527,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !}
 end subroutine dyn_shapiro_vernieuw_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1526,8 +1538,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500
-      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500 
       real :: dt
       real :: dx
       real :: dy
@@ -1582,7 +1594,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop
+        stop 
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1609,6 +1621,7 @@ program wave2d
     write(6, *)("Data output at time = ", time/60.0, " min")
 end program wave2d
 
+AST not shown.
 Argument translations:
 	dyn->
 	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
@@ -1659,7 +1672,7 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Kernels
+ Kernels 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -1682,7 +1695,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_0
 
@@ -1734,7 +1747,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}
+!}    
 !}
 end subroutine dyn_1
 
@@ -1786,7 +1799,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_2
 
@@ -1822,7 +1835,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}
+!}    
 !}
 end subroutine shapiro
 
@@ -1883,7 +1896,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_0
  ! ==============================================
@@ -1945,7 +1958,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}
+!}    
 !}
 end subroutine dyn_1
  ! ==============================================
@@ -2005,7 +2018,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_2
  ! ==============================================
@@ -2047,7 +2060,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}
+!}    
 !}
 end subroutine shapiro
  ! ==============================================
@@ -2094,7 +2107,7 @@ end subroutine vernieuw
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Smart Caches
+ With Smart Caches 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --------------------------------
@@ -2126,13 +2139,19 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_0
  ! ==============================================
 
 
 eta : stencilReach = ([1,0],[0,0]) smartCacheSize = 501
+============
+eta
+("j",Just 0)
+("k",Just 1)
+--------
+
 ================================
 
 --------------------------------
@@ -2194,13 +2213,19 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}
+!}    
 !}
 end subroutine dyn_1
  ! ==============================================
 
 
 wet : stencilReach = ([1,0],[0,0]) smartCacheSize = 501
+============
+wet
+("j",Just 0)
+("k",Just 1)
+--------
+
 ================================
 
 --------------------------------
@@ -2260,15 +2285,33 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}
+!}    
 !}
 end subroutine dyn_2
  ! ==============================================
 
 
 h : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
+============
+h
+("j",Just 0)
+("k",Just 1)
+--------
+
 un : stencilReach = ([0,0],[0,-1]) smartCacheSize = 501
+============
+un
+("j",Just 0)
+("k",Just 1)
+--------
+
 vn : stencilReach = ([0,0],[-1,0]) smartCacheSize = 501
+============
+vn
+("j",Just 0)
+("k",Just 1)
+--------
+
 ================================
 
 --------------------------------
@@ -2310,14 +2353,26 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}
+!}    
 !}
 end subroutine shapiro
  ! ==============================================
 
 
 etan : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
+============
+etan
+("j",Just 0)
+("k",Just 1)
+--------
+
 wet : stencilReach = ([1,0],[-1,0]) smartCacheSize = 1002
+============
+wet
+("j",Just 0)
+("k",Just 1)
+--------
+
 ================================
 
 --------------------------------

@@ -1,5 +1,8 @@
+{-# Language RecordWildCards #-}
+
 module AddSmartCaches where
 
+import           Utils
 import           Data.Ix
 import           Data.List
 import           Debug.Trace
@@ -42,10 +45,13 @@ processOneKernel k = do
   putStrLn "--------------------------------\n"
   print k
   mapM_
-    (\s -> printf "%s : stencilReach = %s smartCacheSize = %d\n"
-                  (getStreamName s)
-                  (show $ getLargestStencilReach s)
-                  (getSmartCacheSize s)
+    (\s -> do
+      printf "%s : stencilReach = %s smartCacheSize = %d\n"
+             (getStreamName s)
+             (show $ getLargestStencilReach s)
+             (getSmartCacheSize s)
+      getSmartCacheOutputVars s k
+      return ()
     )
     requiredStencilStreams
   putStrLn "================================\n"
@@ -166,16 +172,45 @@ calculateDistance i1 i2 = distance
   distance =
     foldr (\(Offset v1, Offset v2) acc -> acc + (v1 - v2) ^ 2) 0 coordPairs
 
-getSmartCacheOutputVars :: K.Stream -> Kernel -> [String]
-getSmartCacheOutputVars stream K.Kernel{..} =
+getSmartCacheOutputVars :: K.Stream Anno -> K.Kernel -> IO () --[String]
+getSmartCacheOutputVars (K.StencilStream name _ dims sten) kern = do
+  putStrLn
+    (  "============\n"
+    ++ name
+    ++ "\n"
+    ++ concatMap (\l -> show l ++ "\n") loopVarPos
+    ++ "--------\n"
+    )
+  return ()
+  where loopVarPos = getLoopVarPositions name kern
+
+-- Take the loopvar position list and use it to construct a list of 
+-- strings representing the variable names that the smart cache needs to produce
+buildOutputVarNames :: [(String, Maybe Int)] -> Stencil -> [String]
+buildOutputVarNames loopVarPositions stencil = []
   where
-    
-  
--- Get the position loopvars are used in the kernel body
--- At this point we have already check that loop var usage is 
--- consistent across arrays in a kernel thanks to 
+    buildOne :: [StencilIndex] -> String
+    buildOne stenIdx = imap (\pos stenIdx -> if 
+    getLoopVar pos = loopVarPositions 
+    convertStenIdx (Offset val) | val == 0 = ""
+                                | val < 0 = "m" ++ show val
+                                | val > 0 = "p" ++ show val
+    convertStenIdx (Constant val) = show val
+
+-- Get the position loopvars are used in the kernel body in a
+-- specific stencil. At this point we have already check that 
+-- loop var usage is consistent across arrays in a kernel thanks to
 -- validateIndexingAndMakeUnique in AddKernelLoopGuards.hs
-getLoopVarPosition :: K.Kernel -> [(String, Int)]
-getLoopVarPosition K.Kernel{..} =  
-  where
-     
+getLoopVarPositions :: String -> K.Kernel -> [(String, Maybe Int)]
+getLoopVarPositions stencilArrayName K.Kernel {..} =
+  map (\(_, loopV, mPos) -> (loopV, mPos))
+    $ getLoopIndexPosition loopVars arrayAccess
+ where
+  stencilArray
+    = filter
+        (\arr -> let (VarName _ name) = varName arr in name == stencilArrayName
+        )
+      $ map arrayFromDecl
+      $ getArrayDecls body
+  arrayAccess = head $ getArrayReads stencilArray (getSubBody body)
+

@@ -3,22 +3,32 @@
 
 module F4 where
 
-import           Parser                  (parseProgramData)
-import           Utils                   (SubRec (..),
-                                          debug_displaySubRoutineTable)
+import           Parser                         ( parseProgramData )
+import           Utils                          ( SubRec(..)
+                                                , debug_displaySubRoutineTable
+                                                )
 
 import           AddKernelLoopGuards
 import           AddSmartCaches
-import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
+import           CommandLineProcessor           ( F4Opts(..)
+                                                , f4CmdParser
+                                                )
 import           ConstantFolding
-import           Data.Generics           (everything, everywhere, everywhereM,
-                                          gmapQ, gmapT, mkM, mkQ, mkT)
-import qualified Data.Map                as DMap
+import           Data.Generics                  ( everything
+                                                , everywhere
+                                                , everywhereM
+                                                , gmapQ
+                                                , gmapT
+                                                , mkM
+                                                , mkQ
+                                                , mkT
+                                                )
+import qualified Data.Map                      as DMap
 import           Debug.Trace
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
-import qualified LanguageFortranTools    as LFT
+import qualified LanguageFortranTools          as LFT
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
@@ -29,119 +39,135 @@ import           Transformer
 
 processArgs :: IO ()
 processArgs = do
-    opts <- execParser f4CmdParser
-    putStrLn banner
-    print opts
-    compilerMain opts
+  opts <- execParser f4CmdParser
+  putStrLn banner
+  print opts
+  compilerMain opts
 
 compilerMain :: F4Opts -> IO ()
 compilerMain args = do
-    subroutineTable <- parseProgramData args
+  subroutineTable <- parseProgramData args
 
-    -- traceIO $ show (DMap.keys subroutineTable)
+  -- traceIO $ show (DMap.keys subroutineTable)
 
-    let notForOffloadSubTable = DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
-    let forOffloadSubTable = DMap.filter (\subRec -> parallelise subRec) subroutineTable
-    let subroutineNames = DMap.keys forOffloadSubTable
+  let notForOffloadSubTable =
+        DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
+  let forOffloadSubTable =
+        DMap.filter (\subRec -> parallelise subRec) subroutineTable
+  let subroutineNames = DMap.keys forOffloadSubTable
 
-    putStrLn ((rule '+') ++ " Subroutines not for offload " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Subroutines not for offload " ++ (rule '+'))
 
-    debug_displaySubRoutineTable notForOffloadSubTable False
+  debug_displaySubRoutineTable notForOffloadSubTable False
 
-    -- traceIO $ show (DMap.keys notForOffloadSubTable)
+  -- traceIO $ show (DMap.keys notForOffloadSubTable)
 
-    putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
 
-    debug_displaySubRoutineTable forOffloadSubTable False
+  debug_displaySubRoutineTable forOffloadSubTable False
 
-    -- traceIO $ show (DMap.keys forOffloadSubTable)
+  -- traceIO $ show (DMap.keys forOffloadSubTable)
 
-    putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
 
-    let subroutineTableWithOffloadSubsMerged = mergeSubsToBeParallelised subroutineTable
+  let subroutineTableWithOffloadSubsMerged =
+        mergeSubsToBeParallelised subroutineTable
 
-    -- traceIO $ show (DMap.keys subroutineTableWithOffloadSubsMerged)
+  -- traceIO $ show (DMap.keys subroutineTableWithOffloadSubsMerged)
 
-    debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
+  debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
 
-    let mergedForOffload = DMap.filter (\subRec -> parallelise subRec) subroutineTableWithOffloadSubsMerged
-    let mergedOffloadName = head $ DMap.keys mergedForOffload
+  let mergedForOffload = DMap.filter (\subRec -> parallelise subRec)
+                                     subroutineTableWithOffloadSubsMerged
+  let mergedOffloadName = head $ DMap.keys mergedForOffload
 
-    putStrLn ((rule '+') ++ " Map + Fold Detection " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Map + Fold Detection " ++ (rule '+'))
 
-    -- < STEP 4 : Parallelise the loops >
-    -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-    let (parallelisedSubroutines, parAnnotations) = foldl (paralleliseProgUnit_foldl (ioSubs args) subroutineTableWithOffloadSubsMerged) (DMap.empty, []) [mergedOffloadName]
+  -- < STEP 4 : Parallelise the loops >
+  -- WV: this is the equivalent of calling a statefull pass on every subroutine.
+  let (parallelisedSubroutines, parAnnotations) = foldl
+        (paralleliseProgUnit_foldl (ioSubs args)
+                                   subroutineTableWithOffloadSubsMerged
+        )
+        (DMap.empty, [])
+        [mergedOffloadName]
 
-    debug_displaySubRoutineTable parallelisedSubroutines False
+  debug_displaySubRoutineTable parallelisedSubroutines False
 
-    let srtWithParallelisedSubroutines = DMap.union parallelisedSubroutines subroutineTableWithOffloadSubsMerged
+  let srtWithParallelisedSubroutines = DMap.union
+        parallelisedSubroutines
+        subroutineTableWithOffloadSubsMerged
 
-    -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
-    --     (DMap.toList parallelisedSubroutines)
+  -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
+  --     (DMap.toList parallelisedSubroutines)
 
-    putStrLn ((rule '+') ++ " Stencil Detection " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Stencil Detection " ++ (rule '+'))
 
-    let srtAfterStenDetect = detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
+  let srtAfterStenDetect =
+        detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
 
-    debug_displaySubRoutineTable srtAfterStenDetect False
+  debug_displaySubRoutineTable srtAfterStenDetect False
 
-    -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-    let (combinedKernelSubroutines, combAnnotations) = foldl (combineKernelProgUnit_foldl (loopFusionBound args)) (srtAfterStenDetect, []) [mergedOffloadName]
+  -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
+  let (combinedKernelSubroutines, combAnnotations) = foldl
+        (combineKernelProgUnit_foldl (loopFusionBound args))
+        (srtAfterStenDetect, [])
+        [mergedOffloadName]
 
-    putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
 
-    let srtAfterKernelCombination = DMap.union combinedKernelSubroutines srtAfterStenDetect
+  let srtAfterKernelCombination =
+        DMap.union combinedKernelSubroutines srtAfterStenDetect
 
-    debug_displaySubRoutineTable srtAfterKernelCombination False
+  debug_displaySubRoutineTable srtAfterKernelCombination False
 
-    let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
+  let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
 
-    putStrLn ((rule '+') ++ " With Loop Guards " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " With Loop Guards " ++ (rule '+'))
 
-    let withGuards = addLoopGuards combinedOffloadSub
+  let withGuards = addLoopGuards combinedOffloadSub
 
-    let srtWithGuards = DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
+  let srtWithGuards =
+        DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
 
-    debug_displaySubRoutineTable srtWithGuards False
+  debug_displaySubRoutineTable srtWithGuards False
 
-    putStrLn ((rule '+') ++ " Kernels " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " Kernels " ++ (rule '+'))
 
-    let guardedMerged = srtWithGuards DMap.! mergedOffloadName
+  let guardedMerged = srtWithGuards DMap.! mergedOffloadName
 
-    kernels <- getKernels guardedMerged
+  kernels <- getKernels guardedMerged
 
-    putStrLn ((rule '+') ++ " With Smart Caches " ++ (rule '+'))
+  putStrLn ((rule '+') ++ " With Smart Caches " ++ (rule '+'))
 
-    insertSmartCaches kernels
+  insertSmartCaches kernels
 
-    -- let kernelsAndSmartCaches = insertSmartCaches kernels
-    -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
-    --     (DMap.toList combinedKernelSubroutines)
+  -- let kernelsAndSmartCaches = insertSmartCaches kernels
+  -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
+  --     (DMap.toList combinedKernelSubroutines)
 
-    -- JM: This is simply so status information can be printed.
-    -- < STEP 6a : create annotation listings >
-    -- let annotationListings = map (combineAnnotationListings_map parAnnotations) combAnnotations
+  -- JM: This is simply so status information can be printed.
+  -- < STEP 6a : create annotation listings >
+  -- let annotationListings = map (combineAnnotationListings_map parAnnotations) combAnnotations
 
-    -- --    < STEP 7a : >
-    -- let argTranslations = extractSubroutineArgumentTranslationMaps combinedKernelSubroutines parsedMain
-    --         -- WV: TODO: put these into SubRec.subCalledSubs.ArgMap or at least in SubRec.subCalledSubsArgMaps
+  -- --    < STEP 7a : >
+  -- let argTranslations = extractSubroutineArgumentTranslationMaps combinedKernelSubroutines parsedMain
+  --         -- WV: TODO: put these into SubRec.subCalledSubs.ArgMap or at least in SubRec.subCalledSubsArgMaps
 
-    return ()
+  return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()
 validateInputFiles fileAst = do
-    let results = map (\f -> f fileAst)
-            [checkFilesHaveOnlyOneSubroutine]
-    mapM_ printErrorOrContinue results
-    return ()
+  let results = map (\f -> f fileAst) [checkFilesHaveOnlyOneSubroutine]
+  mapM_ printErrorOrContinue results
+  return ()
 
 banner =
-    rule '=' ++
-    "F4: Finite-element Fortran for FPGAs\n" ++
-    "This compiler allows Fortran finite element codes to be compiled\n" ++
-    "for execution on FPGA devices via OpenCL" ++
-    rule '='
+  rule '='
+    ++ "F4: Finite-element Fortran for FPGAs\n"
+    ++ "This compiler allows Fortran finite element codes to be compiled\n"
+    ++ "for execution on FPGA devices via OpenCL"
+    ++ rule '='
 
 hl = rule '-'
 

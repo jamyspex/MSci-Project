@@ -283,6 +283,7 @@ program main
     end do
 end program main
 
+AST not shown.
 Argument translations:
 	adam->
 	    call adam(n, nmax, data21, fold, gold, hold, f, g, h)
@@ -455,6 +456,7 @@ subroutine adam(n,nmax,data21,fold,gold,hold,f,g,h)
     end do
 end subroutine adam
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -596,6 +598,7 @@ subroutine bondv1(u,z2,dzn,v,w,n,n0,dt,dxs)
     end do
 end subroutine bondv1
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -660,6 +663,7 @@ subroutine feedbf(usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,dt,bet&
     end do
 end subroutine feedbf
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -917,6 +921,7 @@ subroutine les(delx1,dx1,dy1,dzn,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8&
     return 
 end subroutine les
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1136,6 +1141,7 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax)
     end do
 end subroutine press
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1382,6 +1388,7 @@ subroutine velfg(dx1,dy1,dzn,f,g,dzs,h,u,v,w)
     return 
 end subroutine velfg
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1451,6 +1458,7 @@ subroutine velnw(p,ro,dxs,u,dt,f,dys,v,g,dzs,w,h)
     return 
 end subroutine velnw
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -1601,6 +1609,7 @@ program main
     end do
 end program main
 
+AST not shown.
 Argument translations:
 	adam->
 	    call adam(n, nmax, data21, fold, gold, hold, f, g, h)
@@ -2674,6 +2683,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -3532,6 +3542,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -3682,6 +3693,7 @@ program main
     end do
 end program main
 
+AST not shown.
 Argument translations:
 	adam->
 	    call adam(n, nmax, data21, fold, gold, hold, f, g, h)
@@ -4837,6 +4849,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -4987,6 +5000,7 @@ program main
     end do
 end program main
 
+AST not shown.
 Argument translations:
 	adam->
 	    call adam(n, nmax, data21, fold, gold, hold, f, g, h)
@@ -5996,6 +6010,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -6146,6 +6161,7 @@ program main
     end do
 end program main
 
+AST not shown.
 Argument translations:
 	adam->
 	    call adam(n, nmax, data21, fold, gold, hold, f, g, h)
@@ -7283,6 +7299,7 @@ subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged(alpha,beta,bm&
 !}
 end subroutine velnw_bondv1_velfg_feedbf_les_adam_press_merged
 
+AST not shown.
 Argument translations:
 
 This subroutine will be offloaded to the FPGA
@@ -8617,22 +8634,7 @@ subroutine press_3(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
 &and. (k<=80)) then
         rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k)&
 &)/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
-        rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-gbuildKernel
-writtenArrayNames = ["u"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["v"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["w"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["u","v","w"]
-arrayWrites length = 3
-buildKernel
-writtenArrayNames = ["u","v","w"]
-arrayWrites length = 3
-(i,j-1,k))/&
+        rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/&
 &dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
     end if
 !}    
@@ -8889,34 +8891,7 @@ subroutine velnw_2(dt,dzs,h,p,ro,w)
     end if
 !}    
 !}
-end subroutinebuildKernel
-writtenArrayNames = []
-arrayWrites length = 0
-buildKernel
-writtenArrayNames = []
-arrayWrites length = 0
-buildKernel
-writtenArrayNames = ["u"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["v"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["w"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["u","u"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["v","v"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["w","w"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["u","u"]
-arrayWrites length = 1
- velnw_2
+end subroutine velnw_2
  ! ==============================================
 
  ! ==============================================
@@ -9140,19 +9115,7 @@ end subroutine bondv1_7
 subroutine bondv1_8(v)
       integer :: i
       integer :: k
-      real(4), dimension(0:301,-1:301buildKernel
-writtenArrayNames = ["v","v"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["w","w"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["f"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["g"]
-arrayWrites length = 1
-,0:81), intent(InOut) :: v
+      real(4), dimension(0:301,-1:301,0:81), intent(InOut) :: v
 ! OpenCLStencil (
 !	2 point stencil on 3D array v: [[0,C=1,0],[0,C=300,0]]
 !    ){
@@ -9367,19 +9330,7 @@ end subroutine velfg_0
  ! ==============================================
  ! Name: velfg_1 Order: 17
  ! Input streams:
- !	StencilStream: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[buildKernel
-writtenArrayNames = ["h"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["f"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["g"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["h","h"]
-arrayWrites length = 1
-0],[1],[-1]]
+ !	StencilStream: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
  !	StencilStream: dy1 type: Float dimensions: [(0,301)]!	2 point stencil on 1D array dy1: [[0],[1]]
  !	StencilStream: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
  !	StencilStream: u type: Float dimensions: [(0,301),(-1,301),(0,81)]!	4 point stencil on 3D array u: [[0,1,0],[0,0,0],[-1,1,0],[-1,0,0]]
@@ -9567,16 +9518,7 @@ subroutine velfg_2(dx1,dy1,dzn,h,u,v,w)
         nou9_ = (w(i,j,k-1)+w(i,j,k))/2.
         diu9_ = (-w(i,j,k-1)+w(i,j,k))/dzn(k)
         cov9_k = nou9_*diu9_
-        buildKernel
-writtenArrayNames = ["usum","vsum","wsum","fx","fy","fz","f","g","h"]
-arrayWrites length = 9
-buildKernel
-writtenArrayNames = ["delx1"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["sm"]
-arrayWrites length = 1
-nou9_kp1 = (w(i,j,k)+w(i,j,k+1))/2.
+        nou9_kp1 = (w(i,j,k)+w(i,j,k+1))/2.
         diu9_kp1 = (-w(i,j,k)+w(i,j,k+1))/dzn(k+1)
         cov9_kp1 = nou9_kp1*diu9_kp1
         covx1 = (cov7_i+cov7_ip1)/2.
@@ -9765,20 +9707,7 @@ end subroutine les_0
  !	StencilStream: diu6 type: Float dimensions: [(0,302),(0,302),(0,82)]!	4 point stencil on 3D array diu6: [[0,0,0],[0,0,1],[0,-1,0],[0,-1,1]]
  !	StencilStream: diu7 type: Float dimensions: [(0,302),(0,302),(0,82)]!	4 point stencil on 3D array diu7: [[1,0,0],[1,0,-1],[0,0,0],[0,0,-1]]
  !	StencilStream: diu8 type: Float dimensions: [(0,302),(0,302),(0,82)]!	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
- !	Stream: delx1 type: Float dimensions: [(1,80)]buildKernel
-writtenArrayNames = ["sm","sm"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["sm","sm"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["sm","sm"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["f"]
-arrayWrites length = 1
-buildKernel
-
+ !	Stream: delx1 type: Float dimensions: [(1,80)]
  !	Stream: diu1 type: Float dimensions: [(-1,302),(0,302),(0,82)]
  !	Stream: diu5 type: Float dimensions: [(-1,302),(0,302),(0,82)]
  !	Stream: diu9 type: Float dimensions: [(0,302),(0,302),(0,82)]
@@ -9970,12 +9899,7 @@ subroutine les_5(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
 !	2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
 !	2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
 !	2 point stencil on 3D array diu4: [[1,0,0],[1,-1,0]]
-!	2 point stencil on 3D array diu7: [[1,0,writtenArrayNames = ["f"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["g"]
-arrayWrites length = 1
-0],[1,0,-1]]
+!	2 point stencil on 3D array diu7: [[1,0,0],[1,0,-1]]
 !	2 point stencil on 1D array dx1: [[0],[1]]
 !	2 point stencil on 1D array dy1: [[0],[1]]
 !	3 point stencil on 1D array dzn: [[0],[1],[-1]]
@@ -10125,13 +10049,7 @@ subroutine les_7(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
       real(4), dimension(0:302,0:302,0:82), intent(In) :: diu8
       real(4), dimension(-1:301), intent(In) :: dx1
       real(4), dimension(0:301), intent(In) :: dy1
-      real(4), dimension(0:300), buildKernel
-writtenArrayNames = ["g"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["h"]
-arrayWrites length = 1
-intent(In) :: dys
+      real(4), dimension(0:300), intent(In) :: dys
       real(4), dimension(-1:82), intent(In) :: dzn
       real(4) :: evsx2
       real(4) :: evsx1
@@ -10291,22 +10209,7 @@ end subroutine les_8
  !	StencilStream: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
  !	StencilStream: dy1 type: Float dimensions: [(0,301)]!	3 point stencil on 1D array dy1: [[0],[1],[-1]]
  !	StencilStream: dzn type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzn: [[0],[1]]
- !	StencilStream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[buildKernel
-writtenArrayNames = ["f","g","h","fold","gold","hold"]
-arrayWrites length = 6
-buildKernel
-writtenArrayNames = ["f"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["g"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["h","h"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["rhs","rhs"]
-arrayWrites length = 1
-0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
+ !	StencilStream: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: h type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -10500,28 +10403,7 @@ end subroutine press_2
  !	StencilStream: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
  !	Stream: dx1 type: Float dimensions: [(-1,301)]
  !	Stream: dy1 type: Float dimensions: [(0,301)]
- buildKernel
-writtenArrayNames = []
-arrayWrites length = 0
-buildKernel
-writtenArrayNames = ["rhs"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = []
-arrayWrites length = 0
-buildKernel
-writtenArrayNames = ["p"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["p","p"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["p","p"]
-arrayWrites length = 1
-buildKernel
-writtenArrayNames = ["p","p"]
-arrayWrites length = 1
-!	Stream: dzn type: Float dimensions: [(-1,82)]
+ !	Stream: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
@@ -10793,6 +10675,6 @@ end subroutine velnw_0
  ! ==============================================
 
 
-F4-exe: Stencil indices invalid
+F4-exe: Stencil indices invalid: sameLength = True allOffsets = False
 CallStack (from HasCallStack):
-  error, called at src/AddSmartCaches.hs:73:9 in F4-0.1.0.0-59mZnvWbMQg8483S6JUQll:AddSmartCaches
+  error, called at src/AddSmartCaches.hs:125:10 in F4-0.1.0.0-59mZnvWbMQg8483S6JUQll:AddSmartCaches
