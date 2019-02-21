@@ -2,6 +2,7 @@
 
 module AddSmartCaches where
 
+import           StencilBufferSizeDetection
 import qualified Data.Map                      as DMap
 import           Data.Maybe
 import           Data.Tuple
@@ -26,11 +27,7 @@ import           Text.Printf
 -- input streams. If it finds StencilStream inputs it constructs an appropriate smart cache
 -- and inserts it into the list with the appropriate position value set.
 insertSmartCaches :: [K.Kernel] -> IO ()
-insertSmartCaches kernels = do
-  mapM_ processOneKernel kernels
-  printf "testDataStenSize = %d" stenSize
-  return ()
-  where stenSize = getSmartCacheSize testData
+insertSmartCaches = mapM_ processOneKernel
 
 -- THE PLAN :
 -- 1) Assume all the arrays are square and of equal side
@@ -50,17 +47,19 @@ processOneKernel k = do
   print k
   mapM_
     (\s -> do
+      let (scSize, reach) =
+            calculateStencilSizeAndEndPoints (defaultIterationOrder 2) s
       printf "%s : stencilReach = %s smartCacheSize = %d\n"
              (getStreamName s)
-             (show $ getLargestStencilReach s)
-             (getSmartCacheSize s)
+             (show reach)
+             scSize
       getSmartCacheOutputVars s k
-      return ()
     )
     requiredStencilStreams
   putStrLn "================================\n"
   return ()
   where requiredStencilStreams = filter isStencil $ K.inputStreams k
+
 
 getStreamName (K.Stream name _ _         ) = name
 getStreamName (K.StencilStream name _ _ _) = name
@@ -76,39 +75,24 @@ isStencil stream = case stream of
   K.Stream{}        -> False
   K.StencilStream{} -> True
 
-testData = K.StencilStream
-  "test"
-  K.Float
-  [(0, 400), (1, 500), (0, 300)]
-  (Stencil
-    nullAnno
-    3
-    2
-    [ [Offset (-1), Offset (-2), Offset 0]
-    , [Offset 1, Offset 2, Offset 0]
-    , [Offset 0, Offset (-1), Offset 0]
-    , [Offset 0, Offset 1, Offset 0]
-    ]
-    (VarName nullAnno "test")
-  )
-
 -- Used to workout the size of the smart cache used to buffer a stream
 getSmartCacheSize :: K.Stream Anno -> Int
 getSmartCacheSize stenStream@(K.StencilStream name _ arrayDimens stencil) =
-  sizeInDim * stencilReach
- where
-  (stenIdx1, stenIdx2) = getLargestStencilReach stenStream
-  (Stencil _ stencilDimens _ stencilIndices _) = stencil
-  differentIndex = findLargestDifferentIndex stenIdx1 stenIdx2
-  stencilReach =
-    abs (stenIdx1 !! differentIndex) + abs (stenIdx2 !! differentIndex)
-  (lwb, upb) = arrayDimens !! differentIndex
-  -- TODO need to do something here to account for stencils that go up
-  -- the column e.g.
-  --       X              X
-  --    X  X  X works but X  X  X doesn't as you need 2 extra smache spaces
-  --       X                    X
-  sizeInDim  = upb - lwb
+  fst (calculateStencilSizeAndEndPoints (defaultIterationOrder 2) stenStream)
+ -- sizeInDim * stencilReach
+ -- where
+ --  (stenIdx1, stenIdx2) = getLargestStencilReach stenStream
+ --  (Stencil _ stencilDimens _ stencilIndices _) = stencil
+ --  differentIndex = findLargestDifferentIndex stenIdx1 stenIdx2
+ --  stencilReach =
+ --    abs (stenIdx1 !! differentIndex) + abs (stenIdx2 !! differentIndex)
+ --  (lwb, upb) = arrayDimens !! differentIndex
+ --  -- TODO need to do something here to account for stencils that go up
+ --  -- the column e.g.
+ --  --       X              X
+ --  --    X  X  X works but X  X  X doesn't as you need 2 extra smache spaces
+ --  --       X                    X
+ --  sizeInDim  = upb - lwb
 
 
 -- returns the stencil index that differs the most
