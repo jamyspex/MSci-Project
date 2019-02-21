@@ -30,7 +30,7 @@ crossTestData3D_8x8x8 = K.StencilStream
   )
 
 
-crossTestData3D_6x10x8 = K.StencilStream
+crossTestData3D_10x6x8 = K.StencilStream
   "test"
   K.Float
   [(1, 10), (1, 6), (1, 8)]
@@ -50,7 +50,18 @@ crossTestData3D_6x10x8 = K.StencilStream
   )
 
 
-crossWithExtraPointsToBeIgnoredTestData3D_6x10x8 = K.StencilStream
+extremesCrossTestData3D_10x6x8 = K.StencilStream
+  "test"
+  K.Float
+  [(1, 10), (1, 6), (1, 8)]
+  (Stencil nullAnno
+           3
+           2
+           [[Offset 0, Offset 0, Offset (-1)], [Offset 0, Offset 0, Offset 1]]
+           (VarName nullAnno "test")
+  )
+
+crossWithExtraPointsToBeIgnoredTestData3D_10x6x8 = K.StencilStream
   "test"
   K.Float
   [(1, 10), (1, 6), (1, 8)]
@@ -72,7 +83,7 @@ crossWithExtraPointsToBeIgnoredTestData3D_6x10x8 = K.StencilStream
   )
 
 
-crossWithExtraPointsNotIgnoredTestData3D_6x10x8 = K.StencilStream
+crossWithExtraPointsNotIgnoredTestData3D_10x6x8 = K.StencilStream
   "test"
   K.Float
   [(1, 10), (1, 6), (1, 8)]
@@ -94,7 +105,7 @@ crossWithExtraPointsNotIgnoredTestData3D_6x10x8 = K.StencilStream
   )
 
 
-extremitiesOfCrossNotIgnore_6x10x8 = K.StencilStream
+extremitiesOfCrossNotIgnore_10x6x8 = K.StencilStream
   "test"
   K.Float
   [(1, 10), (1, 6), (1, 8)]
@@ -106,10 +117,10 @@ extremitiesOfCrossNotIgnore_6x10x8 = K.StencilStream
     (VarName nullAnno "test")
   )
 
-nonSymetricTestData3D_8x8x8 = K.StencilStream
+nonSymetricTestData3D_10x6x8 = K.StencilStream
   "test"
   K.Float
-  [(1, 8), (1, 8), (1, 8)]
+  [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
     3
@@ -122,6 +133,38 @@ nonSymetricTestData3D_8x8x8 = K.StencilStream
     , [Offset 0, Offset 1, Offset 0]
     , [Offset (-1), Offset 0, Offset 1]
     ]
+    (VarName nullAnno "test")
+  )
+
+
+nonSymetricLarger_10x6x8 = K.StencilStream
+  "test"
+  K.Float
+  [(1, 10), (1, 6), (1, 8)]
+  (Stencil
+    nullAnno
+    3
+    2
+    [ [Offset (-1), Offset 0, Offset 0]
+    , [Offset 0, Offset (-1), Offset 0]
+    , [Offset (-1), Offset 0, Offset (-1)]
+    , [Offset 0, Offset 0, Offset 0]
+    , [Offset 1, Offset 0, Offset 0]
+    , [Offset 0, Offset 1, Offset 0]
+    , [Offset 1, Offset 0, Offset 1]
+    ]
+    (VarName nullAnno "test")
+  )
+
+nonSymetricTestDataExtremities_10x6x8 = K.StencilStream
+  "test"
+  K.Float
+  [(1, 10), (1, 6), (1, 8)]
+  (Stencil
+    nullAnno
+    3
+    2
+    [[Offset 1, Offset 0, Offset (-1)], [Offset (-1), Offset 0, Offset 1]]
     (VarName nullAnno "test")
   )
 
@@ -144,14 +187,20 @@ nonSymetricTestData3D_8x8x8 = K.StencilStream
 assertions = assert
   (  areaOnly crossTestData3D_8x8x8
   == 129
-  && areaOnly crossTestData3D_6x10x8
+  && areaOnly crossTestData3D_10x6x8
   == 121
-  && areaOnly crossWithExtraPointsToBeIgnoredTestData3D_6x10x8
+  && areaOnly crossWithExtraPointsToBeIgnoredTestData3D_10x6x8
   == 121
-  && areaOnly crossWithExtraPointsNotIgnoredTestData3D_6x10x8
+  && areaOnly crossWithExtraPointsNotIgnoredTestData3D_10x6x8
   == 141
- -- && areaOnly nonSymetricTestData3D_8x8x8
- -- == 127
+  && areaOnly nonSymetricTestData3D_10x6x8
+  == 119
+  && areaOnly nonSymetricLarger_10x6x8
+  == 123
+  && areaOnly nonSymetricTestDataExtremities_10x6x8
+  == 119
+  && areaOnly extremesCrossTestData3D_10x6x8
+  == 121
   )
   "Assertions passed"
 
@@ -199,7 +248,8 @@ calculateStencilSize iterationOrder stenStream@(K.StencilStream name _ arrayDime
     let initial = ((l1, l2), True, 0)
         ((ol1, ol2), _, totArea) =
           foldl combineReaches initial (reverse iterationOrder)
-    in  (totArea + 1, (ol1, ol2))
+        offset = head ol1 - head ol2
+    in  (abs totArea + 1, (ol1, ol2)) -- + (last ol2 - last ol1), (ol1, ol2))
 -- last move index is the most significant therefore its impossible for it to
 -- be subsumed by another index value so skip the check to see if it is > 0 when 
 -- adding its buffer contribution 
@@ -209,42 +259,22 @@ calculateStencilSize iterationOrder stenStream@(K.StencilStream name _ arrayDime
     -> (([Int], [Int]), Bool, Int) -- ((indice components), False, total area)
   combineReaches ((idx1, idx2), firstIter, areaSoFar) component =
     if firstIter || i1 < 0 || i2 > 0
-      then trace
-        ("index 1 = " ++ show idx1 ++ " index 2 = " ++ show idx2)
-        ((idx1, idx2), False, areaSoFar + calculateReach component (i1, i2))
+      then
+        ((idx1, idx2), False, areaSoFar + calculateReach component (idx1, idx2))
       else ((idx1, idx2), False, areaSoFar)
    where
     i1 = idx1 !! component
     i2 = idx2 !! component
-  calculateReach :: Int -> (Int, Int) -> Int
-  calculateReach pos (lm1, lm2) = trace
-    (  "calculateReach: pos = "
-    ++ show pos
-    ++ " num blocks = "
-    ++ show numBlocks
-    ++ " index 1 = "
-    ++ show lm1
-    ++ " index 2 = "
-    ++ show lm2
-    ++ "\ndimension diff = "
-    ++ show indexDiff
-    ++ " array dimens = "
-    ++ show arrayDimens
-    ++ " iteration order used = "
-    ++ show (take pos iterationOrder)
-    )
-    numBlocks
+  calculateReach :: Int -> ([Int], [Int]) -> Int
+  calculateReach pos (ind1, ind2) = numBlocks
    where
-    numBlocks = indexDiff * productOfOtherDimensions
-    indexDiff = lm2 - lm1
-    productOfOtherDimensions =
-      foldl dimensionProductFold 1 (take pos iterationOrder)
-    dimensionProductFold acc cur = trace
-      (show acc ++ " * " ++ show ((upb - lwb) + 1))
-      (((upb - lwb) + 1) * acc)
+    numBlocks   = indexDiff * totalArea
+    indexDiff   = ind2CurComp - ind1CurComp
+    ind1CurComp = ind1 !! pos
+    ind2CurComp = ind2 !! pos
+    totalArea   = foldl dimensionProductFold 1 (take pos iterationOrder)
+    dimensionProductFold area cur = ((upb - lwb) + 1) * area
       where (lwb, upb) = arrayDimens !! cur
-
-
 
 compareIndices :: [Int] -> [Int] -> [Int] -> Ordering
 compareIndices i1 i2 iterationOrder = if sameLength
