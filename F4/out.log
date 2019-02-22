@@ -2145,12 +2145,16 @@ end subroutine dyn_0
  ! ==============================================
 
 
-eta : stencilReach = ([0,0],[0,1]) smartCacheSize = 503
+Start index: [0,0]
+End index: [0,1]
+Buffer size: 503
+Stencil point: [1,0] buffer index = 2
+Stencil point: [0,1] buffer index = 503
 ============
 eta
 ("j",Just 0)
 ("k",Just 1)
-["eta_jp1_k","eta_j_k","eta_j_kp1"]
+[("eta_jp1_k",[1,0]),("eta_j_k",[0,0]),("eta_j_kp1",[0,1])]
 --------
 
 ================================
@@ -2220,12 +2224,16 @@ end subroutine dyn_1
  ! ==============================================
 
 
-wet : stencilReach = ([0,0],[0,1]) smartCacheSize = 503
+Start index: [0,0]
+End index: [0,1]
+Buffer size: 503
+Stencil point: [1,0] buffer index = 2
+Stencil point: [0,1] buffer index = 503
 ============
 wet
 ("j",Just 0)
 ("k",Just 1)
-["wet_jp1_k","wet_j_k","wet_j_kp1"]
+[("wet_jp1_k",[1,0]),("wet_j_k",[0,0]),("wet_j_kp1",[0,1])]
 --------
 
 ================================
@@ -2293,28 +2301,40 @@ end subroutine dyn_2
  ! ==============================================
 
 
-h : stencilReach = ([0,-1],[0,1]) smartCacheSize = 1005
+Start index: [0,-1]
+End index: [0,1]
+Buffer size: 1005
+Stencil point: [1,0] buffer index = 504
+Stencil point: [0,0] buffer index = 503
+Stencil point: [0,1] buffer index = 1005
+Stencil point: [-1,0] buffer index = 502
 ============
 h
 ("j",Just 0)
 ("k",Just 1)
-["h_jp1_k","h_j_k","h_j_kp1","h_j_km1","h_jm1_k"]
+[("h_jp1_k",[1,0]),("h_j_k",[0,0]),("h_j_kp1",[0,1]),("h_j_km1",[0,-1]),("h_jm1_k",[-1,0])]
 --------
 
-un : stencilReach = ([0,-1],[0,0]) smartCacheSize = 503
+Start index: [0,-1]
+End index: [0,0]
+Buffer size: 503
+Stencil point: [0,0] buffer index = 503
 ============
 un
 ("j",Just 0)
 ("k",Just 1)
-["un_j_k","un_j_km1"]
+[("un_j_k",[0,0]),("un_j_km1",[0,-1])]
 --------
 
-vn : stencilReach = ([-1,0],[0,0]) smartCacheSize = 2
+Start index: [-1,0]
+End index: [0,0]
+Buffer size: 2
+Stencil point: [0,0] buffer index = 2
 ============
 vn
 ("j",Just 0)
 ("k",Just 1)
-["vn_j_k","vn_jm1_k"]
+[("vn_j_k",[0,0]),("vn_jm1_k",[-1,0])]
 --------
 
 ================================
@@ -2364,20 +2384,32 @@ end subroutine shapiro
  ! ==============================================
 
 
-etan : stencilReach = ([0,-1],[0,1]) smartCacheSize = 1005
+Start index: [0,-1]
+End index: [0,1]
+Buffer size: 1005
+Stencil point: [1,0] buffer index = 504
+Stencil point: [0,0] buffer index = 503
+Stencil point: [0,1] buffer index = 1005
+Stencil point: [-1,0] buffer index = 502
 ============
 etan
 ("j",Just 0)
 ("k",Just 1)
-["etan_jp1_k","etan_j_k","etan_j_kp1","etan_j_km1","etan_jm1_k"]
+[("etan_jp1_k",[1,0]),("etan_j_k",[0,0]),("etan_j_kp1",[0,1]),("etan_j_km1",[0,-1]),("etan_jm1_k",[-1,0])]
 --------
 
-wet : stencilReach = ([0,-1],[0,1]) smartCacheSize = 1005
+Start index: [0,-1]
+End index: [0,1]
+Buffer size: 1005
+Stencil point: [1,0] buffer index = 504
+Stencil point: [0,0] buffer index = 503
+Stencil point: [0,1] buffer index = 1005
+Stencil point: [-1,0] buffer index = 502
 ============
 wet
 ("j",Just 0)
 ("k",Just 1)
-["wet_jp1_k","wet_j_k","wet_j_kp1","wet_j_km1","wet_jm1_k"]
+[("wet_jp1_k",[1,0]),("wet_j_k",[0,0]),("wet_j_kp1",[0,1]),("wet_j_km1",[0,-1]),("wet_jm1_k",[-1,0])]
 --------
 
 ================================

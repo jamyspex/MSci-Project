@@ -32,19 +32,24 @@ printResults stream =
         (defaultIterationOrder 3)
         stream
 
+printSmartCacheDetails stream =
+  printSmartCacheDetails'
+    $ calculateSmartCacheDetails (defaultIterationOrder 3) stream
 
-printSmartCacheDetails stream = do
+printSmartCacheDetails' smartCacheDetails = do
   putStrLn $ "Start index: " ++ show startIndex
   putStrLn $ "End index: " ++ show endIndex
   putStrLn $ "Buffer size: " ++ show requiredBufferSize
   mapM_
     (\(index, (_, point)) ->
-      putStrLn $ "Stencil point: " ++ show point ++ " 1D index = " ++ show index
+      putStrLn
+        $  "Stencil point: "
+        ++ show point
+        ++ " buffer index = "
+        ++ show index
     )
     startToPointDistances
- where
-  SmartCacheDetails {..} =
-    calculateSmartCacheDetails (defaultIterationOrder 3) stream
+  where SmartCacheDetails {..} = smartCacheDetails
 
 -- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential

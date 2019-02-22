@@ -2,7 +2,7 @@
 
 module AddSmartCaches where
 
-import           StencilBufferSizeDetection
+import           SmartCacheParameterAnalysis
 import qualified Data.Map                      as DMap
 import           Data.Maybe
 import           Data.Tuple
@@ -47,12 +47,9 @@ processOneKernel k = do
   print k
   mapM_
     (\s -> do
-      let (scSize, (start, end)) =
-            calculateStencilSizeAndEndPoints (defaultIterationOrder 2) s
-      printf "%s : stencilReach = %s smartCacheSize = %d\n"
-             (getStreamName s)
-             (show (start, end))
-             scSize
+      let smartCacheDetails =
+            calculateSmartCacheDetails (defaultIterationOrder 2) s
+      printSmartCacheDetails' smartCacheDetails
       getSmartCacheOutputVars s k
     )
     requiredStencilStreams
@@ -76,10 +73,10 @@ isStencil stream = case stream of
   K.StencilStream{} -> True
 
 -- Used to workout the size of the smart cache used to buffer a stream
-getSmartCacheSize :: K.Stream Anno -> Int
-getSmartCacheSize stenStream@(K.StencilStream name _ arrayDimens stencil) =
-  fst (calculateStencilSizeAndEndPoints (defaultIterationOrder 2) stenStream)
- -- sizeInDim * stencilReach
+-- getSmartCacheSize :: K.Stream Anno -> Int
+-- getSmartCacheSize stenStream@(K.StencilStream name _ arrayDimens stencil) =
+--   fst (calculateStencilSizeAndEndPoints (defaultIterationOrder 2) stenStream)
+--  -- sizeInDim * stencilReach
  -- where
  --  (stenIdx1, stenIdx2) = getLargestStencilReach stenStream
  --  (Stencil _ stencilDimens _ stencilIndices _) = stencil
@@ -177,15 +174,17 @@ getSmartCacheOutputVars (K.StencilStream name _ dims sten) kern = do
 -- 2) Order them by the order they are used to access the array e.g. eta(j, k) -> [j, k]
 -- 3) Using the Stencil used to access that array generate the output variables 
 -- a smart cache buffering that array needs to emit
-getOutputVariableNames :: [(String, Maybe Int)] -> Stencil Anno -> [String]
+getOutputVariableNames
+  :: [(String, Maybe Int)] -> Stencil Anno -> [(String, [StencilIndex])]
 getOutputVariableNames loopVarsAndPosition (Stencil _ _ _ stenIndices (VarName _ name))
-  = map snd outputVariables
+  = outputVariables
  where
   loopVarPosMap =
     DMap.fromList $ map (swap . (\(f, s) -> (f, fromJust s))) $ filter
       (isJust . snd)
       loopVarsAndPosition
-  outputVariables = map (foldl buildVarName (0, name)) stenIndices
+  outputVariables =
+    map (\si -> (snd $ foldl buildVarName (0, name) si, si)) stenIndices -- this is a tuple section how fancy!
   buildVarName :: (Int, String) -> StencilIndex -> (Int, String)
   buildVarName (pos, outVarName) cur = case cur of
     Offset _ ->
