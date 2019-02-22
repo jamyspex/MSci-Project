@@ -24,6 +24,7 @@
 		{
 			"from": [7, 8, 4],
 			"to": [8, 9, 5],
+			"color": 0,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#missing"},
 				"east": {"uv": [0, 0, 1, 1], "texture": "#missing"},
@@ -100,8 +101,8 @@
 			}
 		},
 		{
-			"from": [9, 7, 9],
-			"to": [10, 8, 10],
+			"from": [9, 2, 9],
+			"to": [10, 3, 10],
 			"color": 4,
 			"faces": {
 				"north": {"uv": [0, 0, 1, 1], "texture": "#missing"},
@@ -110,6 +111,55 @@
 				"west": {"uv": [0, 0, 1, 1], "texture": "#missing"},
 				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [2, 0, 4],
+			"to": [10, 8, 4],
+			"color": 4,
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"east": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"south": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"west": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"up": {"uv": [0, 0, 8, 0], "texture": "#missing"},
+				"down": {"uv": [0, 0, 8, 0], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [2, 0, 4],
+			"to": [2, 8, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"east": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"south": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"west": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"up": {"uv": [0, 0, 8, 0], "rotation": 270, "texture": "#missing"},
+				"down": {"uv": [0, 0, 8, 0], "rotation": 90, "texture": "#missing"}
+			}
+		},
+		{
+			"from": [2, 0, 12],
+			"to": [10, 8, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"east": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"south": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"west": {"uv": [0, 0, 0, 8], "texture": "#missing"},
+				"up": {"uv": [0, 0, 8, 0], "texture": "#missing"},
+				"down": {"uv": [0, 0, 8, 0], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [2, 8, 4],
+			"to": [10, 8, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 0], "rotation": 180, "texture": "#missing"},
+				"east": {"uv": [0, 0, 0, 8], "rotation": 90, "texture": "#missing"},
+				"south": {"uv": [0, 0, 8, 0], "texture": "#missing"},
+				"west": {"uv": [0, 0, 0, 8], "rotation": 270, "texture": "#missing"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#missing"},
+				"down": {"uv": [0, 0, 8, 8], "rotation": 180, "texture": "#missing"}
 			}
 		}
 	],
@@ -122,5 +172,5 @@
 		{
 			"name": "stencil",
 			"children": [3, 4, 5, 6]
-		}, 7, 8]
+		}, 7, 8, 9, 10, 11, 12]
 }

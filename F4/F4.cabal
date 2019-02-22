@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 430432ffc22a026ebe2a8445cd1dc57b181dd62cf1304e27157da725946e9d25
+-- hash: 5576409b0471202b8824138046b59406a968623f56fe35ccc678ff2233ef1a92
 
 name:           F4
 version:        0.1.0.0
@@ -44,7 +44,7 @@ library
       Platform
       PreProcessor
       SanityChecks
-      StencilBufferSizeDetection
+      SmartCacheParameterAnalysis
       StencilDetection
       SubroutineTable
       Transformer

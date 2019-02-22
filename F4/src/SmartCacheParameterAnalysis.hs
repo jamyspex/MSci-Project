@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module StencilBufferSizeDetection where
+module SmartCacheParameterAnalysis where
 
 import           Control.Exception
 import           Data.Ix
@@ -28,10 +28,12 @@ printResults stream =
           (show end)
         )
     $ sortStencils
-    $ calculateAllStencilSizeAndEndPoints (defaultIterationOrder 3) stream
+    $ calculateSmartCacheSizeForAllPairsOfStencilPoints
+        (defaultIterationOrder 3)
+        stream
 
 
-printStencilDetails stream = do
+printSmartCacheDetails stream = do
   putStrLn $ "Start index: " ++ show startIndex
   putStrLn $ "End index: " ++ show endIndex
   putStrLn $ "Buffer size: " ++ show requiredBufferSize
@@ -41,10 +43,10 @@ printStencilDetails stream = do
     )
     startToPointDistances
  where
-  StencilDetails {..} =
-    calculateStencilDetails (defaultIterationOrder 3) stream
+  SmartCacheDetails {..} =
+    calculateSmartCacheDetails (defaultIterationOrder 3) stream
 
--- Sorts the results from calculateStencilSize by number of block
+-- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential
 -- end pairs require the same number of blocks to buffer the stencil
 -- prefer the one with more zeros in the indices as this will include
@@ -60,12 +62,12 @@ sortStencils = sortBy
 count pred = length . filter pred
 
 scSizeOnly sten =
-  let StencilDetails {..} =
-        calculateStencilDetails (defaultIterationOrder 3) sten
+  let SmartCacheDetails {..} =
+        calculateSmartCacheDetails (defaultIterationOrder 3) sten
   in  requiredBufferSize
 
 
-data StencilDetails = StencilDetails
+data SmartCacheDetails = SmartCacheDetails
   {
     requiredBufferSize    :: Int,
     startIndex            :: [Int],
@@ -73,15 +75,15 @@ data StencilDetails = StencilDetails
     startToPointDistances :: [(Int, ([Int], [Int]))]
   }
 
-calculateStencilDetails :: [Int] -> K.Stream Anno -> StencilDetails
-calculateStencilDetails itOrder sten = StencilDetails
+calculateSmartCacheDetails :: [Int] -> K.Stream Anno -> SmartCacheDetails
+calculateSmartCacheDetails itOrder sten = SmartCacheDetails
   { requiredBufferSize    = maxNumBlocks
   , startIndex            = maxStart
   , endIndex              = maxEnd
   , startToPointDistances = pairsFromStart
   }
  where
-  all            = calculateAllStencilSizeAndEndPoints itOrder sten
+  all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder sten
   (maxNumBlocks, (maxStart, maxEnd)) = (head . sortStencils) all
   pairsFromStart = filter (\(_, (start, _)) -> start == maxStart) all
 
@@ -95,7 +97,7 @@ calculateStencilDetails itOrder sten = StencilDetails
 -- treats the indices of a 3D stream.
 --
 --                Dim 2
---      -------------------------
+--      ------------------------>
 --      | \
 --      |  \
 --      |   \
@@ -107,7 +109,8 @@ calculateStencilDetails itOrder sten = StencilDetails
 --      |         \  3
 --      |          \
 --      |           \
---      |            \
+--      v            \  
+--            (increasing this direction)
 --
 -- The function works by working out the distance between all the possible pairs of
 -- stencil indices and then selecting the best using the sortStencils function.
@@ -117,9 +120,9 @@ calculateStencilDetails itOrder sten = StencilDetails
 -- differences between them. This is then used along with the stream dimensions to
 -- calculate the size of smart cache required. The function then considers the next most
 -- significant index in this case -2 and 2 and repeats the process
-calculateAllStencilSizeAndEndPoints
+calculateSmartCacheSizeForAllPairsOfStencilPoints
   :: [Int] -> K.Stream Anno -> [(Int, ([Int], [Int]))]
-calculateAllStencilSizeAndEndPoints iterationOrder (K.StencilStream _ _ arrayDimens stencil)
+calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (K.StencilStream _ _ arrayDimens stencil)
   = stencilSizesAndIndexPairs
  where
   (Stencil _ stencilDimens _ stencilIndices _) = stencil
@@ -192,8 +195,8 @@ test stream@(K.StencilStream _ _ _ stencil) numBlocksShouldBe startShouldBeIdx e
   stencilIndicesInts               = stripStenIndex stencilIndices
   startShouldBe                    = stencilIndicesInts !! startShouldBeIdx
   endShouldBe                      = stencilIndicesInts !! endShouldBeIdx
-  StencilDetails {..} =
-    calculateStencilDetails (defaultIterationOrder 3) stream
+  SmartCacheDetails {..} =
+    calculateSmartCacheDetails (defaultIterationOrder 3) stream
 
 assertions = assert
   (  test crossTestData3D_8x8x8                            129 2 6
