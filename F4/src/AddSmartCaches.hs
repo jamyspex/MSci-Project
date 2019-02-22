@@ -47,11 +47,11 @@ processOneKernel k = do
   print k
   mapM_
     (\s -> do
-      let (scSize, reach) =
+      let (scSize, (start, end)) =
             calculateStencilSizeAndEndPoints (defaultIterationOrder 2) s
       printf "%s : stencilReach = %s smartCacheSize = %d\n"
              (getStreamName s)
-             (show reach)
+             (show (start, end))
              scSize
       getSmartCacheOutputVars s k
     )
