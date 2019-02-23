@@ -248,7 +248,7 @@ data Fortran  p = Assg p SrcSpan (Expr p) (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
 
-data StencilIndex = Constant Int | Offset Int deriving (Typeable, Data, Eq)
+data StencilIndex = Constant Int | Offset Int deriving (Typeable, Data, Eq, Ord)
 
 instance Show StencilIndex where
     show (Constant val) = "C=" ++ show val

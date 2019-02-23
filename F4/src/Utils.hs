@@ -1,8 +1,8 @@
 module Utils where
 
-import           Data.Maybe
 import           Data.Generics
 import qualified Data.Map                      as DMap
+import           Data.Maybe
 import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
@@ -30,6 +30,64 @@ type ArgumentTranslationTable = DMap.Map SubNameStr (Fortran Anno, [ArgumentTran
 
 
 type SubroutineTable = DMap.Map SubNameStr SubRec
+
+data Kernel = Kernel {
+    inputs              :: [Stream Anno],
+    outputs             :: [Stream Anno],
+    kernelName          :: String,
+    outputReductionVars :: [String],
+    body                :: ProgUnit Anno,
+    order               :: Int,
+    loopVars            :: [String]
+}
+
+instance Show Kernel where
+    show kernel = " ! ==============================================\n" ++
+                  " ! Name: " ++ name ++ " Order: " ++ show o ++ "\n" ++
+                  " ! Input streams:\n" ++
+                  concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS ++
+                  " ! Output streams:\n" ++
+                  concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS ++
+                  " ! Output Reduction Variables:\n" ++
+                  concatMap (\r -> "! \t" ++ show r  ++ "\n") outR ++
+                  " ! --------------------------------------------\n" ++
+                  miniPPProgUnit b ++
+                  " ! ==============================================\n\n"
+                    where
+                        inS = inputs kernel
+                        outS = outputs kernel
+                        name = kernelName kernel
+                        outR = outputReductionVars kernel
+                        b = body kernel
+                        o = order kernel
+
+data Stream p = Stream String           -- name
+                StreamValueType  -- value type
+                [(Int, Int)]     -- dimensions
+            | StencilStream
+                String           -- name
+                StreamValueType  -- value type
+                [(Int, Int)]     -- dimensions
+                (Stencil p)      -- stencil offsets
+                deriving Show
+
+printStream (Stream name valueType dims) =
+  "Stream: "
+    ++ name
+    ++ " type: "
+    ++ show valueType
+    ++ " dimensions: "
+    ++ show dims
+printStream (StencilStream name valueType dims stencil) =
+  "StencilStream: "
+    ++ name
+    ++ " type: "
+    ++ show valueType
+    ++ " dimensions: "
+    ++ show dims
+    ++ showStencils "\t" [stencil]
+
+data StreamValueType = Float deriving Show
 
 removeDuplicates :: Ord a => (b -> a) -> [b] -> [b]
 removeDuplicates getKey input = DMap.elems uniqueMap
@@ -68,6 +126,12 @@ getArgsAsString :: ProgUnit Anno -> [String]
 getArgsAsString sub = map getArgName $ getArgs sub
 gerArgsAsString = error "Passed something other than a Sub to getArgsAsString"
 
+
+getStreamDimensions (Stream _ _ dims         ) = dims
+getStreamDimensions (StencilStream _ _ dims _) = dims
+
+getStreamName (Stream name _ _         ) = name
+getStreamName (StencilStream name _ _ _) = name
 
 getAttrs typeDecl = case typeDecl of
   (BaseType _ _ attrs _ _) -> attrs

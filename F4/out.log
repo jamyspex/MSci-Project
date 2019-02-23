@@ -2110,8 +2110,6 @@ end subroutine vernieuw
  With Smart Caches 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
---------------------------------
-
  ! ==============================================
  ! Name: dyn_0 Order: 0
  ! Input streams:
@@ -2145,21 +2143,16 @@ end subroutine dyn_0
  ! ==============================================
 
 
-Start index: [0,0]
-End index: [0,1]
+-------------------------------
+Smart cache item
+Input stream: eta
 Buffer size: 503
-Stencil point: [1,0] buffer index = 2
-Stencil point: [0,1] buffer index = 503
-============
-eta
-("j",Just 0)
-("k",Just 1)
-[("eta_jp1_k",[1,0]),("eta_j_k",[0,0]),("eta_j_kp1",[0,1])]
---------
-
-================================
-
---------------------------------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	eta_j_k from buffer index = 1
+	eta_jp1_k from buffer index = 2
+	eta_j_kp1 from buffer index = 503
+-------------------------------
 
  ! ==============================================
  ! Name: dyn_1 Order: 1
@@ -2224,21 +2217,16 @@ end subroutine dyn_1
  ! ==============================================
 
 
-Start index: [0,0]
-End index: [0,1]
+-------------------------------
+Smart cache item
+Input stream: wet
 Buffer size: 503
-Stencil point: [1,0] buffer index = 2
-Stencil point: [0,1] buffer index = 503
-============
-wet
-("j",Just 0)
-("k",Just 1)
-[("wet_jp1_k",[1,0]),("wet_j_k",[0,0]),("wet_j_kp1",[0,1])]
---------
-
-================================
-
---------------------------------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	wet_j_k from buffer index = 1
+	wet_jp1_k from buffer index = 2
+	wet_j_kp1 from buffer index = 503
+-------------------------------
 
  ! ==============================================
  ! Name: dyn_2 Order: 2
@@ -2301,45 +2289,38 @@ end subroutine dyn_2
  ! ==============================================
 
 
-Start index: [0,-1]
-End index: [0,1]
+-------------------------------
+Smart cache item
+Input stream: h
 Buffer size: 1005
-Stencil point: [1,0] buffer index = 504
-Stencil point: [0,0] buffer index = 503
-Stencil point: [0,1] buffer index = 1005
-Stencil point: [-1,0] buffer index = 502
-============
-h
-("j",Just 0)
-("k",Just 1)
-[("h_jp1_k",[1,0]),("h_j_k",[0,0]),("h_j_kp1",[0,1]),("h_j_km1",[0,-1]),("h_jm1_k",[-1,0])]
---------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	h_j_km1 from buffer index = 1
+	h_jm1_k from buffer index = 502
+	h_j_k from buffer index = 503
+	h_jp1_k from buffer index = 504
+	h_j_kp1 from buffer index = 1005
+-------------------------------
 
-Start index: [0,-1]
-End index: [0,0]
+-------------------------------
+Smart cache item
+Input stream: un
 Buffer size: 503
-Stencil point: [0,0] buffer index = 503
-============
-un
-("j",Just 0)
-("k",Just 1)
-[("un_j_k",[0,0]),("un_j_km1",[0,-1])]
---------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	un_j_km1 from buffer index = 1
+	un_j_k from buffer index = 503
+-------------------------------
 
-Start index: [-1,0]
-End index: [0,0]
+-------------------------------
+Smart cache item
+Input stream: vn
 Buffer size: 2
-Stencil point: [0,0] buffer index = 2
-============
-vn
-("j",Just 0)
-("k",Just 1)
-[("vn_j_k",[0,0]),("vn_jm1_k",[-1,0])]
---------
-
-================================
-
---------------------------------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	vn_jm1_k from buffer index = 1
+	vn_j_k from buffer index = 2
+-------------------------------
 
  ! ==============================================
  ! Name: shapiro Order: 3
@@ -2384,37 +2365,31 @@ end subroutine shapiro
  ! ==============================================
 
 
-Start index: [0,-1]
-End index: [0,1]
+-------------------------------
+Smart cache item
+Input stream: etan
 Buffer size: 1005
-Stencil point: [1,0] buffer index = 504
-Stencil point: [0,0] buffer index = 503
-Stencil point: [0,1] buffer index = 1005
-Stencil point: [-1,0] buffer index = 502
-============
-etan
-("j",Just 0)
-("k",Just 1)
-[("etan_jp1_k",[1,0]),("etan_j_k",[0,0]),("etan_j_kp1",[0,1]),("etan_j_km1",[0,-1]),("etan_jm1_k",[-1,0])]
---------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	etan_j_km1 from buffer index = 1
+	etan_jm1_k from buffer index = 502
+	etan_j_k from buffer index = 503
+	etan_jp1_k from buffer index = 504
+	etan_j_kp1 from buffer index = 1005
+-------------------------------
 
-Start index: [0,-1]
-End index: [0,1]
+-------------------------------
+Smart cache item
+Input stream: wet
 Buffer size: 1005
-Stencil point: [1,0] buffer index = 504
-Stencil point: [0,0] buffer index = 503
-Stencil point: [0,1] buffer index = 1005
-Stencil point: [-1,0] buffer index = 502
-============
-wet
-("j",Just 0)
-("k",Just 1)
-[("wet_jp1_k",[1,0]),("wet_j_k",[0,0]),("wet_j_kp1",[0,1]),("wet_j_km1",[0,-1]),("wet_jm1_k",[-1,0])]
---------
-
-================================
-
---------------------------------
+Stream Dimensions: [(0,501),(0,501)]
+Output Streams:
+	wet_j_km1 from buffer index = 1
+	wet_jm1_k from buffer index = 502
+	wet_j_k from buffer index = 503
+	wet_jp1_k from buffer index = 504
+	wet_j_kp1 from buffer index = 1005
+-------------------------------
 
  ! ==============================================
  ! Name: vernieuw Order: 4
@@ -2455,6 +2430,4 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 end subroutine vernieuw
  ! ==============================================
 
-
-================================
 

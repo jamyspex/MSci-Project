@@ -7,7 +7,7 @@ import           Data.Ix
 import           Data.List
 import           Data.Ord
 import           Debug.Trace
-import qualified KernelExtraction              as K
+import           Utils
 import           Language.Fortran
 import           LanguageFortranTools
 import           Text.Printf
@@ -32,24 +32,23 @@ printResults stream =
         (defaultIterationOrder 3)
         stream
 
-printSmartCacheDetails stream =
-  printSmartCacheDetails'
-    $ calculateSmartCacheDetails (defaultIterationOrder 3) stream
+printSmartCacheDetailsForStream stream =
+  print $ calculateSmartCacheDetailsForStream (defaultIterationOrder 3) stream
 
-printSmartCacheDetails' smartCacheDetails = do
-  putStrLn $ "Start index: " ++ show startIndex
-  putStrLn $ "End index: " ++ show endIndex
-  putStrLn $ "Buffer size: " ++ show requiredBufferSize
-  mapM_
-    (\(index, (_, point)) ->
-      putStrLn
-        $  "Stencil point: "
-        ++ show point
-        ++ " buffer index = "
-        ++ show index
-    )
-    startToPointDistances
-  where SmartCacheDetails {..} = smartCacheDetails
+instance Show SmartCacheDetailsForStream where
+  show smartCacheDetails =
+    "Start index: " ++ show startIndex ++ "\n" ++
+    "End index: " ++ show endIndex ++ "\n" ++
+    "Buffer size: " ++ show requiredBufferSize ++ "\n" ++
+    concatMap
+      (\(index, point) ->
+          "Stencil point: "
+          ++ show point
+          ++ " buffer index = "
+          ++ show index ++ "\n"
+      )
+      startToPointDistances
+    where SmartCacheDetailsForStream {..} = smartCacheDetails
 
 -- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential
@@ -67,21 +66,22 @@ sortStencils = sortBy
 count pred = length . filter pred
 
 scSizeOnly sten =
-  let SmartCacheDetails {..} =
-        calculateSmartCacheDetails (defaultIterationOrder 3) sten
+  let SmartCacheDetailsForStream {..} =
+        calculateSmartCacheDetailsForStream (defaultIterationOrder 3) sten
   in  requiredBufferSize
 
 
-data SmartCacheDetails = SmartCacheDetails
+data SmartCacheDetailsForStream = SmartCacheDetailsForStream
   {
     requiredBufferSize    :: Int,
     startIndex            :: [Int],
     endIndex              :: [Int],
-    startToPointDistances :: [(Int, ([Int], [Int]))]
+    startToPointDistances :: [([Int], Int)]
   }
 
-calculateSmartCacheDetails :: [Int] -> K.Stream Anno -> SmartCacheDetails
-calculateSmartCacheDetails itOrder sten = SmartCacheDetails
+calculateSmartCacheDetailsForStream
+  :: [Int] -> Stream Anno -> SmartCacheDetailsForStream
+calculateSmartCacheDetailsForStream itOrder sten = SmartCacheDetailsForStream
   { requiredBufferSize    = maxNumBlocks
   , startIndex            = maxStart
   , endIndex              = maxEnd
@@ -90,7 +90,8 @@ calculateSmartCacheDetails itOrder sten = SmartCacheDetails
  where
   all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder sten
   (maxNumBlocks, (maxStart, maxEnd)) = (head . sortStencils) all
-  pairsFromStart = filter (\(_, (start, _)) -> start == maxStart) all
+  pairsFromStart = map (\(size, (_, point)) -> (point, size))
+    $ filter (\(_, (start, _)) -> start == maxStart) all
 
 
 -- This method is used to calculate the size of smart cache required to
@@ -126,8 +127,8 @@ calculateSmartCacheDetails itOrder sten = SmartCacheDetails
 -- calculate the size of smart cache required. The function then considers the next most
 -- significant index in this case -2 and 2 and repeats the process
 calculateSmartCacheSizeForAllPairsOfStencilPoints
-  :: [Int] -> K.Stream Anno -> [(Int, ([Int], [Int]))]
-calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (K.StencilStream _ _ arrayDimens stencil)
+  :: [Int] -> Stream Anno -> [(Int, ([Int], [Int]))]
+calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream _ _ arrayDimens stencil)
   = stencilSizesAndIndexPairs
  where
   (Stencil _ stencilDimens _ stencilIndices _) = stencil
@@ -186,7 +187,7 @@ compareIndices i1 i2 iterationOrder = if sameLength
 
 -- test method, assertions and test data
 
-test stream@(K.StencilStream _ _ _ stencil) numBlocksShouldBe startShouldBeIdx endShouldBeIdx
+test stream@(StencilStream _ _ _ stencil) numBlocksShouldBe startShouldBeIdx endShouldBeIdx
   = numBlocksShouldBe
     == requiredBufferSize
     && startShouldBe
@@ -200,8 +201,8 @@ test stream@(K.StencilStream _ _ _ stencil) numBlocksShouldBe startShouldBeIdx e
   stencilIndicesInts               = stripStenIndex stencilIndices
   startShouldBe                    = stencilIndicesInts !! startShouldBeIdx
   endShouldBe                      = stencilIndicesInts !! endShouldBeIdx
-  SmartCacheDetails {..} =
-    calculateSmartCacheDetails (defaultIterationOrder 3) stream
+  SmartCacheDetailsForStream {..} =
+    calculateSmartCacheDetailsForStream (defaultIterationOrder 3) stream
 
 assertions = assert
   (  test crossTestData3D_8x8x8                            129 2 6
@@ -221,9 +222,9 @@ assertions = assert
 
 -- Test data
 
-nonSymetricalLargerThan1Offset = K.StencilStream
+nonSymetricalLargerThan1Offset = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 8), (1, 8), (1, 8)]
   (Stencil
     nullAnno
@@ -237,9 +238,9 @@ nonSymetricalLargerThan1Offset = K.StencilStream
     (VarName nullAnno "test")
   )
 
-crossTestData3DZeroBasedIndex_8x8x8 = K.StencilStream
+crossTestData3DZeroBasedIndex_8x8x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(0, 8), (0, 8), (0, 8)]
   (Stencil
     nullAnno
@@ -256,9 +257,9 @@ crossTestData3DZeroBasedIndex_8x8x8 = K.StencilStream
     (VarName nullAnno "test")
   )
 
-crossTestData3D_8x8x8 = K.StencilStream
+crossTestData3D_8x8x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 8), (1, 8), (1, 8)]
   (Stencil
     nullAnno
@@ -276,9 +277,9 @@ crossTestData3D_8x8x8 = K.StencilStream
   )
 
 
-crossTestData3D_10x6x8 = K.StencilStream
+crossTestData3D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -296,9 +297,9 @@ crossTestData3D_10x6x8 = K.StencilStream
   )
 
 
-extremesCrossTestData3D_10x6x8 = K.StencilStream
+extremesCrossTestData3D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil nullAnno
            3
@@ -307,9 +308,9 @@ extremesCrossTestData3D_10x6x8 = K.StencilStream
            (VarName nullAnno "test")
   )
 
-crossWithExtraPointsToBeIgnoredTestData3D_10x6x8 = K.StencilStream
+crossWithExtraPointsToBeIgnoredTestData3D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -329,9 +330,9 @@ crossWithExtraPointsToBeIgnoredTestData3D_10x6x8 = K.StencilStream
   )
 
 
-crossWithExtraPointsNotIgnoredTestData3D_10x6x8 = K.StencilStream
+crossWithExtraPointsNotIgnoredTestData3D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -351,9 +352,9 @@ crossWithExtraPointsNotIgnoredTestData3D_10x6x8 = K.StencilStream
   )
 
 
-extremitiesOfCrossNotIgnore_10x6x8 = K.StencilStream
+extremitiesOfCrossNotIgnore_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -363,9 +364,9 @@ extremitiesOfCrossNotIgnore_10x6x8 = K.StencilStream
     (VarName nullAnno "test")
   )
 
-nonSymetricTestData3D_10x6x8 = K.StencilStream
+nonSymetricTestData3D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -382,9 +383,9 @@ nonSymetricTestData3D_10x6x8 = K.StencilStream
     (VarName nullAnno "test")
   )
 
-testData3Darray1D_10x6x8 = K.StencilStream
+testData3Darray1D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil nullAnno
            3
@@ -393,9 +394,9 @@ testData3Darray1D_10x6x8 = K.StencilStream
            (VarName nullAnno "test")
   )
 
-testData3Darray2D_10x6x8 = K.StencilStream
+testData3Darray2D_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil nullAnno
            3
@@ -404,9 +405,9 @@ testData3Darray2D_10x6x8 = K.StencilStream
            (VarName nullAnno "test")
   )
 
-nonSymetricLarger_10x6x8 = K.StencilStream
+nonSymetricLarger_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno
@@ -423,9 +424,9 @@ nonSymetricLarger_10x6x8 = K.StencilStream
     (VarName nullAnno "test")
   )
 
-nonSymetricTestDataExtremities_10x6x8 = K.StencilStream
+nonSymetricTestDataExtremities_10x6x8 = StencilStream
   "test"
-  K.Float
+  Float
   [(1, 10), (1, 6), (1, 8)]
   (Stencil
     nullAnno

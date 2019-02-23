@@ -12,28 +12,6 @@ import           MiniPP
 import           Parser
 import           Utils
 
-data Kernel = Kernel {
-    inputStreams        :: [Stream Anno],
-    outputStreams       :: [Stream Anno],
-    kernelName          :: String,
-    outputReductionVars :: [String],
-    body                :: ProgUnit Anno,
-    order               :: Int,
-    loopVars            :: [String]
-}
-
-
-data Stream p = Stream String           -- name
-                StreamValueType  -- value type
-                [(Int, Int)]     -- dimensions
-            | StencilStream
-                String           -- name
-                StreamValueType  -- value type
-                [(Int, Int)]     -- dimensions
-                (Stencil p)      -- stencil offsets
-                deriving Show
-
-data StreamValueType = Float deriving Show
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines
@@ -194,8 +172,8 @@ buildKernel (order, sub) = if arrayWritesValid
   inputStreams = getInputStreams stencilArrays arraysNoStencils
   outputStreams = map arrayToStream arrayWrites
   kernel = Kernel
-    { inputStreams        = inputStreams
-    , outputStreams       = outputStreams
+    { inputs              = inputStreams
+    , outputs             = outputStreams
     , outputReductionVars = reductionVars
     , body                = sub
     , order               = order
@@ -240,7 +218,7 @@ matchArraysToStencils arrays stencils =
   stencilsGrouped = groupBy
     (\s1 s2 -> stencilArrayName s1 == stencilArrayName s2)
     stencilsSorted
-  stencilsSorted = sortBy (comparing stencilArrayName) stencils
+  stencilsSorted = sortOn stencilArrayName stencils
   arrayMap =
     DMap.fromList $ map (\a -> ((getNameFromVarName . varName) a, a)) arrays
   stencilMap = DMap.fromList
@@ -287,39 +265,3 @@ getReductionVarNameQuery fortran = case fortran of
   OpenCLReduce _ _ _ _ _ _ redVar _ -> map getVarName redVar
   _ -> []
   where getVarName (varname, _) = getNameFromVarName varname
-
-instance Show Kernel where
-    show kernel = " ! ==============================================\n" ++
-                  " ! Name: " ++ name ++ " Order: " ++ show o ++ "\n" ++
-                  " ! Input streams:\n" ++
-                  concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS ++
-                  " ! Output streams:\n" ++
-                  concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS ++
-                  " ! Output Reduction Variables:\n" ++
-                  concatMap (\r -> "! \t" ++ show r  ++ "\n") outR ++
-                  " ! --------------------------------------------\n" ++
-                  miniPPProgUnit b ++
-                  " ! ==============================================\n\n"
-                    where
-                        inS = inputStreams kernel
-                        outS = outputStreams kernel
-                        name = kernelName kernel
-                        outR = outputReductionVars kernel
-                        b = body kernel
-                        o = order kernel
-
-printStream (Stream name valueType dims) =
-  "Stream: "
-    ++ name
-    ++ " type: "
-    ++ show valueType
-    ++ " dimensions: "
-    ++ show dims
-printStream (StencilStream name valueType dims stencil) =
-  "StencilStream: "
-    ++ name
-    ++ " type: "
-    ++ show valueType
-    ++ " dimensions: "
-    ++ show dims
-    ++ showStencils "\t" [stencil]

@@ -1,8 +1,9 @@
 module Pipeline where
 
-import           KernelExtraction
 import           Language.Fortran
 import           LanguageFortranTools
+import           SmartCacheParameterAnalysis
+import           Utils
 
 -- Data type used to represent a processing pipeline
 -- for output to a Fortran kernel file
@@ -10,7 +11,7 @@ data Pipeline a = Map {
         inputStreams  :: [Stream Anno],
         outputStreams :: [Stream Anno],
         kernelName    :: String,
-        body          :: ProgUnit Anno,
+        fortran       :: ProgUnit Anno,
         nextStage     :: Pipeline a,
         sharedData    :: a
     } | Reduce {
@@ -22,9 +23,10 @@ data Pipeline a = Map {
         sharedData    :: a
     } | SmartCache {
         inputStreams   :: [Stream Anno],
-        stencils       :: [Stencil Anno],
         outputStreams  :: [Stream Anno],
-        smartCachename :: String,
+        smartCacheName :: String,
+        smartCacheSize :: Int,
+        cacheLines     :: [SmartCacheDetailsForStream],
         nextStage      :: Pipeline a,
         sharedData     :: a
     } | MemoryReader {
@@ -44,10 +46,10 @@ data Pipeline a = Map {
 
 -- data StreamValueType = Float deriving Show
 
-data FPGAMemArray = FPGAMemArray {
+newtype FPGAMemArray = FPGAMemArray {
     name :: String
 } deriving Show
 
-data SharedPipelineData = SPD {
+newtype SharedPipelineData = SPD {
     driverLoopSize :: Int
 } deriving Show
