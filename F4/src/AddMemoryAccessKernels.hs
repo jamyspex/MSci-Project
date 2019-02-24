@@ -1,5 +1,6 @@
 module AddMemoryAccessKernels where
 
+import Data.Map
 import           Pipeline
 import           Utils
 
@@ -46,10 +47,21 @@ import           Utils
 -- 
 --
 --
+
+type PipelineStage = (Kernel, Pipeline SharedPipelineData, [Pipeline SharedPipelineData])
+
 -- Add memory reader kernels
 addMemoryReaders ::
      [(Kernel, Pipeline SharedPipelineData)]
-  -> IO [(Kernel, Pipeline SharedPipelineData, [Pipeline SharedPipelineData])]
+  -> IO (PipelineStage) 
 addMemoryReaders kernelsAndSmartCaches =
   where
+    sorted = sortBy (\(k1, _) (k2, _) -> order k1 `compare` order k2) kernelsAndSmartCaches
+    availableOutputStreams = DMap.empty
+
+foldOverPipeline :: (DMap.Map String String, [PipelineStage]) -> Int -> (DMap.Map String String, [PipelineStage])
+foldOverPipeline (availableStreamMap, pipeline) currentStage = 
+  where
+
+    
     
