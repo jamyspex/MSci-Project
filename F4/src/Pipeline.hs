@@ -10,15 +10,15 @@ import           Utils
 data Pipeline a = Map {
         inputStreams  :: [Stream Anno],
         outputStreams :: [Stream Anno],
-        kernelName    :: String,
+        name          :: String,
         fortran       :: ProgUnit Anno,
         nextStage     :: Pipeline a,
         sharedData    :: a
     } | Reduce {
         inputStreams  :: [Stream Anno],
         outputStreams :: [Stream Anno],
-        kernelName    :: String,
-        body          :: ProgUnit Anno,
+        name          :: String,
+        fortran       :: ProgUnit Anno,
         nextStage     :: Pipeline a,
         sharedData    :: a
     } | SmartCache {
@@ -26,7 +26,7 @@ data Pipeline a = Map {
         outputStreams  :: [Stream Anno],
         smartCacheName :: String,
         smartCacheSize :: Int,
-        cacheLines     :: [SmartCacheDetailsForStream],
+        cacheLines     :: [SmartCacheItem],
         nextStage      :: Pipeline a,
         sharedData     :: a
     } | MemoryReader {
@@ -38,7 +38,7 @@ data Pipeline a = Map {
         inputStreamsToMemMap :: [(Stream Anno, FPGAMemArray)],
         memWriterName        :: String,
         sharedData           :: a
-    } deriving Show
+    } | NullStage deriving Show
 
 -- -- Data type used to represent a stream flowing between kernels
 -- -- will likely directly map to a pipe in OpenCL
@@ -47,9 +47,9 @@ data Pipeline a = Map {
 -- data StreamValueType = Float deriving Show
 
 newtype FPGAMemArray = FPGAMemArray {
-    name :: String
+    arrayName :: String
 } deriving Show
 
-newtype SharedPipelineData = SPD {
+data SharedPipelineData = SPD {
     driverLoopSize :: Int
-} deriving Show
+} | NullPipeLineData deriving Show

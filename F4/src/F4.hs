@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
 {-# OPTIONS_GHC -fno-cse #-}
 
 module F4 where
@@ -50,25 +49,23 @@ compilerMain args = do
 
   -- traceIO $ show (DMap.keys subroutineTable)
 
-  let notForOffloadSubTable =
-        DMap.filter (\subrec -> (not . parallelise) subrec) subroutineTable
-  let forOffloadSubTable =
-        DMap.filter (\subRec -> parallelise subRec) subroutineTable
-  let subroutineNames = DMap.keys forOffloadSubTable
+  let notForOffloadSubTable = DMap.filter (not . parallelise) subroutineTable
+  let forOffloadSubTable    = DMap.filter parallelise subroutineTable
+  let subroutineNames       = DMap.keys forOffloadSubTable
 
-  putStrLn ((rule '+') ++ " Subroutines not for offload " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Subroutines not for offload " ++ rule '+')
 
   debug_displaySubRoutineTable notForOffloadSubTable False
 
   -- traceIO $ show (DMap.keys notForOffloadSubTable)
 
-  putStrLn ((rule '+') ++ " Subroutines for offload " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Subroutines for offload " ++ rule '+')
 
   debug_displaySubRoutineTable forOffloadSubTable False
 
   -- traceIO $ show (DMap.keys forOffloadSubTable)
 
-  putStrLn ((rule '+') ++ " Subroutines for offload merged " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Subroutines for offload merged " ++ rule '+')
 
   let subroutineTableWithOffloadSubsMerged =
         mergeSubsToBeParallelised subroutineTable
@@ -77,11 +74,11 @@ compilerMain args = do
 
   debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
 
-  let mergedForOffload = DMap.filter (\subRec -> parallelise subRec)
-                                     subroutineTableWithOffloadSubsMerged
+  let mergedForOffload =
+        DMap.filter parallelise subroutineTableWithOffloadSubsMerged
   let mergedOffloadName = head $ DMap.keys mergedForOffload
 
-  putStrLn ((rule '+') ++ " Map + Fold Detection " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
 
   -- < STEP 4 : Parallelise the loops >
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
@@ -101,7 +98,7 @@ compilerMain args = do
   -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
   --     (DMap.toList parallelisedSubroutines)
 
-  putStrLn ((rule '+') ++ " Stencil Detection " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Stencil Detection " ++ rule '+')
 
   let srtAfterStenDetect =
         detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
@@ -114,7 +111,7 @@ compilerMain args = do
         (srtAfterStenDetect, [])
         [mergedOffloadName]
 
-  putStrLn ((rule '+') ++ " Combined " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Combined " ++ rule '+')
 
   let srtAfterKernelCombination =
         DMap.union combinedKernelSubroutines srtAfterStenDetect
@@ -123,7 +120,7 @@ compilerMain args = do
 
   let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
 
-  putStrLn ((rule '+') ++ " With Loop Guards " ++ (rule '+'))
+  putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
 
   let withGuards = addLoopGuards combinedOffloadSub
 
@@ -132,15 +129,17 @@ compilerMain args = do
 
   debug_displaySubRoutineTable srtWithGuards False
 
-  putStrLn ((rule '+') ++ " Kernels " ++ (rule '+'))
+  putStrLn (rule '+' ++ " Kernels " ++ rule '+')
 
   let guardedMerged = srtWithGuards DMap.! mergedOffloadName
 
   kernels <- getKernels guardedMerged
 
-  putStrLn ((rule '+') ++ " With Smart Caches " ++ (rule '+'))
+  putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
 
-  insertSmartCaches kernels
+  -- this is a [(Kernel, SmartCache)] representing kernels and their
+  -- preceding smart cache
+  smartCacheKernelPairs <- insertSmartCaches kernels
 
   -- let kernelsAndSmartCaches = insertSmartCaches kernels
   -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
@@ -160,7 +159,6 @@ validateInputFiles :: Program LFT.Anno -> IO ()
 validateInputFiles fileAst = do
   let results = map (\f -> f fileAst) [checkFilesHaveOnlyOneSubroutine]
   mapM_ printErrorOrContinue results
-  return ()
 
 banner =
   rule '='
@@ -171,4 +169,4 @@ banner =
 
 hl = rule '-'
 
-rule char = "\n" ++ (take 80 (repeat char)) ++ "\n"
+rule char = "\n" ++ replicate 80 char ++ "\n"
