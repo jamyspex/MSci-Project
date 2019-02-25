@@ -1,6 +1,15 @@
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+
 module AddMemoryAccessKernels where
 
-import Data.Map
+import           Data.Foldable
+import           Data.Ix
+import           Data.List            as List
+import           Data.Maybe
+import           Data.Sequence        as Seq
+import qualified Data.Set             as Set
+import           LanguageFortranTools
 import           Pipeline
 import           Utils
 
@@ -31,7 +40,7 @@ import           Utils
 --                   V                |    the same issue that means cache lines within a smart
 --                --------------      |    cache have to all be the same size as the largest one.
 --                |  Kernel 2  |      |
---                --------------      |
+--  1             --------------      |
 --                   |                |
 --                   |       |---------
 --                   V       V
@@ -44,24 +53,82 @@ import           Utils
 --                --------------
 --                |  Kernel 3  |
 --                --------------
--- 
 --
 --
+--
+type PipelineStage
+   = ( Kernel
+     , Maybe (PipelineItem SharedPipelineData)
+     , [PipelineItem SharedPipelineData])
 
-type PipelineStage = (Kernel, Pipeline SharedPipelineData, [Pipeline SharedPipelineData])
+showPipelineStage (kernel, smartCache, memReaders) =
+  "--------------  PIPELINE STAGE  ---------------\n" ++
+  show kernel ++
+  show smartCache ++
+  concatMap show memReaders ++
+  "----------------------------------------------\n"
 
 -- Add memory reader kernels
 addMemoryReaders ::
-     [(Kernel, Pipeline SharedPipelineData)]
-  -> IO (PipelineStage) 
-addMemoryReaders kernelsAndSmartCaches =
+     [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> IO ([PipelineStage])
+addMemoryReaders kernelsAndSmartCaches = do
+  mapM_ (putStrLn . showPipelineStage) pipeline
+  return pipeline
   where
-    sorted = sortBy (\(k1, _) (k2, _) -> order k1 `compare` order k2) kernelsAndSmartCaches
-    availableOutputStreams = DMap.empty
+    sorted =
+      List.sortBy
+        (\(k1, _) (k2, _) -> order k1 `compare` order k2)
+        kernelsAndSmartCaches
+    initialPipelineStages = map (\(k, sc) -> (k, sc, [])) sorted
+    availableStreams = Set.empty
+    (_, withMemReaders) =
+      foldl
+        foldOverPipeline
+        (availableStreams, Seq.fromList initialPipelineStages)
+        (range (0, List.length initialPipelineStages))
+    pipeline = toList withMemReaders
 
-foldOverPipeline :: (DMap.Map String String, [PipelineStage]) -> Int -> (DMap.Map String String, [PipelineStage])
-foldOverPipeline (availableStreamMap, pipeline) currentStage = 
+-- Iterate over the pipeline stages and using a set of the currently available streams.
+-- A stream is available if it has been output by a kernel and has not been used as input to another kernel.
+foldOverPipeline ::
+     (Set.Set String, Seq.Seq PipelineStage)
+  -> Int
+  -> (Set.Set String, Seq.Seq PipelineStage)
+foldOverPipeline (availableStreams, pipeline) currentStageIdx =
+  (withKernelOutputStreams, updatedPipeline)
   where
-
-    
-    
+    updatedPipeline =
+      Seq.update
+        currentStageIdx
+        (kernel, smartCache, requiredMemoryReaders)
+        pipeline
+    (kernel, smartCache, _) = pipeline `Seq.index` currentStageIdx
+    smartCacheInputStreams =
+      if isJust smartCache
+        then (inputStreams . fromJust) smartCache
+        else []
+    requiredInputStreams = inputs kernel ++ smartCacheInputStreams
+    requiredMemoryReaders = concatMap buildMemoryReader requiredInputStreams
+    withConsumedStreamsRemoved =
+      foldl
+        (\set (Stream name _ _) -> Set.delete name set)
+        availableStreams
+        requiredInputStreams
+    withKernelOutputStreams =
+      foldl
+        (\set (Stream name _ _) -> Set.insert name set)
+        withConsumedStreamsRemoved
+        (outputs kernel)
+    buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
+    buildMemoryReader stream@(Stream name valueType dimensions) =
+      if streamAvailable
+        then []
+        else [ MemoryReader
+                 { memToOutputStreams = [(FPGAMemArray name, stream)]
+                 , nextStage = NullStage
+                 , name = kernelName kernel ++ "_" ++ name ++ "reader"
+                 , sharedData = NullPipeLineData
+                 }
+             ]
+      where
+        streamAvailable = Set.member name availableStreams

@@ -2,11 +2,8 @@
 
 module F4 where
 
-import           Parser                  (parseProgramData)
-import           Utils                   (SubRec (..),
-                                          debug_displaySubRoutineTable)
-
 import           AddKernelLoopGuards
+import           AddMemoryAccessKernels
 import           AddSmartCaches
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
@@ -21,9 +18,11 @@ import qualified LanguageFortranTools    as LFT
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
+import           Parser                  (parseProgramData)
 import           SanityChecks
 import           StencilDetection
 import           Transformer
+import           Utils
 
 processArgs :: IO ()
 processArgs = do
@@ -96,6 +95,7 @@ compilerMain args = do
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
   smartCacheKernelPairs <- insertSmartCaches kernels
+  addMemoryReaders smartCacheKernelPairs
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()
@@ -108,7 +108,3 @@ banner =
   "F4: Finite-element Fortran for FPGAs\n" ++
   "This compiler allows Fortran finite element codes to be compiled\n" ++
   "for execution on FPGA devices via OpenCL" ++ rule '='
-
-hl = rule '-'
-
-rule char = "\n" ++ replicate 80 char ++ "\n"

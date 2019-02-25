@@ -21,8 +21,9 @@ import           Utils
 -- This module anlayses the list of kernel subroutines and their required
 -- input streams. If it finds StencilStream inputs it constructs an appropriate smart cache
 -- and inserts it into the list with the appropriate position value set.
-insertSmartCaches :: [Kernel] -> IO ()
-insertSmartCaches = mapM_ buildSmartCacheForKernel
+insertSmartCaches ::
+     [Kernel] -> IO [(Kernel, Maybe (PipelineItem SharedPipelineData))]
+insertSmartCaches = mapM buildSmartCacheForKernel
 
 -- Take a kernel and using SmartCacheParameterAnalysis get the details
 -- of any smart caches required by StencilStream inputs to the kernel.
@@ -30,7 +31,7 @@ insertSmartCaches = mapM_ buildSmartCacheForKernel
 -- streams to form one smart cache that can be place before the kernel
 -- and will then provide it with the appropriate input streams
 buildSmartCacheForKernel ::
-     Kernel -> IO (Kernel, Maybe (Pipeline SharedPipelineData))
+     Kernel -> IO (Kernel, Maybe (PipelineItem SharedPipelineData))
 buildSmartCacheForKernel k = do
   print "------------------------------------------"
  -- print k
@@ -40,7 +41,7 @@ buildSmartCacheForKernel k = do
   print withInputStreamsUpdated
   print "------------------------------------------"
   return
-    ( k
+    ( withInputStreamsUpdated
     , if null smartCacheItems
         then Nothing
         else Just smartCache)
@@ -68,7 +69,7 @@ buildSmartCacheForKernel k = do
         { inputStreams = allSmartItemInputStreams
         , outputStreams = allSmartCacheOutputStreams
         , smartCacheSize = cacheSize
-        , smartCacheName = name
+        , name = name
         , cacheLines = paddedSmartCacheItems
         , nextStage = NullStage
         , sharedData = NullPipeLineData
@@ -81,7 +82,7 @@ buildStream SmartCacheItem {..} =
     (\(name, _) -> Stream name inputValueType inputDimensions)
     outputStreamNamesAndBufferIndex
   where
-    (StencilStream _ inputValueType inputDimensions _) = inputStream
+    (Stream _ inputValueType inputDimensions) = inputStream
 
 -- Update the input streams of the kernel to no longer use stencil streams
 -- and instead use the output streams from the smart cache
@@ -125,7 +126,7 @@ buildSmartCacheItem :: Kernel -> Int -> Stream Anno -> SmartCacheItem
 buildSmartCacheItem kernel streamDimensionOrder inStream =
   SmartCacheItem
     { size = requiredBufferSize
-    , inputStream = inStream
+    , inputStream = convertStencilStream inStream
     , outputStreamNamesAndBufferIndex = pointsAndVarNames
     }
   where
