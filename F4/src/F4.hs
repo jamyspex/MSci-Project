@@ -95,6 +95,7 @@ compilerMain args = do
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
   smartCacheKernelPairs <- insertSmartCaches kernels
+  putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   addMemoryReaders smartCacheKernelPairs
   return ()
 

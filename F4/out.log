@@ -2418,7 +2418,8 @@ Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_0_smart_cache
-Size: 503Cache Lines:
+Size: 503
+Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: eta
@@ -2542,7 +2543,8 @@ Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_1_smart_cache
-Size: 503Cache Lines:
+Size: 503
+Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: wet
@@ -2684,7 +2686,8 @@ Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_2_smart_cache
-Size: 1005Cache Lines:
+Size: 1005
+Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: h
@@ -2880,7 +2883,8 @@ Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: shapiro_smart_cache
-Size: 1005Cache Lines:
+Size: 1005
+Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: etan
