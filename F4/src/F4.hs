@@ -2,6 +2,7 @@
 
 module F4 where
 
+import           AddTransitStreams
 import           AddKernelLoopGuards
 import           AddMemoryAccessKernels
 import           AddSmartCaches
