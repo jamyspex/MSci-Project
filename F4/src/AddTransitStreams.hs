@@ -26,6 +26,10 @@ import           Utils
 -- caches in order to keep it in sync with other streams entering the kernel after the smart cache. To do this
 -- create a stencil stream that only has one point (0, 0).
 --
+-- If a kernel only reads value from a stream and the stream is stored in global memory we don't need to transit
+-- the stream through the pipeline and this saves smart cache space. However, if the stream has ever be output by a
+-- kernel earlier in the pipeline the usual rules apply and the stream must be transited through the pipeline to
+-- where it is accessed again.
 --
 --
 --
