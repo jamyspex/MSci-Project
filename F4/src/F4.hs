@@ -99,8 +99,10 @@ compilerMain args = do
   debug_displaySubRoutineTable srtWithGuards False
   putStrLn (rule '+' ++ " Kernels " ++ rule '+')
   let guardedMerged = srtWithGuards DMap.! mergedOffloadName
-  kernels           <- getKernels guardedMerged
-  withTransitStream <- addTransitStreams kernels
+  kernels <- getKernels guardedMerged
+  let mainSubName  = mainSub args
+  let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
+  withTransitStream <- addTransitStreams mainArgTrans kernels
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required

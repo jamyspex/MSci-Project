@@ -2106,6 +2106,49 @@ end subroutine vernieuw
  ! ==============================================
 
 
+dyn_1 requires:
+StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+dyn_1 requires:
+Stream: u type: Float dimensions: [(0,501),(0,501)]
+dyn_1 requires:
+Stream: v type: Float dimensions: [(0,501),(0,501)]
+dyn_2 requires:
+StencilStream: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+dyn_2 requires:
+Stream: eta type: Float dimensions: [(0,501),(0,501)]
+shapiro requires:
+StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+vernieuw requires:
+Stream: h type: Float dimensions: [(0,501),(0,501)]
+vernieuw requires:
+Stream: hzero type: Float dimensions: [(0,501),(0,501)]
+vernieuw requires:
+Stream: un type: Float dimensions: [(0,501),(0,501)]
+vernieuw requires:
+Stream: vn type: Float dimensions: [(0,501),(0,501)]
+
+
+--------------------------------------------------------------------------------
+
+StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+Produced at: vernieuw
+Consumed at: dyn_1Stream: u type: Float dimensions: [(0,501),(0,501)]
+Produced at: vernieuw
+Consumed at: dyn_1Stream: v type: Float dimensions: [(0,501),(0,501)]
+Produced at: vernieuw
+Consumed at: dyn_1StencilStream: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+Produced at: vernieuw
+Consumed at: dyn_2Stream: eta type: Float dimensions: [(0,501),(0,501)]
+Produced at: shapiro
+Consumed at: dyn_2StencilStream: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+Produced at: vernieuw
+Consumed at: shapiroStream: h type: Float dimensions: [(0,501),(0,501)]
+Produced at: vernieuw
+Consumed at: vernieuwStream: un type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: vernieuwStream: vn type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: vernieuw
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  With Smart Caches 

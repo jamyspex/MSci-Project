@@ -1,18 +1,19 @@
 module AddTransitStreams where
 
+import qualified Data.Set                      as Set
 import           LanguageFortranTools
 import           Utils
 
 -- Sometimes streams are required beyond the kernel after the kernel that output them. For example,
 -- the un and vn streams are output streams from the dyn1 kernel in the 2D shallow water model, so the
--- dyn2 kernel can access them fine but the verniuew kernel also needs to access them. This is fine
+-- dyn2 kernel can access them fine but the verniuew kernel also needs to access them. This is fine in
 -- Fortran as they are stored as global variables, then passed to the dyn subroutine with Intent(InOut),
 -- updated in place and then passed to the vernieuw subroutine. However when converting to streaming code
--- this doesn't work...just like everything else then...as there is no notion of global scope. So if a
+-- this doesn't work...just like everything else...as there is no notion of global scope. So if a
 -- stream is used in a kernel but the previous kernel in the pipeline does not output that stream we need
 -- to introduce a transit stream. A transit stream is basically a way to move a value through the pipeline
--- keeping it in sync with other streams entering the kernel. This means if the streams move through a smart
--- cache the transit stream needs to also go through the smart cache.
+-- keeping it in sync with other streams entering the kernel where it is used. This means if the streams move 
+-- through a smart cache the transit stream needs to also go through the smart cache.
 --
 --                                                                                                        However K3 accesses B
 --   _________            __________            _________            ________             _________             ________
@@ -26,20 +27,109 @@ import           Utils
 -- caches in order to keep it in sync with other streams entering the kernel after the smart cache. To do this
 -- create a stencil stream that only has one point (0, 0).
 --
--- If a kernel only reads value from a stream and the stream is stored in global memory we don't need to transit
--- the stream through the pipeline and this saves smart cache space. However, if the stream has ever be output by a
--- kernel earlier in the pipeline the usual rules apply and the stream must be transited through the pipeline to
--- where it is accessed again.
+-- If a kernel only reads values from a stream (e.g. has it as an input stream but not an output stream) and the 
+-- stream is stored in global memory we don't need to transit the stream through the pipeline and can instead we can 
+-- emit a memory reader kernel saving saves smart cache space. However, if the stream has ever be output by a kernel 
+-- earlier in the pipeline the usual rules apply and the stream must be transited through the pipeline to where it 
+-- is accessed again.
+--
 --
 --
 --
 addTransitStreams :: ArgumentTranslationTable -> [Kernel] -> IO [Kernel]
-addTransitStreams argumentTransTable kernels = return (kernels)
-  where
-
+addTransitStreams argumentTransTable kernels = do
+  putStrLn $ concatMap (printMismatch kernels) unmatchedStreams
+  putStrLn hl
+  putStrLn
+    $ concatMap (printPotentialTransitStreams kernels) potentialTransitStreams
+  return kernels
+ where
+  unmatchedStreams        = getUnmatchedInputStreams kernels
+  potentialTransitStreams = getPotentialTransitStreams kernels unmatchedStreams
 
 -- for a set of kernels to be placed in a pipeline find a list of
 -- streams that need to transitted through the smart caches in
 -- the pipeline for later use.
-findStreamsRequringTransit :: [Kernel] -> [((Int, Int), Stream Anno)]
-findStreamsRequringTransit kernels = []
+findStreamsRequringTransit
+  :: ArgumentTranslationTable -> [Kernel] -> [((Int, Int), Stream Anno)]
+findStreamsRequringTransit argTrans kernels = []
+
+printMismatch kernels (order, stream) =
+  kernelName (kernels !! order) ++ " requires:\n" ++ printStream stream ++ "\n"
+
+printPotentialTransitStreams kernels ((producedAt, consumedAt), stream) =
+  printStream stream
+    ++ "\nProduced at: "
+    ++ kernelName (kernels !! producedAt)
+    ++ "\nConsumed at: "
+    ++ kernelName (kernels !! consumedAt)
+
+
+-- Take the list of kernel ids and unmatched streams and 
+-- search the pipeline for the last kernel that produced 
+-- each stream. If a kernel producing the stream is found 
+-- create a ((producing kernel order, consuming kernel order), 
+-- stream), if it is not found remove the stream from the 
+-- unmatched list as it must have come from memory and therefore
+-- and memory reader can be emitted at a later stage of compilation.
+getPotentialTransitStreams
+  :: [Kernel] -> [(Int, Stream Anno)] -> [((Int, Int), Stream Anno)]
+getPotentialTransitStreams kernels =
+  concatMap (searchForStreamProduction kernels)
+
+-- Search through the pipeline looking for the latest kernel producing
+-- the stream in question. If found return 1 element list containing 
+-- the order of the last kernel producing the stream otherwise return an 
+-- empty list. 
+searchForStreamProduction
+  :: [Kernel] -> (Int, Stream Anno) -> [((Int, Int), Stream Anno)]
+searchForStreamProduction kernels (consOrder, stream) =
+  [ ((foundAt, consOrder), stream) | found ]
+ where
+  streamName          = getStreamName stream
+  (_, found, foundAt) = foldl go (streamName, False, 0) kernels
+  go :: (String, Bool, Int) -> Kernel -> (String, Bool, Int)
+  go (searchingFor, found, foundAt) kernel =
+    (searchingFor, foundHere || found, nFoundAt)
+   where
+    outputNames = map getStreamName $ outputs kernel
+    foundHere   = searchingFor `elem` outputNames
+    nFoundAt    = if foundHere then order kernel else foundAt
+
+
+-- Find kernels that require input streams for which the previous 
+-- kernel in the pipeline does not output a matching output stream
+getUnmatchedInputStreams :: [Kernel] -> [(Int, Stream Anno)]
+getUnmatchedInputStreams kernels = if valid
+  then unmatchedStreams
+  else error "Kernel ordering incorrect"
+ where
+  firstKernel      = head kernels
+  valid            = all (\k -> order k > order firstKernel) (tail kernels)
+  streamNames      = map getStreamName $ outputs firstKernel
+  initialAvailable = Set.fromList streamNames
+  (_, unmatchedStreams) =
+    foldl getUnmatchedInputStreams' (initialAvailable, []) (tail kernels)
+
+-- Internal workings of getUnmatchedInputStreams. Fold over the pipeline and 
+-- find kernels that require input streams that are not emitted as output streams
+-- from the kernel proceeding them in the pipeline.
+getUnmatchedInputStreams'
+  :: (Set.Set String, [(Int, Stream Anno)])
+  -> Kernel
+  -> (Set.Set String, [(Int, Stream Anno)])
+getUnmatchedInputStreams' (availableStreams, unmatchedStreams) kernel =
+  (Set.fromList outputStreamNames, unmatchedStreams ++ newUnmatched)
+ where
+  outputStreamNames    = map getStreamName $ outputs kernel
+  requiredInputStreams = inputs kernel
+  newUnmatched         = foldl
+    (\unmatched stream -> unmatched ++ checkIfStreamsMatched stream)
+    []
+    requiredInputStreams
+  checkIfStreamsMatched :: Stream Anno -> [(Int, Stream Anno)]
+  checkIfStreamsMatched s@(StencilStream name _ _ _) = check s name
+  checkIfStreamsMatched s@(Stream name _ _         ) = check s name
+  check s name =
+    if Set.member name availableStreams then [] else [(order kernel, s)]
+
