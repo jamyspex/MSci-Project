@@ -36,8 +36,8 @@ import           Utils
 --
 --
 --
-addTransitStreams :: ArgumentTranslationTable -> [Kernel] -> IO [Kernel]
-addTransitStreams argumentTransTable kernels = do
+addTransitStreams :: [Kernel] -> IO [Kernel]
+addTransitStreams kernels = do
   putStrLn $ concatMap (printMismatch kernels) unmatchedStreams
   putStrLn hl
   putStrLn $
@@ -50,9 +50,8 @@ addTransitStreams argumentTransTable kernels = do
 -- for a set of kernels to be placed in a pipeline find a list of
 -- streams that need to transitted through the smart caches in
 -- the pipeline for later use.
-findStreamsRequringTransit ::
-     ArgumentTranslationTable -> [Kernel] -> [((Int, Int), Stream Anno)]
-findStreamsRequringTransit argTrans kernels = []
+findStreamsRequringTransit :: [Kernel] -> [((Int, Int), Stream Anno)]
+findStreamsRequringTransit kernels = []
 
 printMismatch kernels (order, stream) =
   kernelName (kernels !! order) ++ " requires:\n" ++ printStream stream ++ "\n"
@@ -77,7 +76,8 @@ getStreamsToTransit kernels = concatMap (searchForStreamProduction kernels)
 -- Search through the pipeline looking for the latest kernel producing
 -- the stream in question. If found return 1 element list containing
 -- the order of the last kernel producing the stream otherwise return an
--- empty list.
+-- empty list. If the stream is not found as an output of a kernel
+-- preceeding this one in the pipeline then it must have come from memory
 searchForStreamProduction ::
      [Kernel] -> (Int, Stream Anno) -> [((Int, Int), Stream Anno)]
 searchForStreamProduction kernels (consumedAt, stream) =
