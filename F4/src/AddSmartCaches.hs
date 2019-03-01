@@ -47,6 +47,13 @@ buildSmartCacheForKernel k = do
         else Just smartCache)
   where
     requiredStencilStreams = filter isStencil $ inputs k
+    -- TODO This posibly needs to be more advanced when deciding which
+    -- streams to add to the smart cache as non stencil streams which do
+    -- not come from memory will need to be kept in sync with the smart
+    -- cache output and therefore will need to be buffered by the smart cache.
+    -- However, for now, I think the logic in AddTransitStreams handles this
+    -- so that all non stencil streams that need to remain in sync are converted
+    -- from Stream to StencilStream with one point (0, 0).
     streamDimensionsOrders =
       map (length . getStreamDimensions) requiredStencilStreams
     numberOfStreamDimensions =
@@ -142,11 +149,6 @@ buildSmartCacheItem kernel streamDimensionOrder inStream =
            (pointToStreamNameMap DMap.! map Offset point, buffIndex) : acc)
         []
         ((startIndex, 1) : startToPointDistances)
-
-isStencil stream =
-  case stream of
-    Stream {}        -> False
-    StencilStream {} -> True
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]

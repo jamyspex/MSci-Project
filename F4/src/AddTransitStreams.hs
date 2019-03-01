@@ -1,6 +1,7 @@
 module AddTransitStreams where
 
 import qualified Data.Set             as Set
+import           Language.Fortran
 import           LanguageFortranTools
 import           Utils
 
@@ -46,12 +47,50 @@ addTransitStreams kernels = do
   where
     unmatchedStreams = getUnmatchedInputStreams kernels
     potentialTransitStreams = getStreamsToTransit kernels unmatchedStreams
+    updatedKernels = insertTransitStreams potentialTransitStreams kernels
 
--- for a set of kernels to be placed in a pipeline find a list of
--- streams that need to transitted through the smart caches in
--- the pipeline for later use.
-findStreamsRequringTransit :: [Kernel] -> [((Int, Int), Stream Anno)]
-findStreamsRequringTransit kernels = []
+-- Using the previously identified transit streams update the itermediate
+-- kernels between the producer and the consumer to have the transit streams
+-- as inputs and outputs.
+insertTransitStreams :: [((Int, Int), Stream Anno)] -> [Kernel] -> [Kernel]
+insertTransitStreams transitStreams =
+  concatMap (\k -> map (addTransitStreamToKernel k) transitStreams)
+  where
+    addTransitStreamToKernel :: Kernel -> ((Int, Int), Stream Anno) -> Kernel
+    addTransitStreamToKernel kernel ((prodIdx, consumeIdx), stream)
+      | order kernel < prodIdx = kernel
+      | order kernel > consumeIdx = kernel
+      | validate kernel stream = updatedKernel
+      | otherwise =
+        error "Transit stream already input/output stream of kernel."
+      where
+        smartCacheRequired = any isStencil $ inputs kernel
+        updatedKernel =
+          if smartCacheRequired
+            then kernel
+                   { inputs = buildTransitStencilStream stream : inputs kernel
+                   , outputs = stream : outputs kernel
+                   }
+            else kernel
+                   { inputs = stream : inputs kernel
+                   , outputs = stream : outputs kernel
+                   }
+        validate kernel stream =
+          streamName `notElem` (inputStreamNames ++ outputStreamNames)
+          where
+            streamName = getStreamName stream
+            inputStreamNames = map getStreamName $ inputs kernel
+            outputStreamNames = map getStreamName $ outputs kernel
+
+buildTransitStencilStream (Stream name valueType dims) =
+  StencilStream
+    name
+    valueType
+    dims
+    (Stencil nullAnno numDims 1 [replicate 3 (Offset 0)] (VarName nullAnno name))
+  where
+    numDims = length dims
+buildTransitStencilStream s = s
 
 printMismatch kernels (order, stream) =
   kernelName (kernels !! order) ++ " requires:\n" ++ printStream stream ++ "\n"
@@ -108,30 +147,28 @@ getUnmatchedInputStreams kernels =
     valid = all (\k -> order k > order firstKernel) (tail kernels)
     streamNames = map getStreamName $ outputs firstKernel
     initialAvailable = Set.fromList streamNames
-    (_, unmatchedStreams) =
-      foldl getUnmatchedInputStreams' (initialAvailable, []) (tail kernels)
-
--- Internal workings of getUnmatchedInputStreams. Fold over the pipeline and
--- find kernels that require input streams that are not emitted as output streams
--- from the kernel proceeding them in the pipeline.
-getUnmatchedInputStreams' ::
-     (Set.Set String, [(Int, Stream Anno)])
-  -> Kernel
-  -> (Set.Set String, [(Int, Stream Anno)])
-getUnmatchedInputStreams' (availableStreams, unmatchedStreams) kernel =
-  (Set.fromList outputStreamNames, unmatchedStreams ++ newUnmatched)
-  where
-    outputStreamNames = map getStreamName $ outputs kernel
-    requiredInputStreams = inputs kernel
-    newUnmatched =
-      foldl
-        (\unmatched stream -> unmatched ++ checkIfStreamsMatched stream)
-        []
-        requiredInputStreams
-    checkIfStreamsMatched :: Stream Anno -> [(Int, Stream Anno)]
-    checkIfStreamsMatched s@(StencilStream name _ _ _) = check s name
-    checkIfStreamsMatched s@(Stream name _ _)          = check s name
-    check s name =
-      if Set.member name availableStreams
-        then []
-        else [(order kernel, s)]
+    (_, unmatchedStreams) = foldl go (initialAvailable, []) (tail kernels)
+    -- Internal workings of getUnmatchedInputStreams. Fold over the pipeline and
+    -- find kernels that require input streams that are not emitted as output streams
+    -- from the kernel proceeding them in the pipeline.
+    go ::
+         (Set.Set String, [(Int, Stream Anno)])
+      -> Kernel
+      -> (Set.Set String, [(Int, Stream Anno)])
+    go (availableStreams, unmatchedStreams) kernel =
+      (Set.fromList outputStreamNames, unmatchedStreams ++ newUnmatched)
+      where
+        outputStreamNames = map getStreamName $ outputs kernel
+        requiredInputStreams = inputs kernel
+        newUnmatched =
+          foldl
+            (\unmatched stream -> unmatched ++ checkIfStreamsMatched stream)
+            []
+            requiredInputStreams
+        checkIfStreamsMatched :: Stream Anno -> [(Int, Stream Anno)]
+        checkIfStreamsMatched s@(StencilStream name _ _ _) = check s name
+        checkIfStreamsMatched s@(Stream name _ _)          = check s name
+        check s name =
+          if Set.member name availableStreams
+            then []
+            else [(order kernel, s)]
