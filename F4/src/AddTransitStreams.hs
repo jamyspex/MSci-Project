@@ -45,8 +45,7 @@ addTransitStreams argumentTransTable kernels = do
   return kernels
   where
     unmatchedStreams = getUnmatchedInputStreams kernels
-    potentialTransitStreams =
-      getPotentialTransitStreams kernels unmatchedStreams
+    potentialTransitStreams = getStreamsToTransit kernels unmatchedStreams
 
 -- for a set of kernels to be placed in a pipeline find a list of
 -- streams that need to transitted through the smart caches in
@@ -71,10 +70,9 @@ printPotentialTransitStreams kernels ((producedAt, consumedAt), stream) =
 -- stream), if it is not found remove the stream from the
 -- unmatched list as it must have come from memory and therefore
 -- and memory reader can be emitted at a later stage of compilation.
-getPotentialTransitStreams ::
+getStreamsToTransit ::
      [Kernel] -> [(Int, Stream Anno)] -> [((Int, Int), Stream Anno)]
-getPotentialTransitStreams kernels =
-  concatMap (searchForStreamProduction kernels)
+getStreamsToTransit kernels = concatMap (searchForStreamProduction kernels)
 
 -- Search through the pipeline looking for the latest kernel producing
 -- the stream in question. If found return 1 element list containing
