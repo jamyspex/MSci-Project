@@ -46,7 +46,8 @@ buildSmartCacheForKernel k = do
         then Nothing
         else Just smartCache)
   where
-    requiredStencilStreams = filter isStencil $ inputs k
+    requiredStencilStreams =
+      filter (\s -> isTransit s || isStencil s) $ inputs k
     -- TODO This posibly needs to be more advanced when deciding which
     -- streams to add to the smart cache as non stencil streams which do
     -- not come from memory will need to be kept in sync with the smart
@@ -54,6 +55,7 @@ buildSmartCacheForKernel k = do
     -- However, for now, I think the logic in AddTransitStreams handles this
     -- so that all non stencil streams that need to remain in sync are converted
     -- from Stream to StencilStream with one point (0, 0).
+    -- Update: it is now slightly more advanced :S
     streamDimensionsOrders =
       map (length . getStreamDimensions) requiredStencilStreams
     numberOfStreamDimensions =
@@ -84,6 +86,9 @@ buildSmartCacheForKernel k = do
 
 -- take a SmartCacheItem and generate output stream objects for it
 buildStream :: SmartCacheItem -> [Stream Anno]
+buildStream SmartCacheTransitItem {..} = [Stream name valueType dims]
+  where
+    (TransitStream name valueType dims) = inputStream
 buildStream SmartCacheItem {..} =
   map
     (\(name, _) -> Stream name inputValueType inputDimensions)
@@ -97,7 +102,8 @@ updateKernelInputStreams :: [Stream Anno] -> Kernel -> Kernel
 updateKernelInputStreams smartCacheOutputStreams kernel =
   kernel {inputs = nonStencilInputs ++ smartCacheOutputStreams}
   where
-    nonStencilInputs = filter (not . isStencil) $ inputs kernel
+    nonStencilInputs =
+      filter (\s -> (not . isTransit) s && (not . isStencil) s) $ inputs kernel
 
 -- All the buffers in a smart cache must be the same size e.g. the size of the
 -- largest buffer in order to prevent the processing pipeline deadlocking.
@@ -110,6 +116,14 @@ padCacheItems inputs = map updateCacheItem inputs
     inputSorted = sortBy (\x y -> size y `compare` size x) inputs
     largestSize = size $ head inputSorted
     updateCacheItem :: SmartCacheItem -> SmartCacheItem
+    updateCacheItem SmartCacheTransitItem {..} =
+      SmartCacheItem
+        { size = largestSize
+        , inputStream = Stream name inputValueType inputDims
+        , outputStreamNamesAndBufferIndex = [(name, largestSize)]
+        }
+      where
+        (TransitStream name inputValueType inputDims) = inputStream
     updateCacheItem org@SmartCacheItem {..} =
       if sizeDiff > 0
         then updated
@@ -130,6 +144,8 @@ padCacheItems inputs = map updateCacheItem inputs
 -- Fortran array with 1 based indexing. This means the values from startToPointDistances
 -- in the SmartCacheDetails structure can be used directly as the indices.
 buildSmartCacheItem :: Kernel -> Int -> Stream Anno -> SmartCacheItem
+buildSmartCacheItem _ _ transStream@TransitStream {} =
+  SmartCacheTransitItem {inputStream = transStream, size = 1}
 buildSmartCacheItem kernel streamDimensionOrder inStream =
   SmartCacheItem
     { size = requiredBufferSize

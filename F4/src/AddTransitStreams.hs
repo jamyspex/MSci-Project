@@ -43,7 +43,8 @@ addTransitStreams kernels = do
   putStrLn hl
   putStrLn $
     concatMap (printPotentialTransitStreams kernels) potentialTransitStreams
-  return kernels
+  mapM_ print updatedKernels
+  return updatedKernels
   where
     unmatchedStreams = getUnmatchedInputStreams kernels
     potentialTransitStreams = getStreamsToTransit kernels unmatchedStreams
@@ -53,44 +54,55 @@ addTransitStreams kernels = do
 -- kernels between the producer and the consumer to have the transit streams
 -- as inputs and outputs.
 insertTransitStreams :: [((Int, Int), Stream Anno)] -> [Kernel] -> [Kernel]
-insertTransitStreams transitStreams =
-  concatMap (\k -> map (addTransitStreamToKernel k) transitStreams)
+insertTransitStreams transitStreams kernels =
+  foldl addTransitStreamToKernels kernels transitStreams
   where
-    addTransitStreamToKernel :: Kernel -> ((Int, Int), Stream Anno) -> Kernel
-    addTransitStreamToKernel kernel ((prodIdx, consumeIdx), stream)
-      | order kernel < prodIdx = kernel
-      | order kernel > consumeIdx = kernel
-      | validate kernel stream = updatedKernel
-      | otherwise =
-        error "Transit stream already input/output stream of kernel."
+    addTransitStreamToKernels ::
+         [Kernel] -> ((Int, Int), Stream Anno) -> [Kernel]
+    addTransitStreamToKernels kernels transitStream =
+      map (addTransitStreamToKernel transitStream) kernels
       where
-        smartCacheRequired = any isStencil $ inputs kernel
-        updatedKernel =
-          if smartCacheRequired
-            then kernel
-                   { inputs = buildTransitStencilStream stream : inputs kernel
-                   , outputs = stream : outputs kernel
-                   }
-            else kernel
-                   { inputs = stream : inputs kernel
-                   , outputs = stream : outputs kernel
-                   }
-        validate kernel stream =
-          streamName `notElem` (inputStreamNames ++ outputStreamNames)
+        addTransitStreamToKernel ::
+             ((Int, Int), Stream Anno) -> Kernel -> Kernel
+        addTransitStreamToKernel ((prodIdx, consumeIdx), stream) kernel
+          | order kernel <= prodIdx = kernel
+          | order kernel >= consumeIdx = kernel
+          | otherwise = updatedKernel
           where
+            smartCacheRequired = any isStencil $ inputs kernel
+            updatedKernel =
+              if smartCacheRequired
+                then kernel
+                       { inputs =
+                           if inputRequired
+                             then buildTransitStream stream : orgIns
+                             else orgIns
+                       , outputs =
+                           if outputRequired
+                             then stream : orgOuts
+                             else orgOuts
+                       }
+                else kernel
+                       { inputs =
+                           if inputRequired
+                             then stream : orgIns
+                             else orgIns
+                       , outputs =
+                           if outputRequired
+                             then stream : orgIns
+                             else orgIns
+                       }
+            orgIns = inputs kernel
+            orgOuts = outputs kernel
+            outputRequired = streamName `notElem` outputStreamNames
+            inputRequired = streamName `notElem` inputStreamNames
             streamName = getStreamName stream
             inputStreamNames = map getStreamName $ inputs kernel
             outputStreamNames = map getStreamName $ outputs kernel
 
-buildTransitStencilStream (Stream name valueType dims) =
-  StencilStream
-    name
-    valueType
-    dims
-    (Stencil nullAnno numDims 1 [replicate 3 (Offset 0)] (VarName nullAnno name))
-  where
-    numDims = length dims
-buildTransitStencilStream s = s
+buildTransitStream (Stream name valueType dims) =
+  TransitStream name valueType dims
+buildTransitStream s = s
 
 printMismatch kernels (order, stream) =
   kernelName (kernels !! order) ++ " requires:\n" ++ printStream stream ++ "\n"

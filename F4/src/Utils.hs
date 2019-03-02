@@ -33,11 +33,12 @@ type ArgumentTranslationTable
 
 type SubroutineTable = DMap.Map SubNameStr SubRec
 
-data SmartCacheItem = SmartCacheItem
-  { size                            :: Int
-  , inputStream                     :: Stream Anno
-  , outputStreamNamesAndBufferIndex :: [(String, Int)]
-  }
+data SmartCacheItem
+  = SmartCacheItem { size                            :: Int
+                   , inputStream                     :: Stream Anno
+                   , outputStreamNamesAndBufferIndex :: [(String, Int)] }
+  | SmartCacheTransitItem { inputStream :: Stream Anno
+                          , size        :: Int }
 
 instance Show SmartCacheItem where
   show SmartCacheItem {..} =
@@ -59,7 +60,10 @@ instance Show SmartCacheItem where
       outputStreamNamesAndBufferIndex ++
     "-------------------------------\n"
     where
-      (Stream name _ dims) = inputStream
+      (name, dims) =
+        case inputStream of
+          (Stream name _ dims)        -> (name, dims)
+          (TransitStream name _ dims) -> (name, dims)
 
 data Kernel = Kernel
   { inputs              :: [Stream Anno]
@@ -103,6 +107,9 @@ data Stream p
                   StreamValueType -- value type
                   [(Int, Int)] -- dimensions
                   (Stencil p) -- stencil offsets
+  | TransitStream String -- name
+                  StreamValueType -- value type
+                  [(Int, Int)] -- dimensions
   deriving (Show)
 
 instance Eq (Stream p) where
@@ -110,14 +117,23 @@ instance Eq (Stream p) where
 
 instance Ord (Stream p) where
   compare (Stream name1 _ _) (Stream name2 _ _) = name1 `compare` name2
+ -- compare (TransitStream name1 _ _) (TransitStream name2 _ _) =
+ --   name1 `compare` name2
+ -- compare (Stream name1 _ _) (TransitStream name2 _ _) = name1 `compare` name2
+ -- compare (TransitStream name1 _ _) (Stream name2 _ _) = name2 `compare` name2
 
 convertStencilStream (StencilStream name valueType dims _) =
   Stream name valueType dims
 
 isStencil stream =
   case stream of
-    Stream {}        -> False
     StencilStream {} -> True
+    _                -> False
+
+isTransit stream =
+  case stream of
+    TransitStream {} -> True
+    _                -> False
 
 printStream (Stream name valueType dims) =
   "Stream: " ++
@@ -127,6 +143,9 @@ printStream (StencilStream name valueType dims stencil) =
   name ++
   " type: " ++
   show valueType ++ " dimensions: " ++ show dims ++ showStencils "\t" [stencil]
+printStream (TransitStream name valueType dims) =
+  "TransitStream: " ++
+  name ++ " type: " ++ show valueType ++ " dimensions: " ++ show dims
 
 data StreamValueType =
   Float
@@ -181,9 +200,11 @@ rule char = "\n" ++ replicate 80 char ++ "\n"
 
 getStreamDimensions (Stream _ _ dims)          = dims
 getStreamDimensions (StencilStream _ _ dims _) = dims
+getStreamDimensions (TransitStream _ _ dims)   = dims
 
 getStreamName (Stream name _ _)          = name
 getStreamName (StencilStream name _ _ _) = name
+getStreamName (TransitStream name _ _)   = name
 
 getAttrs typeDecl =
   case typeDecl of

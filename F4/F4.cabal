@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 73f957c3fbfd15c2aadc227e42da4a671b5d36b70d97e3ab1da4444f28654617
+-- hash: 282e3fd863cf192880ce7e35b77bcb46222684c373e19279bf2c1a7e0abfe26f
 
 name:           F4
 version:        0.1.0.0
@@ -65,6 +65,7 @@ library
     , Unique
     , base >=4.7 && <5
     , containers
+    , data-default
     , directory
     , filepath
     , ilist
@@ -88,6 +89,7 @@ executable F4-exe
     , Unique
     , base >=4.7 && <5
     , containers
+    , data-default
     , directory
     , filepath
     , ilist
@@ -112,6 +114,7 @@ test-suite F4-test
     , Unique
     , base >=4.7 && <5
     , containers
+    , data-default
     , directory
     , filepath
     , ilist

@@ -94,11 +94,12 @@ compilerMain args = do
   kernels <- getKernels guardedMerged
   let mainSubName = mainSub args
   let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
-  withTransitStream <- addTransitStreams kernels
+  putStrLn "BEFORE"
+  kernelsWithTransitStreams <- addTransitStreams kernels
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
-  smartCacheKernelPairs <- insertSmartCaches kernels
+  smartCacheKernelPairs <- insertSmartCaches kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   addMemoryReaders smartCacheKernelPairs
   return ()
