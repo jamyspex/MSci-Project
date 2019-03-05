@@ -40,7 +40,7 @@ import           Utils
 --                   V                |    the same issue that means cache lines within a smart
 --                --------------      |    cache have to all be the same size as the largest one.
 --                |  Kernel 2  |      |
---  1             --------------      |
+--                --------------      |
 --                   |                |
 --                   |       |---------
 --                   V       V
@@ -67,12 +67,19 @@ showPipelineStage (kernel, smartCache, memReaders) =
   concatMap show memReaders ++
   "----------------------------------------------\n"
 
+addMemoryAccesses ::
+     [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> IO [PipelineStage]
+addMemoryAccesses kernelsAndSmartCaches = do
+  mapM_ (putStrLn . showPipelineStage) withMemoryWriter
+  return withMemoryWriter
+  where
+    withMemoryReaders = addMemoryReaders kernelsAndSmartCaches
+    withMemoryWriter = addMemoryWriter withMemoryReaders
+
 -- Add memory reader kernels
 addMemoryReaders ::
-     [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> IO [PipelineStage]
-addMemoryReaders kernelsAndSmartCaches = do
-  mapM_ (putStrLn . showPipelineStage) pipeline
-  return pipeline
+     [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> [PipelineStage]
+addMemoryReaders kernelsAndSmartCaches = pipeline
   where
     sorted =
       List.sortBy
@@ -142,3 +149,27 @@ getRequiredInputStreams kernel smartCache =
     inputSet = Set.fromList allInputs
     withSmartCacheOutputsRemoved =
       foldl (flip Set.delete) inputSet smartCacheOutputStreams
+
+-- at the minute this is simply gonna look for the last stage
+-- and then add a memory writer for each of the output streams
+addMemoryWriter :: [PipelineStage] -> [PipelineStage]
+addMemoryWriter pipeline = init pipeline ++ [updatedFinalStage]
+  where
+    sortedPipeline =
+      List.sortBy
+        (\(kernel1, _, _) (kernel2, _, _) ->
+           order kernel1 `compare` order kernel2)
+        pipeline
+    (lastKernel, smartcache, memoryReaders) = last sortedPipeline
+    memoryWriter =
+      buildMemoryWriter (kernelName lastKernel) (outputs lastKernel)
+    updatedFinalStage = (lastKernel, smartcache, memoryWriter : memoryReaders)
+
+buildMemoryWriter :: String -> [Stream Anno] -> PipelineItem SharedPipelineData
+buildMemoryWriter kernelName streams =
+  MemoryWriter
+    { inputStreamsToMem =
+        map (\s@(Stream name valueType dims) -> (s, FPGAMemArray name)) streams
+    , name = kernelName ++ "_output_writer"
+    , sharedData = NullPipeLineData
+    }

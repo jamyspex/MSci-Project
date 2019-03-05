@@ -101,7 +101,7 @@ compilerMain args = do
   -- preceding smart cache if one is required
   smartCacheKernelPairs <- insertSmartCaches kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
-  addMemoryReaders smartCacheKernelPairs
+  addMemoryAccesses smartCacheKernelPairs
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()

@@ -69,7 +69,7 @@ instance Show (PipelineItem SharedPipelineData) where
     show smartCacheSize ++
     "\nCache Lines:\n" ++
     concatMap
-      (\cl -> ((unlines . map ("\t" ++) . lines . show) cl) ++ "\n")
+      (\cl -> (unlines . map ("\t" ++) . lines . show) cl ++ "\n")
       cacheLines ++
     "\n" ++
     "Input Streams:\n" ++
@@ -82,8 +82,18 @@ instance Show (PipelineItem SharedPipelineData) where
     hl ++
     "Memory to streams:\n" ++
     concatMap
-      (\(mem, stream) -> "\t" ++ (arrayName mem) ++ " --> " ++ show stream)
+      (\(mem, stream) -> "\t" ++ arrayName mem ++ " --> " ++ show stream ++ "\n")
       memToOutputStreams ++
+    rule '~'
+  show MemoryWriter {..} =
+    rule '~' ++
+    "This is a memory writer kernel.\nName: " ++
+    name ++
+    hl ++
+    "Streams to memory:\n" ++
+    concatMap
+      (\(stream, mem) -> "\t" ++ show stream ++ " --> " ++ arrayName mem ++ "\n")
+      inputStreamsToMem ++
     rule '~'
 
 printAllStreams = concatMap (\s -> "\t" ++ printStream s ++ "\n")
