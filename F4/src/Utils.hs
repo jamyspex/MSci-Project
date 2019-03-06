@@ -73,7 +73,7 @@ data Kernel = Kernel
   , body                :: ProgUnit Anno
   , order               :: Int
   , loopVars            :: [String]
-  }
+  } deriving (Data, Typeable)
 
 instance Show Kernel where
   show kernel =

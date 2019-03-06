@@ -21,6 +21,7 @@ data PipelineItem a
   | Reduce { inputStreams  :: [Stream Anno]
            , outputStreams :: [Stream Anno]
            , name          :: String
+           , reductionVars :: [String]
            , fortran       :: ProgUnit Anno
            , nextStage     :: PipelineItem a
            , sharedData    :: a }
@@ -41,7 +42,7 @@ data PipelineItem a
   | NullStage
 
 
-data Pipe = Pipe String StreamValueType
+data Pipe = Pipe String StreamValueType deriving Show
 
 data DeviceModule = DeviceModule {
         kernels :: [PipelineItem SharedPipelineData],
