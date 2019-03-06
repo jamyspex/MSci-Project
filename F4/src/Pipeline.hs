@@ -40,6 +40,14 @@ data PipelineItem a
                  , sharedData        :: a }
   | NullStage
 
+
+data Pipe = Pipe String StreamValueType
+
+data DeviceModule = DeviceModule {
+        kernels :: [PipelineItem SharedPipelineData],
+        pipes   :: [Pipe]
+                                 }
+
 instance Show (PipelineItem SharedPipelineData) where
   show Map {..} =
     rule '~' ++
