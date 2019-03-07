@@ -80,7 +80,7 @@ buildSmartCacheForKernel k = do
         , smartCacheSize = cacheSize
         , name = name
         , cacheLines = paddedSmartCacheItems
-        , nextStage = NullStage
+        , nextStage = NullItem
         , sharedData = NullPipeLineData
         }
 

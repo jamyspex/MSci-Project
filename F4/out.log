@@ -2669,17 +2669,20 @@ end subroutine vernieuw
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --------------  PIPELINE STAGE  ---------------
- ! ==============================================
- ! Name: dyn_0 Order: 0
- ! Input streams:
- !	Stream: eta_j_kp1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: eta_jp1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: eta_j_k type: Float dimensions: [(0,501),(0,501)]
- ! Output streams:
- !	Stream: du type: Float dimensions: [(0,501),(0,501)]
- !	Stream: dv type: Float dimensions: [(0,501),(0,501)]
- ! Output Reduction Variables:
- ! --------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a map kernel.
+Name:dyn_0
+--------------------------------------------------------------------------------
+Input Streams:
+	Stream: eta_j_kp1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: eta_jp1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: eta_j_k type: Float dimensions: [(0,501),(0,501)]
+OutputStreams:
+	Stream: du type: Float dimensions: [(0,501),(0,501)]
+	Stream: dv type: Float dimensions: [(0,501),(0,501)]
+
+--------------------------------------------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
       real :: dt
       real, dimension(0:501,0:501) :: du
@@ -2701,8 +2704,10 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 !}    
 !}
 end subroutine dyn_0
- ! ==============================================
 
+--------------------------------------------------------------------------------
+NullPipeLineData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
@@ -2741,21 +2746,24 @@ Memory to streams:
 ----------------------------------------------
 
 --------------  PIPELINE STAGE  ---------------
- ! ==============================================
- ! Name: dyn_1 Order: 1
- ! Input streams:
- !	Stream: du type: Float dimensions: [(0,501),(0,501)]
- !	Stream: dv type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_kp1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jp1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k type: Float dimensions: [(0,501),(0,501)]
- ! Output streams:
- !	Stream: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
- ! Output Reduction Variables:
- ! --------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a map kernel.
+Name:dyn_1
+--------------------------------------------------------------------------------
+Input Streams:
+	Stream: du type: Float dimensions: [(0,501),(0,501)]
+	Stream: dv type: Float dimensions: [(0,501),(0,501)]
+	Stream: u type: Float dimensions: [(0,501),(0,501)]
+	Stream: v type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k type: Float dimensions: [(0,501),(0,501)]
+OutputStreams:
+	Stream: un type: Float dimensions: [(0,501),(0,501)]
+	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+
+--------------------------------------------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -2803,8 +2811,10 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 !}    
 !}
 end subroutine dyn_1
- ! ==============================================
 
+--------------------------------------------------------------------------------
+NullPipeLineData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
@@ -2861,25 +2871,28 @@ Memory to streams:
 ----------------------------------------------
 
 --------------  PIPELINE STAGE  ---------------
- ! ==============================================
- ! Name: dyn_2 Order: 2
- ! Input streams:
- !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_jm1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_j_kp1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_j_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_jp1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_j_km1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_km1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: vn_j_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: vn_jm1_k type: Float dimensions: [(0,501),(0,501)]
- ! Output streams:
- !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan type: Float dimensions: [(0,501),(0,501)]
- ! Output Reduction Variables:
- ! --------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a map kernel.
+Name:dyn_2
+--------------------------------------------------------------------------------
+Input Streams:
+	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+	Stream: h_jm1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: h_j_kp1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: h_j_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: h_jp1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: h_j_km1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: un_j_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: un_j_km1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: vn_j_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: vn_jm1_k type: Float dimensions: [(0,501),(0,501)]
+OutputStreams:
+	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+	Stream: un type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan type: Float dimensions: [(0,501),(0,501)]
+
+--------------------------------------------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
       real :: dt
       real :: dx
@@ -2927,8 +2940,10 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 !}    
 !}
 end subroutine dyn_2
- ! ==============================================
 
+--------------------------------------------------------------------------------
+NullPipeLineData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
@@ -3006,27 +3021,30 @@ Memory to streams:
 ----------------------------------------------
 
 --------------  PIPELINE STAGE  ---------------
- ! ==============================================
- ! Name: shapiro Order: 3
- ! Input streams:
- !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_jm1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_j_kp1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_j_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_jp1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_j_km1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jm1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_kp1 type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jp1_k type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_km1 type: Float dimensions: [(0,501),(0,501)]
- ! Output streams:
- !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
- ! Output Reduction Variables:
- ! --------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a map kernel.
+Name:shapiro
+--------------------------------------------------------------------------------
+Input Streams:
+	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+	Stream: un type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan_jm1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan_j_kp1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan_j_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan_jp1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: etan_j_km1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_jm1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_km1 type: Float dimensions: [(0,501),(0,501)]
+OutputStreams:
+	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+	Stream: un type: Float dimensions: [(0,501),(0,501)]
+	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+
+--------------------------------------------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
       real :: eps
       real, dimension(0:501,0:501), intent(In) :: eta
@@ -3058,8 +3076,10 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 !}    
 !}
 end subroutine shapiro
- ! ==============================================
 
+--------------------------------------------------------------------------------
+NullPipeLineData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
@@ -3143,21 +3163,24 @@ Memory to streams:
 ----------------------------------------------
 
 --------------  PIPELINE STAGE  ---------------
- ! ==============================================
- ! Name: vernieuw Order: 4
- ! Input streams:
- !	Stream: eta type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h type: Float dimensions: [(0,501),(0,501)]
- !	Stream: hzero type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: vn type: Float dimensions: [(0,501),(0,501)]
- ! Output streams:
- !	Stream: h type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet type: Float dimensions: [(0,501),(0,501)]
- ! Output Reduction Variables:
- ! --------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a map kernel.
+Name:vernieuw
+--------------------------------------------------------------------------------
+Input Streams:
+	Stream: eta type: Float dimensions: [(0,501),(0,501)]
+	Stream: h type: Float dimensions: [(0,501),(0,501)]
+	Stream: hzero type: Float dimensions: [(0,501),(0,501)]
+	Stream: un type: Float dimensions: [(0,501),(0,501)]
+	Stream: vn type: Float dimensions: [(0,501),(0,501)]
+OutputStreams:
+	Stream: h type: Float dimensions: [(0,501),(0,501)]
+	Stream: u type: Float dimensions: [(0,501),(0,501)]
+	Stream: v type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet type: Float dimensions: [(0,501),(0,501)]
+
+--------------------------------------------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -3180,8 +3203,10 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
     v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
- ! ==============================================
 
+--------------------------------------------------------------------------------
+NullPipeLineData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Nothing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a memory writer kernel.

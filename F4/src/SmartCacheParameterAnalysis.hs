@@ -35,25 +35,6 @@ printResults stream =
 printSmartCacheDetailsForStream stream =
   print $ calculateSmartCacheDetailsForStream (defaultIterationOrder 3) stream
 
-instance Show SmartCacheDetailsForStream where
-  show smartCacheDetails =
-    "Start index: " ++
-    show startIndex ++
-    "\n" ++
-    "End index: " ++
-    show endIndex ++
-    "\n" ++
-    "Buffer size: " ++
-    show requiredBufferSize ++
-    "\n" ++
-    concatMap
-      (\(index, point) ->
-         "Stencil point: " ++
-         show point ++ " buffer index = " ++ show index ++ "\n")
-      startToPointDistances
-    where
-      SmartCacheDetailsForStream {..} = smartCacheDetails
-
 -- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential
 -- end pairs require the same number of blocks to buffer the stencil
@@ -72,13 +53,6 @@ scSizeOnly sten =
   let SmartCacheDetailsForStream {..} =
         calculateSmartCacheDetailsForStream (defaultIterationOrder 3) sten
    in requiredBufferSize
-
-data SmartCacheDetailsForStream = SmartCacheDetailsForStream
-  { requiredBufferSize    :: Int
-  , startIndex            :: [Int]
-  , endIndex              :: [Int]
-  , startToPointDistances :: [([Int], Int)]
-  }
 
 calculateSmartCacheDetailsForStream ::
      [Int] -> Stream Anno -> SmartCacheDetailsForStream
