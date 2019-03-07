@@ -122,33 +122,37 @@ pickSource
   -> (PipelineItem SharedPipelineData, Stream Anno)
 pickSource dest [source@(s, _)] =
   trace ("one choice for dest = " ++ name dest ++ " source = " ++ name s) source
-pickSource dest@SmartCache{} sources = trace
-  (  "options = \n"
-  ++ concatMap (\(s, _) -> "\t" ++ name s ++ "\n") sources
-  ++ "picked = "
-  ++ name pname
-  )
-  picked
- where
-  picked@(pname, _) =
-    minimumBy (\(pi1, _) (pi2, _) -> stageNumber pi1 `compare` stageNumber pi2)
-      $ filter
-          (\(s, _) -> case s of
-            Map{}    -> True
-            Reduce{} -> True
-            _        -> False
-          )
-          (removeDestFromSources dest sources)
+pickSource dest@SmartCache{} sources = maximumBy
+  (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
+ -- trace
+ --  (  "options = \n"
+ --  ++ concatMap (\(s, _) -> "\t" ++ name s ++ "\n") sources
+ --  ++ "picked = "
+ --  ++ name pname
+ --  )
+ --  picked
+ -- where
+ --  picked@(pname, _) =
+ --    minimumBy (\(pi1, _) (pi2, _) -> stageNumber pi1 `compare` stageNumber pi2)
+ --      $ filter
+ --          (\(s, _) -> case s of
+ --            Map{}    -> True
+ --            Reduce{} -> True
+ --            _        -> False
+ --          )
+  (removeDestFromSources dest sources)
 pickSource dest@MemoryWriter{} sources =
-  head
-    $ filter
-        (\(s, _) -> case s of
-          Map{}    -> True
-          Reduce{} -> True
-          _        -> False
-        )
-    $ trace ("memory writer dest = " ++ name dest)
-            (removeDestFromSources dest sources)
+  maximumBy (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
+  -- head
+  --   $ filter
+  --       (\(s, _) -> case s of
+  --         Map{}    -> True
+  --         Reduce{} -> True
+  --         _        -> False
+  --       )
+                                                             $ trace
+    ("memory writer dest = " ++ name dest)
+    (removeDestFromSources dest sources)
 pickSource dest sources =
   maximumBy (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
     -- $ filter
@@ -209,9 +213,9 @@ compareMemWriterOpts _ _ =
 -- smartcache as an input so select the streams from the previous compute
 -- kernel by selecting the kernel with the lowest stageNumber as the source.
 compareSmartCacheOpts m@Map{} r@Reduce{} =
-  stageNumber r `compare` stageNumber m
+  stageNumber r `compare` stageNumber m  -- Note compare arg order swapped as we want select the minimum
 compareSmartCacheOpts r@Reduce{} m@Map{} =
-  stageNumber m `compare` stageNumber r
+  stageNumber m `compare` stageNumber r  -- Same here
 compareSmartCacheOpts Map{}    _        = Prelude.GT
 compareSmartCacheOpts _        Map{}    = Prelude.LT
 compareSmartCacheOpts Reduce{} _        = Prelude.GT
