@@ -33,7 +33,6 @@ dependencies:
 - ilist
 - MissingH
 - data-default
-- groupBy
 
 library:
   source-dirs: src
