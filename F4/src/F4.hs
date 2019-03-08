@@ -21,6 +21,7 @@ import           Data.Generics                  ( everything
                                                 , mkT
                                                 )
 import qualified Data.Map                      as DMap
+import           ScalarizeKernels
 import           Debug.Trace
 import           KernelExtraction
 import           Language.Fortran
@@ -112,7 +113,8 @@ compilerMain args = do
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   pipelineStages <- addMemoryAccesses smartCacheKernelPairs
   putStrLn (rule '+' ++ " Scalarized " ++ rule '+')
-  populatePipes pipelineStages
+  withPipes         <- populatePipes pipelineStages
+  scalarisedKernels <- scalarizeKernels withPipes
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()

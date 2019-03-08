@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3d8040f15f5791f180263f599b894545d217b3f62d9563a982ead32a850ba189
+-- hash: aca003b38ef6d7dae88b3356770a265e02cae49dcf90706d92e8ea2f87273813
 
 name:           F4
 version:        0.1.0.0
@@ -47,6 +47,7 @@ library
       Platform
       PreProcessor
       SanityChecks
+      ScalarizeKernels
       SmartCacheParameterAnalysis
       StencilDetection
       SubroutineTable
