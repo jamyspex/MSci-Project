@@ -176,8 +176,8 @@ buildKernel (order, sub) =
     arrayWritesValid = validateArrayWrites loopVariables arrayWriteExprs
     (stencilArrays, arraysNoStencils) =
       matchArraysToStencils arrayReads stencils
-    inputStreams = getInputStreams stencilArrays arraysNoStencils
-    outputStreams = map arrayToStream arrayWrites
+    inputStreams = getInputStreams stencilArrays arraysNoStencils loopVariables
+    outputStreams = map (arrayToStream loopVariables) arrayWrites
     kernel =
       Kernel
         { inputs = inputStreams
@@ -195,17 +195,22 @@ filterAllArrays wanted candidate = name `elem` wanted
   where
     (VarName _ name) = varName candidate
 
-arrayToStream :: Array -> Stream Anno
-arrayToStream array = Stream (getArrayName array) Float (dims array)
+-- FIXME passing in the loop vars here seems like a big hack but it works
+arrayToStream :: [String] -> Array -> Stream Anno
+arrayToStream loopVars array =
+  Stream (getArrayName array ++ concatMap ("_" ++) loopVars) Float (dims array)
 
 getArrayName = getNameFromVarName . varName
 
 dims = dimensionRanges
 
-getInputStreams :: [(Array, [Stencil Anno])] -> [Array] -> [Stream Anno]
-getInputStreams requiredStencils requiredArrays = stencilStreams ++ arrayStreams
+-- FIXME and here
+getInputStreams ::
+     [(Array, [Stencil Anno])] -> [Array] -> [String] -> [Stream Anno]
+getInputStreams requiredStencils requiredArrays loopVars =
+  stencilStreams ++ arrayStreams
   where
-    arrayStreams = map arrayToStream requiredArrays
+    arrayStreams = map (arrayToStream loopVars) requiredArrays
     stencilStreams = concatMap getStencilStreams requiredStencils
     getStencilStreams (array, stencils) = map curriedCon stencils
       where
