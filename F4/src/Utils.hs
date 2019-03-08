@@ -170,6 +170,8 @@ data PipelineItem a
         , fortran       :: ProgUnit Anno
         , nextStage     :: PipelineItem a
         , stageNumber   :: Int
+        , readPipes     :: [Pipe]
+        , writtenPipes  :: [Pipe]
         , sharedData    :: a }
   | Reduce { inputStreams  :: [Stream Anno]
            , outputStreams :: [Stream Anno]
@@ -178,6 +180,8 @@ data PipelineItem a
            , fortran       :: ProgUnit Anno
            , nextStage     :: PipelineItem a
            , stageNumber   :: Int
+           , readPipes     :: [Pipe]
+           , writtenPipes  :: [Pipe]
            , sharedData    :: a }
   | SmartCache { inputStreams   :: [Stream Anno]
                , outputStreams  :: [Stream Anno]
@@ -185,20 +189,26 @@ data PipelineItem a
                , smartCacheSize :: Int
                , cacheLines     :: [SmartCacheItem]
                , nextStage      :: PipelineItem a
+               , readPipes      :: [Pipe]
+               , writtenPipes   :: [Pipe]
                , sharedData     :: a }
   | MemoryReader { memToOutputStreams :: [(FPGAMemArray, Stream Anno)]
                  , nextStage          :: PipelineItem a
                  , name               :: String
+                 , readPipes          :: [Pipe]
+                 , writtenPipes       :: [Pipe]
                  , sharedData         :: a }
   | MemoryWriter { inputStreamsToMem :: [(Stream Anno, FPGAMemArray)]
                  , name              :: String
+                 , readPipes         :: [Pipe]
+                 , writtenPipes      :: [Pipe]
                  , sharedData        :: a }
   | NullItem
 
 -- These two instances are simply here to set a preci
 -- instance Eq (PipelineItem SharedPipelineData) where
 --   (==) _ _ = True
--- 
+--
 -- instance Ord (PipelineItem SharedPipelineData) where
 --   compare SmartCache{} _ = Prelude.GT
 --   compare _ SmartCache{} = Prelude.LT
@@ -211,14 +221,26 @@ type PipelineStage
      , [PipelineItem SharedPipelineData])
 
 data Pipe =
-  Pipe String
+  Pipe String String String
        StreamValueType
   deriving (Show, Data, Typeable)
 
-data DeviceModule = DeviceModule
+getPipeName :: Pipe -> String
+getPipeName (Pipe _ _ name _) = name
+
+getPipeSource :: Pipe -> String
+getPipeSource (Pipe source _ _ _) = source
+
+getPipeDest :: Pipe -> String
+getPipeDest (Pipe _ dest _ _) = dest
+
+newtype DeviceModule = DeviceModule
   { kernels :: [PipelineItem SharedPipelineData]
-  , pipes   :: [Pipe]
+  -- , pipes   :: [Pipe]
   }
+
+printPipes :: [Pipe] -> String
+printPipes = concatMap (\p -> getPipeName p ++ "\n")
 
 instance Show (PipelineItem SharedPipelineData) where
   show Map {..} =
@@ -230,6 +252,10 @@ instance Show (PipelineItem SharedPipelineData) where
     printAllStreams inputStreams ++
     "OutputStreams:\n" ++
     printAllStreams outputStreams ++
+    "readPipes:\n" ++
+    printPipes readPipes++
+    "writtenPipes:\n" ++
+    printPipes writtenPipes ++
     hl ++ miniPPProgUnit fortran ++ hl ++ show sharedData ++ rule '~'
   show Reduce {..} =
     rule '~' ++
@@ -240,6 +266,10 @@ instance Show (PipelineItem SharedPipelineData) where
     printAllStreams inputStreams ++
     "Output Streams:\n" ++
     printAllStreams outputStreams ++
+    "readPipes:\n" ++
+    printPipes readPipes++
+    "writtenPipes:\n" ++
+    printPipes writtenPipes ++
     hl ++ miniPPProgUnit fortran ++ hl ++ show sharedData ++ rule '~'
   show SmartCache {..} =
     rule '~' ++
@@ -329,6 +359,8 @@ convertKernelToPipelineItem k@Kernel {..} = case kernelType k of
     , fortran       = body
     , nextStage     = NullItem
     , stageNumber   = order
+    , readPipes     = []
+    , writtenPipes  = []
     , sharedData    = NullPipeLineData
     }
   ReduceKernel -> Reduce
@@ -339,6 +371,8 @@ convertKernelToPipelineItem k@Kernel {..} = case kernelType k of
     , fortran       = body
     , nextStage     = NullItem
     , stageNumber   = order
+    , readPipes     = []
+    , writtenPipes  = []
     , sharedData    = NullPipeLineData
     }
 

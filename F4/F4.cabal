@@ -1,10 +1,8 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.31.0.
+-- This file has been generated from package.yaml by hpack version 0.28.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b4b9348c5a083b5422f99678bf7fe514e5f3239f8c669be4ba3b592e4b5ef272
+-- hash: 3d8040f15f5791f180263f599b894545d217b3f62d9563a982ead32a850ba189
 
 name:           F4
 version:        0.1.0.0
@@ -17,9 +15,10 @@ copyright:      2018 Author name here
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
+cabal-version:  >= 1.10
 extra-source-files:
-    README.md
     ChangeLog.md
+    README.md
 
 source-repository head
   type: git
@@ -29,6 +28,7 @@ library
   exposed-modules:
       AddKernelLoopGuards
       AddMemoryAccessKernels
+      AddPipesToKernels
       AddSmartCaches
       AddTransitStreams
       CombineKernels
@@ -47,7 +47,6 @@ library
       Platform
       PreProcessor
       SanityChecks
-      ScalarizeKernels
       SmartCacheParameterAnalysis
       StencilDetection
       SubroutineTable

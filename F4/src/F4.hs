@@ -2,7 +2,7 @@
 
 module F4 where
 
-import           ScalarizeKernels
+import           AddPipesToKernels
 import           AddKernelLoopGuards
 import           AddMemoryAccessKernels
 import           AddSmartCaches
@@ -112,7 +112,7 @@ compilerMain args = do
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   pipelineStages <- addMemoryAccesses smartCacheKernelPairs
   putStrLn (rule '+' ++ " Scalarized " ++ rule '+')
-  scalarize pipelineStages
+  populatePipes pipelineStages
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()
