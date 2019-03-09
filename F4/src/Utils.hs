@@ -548,7 +548,7 @@ data ArrayAccess
   deriving (Show)
 
 getArrayAccesses :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
-getArrayAccesses readOrWrite arrays fortran = allArrayExprs -- trace ("arrays length = " ++ ((show . length) arrays) ++ "\tallArrayExprs length = " ++ ((show . length) allArrayExprs) ++ "\n" ++ miniPPF fortran ++ "\n--------------------------") allArrayExprs
+getArrayAccesses readOrWrite arrays fortran = allArrayExprs
  where
   allArrayExprs =
     everything (++) (mkQ [] (arrayExprQuery arrays)) exprsFromFortran

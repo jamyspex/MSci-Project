@@ -41,57 +41,30 @@ populatePipes pipeline = do
 -- 	5) look for pipes input to the kernel directly
 addPipesToPipelineItems :: [PipelineStage] -> IO [PipelineStage]
 addPipesToPipelineItems pipeline = do
-  hPutStrLn stderr "line 44"
   mapM_ (\p -> putStrLn $ show p ++ "\n") allOutbound
-  hPutStrLn stderr "line 46"
   putStrLn "Graph Viz data:\n"
   putStrLn "digraph G {\n"
   mapM_ (\p -> putStrLn $ "\t" ++ pipeToGraphEdge p) allOutbound
   putStrLn "}\n"
-  hPutStrLn stderr "line 50"
   return updatedPipeline
  where
-  allOutbound     = getOutboundPipes $ trace "line 51" updatedPipeline
-  updatedPipeline = foldl go []
-    $ trace ("pipeline length = " ++ show (length pipeline)) pipeline
+  allOutbound     = getOutboundPipes updatedPipeline
+  updatedPipeline = foldl go [] pipeline
   go :: [PipelineStage] -> PipelineStage -> [PipelineStage]
   go newPipeline currentStage = if isJust prevStageWithPipes
     then
       init newPipeline ++ maybeToList prevStageWithPipes ++ [currStageWithPipes]
     else [currStageWithPipes]
    where
-    previousStage = trace ("------------------------------------")
-      $ if null newPipeline then Nothing else Just $ last newPipeline
+    previousStage =
+      if null newPipeline then Nothing else Just $ last newPipeline
     availableStreams = getAvailableStreamsAndSource previousStage currentStage
     (currentKernel, currentSmartCache, currentMemAccess) = currentStage
     streamsRequiringPipesAndDestination =
-      concatMap
-          getRequiredStreams
-          (trace
-            (  "currentKernel name = "
-            ++ name currentKernel
-            ++ " currentMemAccess length = "
-            ++ show (length currentMemAccess)
-            )
-            currentMemAccess
-          )
+      concatMap getRequiredStreams currentMemAccess
         ++ maybe [] getRequiredStreams currentSmartCache
         ++ getRequiredStreams currentKernel
-    newPipes =
-      trace
-          (  "line 68\n"
-          ++ concatMap
-               (\(stream, dest) ->
-                 show stream ++ " required by " ++ name dest ++ "\n"
-               )
-               streamsRequiringPipesAndDestination
-          ++ concatMap
-               (\(source, stream) ->
-                 show stream ++ " available from " ++ name source ++ "\n"
-               )
-               (concat $ DMap.elems availableStreams)
-          )
-        $ map getPipe streamsRequiringPipesAndDestination
+    newPipes = map getPipe streamsRequiringPipesAndDestination
     (prevStageWithPipes, currStageWithPipes) =
       addPipesToPipelineStages previousStage currentStage newPipes
     getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
@@ -99,13 +72,10 @@ addPipesToPipelineItems pipeline = do
       then buildPipe sourceName destName stream
       else error "Stream has different name in map"
      where
-      valid = getStreamName stream == getStreamName streamFromMap
-      streamName =
-        trace ("looking up = " ++ getStreamName stream) getStreamName stream
+      valid      = getStreamName stream == getStreamName streamFromMap
+      streamName = getStreamName stream
       (source, streamFromMap) =
-        pickSource dest
-          $      availableStreams
-          DMap.! (trace ("map = \n" ++ showMap availableStreams) streamName)
+        pickSource dest $ availableStreams DMap.! streamName
       sourceName = name source
       destName   = name dest
 
@@ -118,8 +88,7 @@ addPipesToPipelineStages
   -> PipelineStage
   -> [Pipe]
   -> (Maybe PipelineStage, PipelineStage)
-addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes = trace
-  "line 96"
+addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
   ( if isJust prevStage
     then Just
       ( finalMap DMap.! prevKernName
@@ -134,20 +103,17 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes = trace
   )
  where
   (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
-  withReadPipesUpdated =
-    foldl
-        (\map pipe -> DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) map)
-        originalMap
-      $ trace ("pipes length = " ++ show (length pipes)) pipes
+  withReadPipesUpdated       = foldl
+    (\map pipe -> DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) map)
+    originalMap
+    pipes
   updateReadPipes pipe item = item { readPipes = currentReadPipes ++ [pipe] }
     where currentReadPipes = readPipes item
-  finalMap =
-    foldl
-        (\map pipe ->
-          DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) map
-        )
-        withReadPipesUpdated
-      $ trace ("pipes length = " ++ show (length pipes)) pipes
+  finalMap = foldl
+    (\map pipe -> DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) map
+    )
+    withReadPipesUpdated
+    pipes
   updateWrittenPipes pipe item = item
     { writtenPipes = currentWrittenPipes ++ [pipe]
     }
@@ -178,39 +144,15 @@ pickSource
   :: PipelineItem SharedPipelineData
   -> [(PipelineItem SharedPipelineData, Stream Anno)]
   -> (PipelineItem SharedPipelineData, Stream Anno)
-pickSource dest@SmartCache{} sources =
-  trace
-      (  "dest = "
-      ++ show dest
-      ++ "sources length = "
-      ++ show (length sources)
-      ++ " sources = "
-      ++ show sources
-      )
-    $ maximumBy (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
-                (removeDestFromSources dest sources)
-pickSource dest@MemoryWriter{} sources =
-  trace
-      (  "dest = "
-      ++ show dest
-      ++ "sources length = "
-      ++ show (length sources)
-      ++ " sources = "
-      ++ show sources
-      )
-    $ maximumBy (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
-                (removeDestFromSources dest sources)
-pickSource dest sources =
-  trace
-      (  "dest = "
-      ++ show dest
-      ++ "sources length = "
-      ++ show (length sources)
-      ++ " sources = "
-      ++ show sources
-      )
-    $ maximumBy (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
-                (removeDestFromSources dest sources)
+pickSource dest@SmartCache{} sources = maximumBy
+  (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
+  (removeDestFromSources dest sources)
+pickSource dest@MemoryWriter{} sources = maximumBy
+  (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
+  (removeDestFromSources dest sources)
+pickSource dest sources = maximumBy
+  (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
+  (removeDestFromSources dest sources)
 
 removeDestFromSources dest = filter (\(s, _) -> name s /= name dest)
 
@@ -386,14 +328,10 @@ showGrouped = concatMap
   )
 
 getOutboundPipes :: [PipelineStage] -> [Pipe]
-getOutboundPipes pipeline = concatMap
+getOutboundPipes = concatMap
   (\(k, sc, ma) ->
-    trace ("getOutBoundPipes: pipeline length = " ++ show (length pipeline))
-      $  writtenPipes k
-      ++ maybe [] writtenPipes sc
-      ++ concatMap writtenPipes ma
+    writtenPipes k ++ maybe [] writtenPipes sc ++ concatMap writtenPipes ma
   )
-  pipeline
 
 -- convert pipe name to graphviz data
 pipeToGraphEdge :: Pipe -> String

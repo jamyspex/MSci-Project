@@ -134,6 +134,10 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
     where streamAvailable = Set.member streamName availableStreams
   buildMemoryReader stream = error $ show stream
 
+-- used to signify the position a stream is required at. 
+-- Allows streams to enter and exit smartcache with the same name
+data StreamPosition = SmartCacheIn | KernelIn deriving (Eq, Ord)
+
 -- used to work out which of the input streams to a pipeline stage need to come
 -- from a memory reader
 getRequiredInputStreams
@@ -145,16 +149,14 @@ getRequiredInputStreams kernel smartCache = map snd
  where
   smartCacheInputStreams =
     maybe [] (map (SmartCacheIn, ) . inputStreams) smartCache
-  smartCacheOutputStreams =
-    maybe [] (map (SmartCacheOut, ) . outputStreams) smartCache
-  allInputs = smartCacheInputStreams ++ map (Other, ) (inputStreams kernel)
-  inputSet = Set.fromList allInputs
+  smartCacheOutputStreams      = maybe [] outputStreams smartCache
+  allInputs = smartCacheInputStreams ++ map (KernelIn, ) (inputStreams kernel)
+  inputSet                     = Set.fromList allInputs
+  -- delete streams from smart cache to kernel as they don't require mem reader 
   withSmartCacheOutputsRemoved = foldl
-    (\set (_, streamName) -> Set.delete (Other, streamName) set)
+    (\set streamName -> Set.delete (KernelIn, streamName) set)
     inputSet
     smartCacheOutputStreams
-
-data Position = SmartCacheIn | SmartCacheOut | Other deriving (Eq, Ord)
 
 -- at the minute this is simply gonna look for the last stage
 -- and then add a memory writer for each of the output streams

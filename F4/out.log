@@ -3439,7 +3439,19 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 !}
 end subroutine dyn_0
 
-Streaming variables inserted = 
+Streams = 
+subroutine dyn_0(dt,dx,dy,g,j,k)
+      real :: dt
+      real :: du_j_k
+      real :: dv_j_k
+      real :: dx
+      real :: dy
+      real, intent(In) :: eta_j_kp1
+      real, intent(In) :: eta_jp1_k
+      real, intent(In) :: eta_j_k
+      real :: g
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
 ! OpenCLStencil (
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
@@ -3450,6 +3462,8 @@ Streaming variables inserted =
     end if
 !}    
 !}
+end subroutine dyn_0
+
 Kernel = 
 subroutine dyn_1(j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501) :: du
@@ -3499,7 +3513,23 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 !}
 end subroutine dyn_1
 
-Streaming variables inserted = 
+Streams = 
+subroutine dyn_1(j,k)
+      real :: du_j_k
+      real :: duu
+      real :: dv_j_k
+      real :: dvv
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, intent(Out) :: u_j_k
+      real, intent(InOut) :: un_j_k
+      real :: uu
+      real, intent(Out) :: v_j_k
+      real, intent(InOut) :: vn_j_k
+      real :: vv
+      integer, intent(Out) :: wet_j_kp1
+      integer, intent(Out) :: wet_jp1_k
+      integer, intent(Out) :: wet_j_k
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 !    ){
@@ -3532,6 +3562,8 @@ Streaming variables inserted =
     end if
 !}    
 !}
+end subroutine dyn_1
+
 Kernel = 
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
       real :: dt
@@ -3581,7 +3613,36 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 !}
 end subroutine dyn_2
 
-Streaming variables inserted = 
+Streams = 
+subroutine dyn_2(dt,dx,dy,j,k)
+      real :: dt
+      real :: dx
+      real :: dy
+      real, intent(In) :: eta_j_k
+      real :: etan_j_k
+      real, intent(InOut) :: h_jm1_k
+      real, intent(InOut) :: h_j_kp1
+      real, intent(InOut) :: h_j_k
+      real, intent(InOut) :: h_jp1_k
+      real, intent(InOut) :: h_j_km1
+      real :: hen
+      real :: hep
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, intent(InOut) :: un_j_k
+      real, intent(InOut) :: vn_j_k
+      real, intent(InOut) :: vn_jm1_k
+      real, intent(InOut) :: vn_j_k
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	2 point stencil on 2D array un: [[0,0],[0,-1]]
@@ -3605,6 +3666,8 @@ Streaming variables inserted =
     end if
 !}    
 !}
+end subroutine dyn_2
+
 Kernel = 
 subroutine shapiro(eps,eta,etan,j,k,wet)
       real :: eps
@@ -3638,7 +3701,25 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 !}
 end subroutine shapiro
 
-Streaming variables inserted = 
+Streams = 
+subroutine shapiro(eps,j,k)
+      real :: eps
+      real, intent(In) :: eta_j_k
+      real :: etan_jm1_k
+      real :: etan_j_kp1
+      real :: etan_j_k
+      real :: etan_jp1_k
+      real :: etan_j_km1
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      integer, intent(Out) :: wet_jm1_k
+      integer, intent(Out) :: wet_j_kp1
+      integer, intent(Out) :: wet_j_k
+      integer, intent(Out) :: wet_jp1_k
+      integer, intent(Out) :: wet_j_km1
 ! OpenCLStencil (
 !	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -3646,9 +3727,12 @@ Streaming variables inserted =
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet_j_k==1) then
-                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
-                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
-                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
+                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet&
+&_jm1_k))*etan_j_k
+                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_&
+&km1)
+                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm&
+&1_k)
                 eta_j_k = term1+term2+term3
         else
                 eta_j_k = etan_j_k
@@ -3656,6 +3740,8 @@ Streaming variables inserted =
     end if
 !}    
 !}
+end subroutine shapiro
+
 Kernel = 
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
@@ -3680,7 +3766,19 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 !}
 end subroutine vernieuw
 
-Streaming variables inserted = 
+Streams = 
+subroutine vernieuw(hmin,j,k)
+      real, intent(In) :: eta_j_k
+      real, intent(InOut) :: h_j_k
+      real, intent(In) :: hmin
+      real, intent(In) :: hzero_j_k
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, intent(Out) :: u_j_k
+      real, intent(InOut) :: un_j_k
+      real, intent(Out) :: v_j_k
+      real, intent(InOut) :: vn_j_k
+      integer, intent(Out) :: wet_j_k
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     h_j_k = hzero_j_k+eta_j_k
     wet_j_k = 1
@@ -3690,3 +3788,5 @@ Streaming variables inserted =
     u_j_k = un_j_k
     v_j_k = vn_j_k
 !}
+end subroutine vernieuw
+
