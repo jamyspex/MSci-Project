@@ -40,7 +40,6 @@ library
       KernelExtraction
       LanguageFortranTools
       LoopAnalysis
-      Main
       MergeSubroutines
       MiniPP
       Parser
@@ -51,7 +50,6 @@ library
       ScalarizeKernels
       SmartCacheParameterAnalysis
       StencilDetection
-      SubroutineTable
       Transformer
       TupleTable
       Utils
