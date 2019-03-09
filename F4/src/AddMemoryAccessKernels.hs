@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances    #-}
+  {-# Language TupleSections #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
 module AddMemoryAccessKernels where
@@ -109,15 +110,15 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
   requiredInputStreams       = getRequiredInputStreams kernel smartCache
   requiredMemoryReaders      = concatMap buildMemoryReader requiredInputStreams
   withConsumedStreamsRemoved = foldl
-    (\set (Stream name _ _) -> Set.delete name set)
+    (\set (Stream name _ _ _) -> Set.delete name set)
     availableStreams
     requiredInputStreams
   withKernelOutputStreams = foldl
-    (\set (Stream name _ _) -> Set.insert name set)
+    (\set (Stream name _ _ _) -> Set.insert name set)
     withConsumedStreamsRemoved
     (outputStreams kernel)
   buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
-  buildMemoryReader stream@(Stream streamName valueType dimensions) =
+  buildMemoryReader stream@(Stream streamName _ valueType dimensions) =
     if streamAvailable
       then []
       else
@@ -139,15 +140,21 @@ getRequiredInputStreams
   :: PipelineItem SharedPipelineData
   -> Maybe (PipelineItem SharedPipelineData)
   -> [Stream Anno]
-getRequiredInputStreams kernel smartCache = Set.toList
-  withSmartCacheOutputsRemoved
+getRequiredInputStreams kernel smartCache = map snd
+  $ Set.toList withSmartCacheOutputsRemoved
  where
-  smartCacheInputStreams  = maybe [] inputStreams smartCache
-  smartCacheOutputStreams = maybe [] outputStreams smartCache
-  allInputs               = smartCacheInputStreams ++ inputStreams kernel
-  inputSet                = Set.fromList allInputs
-  withSmartCacheOutputsRemoved =
-    foldl (flip Set.delete) inputSet smartCacheOutputStreams
+  smartCacheInputStreams =
+    maybe [] (map (SmartCacheIn, ) . inputStreams) smartCache
+  smartCacheOutputStreams =
+    maybe [] (map (SmartCacheOut, ) . outputStreams) smartCache
+  allInputs = smartCacheInputStreams ++ map (Other, ) (inputStreams kernel)
+  inputSet = Set.fromList allInputs
+  withSmartCacheOutputsRemoved = foldl
+    (\set (_, streamName) -> Set.delete (Other, streamName) set)
+    inputSet
+    smartCacheOutputStreams
+
+data Position = SmartCacheIn | SmartCacheOut | Other deriving (Eq, Ord)
 
 -- at the minute this is simply gonna look for the last stage
 -- and then add a memory writer for each of the output streams
@@ -166,7 +173,7 @@ addMemoryWriter pipeline = init pipeline ++ [updatedFinalStage]
 buildMemoryWriter :: String -> [Stream Anno] -> PipelineItem SharedPipelineData
 buildMemoryWriter kernelName streams = MemoryWriter
   { inputStreamsToMem = map
-    (\s@(Stream name valueType dims) -> (s, FPGAMemArray name))
+    (\s@(Stream name _ valueType dims) -> (s, FPGAMemArray name))
     streams
   , name              = kernelName ++ "_output_writer"
   , readPipes         = []

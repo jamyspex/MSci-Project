@@ -90,8 +90,8 @@ instance Show SmartCacheItem where
     where
       (name, dims) =
         case inputStream of
-          (Stream name _ dims)        -> (name, dims)
-          (TransitStream name _ dims) -> (name, dims)
+          (Stream name _ _ dims)        -> (name, dims)
+          (TransitStream name _ _ dims) -> (name, dims)
 
 data Kernel = Kernel
   { inputs              :: [Stream Anno]
@@ -129,29 +129,32 @@ instance Show Kernel where
 
 data Stream p
   = Stream String -- name
+           String -- array name
            StreamValueType -- value type
            [(Int, Int)] -- dimensions
   | StencilStream String -- name
+                  String -- array name
                   StreamValueType -- value type
                   [(Int, Int)] -- dimensions
                   (Stencil p) -- stencil offsets
   | TransitStream String -- name
+                  String -- array name 
                   StreamValueType -- value type
                   [(Int, Int)] -- dimensions
   deriving (Show, Typeable, Data)
 
 instance Eq (Stream p) where
-  (==) (Stream name1 _ _) (Stream name2 _ _) = name1 == name2
+  (==) (Stream name1 _ _ _) (Stream name2 _ _ _) = name1 == name2
 
 instance Ord (Stream p) where
-  compare (Stream name1 _ _) (Stream name2 _ _) = name1 `compare` name2
+  compare (Stream name1 _ _ _) (Stream name2 _ _ _) = name1 `compare` name2
  -- compare (TransitStream name1 _ _) (TransitStream name2 _ _) =
  --   name1 `compare` name2
  -- compare (Stream name1 _ _) (TransitStream name2 _ _) = name1 `compare` name2
  -- compare (TransitStream name1 _ _) (Stream name2 _ _) = name2 `compare` name2
 
-convertStencilStream (StencilStream name valueType dims _) =
-  Stream name valueType dims
+convertStencilStream (StencilStream name arrayName valueType dims _) =
+  Stream name arrayName valueType dims
 
 isStencil stream = case stream of
   StencilStream{} -> True
@@ -321,24 +324,30 @@ data SharedPipelineData
   | NullPipeLineData
   deriving (Show)
 
-printStream (Stream name valueType dims) =
+printStream (Stream name arrayName valueType dims) =
   "Stream: "
     ++ name
+    ++ " array name: "
+    ++ arrayName
     ++ " type: "
     ++ show valueType
     ++ " dimensions: "
     ++ show dims
-printStream (StencilStream name valueType dims stencil) =
+printStream (StencilStream name arrayName valueType dims stencil) =
   "StencilStream: "
     ++ name
+    ++ " array name: "
+    ++ arrayName
     ++ " type: "
     ++ show valueType
     ++ " dimensions: "
     ++ show dims
     ++ showStencils "\t" [stencil]
-printStream (TransitStream name valueType dims) =
+printStream (TransitStream name arrayName valueType dims) =
   "TransitStream: "
     ++ name
+    ++ " array name: "
+    ++ arrayName
     ++ " type: "
     ++ show valueType
     ++ " dimensions: "
@@ -447,13 +456,13 @@ hl = rule '-'
 
 rule char = "\n" ++ replicate 80 char ++ "\n"
 
-getStreamDimensions (Stream _ _ dims         ) = dims
-getStreamDimensions (StencilStream _ _ dims _) = dims
-getStreamDimensions (TransitStream _ _ dims  ) = dims
+getStreamDimensions (Stream _ _ _ dims         ) = dims
+getStreamDimensions (StencilStream _ _ _ dims _) = dims
+getStreamDimensions (TransitStream _ _ _ dims  ) = dims
 
-getStreamName (Stream name _ _         ) = name
-getStreamName (StencilStream name _ _ _) = name
-getStreamName (TransitStream name _ _  ) = name
+getStreamName (Stream name _ _ _         ) = name
+getStreamName (StencilStream name _ _ _ _) = name
+getStreamName (TransitStream name _ _ _  ) = name
 
 getAttrs typeDecl = case typeDecl of
   (BaseType _ _ attrs _ _) -> attrs

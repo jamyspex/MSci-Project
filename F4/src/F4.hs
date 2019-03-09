@@ -112,8 +112,9 @@ compilerMain args = do
   smartCacheKernelPairs <- insertSmartCaches kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   pipelineStages <- addMemoryAccesses smartCacheKernelPairs
-  putStrLn (rule '+' ++ " Scalarized " ++ rule '+')
-  withPipes         <- populatePipes pipelineStages
+  putStrLn (rule '+' ++ " Routing Pipes " ++ rule '+')
+  withPipes <- populatePipes pipelineStages
+  putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarisedKernels <- scalarizeKernels withPipes
   return ()
 

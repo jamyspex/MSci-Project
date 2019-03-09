@@ -83,12 +83,12 @@ buildSmartCacheForKernel k = do
 
 -- take a SmartCacheItem and generate output stream objects for it
 buildStream :: SmartCacheItem -> [Stream Anno]
-buildStream SmartCacheTransitItem {..} = [Stream name valueType dims]
-  where (TransitStream name valueType dims) = inputStream
+buildStream SmartCacheTransitItem {..} = [Stream name arrayName valueType dims]
+  where (TransitStream name arrayName valueType dims) = inputStream
 buildStream SmartCacheItem {..} = map
-  (\(name, _) -> Stream name inputValueType inputDimensions)
+  (\(name, _) -> Stream name arrayName inputValueType inputDimensions)
   outputStreamNamesAndBufferIndex
-  where (Stream _ inputValueType inputDimensions) = inputStream
+  where (Stream _ arrayName inputValueType inputDimensions) = inputStream
 
 -- Update the input streams of the kernel to no longer use stencil streams
 -- and instead use the output streams from the smart cache
@@ -112,11 +112,11 @@ padCacheItems inputs = map updateCacheItem inputs
   largestSize = size $ head inputSorted
   updateCacheItem :: SmartCacheItem -> SmartCacheItem
   updateCacheItem SmartCacheTransitItem {..} = SmartCacheItem
-    { size                            = largestSize
-    , inputStream                     = Stream name inputValueType inputDims
+    { size = largestSize
+    , inputStream = Stream name arrayName inputValueType inputDims
     , outputStreamNamesAndBufferIndex = [(name, largestSize)]
     }
-    where (TransitStream name inputValueType inputDims) = inputStream
+    where (TransitStream name arrayName inputValueType inputDims) = inputStream
   updateCacheItem org@SmartCacheItem {..} = if sizeDiff > 0
     then updated
     else org
@@ -156,9 +156,9 @@ buildSmartCacheItem kernel streamDimensionOrder inStream = SmartCacheItem
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]
-getSmartCacheOutputVars kern (StencilStream name _ dims sten) =
+getSmartCacheOutputVars kern (StencilStream _ arrayName _ dims sten) =
   getOutputVariableNames loopVarPos sten
-  where loopVarPos = getLoopVarPositions name kern
+  where loopVarPos = getLoopVarPositions arrayName kern
 
 -- 1) Get the loop vars used to index an array
 -- 2) Order them by the order they are used to access the array e.g. eta(j, k) -> [j, k]
