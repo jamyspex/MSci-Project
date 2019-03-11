@@ -2720,6 +2720,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: eta_j_k
 	Buffer size: 503
+	Max positive offset = 503
+	Max negative offset = 0
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		eta_j_kp1 from buffer index = 503
@@ -2829,6 +2831,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: wet_j_k
 	Buffer size: 503
+	Max positive offset = 503
+	Max negative offset = 0
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		wet_j_kp1 from buffer index = 503
@@ -2960,6 +2964,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: h_j_k
 	Buffer size: 1005
+	Max positive offset = 503
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		h_jm1_k from buffer index = 502
@@ -2973,6 +2979,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: un_j_k
 	Buffer size: 1005
+	Max positive offset = 0
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		un_j_k from buffer index = 1005
@@ -2983,6 +2991,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: vn_j_k
 	Buffer size: 1005
+	Max positive offset = 0
+	Max negative offset = 2
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		vn_j_k from buffer index = 1005
@@ -3098,6 +3108,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: vn_j_k
 	Buffer size: 1005
+	Max positive offset = 0
+	Max negative offset = 0
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		vn_j_k from buffer index = 1005
@@ -3107,6 +3119,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: un_j_k
 	Buffer size: 1005
+	Max positive offset = 0
+	Max negative offset = 0
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		un_j_k from buffer index = 1005
@@ -3116,6 +3130,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: etan_j_k
 	Buffer size: 1005
+	Max positive offset = 503
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		etan_jm1_k from buffer index = 502
@@ -3129,6 +3145,8 @@ Cache Lines:
 	Smart cache item
 	Input stream: wet_j_k
 	Buffer size: 1005
+	Max positive offset = 503
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
 		wet_jm1_k from buffer index = 502

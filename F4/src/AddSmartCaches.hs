@@ -111,9 +111,11 @@ padCacheItems inputs = map updateCacheItem inputs
   inputSorted = sortBy (\x y -> size y `compare` size x) inputs
   largestSize = size $ head inputSorted
   updateCacheItem :: SmartCacheItem -> SmartCacheItem
-  updateCacheItem SmartCacheTransitItem {..} = SmartCacheItem
-    { size = largestSize
+  updateCacheItem item@SmartCacheTransitItem {..} = SmartCacheItem
+    { size                            = largestSize
     , inputStream = Stream name arrayName inputValueType inputDims
+    , maxNegativeOffset               = 0
+    , maxPositiveOffset               = 0
     , outputStreamNamesAndBufferIndex = [(name, largestSize)]
     }
     where (TransitStream name arrayName inputValueType inputDims) = inputStream
@@ -139,6 +141,8 @@ buildSmartCacheItem _ _ transStream@TransitStream{} =
 buildSmartCacheItem kernel streamDimensionOrder inStream = SmartCacheItem
   { size                            = requiredBufferSize
   , inputStream                     = convertStencilStream inStream
+  , maxPositiveOffset               = maxPosOffset
+  , maxNegativeOffset               = maxNegOffset
   , outputStreamNamesAndBufferIndex = pointsAndVarNames
   }
  where

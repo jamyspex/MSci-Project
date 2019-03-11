@@ -40,6 +40,8 @@ data SmartCacheDetailsForStream = SmartCacheDetailsForStream
   , startIndex            :: [Int]
   , endIndex              :: [Int]
   , startToPointDistances :: [([Int], Int)]
+  , maxPosOffset          :: Int
+  , maxNegOffset          :: Int
   }
 
 instance Show SmartCacheDetailsForStream where
@@ -50,11 +52,12 @@ instance Show SmartCacheDetailsForStream where
     "End index: " ++
     show endIndex ++
     "\n" ++
+    "Max pos. offset = " ++ show maxPosOffset ++ " Max neg. offset = " ++ show maxNegOffset ++ "\n" ++
     "Buffer size: " ++
     show requiredBufferSize ++
     "\n" ++
     concatMap
-      (\(index, point) ->
+      (\(point, index) ->
          "Stencil point: " ++
          show point ++ " buffer index = " ++ show index ++ "\n")
       startToPointDistances
@@ -64,6 +67,8 @@ instance Show SmartCacheDetailsForStream where
 data SmartCacheItem
   = SmartCacheItem { size                            :: Int
                    , inputStream                     :: Stream Anno
+                   , maxPositiveOffset               :: Int
+                   , maxNegativeOffset               :: Int
                    , outputStreamNamesAndBufferIndex :: [(String, Int)] }
   | SmartCacheTransitItem { inputStream :: Stream Anno
                           , size        :: Int }
@@ -78,7 +83,9 @@ instance Show SmartCacheItem where
     "Buffer size: " ++
     show size ++
     "\n" ++
-    "Stream Dimensions: " ++
+    "Max positive offset = " ++ show maxPositiveOffset ++
+    "\n" ++ "Max negative offset = " ++ show maxNegativeOffset ++
+    "\n" ++ "Stream Dimensions: " ++
     show dims ++
     "\n" ++
     "Output Streams:\n" ++
@@ -138,7 +145,7 @@ data Stream p
                   [(Int, Int)] -- dimensions
                   (Stencil p) -- stencil offsets
   | TransitStream String -- name
-                  String -- array name 
+                  String -- array name
                   StreamValueType -- value type
                   [(Int, Int)] -- dimensions
   deriving (Show, Typeable, Data)
