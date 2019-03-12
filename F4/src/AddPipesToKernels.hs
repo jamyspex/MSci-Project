@@ -4,18 +4,18 @@
 
 module AddPipesToKernels where
 
-import           System.IO
-import           Debug.Trace
 import           AddMemoryAccessKernels
 import           Data.Generics
 import           Data.List
 import           Data.List.Split
-import qualified Data.Map                      as DMap
+import qualified Data.Map               as DMap
 import           Data.Maybe
-import qualified Data.Set                      as Set
+import qualified Data.Set               as Set
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           Pipeline
+import           System.IO
 import           Utils
 
 -- This module is going to walk through the pipeline finding the pipes
@@ -30,7 +30,7 @@ populatePipes pipeline = do
   return pipeline
 
 -- This function folds over the pipeline finding the pipes that
--- are required at by each stage and populates the readPipes and 
+-- are required at by each stage and populates the readPipes and
 -- writtenPipes field for each of the pipeline items.
 -- To make sure we detect all the pipes in the pipeline the following
 -- steps have to be taken
@@ -47,112 +47,132 @@ addPipesToPipelineItems pipeline = do
   mapM_ (\p -> putStrLn $ "\t" ++ pipeToGraphEdge p) allOutbound
   putStrLn "}\n"
   return updatedPipeline
- where
-  allOutbound     = getOutboundPipes updatedPipeline
-  updatedPipeline = foldl go [] pipeline
-  go :: [PipelineStage] -> PipelineStage -> [PipelineStage]
-  go newPipeline currentStage = if isJust prevStageWithPipes
-    then
-      init newPipeline ++ maybeToList prevStageWithPipes ++ [currStageWithPipes]
-    else [currStageWithPipes]
-   where
-    previousStage =
-      if null newPipeline then Nothing else Just $ last newPipeline
-    availableStreams = getAvailableStreamsAndSource previousStage currentStage
-    (currentKernel, currentSmartCache, currentMemAccess) = currentStage
-    streamsRequiringPipesAndDestination =
-      concatMap getRequiredStreams currentMemAccess
-        ++ maybe [] getRequiredStreams currentSmartCache
-        ++ getRequiredStreams currentKernel
-    newPipes = map getPipe streamsRequiringPipesAndDestination
-    (prevStageWithPipes, currStageWithPipes) =
-      addPipesToPipelineStages previousStage currentStage newPipes
-    getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
-    getPipe (stream, dest) = if valid
-      then buildPipe sourceName destName stream
-      else error "Stream has different name in map"
-     where
-      valid      = getStreamName stream == getStreamName streamFromMap
-      streamName = getStreamName stream
-      (source, streamFromMap) =
-        pickSource dest $ availableStreams DMap.! streamName
-      sourceName = name source
-      destName   = name dest
+  where
+    allOutbound = getOutboundPipes updatedPipeline
+    updatedPipeline = foldl go [] pipeline
+    go :: [PipelineStage] -> PipelineStage -> [PipelineStage]
+    go newPipeline currentStage =
+      if isJust prevStageWithPipes
+        then init newPipeline ++
+             maybeToList prevStageWithPipes ++ [currStageWithPipes]
+        else [currStageWithPipes]
+      where
+        previousStage =
+          if null newPipeline
+            then Nothing
+            else Just $ last newPipeline
+        availableStreams =
+          getAvailableStreamsAndSource previousStage currentStage
+        (currentKernel, currentSmartCache, currentMemAccess) = currentStage
+        streamsRequiringPipesAndDestination =
+          concatMap getRequiredStreams currentMemAccess ++
+          maybe [] getRequiredStreams currentSmartCache ++
+          getRequiredStreams currentKernel
+        newPipes = map getPipe streamsRequiringPipesAndDestination
+        (prevStageWithPipes, currStageWithPipes) =
+          addPipesToPipelineStages previousStage currentStage newPipes
+        getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
+        getPipe (stream, dest) =
+          if valid
+            then buildPipe sourceName destName stream
+            else error "Stream has different name in map"
+          where
+            valid = getStreamName stream == getStreamName streamFromMap
+            streamName = getStreamName stream
+            (source, streamFromMap) =
+              pickSource dest $ availableStreams DMap.! streamName
+            sourceName = name source
+            destName = name dest
 
 -- need to written at source and read at destination so attach pipe
 -- to both destination and source items. This means we have to pass in
 -- the previous stage as well so that any pipes eminating from there
 -- can be attached to the compute kernel.
-addPipesToPipelineStages
-  :: Maybe PipelineStage
+addPipesToPipelineStages ::
+     Maybe PipelineStage
   -> PipelineStage
   -> [Pipe]
   -> (Maybe PipelineStage, PipelineStage)
 addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
   ( if isJust prevStage
-    then Just
-      ( finalMap DMap.! prevKernName
-      , maybe Nothing (`DMap.lookup` finalMap) previousSCName
-      , map (finalMap DMap.!) previousMemAccNames
-      )
-    else Nothing
+      then Just
+             ( finalMap DMap.! prevKernName
+             , maybe Nothing (`DMap.lookup` finalMap) previousSCName
+             , map (finalMap DMap.!) previousMemAccNames)
+      else Nothing
   , ( finalMap DMap.! currKernName
     , maybe Nothing (`DMap.lookup` finalMap) currentSCName
-    , map (finalMap DMap.!) currentMemAccNames
-    )
-  )
- where
-  (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
-  withReadPipesUpdated       = foldl
-    (\map pipe -> DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) map)
-    originalMap
-    pipes
-  updateReadPipes pipe item = item { readPipes = currentReadPipes ++ [pipe] }
-    where currentReadPipes = readPipes item
-  finalMap = foldl
-    (\map pipe -> DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) map
-    )
-    withReadPipesUpdated
-    pipes
-  updateWrittenPipes pipe item = item
-    { writtenPipes = currentWrittenPipes ++ [pipe]
-    }
-    where currentWrittenPipes = writtenPipes item
-  originalMap = DMap.fromList $ map (\i -> (name i, i)) $ filter
-    (\case
-      NullItem -> False
-      _        -> True
-    )
-    allItems
-  allItems =
-    [prevKern]
-      ++ [currKern]
-      ++ prevMA
-      ++ currMA
-      ++ maybeToList currSC
-      ++ maybeToList prevSC
-  (prevKernName, previousSCName, previousMemAccNames) = if isJust prevStage
-    then (name prevKern, fmap name prevSC, map name prevMA)
-    else ("", Nothing, [])
-  (currKernName, currentSCName, currentMemAccNames) =
-    (name currKern, fmap name currSC, map name currMA)
+    , map (finalMap DMap.!) currentMemAccNames))
+  where
+    (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
+    withReadPipesUpdated =
+      foldl
+        (\map pipe ->
+           DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) $
+           trace
+             ("updating readPipes for " ++
+              name (map DMap.! getPipeDest pipe) ++
+              " read pipes = \n" ++
+              show (readPipes (map DMap.! getPipeDest pipe)))
+             map)
+        originalMap
+        pipes
+    updateReadPipes pipe item = item {readPipes = currentReadPipes ++ [pipe]}
+      where
+        currentReadPipes = readPipes item
+    finalMap =
+      foldl
+        (\map pipe ->
+           DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) $
+           trace
+             ("updating writtenPipes for " ++
+              name (map DMap.! getPipeSource pipe) ++
+              " written pipes = \n" ++
+              show (writtenPipes (map DMap.! getPipeSource pipe)))
+             map)
+        withReadPipesUpdated
+        pipes
+    updateWrittenPipes pipe item =
+      item {writtenPipes = currentWrittenPipes ++ [pipe]}
+      where
+        currentWrittenPipes = writtenPipes item
+    originalMap =
+      DMap.fromList $
+      map (\i -> (name i, i)) $
+      filter
+        (\case
+           NullItem -> False
+           _ -> True)
+        allItems
+    allItems =
+      [prevKern] ++
+      [currKern] ++ prevMA ++ currMA ++ maybeToList currSC ++ maybeToList prevSC
+    (prevKernName, previousSCName, previousMemAccNames) =
+      if isJust prevStage
+        then (name prevKern, fmap name prevSC, map name prevMA)
+        else ("", Nothing, [])
+    (currKernName, currentSCName, currentMemAccNames) =
+      (name currKern, fmap name currSC, map name currMA)
 
 -- this function uses the list of values from the map to decide which
 -- stream source to use based on where the destination. As explained
 -- below.
-pickSource
-  :: PipelineItem SharedPipelineData
+pickSource ::
+     PipelineItem SharedPipelineData
   -> [(PipelineItem SharedPipelineData, Stream Anno)]
   -> (PipelineItem SharedPipelineData, Stream Anno)
-pickSource dest@SmartCache{} sources = maximumBy
-  (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
-  (removeDestFromSources dest sources)
-pickSource dest@MemoryWriter{} sources = maximumBy
-  (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
-  (removeDestFromSources dest sources)
-pickSource dest sources = maximumBy
-  (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
-  (removeDestFromSources dest sources)
+pickSource dest@SmartCache {} sources =
+  maximumBy
+    (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
+    (removeDestFromSources dest sources)
+pickSource dest@MemoryWriter {} sources =
+  maximumBy
+    (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
+    (removeDestFromSources dest sources)
+pickSource dest sources =
+  maximumBy
+    (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
+    (removeDestFromSources dest sources)
 
 removeDestFromSources dest = filter (\(s, _) -> name s /= name dest)
 
@@ -171,25 +191,25 @@ removeDestFromSources dest = filter (\(s, _) -> name s /= name dest)
 -- backs.
 --
 -- This one is for ranking sources for map/fold kernel inputs
-compareKernelOpts SmartCache{} _            = Prelude.GT
-compareKernelOpts _            SmartCache{} = Prelude.LT
-compareKernelOpts Map{}        Reduce{}     = Prelude.EQ
-compareKernelOpts Reduce{}     Map{}        = Prelude.EQ
-compareKernelOpts Map{}        _            = Prelude.GT
-compareKernelOpts _            Map{}        = Prelude.LT
-compareKernelOpts Reduce{}     _            = Prelude.GT
-compareKernelOpts _            Reduce{}     = Prelude.LT
-compareKernelOpts _            _            = Prelude.EQ
+compareKernelOpts SmartCache {} _  = Prelude.GT
+compareKernelOpts _ SmartCache {}  = Prelude.LT
+compareKernelOpts Map {} Reduce {} = Prelude.EQ
+compareKernelOpts Reduce {} Map {} = Prelude.EQ
+compareKernelOpts Map {} _         = Prelude.GT
+compareKernelOpts _ Map {}         = Prelude.LT
+compareKernelOpts Reduce {} _      = Prelude.GT
+compareKernelOpts _ Reduce {}      = Prelude.LT
+compareKernelOpts _ _              = Prelude.EQ
 
 -- Compare input source options from perspective of a memory writer
 -- e.g. always select outputs from the previous computer kernel.
 -- If we can't get outputs find from a compute kernel throw and error.
-compareMemWriterOpts Map{}    Reduce{} = Prelude.EQ
-compareMemWriterOpts Reduce{} Map{}    = Prelude.EQ
-compareMemWriterOpts Map{}    _        = Prelude.GT
-compareMemWriterOpts _        Map{}    = Prelude.LT
-compareMemWriterOpts Reduce{} _        = Prelude.GT
-compareMemWriterOpts _        Reduce{} = Prelude.LT
+compareMemWriterOpts Map {} Reduce {} = Prelude.EQ
+compareMemWriterOpts Reduce {} Map {} = Prelude.EQ
+compareMemWriterOpts Map {} _ = Prelude.GT
+compareMemWriterOpts _ Map {} = Prelude.LT
+compareMemWriterOpts Reduce {} _ = Prelude.GT
+compareMemWriterOpts _ Reduce {} = Prelude.LT
 compareMemWriterOpts _ _ =
   error "No suitable streams found for memory writer inputs"
 
@@ -199,142 +219,135 @@ compareMemWriterOpts _ _ =
 -- of the current compute kernel to put back into the smart into the
 -- smartcache as an input so select the streams from the previous compute
 -- kernel by selecting the kernel with the lowest stageNumber as the source.
-compareSmartCacheOpts m@Map{} r@Reduce{} =
+compareSmartCacheOpts m@Map {} r@Reduce {} =
   stageNumber r `compare` stageNumber m -- Note compare arg order swapped as we want select the minimum
-compareSmartCacheOpts r@Reduce{} m@Map{} =
+compareSmartCacheOpts r@Reduce {} m@Map {} =
   stageNumber m `compare` stageNumber r -- Same here
-compareSmartCacheOpts Map{}    _        = Prelude.GT
-compareSmartCacheOpts _        Map{}    = Prelude.LT
-compareSmartCacheOpts Reduce{} _        = Prelude.GT
-compareSmartCacheOpts _        Reduce{} = Prelude.LT
-compareSmartCacheOpts _        _        = Prelude.EQ
+compareSmartCacheOpts Map {} _ = Prelude.GT
+compareSmartCacheOpts _ Map {} = Prelude.LT
+compareSmartCacheOpts Reduce {} _ = Prelude.GT
+compareSmartCacheOpts _ Reduce {} = Prelude.LT
+compareSmartCacheOpts _ _ = Prelude.EQ
 
-buildPipe from to stream = Pipe
-  from
-  to
-  (from ++ "__" ++ to ++ "__" ++ name ++ "__pipe")
-  valueType
-  where (Stream name _ valueType _) = stream
+buildPipe from to stream =
+  Pipe from to (from ++ "__" ++ to ++ "__" ++ name ++ "__pipe") valueType stream
+  where
+    (Stream name _ valueType _) = stream
 
 -- For a pipeline stage create a map from stream name to
 -- (source, stream) so that when getting pipes we know
 -- where each stream came from and can name them appropriately
-getAvailableStreamsAndSource
-  :: Maybe PipelineStage
+getAvailableStreamsAndSource ::
+     Maybe PipelineStage
   -> PipelineStage
   -> DMap.Map String [(PipelineItem SharedPipelineData, Stream Anno)]
 getAvailableStreamsAndSource Nothing currentStage = map
- where
-  (currentKernel, currentSmartCache, currentMemAccess) = currentStage
-  availableStreamsAndSources =
-    maybe [] getAvailableStreamsFromSource currentSmartCache
-      ++ concatMap getAvailableStreamsFromSource currentMemAccess
-      ++ getAvailableStreamsFromSource currentKernel
-  map = makeMap availableStreamsAndSources
+  where
+    (currentKernel, currentSmartCache, currentMemAccess) = currentStage
+    availableStreamsAndSources =
+      maybe [] getAvailableStreamsFromSource currentSmartCache ++
+      concatMap getAvailableStreamsFromSource currentMemAccess ++
+      getAvailableStreamsFromSource currentKernel
+    map = makeMap availableStreamsAndSources
 getAvailableStreamsAndSource (Just previousStage) currentStage = map
- where
-  (previousKernel, _                , _               ) = previousStage
-  (currentKernel , currentSmartCache, currentMemAccess) = currentStage
-  availableStreamsAndSources =
-    getAvailableStreamsFromSource previousKernel
-      ++ maybe [] getAvailableStreamsFromSource currentSmartCache
-      ++ concatMap getAvailableStreamsFromSource currentMemAccess
-      ++ getAvailableStreamsFromSource currentKernel
-  map = makeMap availableStreamsAndSources
+  where
+    (previousKernel, _, _) = previousStage
+    (currentKernel, currentSmartCache, currentMemAccess) = currentStage
+    availableStreamsAndSources =
+      getAvailableStreamsFromSource previousKernel ++
+      maybe [] getAvailableStreamsFromSource currentSmartCache ++
+      concatMap getAvailableStreamsFromSource currentMemAccess ++
+      getAvailableStreamsFromSource currentKernel
+    map = makeMap availableStreamsAndSources
 
 -- Function groups available streams by name then, builds a map
 -- stream name -> [(producer0, stream), (producer1, stream)]
-makeMap
-  :: [(PipelineItem SharedPipelineData, Stream Anno)]
+makeMap ::
+     [(PipelineItem SharedPipelineData, Stream Anno)]
   -> DMap.Map String [(PipelineItem SharedPipelineData, Stream Anno)]
 makeMap sourceAndStreams = DMap.fromList mapGroups
- where
-  mapItems = map (\(source, s@(Stream name _ _ _)) -> (name, (source, s)))
-                 sourceAndStreams
-  toGroupMapItems = sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) mapItems
-  grouped         = groupBy (\(n1, _) (n2, _) -> n1 == n2) toGroupMapItems
-  mapGroups       = map (\grp -> ((fst . head) grp, map snd grp)) grouped
+  where
+    mapItems =
+      map
+        (\(source, s@(Stream name _ _ _)) -> (name, (source, s)))
+        sourceAndStreams
+    toGroupMapItems = sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) mapItems
+    grouped = groupBy (\(n1, _) (n2, _) -> n1 == n2) toGroupMapItems
+    mapGroups = map (\grp -> ((fst . head) grp, map snd grp)) grouped
 
 -- for a pipelineItem get all the possible streams it
 -- can provide
-getAvailableStreamsFromSource
-  :: PipelineItem SharedPipelineData
+getAvailableStreamsFromSource ::
+     PipelineItem SharedPipelineData
   -> [(PipelineItem SharedPipelineData, Stream Anno)]
 getAvailableStreamsFromSource mr@MemoryReader {..} =
   map (\(_, s) -> (mr, s)) memToOutputStreams
 getAvailableStreamsFromSource smartcache@SmartCache {..} =
   map (smartcache, ) outputStreams
-getAvailableStreamsFromSource MemoryWriter{} = []
-getAvailableStreamsFromSource k@Map {..}     = map (k, ) outputStreams
-getAvailableStreamsFromSource k@Reduce {..}  = map (k, ) outputStreams
+getAvailableStreamsFromSource MemoryWriter {} = []
+getAvailableStreamsFromSource k@Map {..} = map (k, ) outputStreams
+getAvailableStreamsFromSource k@Reduce {..} = map (k, ) outputStreams
 
 -- for a PipelineItem get all the streams it requires
-getRequiredStreams
-  :: PipelineItem SharedPipelineData
+getRequiredStreams ::
+     PipelineItem SharedPipelineData
   -> [(Stream Anno, PipelineItem SharedPipelineData)]
-getRequiredStreams item@Map {..}          = map (, item) inputStreams
-getRequiredStreams item@Reduce {..}       = map (, item) inputStreams
-getRequiredStreams item@SmartCache {..}   = map (, item) inputStreams
+getRequiredStreams item@Map {..} = map (, item) inputStreams
+getRequiredStreams item@Reduce {..} = map (, item) inputStreams
+getRequiredStreams item@SmartCache {..} = map (, item) inputStreams
 getRequiredStreams item@MemoryReader {..} = []
 getRequiredStreams item@MemoryWriter {..} =
   map (\(s, _) -> (s, item)) inputStreamsToMem
 
 -- Debug printing functions
-showMap
-  :: DMap.Map String [(PipelineItem SharedPipelineData, Stream Anno)] -> String
-showMap map = foldl
-  (\string key ->
-    string
-      ++ key
-      ++ " --> \n"
-      ++ concatMap
-           (\(source, stream) ->
-             "\t" ++ name source ++ " " ++ getStreamName stream ++ "\n"
-           )
-           (map DMap.! key)
-      ++ "\n"
-  )
-  ""
-  (DMap.keys map)
+showMap ::
+     DMap.Map String [(PipelineItem SharedPipelineData, Stream Anno)] -> String
+showMap map =
+  foldl
+    (\string key ->
+       string ++
+       key ++
+       " --> \n" ++
+       concatMap
+         (\(source, stream) ->
+            "\t" ++ name source ++ " " ++ getStreamName stream ++ "\n")
+         (map DMap.! key) ++
+       "\n")
+    ""
+    (DMap.keys map)
 
-showMapItems
-  :: [(String, (PipelineItem SharedPipelineData, Stream Anno))] -> String
-showMapItems = concatMap
-  (\(streamName, (source, stream)) ->
-    "map key = "
-      ++ streamName
-      ++ " source = "
-      ++ name source
-      ++ " stream = "
-      ++ getStreamName stream
-      ++ "\n"
-  )
+showMapItems ::
+     [(String, (PipelineItem SharedPipelineData, Stream Anno))] -> String
+showMapItems =
+  concatMap
+    (\(streamName, (source, stream)) ->
+       "map key = " ++
+       streamName ++
+       " source = " ++
+       name source ++ " stream = " ++ getStreamName stream ++ "\n")
 
-showGrouped
-  :: [[(String, (PipelineItem SharedPipelineData, Stream Anno))]] -> String
-showGrouped = concatMap
-  (\grp ->
-    concatMap
-        (\(_, (item, Stream streamName _ _ _)) ->
-          "\t"
-            ++ "stream name = "
-            ++ streamName
-            ++ " source name = "
-            ++ name item
-            ++ "\n"
-        )
-        grp
-      ++ "--------------------------\n"
-  )
+showGrouped ::
+     [[(String, (PipelineItem SharedPipelineData, Stream Anno))]] -> String
+showGrouped =
+  concatMap
+    (\grp ->
+       concatMap
+         (\(_, (item, Stream streamName _ _ _)) ->
+            "\t" ++
+            "stream name = " ++
+            streamName ++ " source name = " ++ name item ++ "\n")
+         grp ++
+       "--------------------------\n")
 
 getOutboundPipes :: [PipelineStage] -> [Pipe]
-getOutboundPipes = concatMap
-  (\(k, sc, ma) ->
-    writtenPipes k ++ maybe [] writtenPipes sc ++ concatMap writtenPipes ma
-  )
+getOutboundPipes =
+  concatMap
+    (\(k, sc, ma) ->
+       writtenPipes k ++ maybe [] writtenPipes sc ++ concatMap writtenPipes ma)
 
 -- convert pipe name to graphviz data
 pipeToGraphEdge :: Pipe -> String
-pipeToGraphEdge (Pipe _ _ name _) =
+pipeToGraphEdge (Pipe _ _ name _ _) =
   from ++ " -> " ++ to ++ " [ label=\"" ++ stream_name ++ "\" ]"
-  where [from, to, stream_name, _] = splitOn "__" name
+  where
+    [from, to, stream_name, _] = splitOn "__" name

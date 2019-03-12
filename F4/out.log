@@ -3272,105 +3272,105 @@ Memory to streams:
  Routing Pipes 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Pipe "dyn_0" "dyn_1" "dyn_0__dyn_1__du_j_k__pipe" Float
+Pipe "dyn_0" "dyn_1" "dyn_0__dyn_1__du_j_k__pipe" Float (Stream "du_j_k" "du" Float [(0,501),(0,501)])
 
-Pipe "dyn_0" "dyn_1" "dyn_0__dyn_1__dv_j_k__pipe" Float
+Pipe "dyn_0" "dyn_1" "dyn_0__dyn_1__dv_j_k__pipe" Float (Stream "dv_j_k" "dv" Float [(0,501),(0,501)])
 
-Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe" Float
+Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe" Float (Stream "eta_j_kp1" "eta" Float [(0,501),(0,501)])
 
-Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe" Float
+Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe" Float (Stream "eta_jp1_k" "eta" Float [(0,501),(0,501)])
 
-Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_j_k__pipe" Float
+Pipe "dyn_0_smart_cache" "dyn_0" "dyn_0_smart_cache__dyn_0__eta_j_k__pipe" Float (Stream "eta_j_k" "eta" Float [(0,501),(0,501)])
 
-Pipe "dyn_0_eta_j_k_reader" "dyn_0_smart_cache" "dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe" Float
+Pipe "dyn_0_eta_j_k_reader" "dyn_0_smart_cache" "dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe" Float (Stream "eta_j_k" "eta" Float [(0,501),(0,501)])
 
-Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__un_j_k__pipe" Float
+Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__un_j_k__pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__vn_j_k__pipe" Float
+Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe" Float
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe" Float (Stream "wet_j_kp1" "wet" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe" Float
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe" Float (Stream "wet_jp1_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_k__pipe" Float
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_wet_j_k_reader" "dyn_1_smart_cache" "dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe" Float
+Pipe "dyn_1_wet_j_k_reader" "dyn_1_smart_cache" "dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_u_j_k_reader" "dyn_1" "dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe" Float
+Pipe "dyn_1_u_j_k_reader" "dyn_1" "dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe" Float (Stream "u_j_k" "u" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_v_j_k_reader" "dyn_1" "dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe" Float
+Pipe "dyn_1_v_j_k_reader" "dyn_1" "dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe" Float (Stream "v_j_k" "v" Float [(0,501),(0,501)])
 
-Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__vn_j_k__pipe" Float
+Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__un_j_k__pipe" Float
+Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__un_j_k__pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__etan_j_k__pipe" Float
+Pipe "dyn_2" "shapiro_smart_cache" "dyn_2__shapiro_smart_cache__etan_j_k__pipe" Float (Stream "etan_j_k" "etan" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_jm1_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_jm1_k__pipe" Float (Stream "h_jm1_k" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_kp1__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_kp1__pipe" Float (Stream "h_j_kp1" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_jp1_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_jp1_k__pipe" Float (Stream "h_jp1_k" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_km1__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__h_j_km1__pipe" Float (Stream "h_j_km1" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__un_j_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__un_j_k__pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__un_j_km1__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__un_j_km1__pipe" Float (Stream "un_j_km1" "un" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__vn_j_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe" Float
+Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe" Float (Stream "vn_jm1_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_h_j_k_reader" "dyn_2_smart_cache" "dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe" Float
+Pipe "dyn_2_h_j_k_reader" "dyn_2_smart_cache" "dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_eta_j_k_reader" "dyn_2" "dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe" Float
+Pipe "dyn_2_eta_j_k_reader" "dyn_2" "dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe" Float (Stream "eta_j_k" "eta" Float [(0,501),(0,501)])
 
-Pipe "shapiro" "vernieuw" "shapiro__vernieuw__eta_j_k__pipe" Float
+Pipe "shapiro" "vernieuw" "shapiro__vernieuw__eta_j_k__pipe" Float (Stream "eta_j_k" "eta" Float [(0,501),(0,501)])
 
-Pipe "shapiro" "vernieuw" "shapiro__vernieuw__un_j_k__pipe" Float
+Pipe "shapiro" "vernieuw" "shapiro__vernieuw__un_j_k__pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "shapiro" "vernieuw" "shapiro__vernieuw__vn_j_k__pipe" Float
+Pipe "shapiro" "vernieuw" "shapiro__vernieuw__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__vn_j_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__un_j_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__un_j_k__pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_jm1_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_jm1_k__pipe" Float (Stream "etan_jm1_k" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_kp1__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_kp1__pipe" Float (Stream "etan_j_kp1" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_k__pipe" Float (Stream "etan_j_k" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_jp1_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_jp1_k__pipe" Float (Stream "etan_jp1_k" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_km1__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_km1__pipe" Float (Stream "etan_j_km1" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jm1_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jm1_k__pipe" Float (Stream "wet_jm1_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_kp1__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_kp1__pipe" Float (Stream "wet_j_kp1" "wet" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jp1_k__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jp1_k__pipe" Float (Stream "wet_jp1_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_km1__pipe" Float
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_km1__pipe" Float (Stream "wet_j_km1" "wet" Float [(0,501),(0,501)])
 
-Pipe "shapiro_wet_j_k_reader" "shapiro_smart_cache" "shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe" Float
+Pipe "shapiro_wet_j_k_reader" "shapiro_smart_cache" "shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__h_j_k__pipe" Float
+Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
-Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__u_j_k__pipe" Float
+Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__u_j_k__pipe" Float (Stream "u_j_k" "u" Float [(0,501),(0,501)])
 
-Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__v_j_k__pipe" Float
+Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__v_j_k__pipe" Float (Stream "v_j_k" "v" Float [(0,501),(0,501)])
 
-Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__wet_j_k__pipe" Float
+Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
 
-Pipe "vernieuw_h_j_k_reader" "vernieuw" "vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe" Float
+Pipe "vernieuw_h_j_k_reader" "vernieuw" "vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
-Pipe "vernieuw_hzero_j_k_reader" "vernieuw" "vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe" Float
+Pipe "vernieuw_hzero_j_k_reader" "vernieuw" "vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe" Float (Stream "hzero_j_k" "hzero" Float [(0,501),(0,501)])
 
 Graph Viz data:
 
@@ -3807,4 +3807,85 @@ subroutine vernieuw(hmin,j,k)
     v_j_k = vn_j_k
 !}
 end subroutine vernieuw
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Decls for dyn_0_smart_cache 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      real :: eta_read_in
+      real, dimension(1:503) :: eta_buffer
+      real :: eta_j_kp1
+      real :: eta_jp1_k
+      real :: eta_j_k
+
+--------------------------------------------------------------------------------
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Decls for dyn_1_smart_cache 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      real :: wet_read_in
+      real, dimension(1:503) :: wet_buffer
+      real :: wet_j_kp1
+      real :: wet_jp1_k
+      real :: wet_j_k
+
+--------------------------------------------------------------------------------
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Decls for dyn_2_smart_cache 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      real :: h_read_in
+      real :: un_read_in
+      real :: vn_read_in
+      real, dimension(1:1005) :: h_buffer
+      real, dimension(1:1005) :: un_buffer
+      real, dimension(1:1005) :: vn_buffer
+      real :: h_jm1_k
+      real :: h_j_kp1
+      real :: h_j_k
+      real :: h_jp1_k
+      real :: h_j_km1
+      real :: un_j_k
+      real :: un_j_km1
+      real :: vn_j_k
+      real :: vn_jm1_k
+
+--------------------------------------------------------------------------------
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Decls for shapiro_smart_cache 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      real :: vn_read_in
+      real :: un_read_in
+      real :: etan_read_in
+      real :: wet_read_in
+      real, dimension(1:1005) :: vn_buffer
+      real, dimension(1:1005) :: un_buffer
+      real, dimension(1:1005) :: etan_buffer
+      real, dimension(1:1005) :: wet_buffer
+      real :: vn_j_k
+      real :: un_j_k
+      real :: etan_jm1_k
+      real :: etan_j_kp1
+      real :: etan_j_k
+      real :: etan_jp1_k
+      real :: etan_j_km1
+      real :: wet_jm1_k
+      real :: wet_j_kp1
+      real :: wet_j_k
+      real :: wet_jp1_k
+      real :: wet_j_km1
+
+--------------------------------------------------------------------------------
+
 
