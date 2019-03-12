@@ -25,9 +25,7 @@ import           Utils
 -- Then it will subsitute the new local variable in place of any previous
 -- array read expressions.
 populatePipes :: [PipelineStage] -> IO [PipelineStage]
-populatePipes pipeline = do
-  addPipesToPipelineItems pipeline
-  return pipeline
+populatePipes = addPipesToPipelineItems
 
 -- This function folds over the pipeline finding the pipes that
 -- are required at by each stage and populates the readPipes and
@@ -107,14 +105,7 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
     (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
     withReadPipesUpdated =
       foldl
-        (\map pipe ->
-           DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) $
-           trace
-             ("updating readPipes for " ++
-              name (map DMap.! getPipeDest pipe) ++
-              " read pipes = \n" ++
-              show (readPipes (map DMap.! getPipeDest pipe)))
-             map)
+        (\map pipe -> DMap.adjust (updateReadPipes pipe) (getPipeDest pipe) map)
         originalMap
         pipes
     updateReadPipes pipe item = item {readPipes = currentReadPipes ++ [pipe]}
@@ -123,13 +114,7 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
     finalMap =
       foldl
         (\map pipe ->
-           DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) $
-           trace
-             ("updating writtenPipes for " ++
-              name (map DMap.! getPipeSource pipe) ++
-              " written pipes = \n" ++
-              show (writtenPipes (map DMap.! getPipeSource pipe)))
-             map)
+           DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) map)
         withReadPipesUpdated
         pipes
     updateWrittenPipes pipe item =

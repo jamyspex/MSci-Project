@@ -3821,7 +3821,9 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-
+    call readPipe(eta_read_in, dyn_0_eta_j_k_reader)
+    eta_buffer(502) = eta_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_1_smart_cache 
@@ -3835,7 +3837,9 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-
+    call readPipe(wet_read_in, dyn_1_wet_j_k_reader)
+    wet_buffer(502) = wet_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_2_smart_cache 
@@ -3859,7 +3863,15 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-
+    call readPipe(h_read_in, dyn_2_h_j_k_reader)
+    h_buffer(1004) = h_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    call readPipe(un_read_in, dyn_1)
+    un_buffer(1004) = un_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    call readPipe(vn_read_in, dyn_1)
+    vn_buffer(1004) = vn_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for shapiro_smart_cache 
@@ -3888,4 +3900,15 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-
+    call readPipe(etan_read_in, dyn_2)
+    etan_buffer(1004) = etan_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    call readPipe(un_read_in, dyn_2)
+    un_buffer(1004) = un_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    call readPipe(vn_read_in, dyn_2)
+    vn_buffer(1004) = vn_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    call readPipe(wet_read_in, shapiro_wet_j_k_reader)
+    wet_buffer(1004) = wet_read_in
+    call memFence(CLK_CHANNEL_MEM_FENCE)
