@@ -482,6 +482,10 @@ getStreamName (Stream name _ _ _)          = name
 getStreamName (StencilStream name _ _ _ _) = name
 getStreamName (TransitStream name _ _ _)   = name
 
+getArrayName (Stream _ arrayName _ _)          = arrayName
+getArrayName (StencilStream _ arrayName _ _ _) = arrayName
+getArrayName (TransitStream _ arrayName _ _)   = arrayName
+
 getAttrs typeDecl =
   case typeDecl of
     (BaseType _ _ attrs _ _) -> attrs
