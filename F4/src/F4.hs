@@ -118,10 +118,10 @@ compilerMain args = do
   let withSharedDataUpdated =
         updatePipelineSharedData driverLoopParams pipelineStages
   putStrLn (rule '+' ++ " Routing Pipes " ++ rule '+')
-  withPipes <- populatePipes pipelineStages
+  withPipes <- populatePipes withSharedDataUpdated
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarisedKernels <- scalarizeKernels withPipes
-  generateSmartCaches driverLoopParams scalarisedKernels
+  generateSmartCaches scalarisedKernels
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()

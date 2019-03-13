@@ -26,7 +26,7 @@ calculateStreamSize :: [(Int, Int)] -> Int
 calculateStreamSize = foldl (\acc (lwb, upb) -> ((upb - lwb) + 1) * acc) 1
 
 updatePipelineSharedData :: (Int, Int) -> [PipelineStage] -> [PipelineStage]
-updatePipelineSharedData (lowerBound, upperBound) pipeline = pipeline
+updatePipelineSharedData (lowerBound, upperBound) = map updateStage
  where
   updateStage :: PipelineStage -> PipelineStage
   updateStage (kernel, smartCache, memAccess) =
