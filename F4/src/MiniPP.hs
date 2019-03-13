@@ -53,7 +53,7 @@ data ArgList  p = ArgList p (Expr p)
                   deriving (Show, Functor, Typeable, Data, Eq)
 
 -}
-truncate = truncateAtLength 72
+truncate = truncateAtLength 132
 
 truncateAtLength :: Int -> String -> String
 truncateAtLength lineLength file =

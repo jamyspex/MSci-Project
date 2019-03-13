@@ -74,8 +74,7 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
-&, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -115,8 +114,7 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
-&k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -233,14 +231,11 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
                 duu = du(j,k)
                 if (wet(j,k)==1) then
                                 if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                                                un(j,k) &
-&= uu+duu
+                                                                un(j,k) = uu+duu
                                 end if
                 else
-                                if ((wet(j,k+1)==1) .and. (duu<0.0)) the&
-&n
-                                                                un(j,k) &
-&= uu+duu
+                                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                                                                un(j,k) = uu+duu
                                 end if
                 end if
                 vv = v(j,k)
@@ -248,14 +243,11 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
                 vn(j,k) = 0.0
                 if (wet(j,k)==1) then
                                 if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                                                vn(j,k) &
-&= vv+dvv
+                                                                vn(j,k) = vv+dvv
                                 end if
                 else
-                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) the&
-&n
-                                                                vn(j,k) &
-&= vv+dvv
+                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                                                                vn(j,k) = vv+dvv
                                 end if
                 end if
         end do
@@ -304,12 +296,9 @@ subroutine shapiro(j,k,wet,etan,eps,eta)
     do j = 1, ny, 1
         do k = 1, nx, 1
                 if (wet(j,k)==1) then
-                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,&
-&k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)&
-&+wet(j,k-1)*etan(j,k-1))
-                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)&
-&+wet(j-1,k)*etan(j-1,k))
+                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                                 eta(j,k) = term1+term2+term3
                 else
                                 eta(j,k) = etan(j,k)
@@ -328,8 +317,7 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: vernieuw
 Filename: ./Shallow-Water-2D/vernieuw.f95
 Source:
-subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,w&
-&et)
+subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -377,8 +365,7 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
-&ero,j,k,u,un,v,vn,wet)
+subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -433,14 +420,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 duu = du(j,k)
                 if (wet(j,k)==1) then
                                 if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                                                un(j,k) &
-&= uu+duu
+                                                                un(j,k) = uu+duu
                                 end if
                 else
-                                if ((wet(j,k+1)==1) .and. (duu<0.0)) the&
-&n
-                                                                un(j,k) &
-&= uu+duu
+                                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                                                                un(j,k) = uu+duu
                                 end if
                 end if
                 vv = v(j,k)
@@ -448,14 +432,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
                 vn(j,k) = 0.0
                 if (wet(j,k)==1) then
                                 if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                                                vn(j,k) &
-&= vv+dvv
+                                                                vn(j,k) = vv+dvv
                                 end if
                 else
-                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) the&
-&n
-                                                                vn(j,k) &
-&= vv+dvv
+                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                                                                vn(j,k) = vv+dvv
                                 end if
                 end if
         end do
@@ -482,12 +463,9 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
     do j = 1, 500, 1
         do k = 1, 500, 1
                 if (wet(j,k)==1) then
-                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,&
-&k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)&
-&+wet(j,k-1)*etan(j,k-1))
-                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)&
-&+wet(j-1,k)*etan(j-1,k))
+                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                                 eta(j,k) = term1+term2+term3
                 else
                                 eta(j,k) = etan(j,k)
@@ -551,8 +529,7 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
-&, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -592,8 +569,7 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
-&k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -662,8 +638,7 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
-&ero,j,k,u,un,v,vn,wet)
+subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -761,8 +736,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(k,1,500,1)"],[]) {
     if (wet(j,k)==1) then
-        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,&
-&k)))*etan(j,k)
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
         term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
         term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
         eta(j,k) = term1+term2+term3
@@ -802,8 +776,7 @@ This subroutine will be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
-&ero,j,k,u,un,v,vn,wet)
+subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -919,8 +892,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(k,1,500,1)"],[]) {
     if (wet(j,k)==1) then
-        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,&
-&k)))*etan(j,k)
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
         term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
         term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
         eta(j,k) = term1+term2+term3
@@ -987,8 +959,7 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
-&, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1028,8 +999,7 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
-&k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1098,8 +1068,7 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
-&ero,j,k,u,un,v,vn,wet)
+subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -1208,8 +1177,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 !    ){
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if (wet(j,k)==1) then
-        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,&
-&k)))*etan(j,k)
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
         term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
         term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
         eta(j,k) = term1+term2+term3
@@ -1273,8 +1241,7 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
-&, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1314,8 +1281,7 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
-&k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1384,8 +1350,7 @@ This subroutine will not be offloaded to the FPGA
 Subroutine name: dyn_shapiro_vernieuw_merged
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
-&ero,j,k,u,un,v,vn,wet)
+subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       real :: dt
@@ -1501,12 +1466,9 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hz&
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -1569,8 +1531,7 @@ program wave2d
       integer :: dummy
     ntot = 10000
     eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un&
-&, v, vn)
+    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
     open(90, file='debug.dat', form='formatted')
     open(10, file='eta0.dat', form='formatted')
     do j = 0, ny+1, 1
@@ -1610,8 +1571,7 @@ program wave2d
         time = REAL(n)*dt
         call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
         call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, &
-&k, u, un, v, vn, wet)
+        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
     end do
     do j = 0, ny+1, 1
         write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
@@ -1825,12 +1785,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -2050,12 +2007,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -2327,12 +2281,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -2603,12 +2554,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -3080,12 +3028,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -3704,12 +3649,9 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+&
-&wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan&
-&(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan&
-&(j-1,k))
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
                 eta(j,k) = term1+term2+term3
         else
                 eta(j,k) = etan(j,k)
@@ -3745,12 +3687,9 @@ subroutine shapiro(eps,j,k)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet_j_k==1) then
-                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet&
-&_jm1_k))*etan_j_k
-                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_&
-&km1)
-                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm&
-&1_k)
+                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
+                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
+                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
                 eta_j_k = term1+term2+term3
         else
                 eta_j_k = etan_j_k
@@ -3810,87 +3749,110 @@ end subroutine vernieuw
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- Decls for dyn_0_smart_cache 
+dyn_0_smart_cache 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+subroutine dyn_0_smart_cache
       real :: eta_read_in
       real, dimension(1:503) :: eta_buffer
       real :: eta_j_kp1
       real :: eta_jp1_k
       real :: eta_j_k
-
---------------------------------------------------------------------------------
-
-    ! F4 Comment: read pipe dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe
-    call readPipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
-    eta_buffer(502) = eta_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-
---------------------------------------------------------------------------------
-
-    !$PRAGMA unroll
-    do i = 0, i<502, 1
-        eta_buffer(i) = eta_buffer(i+1)
+      integer :: i
+      integer :: count
+      integer :: compIndex
+      integer, parameter :: nloop = 503 
+      integer, parameter :: smartCacheSize = 503 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 0 
+    do count = 0, count<nloop, 1
+        compIndex = count-maxPositiveOffset
+        !$PRAGMA unroll
+        do i = 0, i<smartCacheSize-1, 1
+                eta_buffer(i) = eta_buffer(i+1)
+        end do
+        if (count<smartCacheSize) then
+                ! F4 Comment: read pipe dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe
+                call readPipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
+                eta_buffer(502) = eta_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
+        if (compIndex>=0) then
+                ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_k__pipe
+                eta_j_k = eta_buffer(1)
+                call writePipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe
+                eta_j_kp1 = eta_buffer(503)
+                call writePipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe
+                eta_jp1_k = eta_buffer(2)
+                call writePipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
     end do
+end subroutine dyn_0_smart_cache
+
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_k__pipe
-    eta_j_k = eta_buffer(1)
-    call writePipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe
-    eta_j_kp1 = eta_buffer(503)
-    call writePipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe
-    eta_jp1_k = eta_buffer(2)
-    call writePipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- Decls for dyn_1_smart_cache 
+dyn_1_smart_cache 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+subroutine dyn_1_smart_cache
       real :: wet_read_in
       real, dimension(1:503) :: wet_buffer
       real :: wet_j_kp1
       real :: wet_jp1_k
       real :: wet_j_k
-
---------------------------------------------------------------------------------
-
-    ! F4 Comment: read pipe dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe
-    call readPipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
-    wet_buffer(502) = wet_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-
---------------------------------------------------------------------------------
-
-    !$PRAGMA unroll
-    do i = 0, i<502, 1
-        wet_buffer(i) = wet_buffer(i+1)
+      integer :: i
+      integer :: count
+      integer :: compIndex
+      integer, parameter :: nloop = 503 
+      integer, parameter :: smartCacheSize = 503 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 0 
+    do count = 0, count<nloop, 1
+        compIndex = count-maxPositiveOffset
+        !$PRAGMA unroll
+        do i = 0, i<smartCacheSize-1, 1
+                wet_buffer(i) = wet_buffer(i+1)
+        end do
+        if (count<smartCacheSize) then
+                ! F4 Comment: read pipe dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe
+                call readPipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
+                wet_buffer(502) = wet_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
+        if (compIndex>=0) then
+                ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_k__pipe
+                wet_j_k = wet_buffer(1)
+                call writePipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe
+                wet_j_kp1 = wet_buffer(503)
+                call writePipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe
+                wet_jp1_k = wet_buffer(2)
+                call writePipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
     end do
+end subroutine dyn_1_smart_cache
+
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_k__pipe
-    wet_j_k = wet_buffer(1)
-    call writePipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe
-    wet_j_kp1 = wet_buffer(503)
-    call writePipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe
-    wet_jp1_k = wet_buffer(2)
-    call writePipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- Decls for dyn_2_smart_cache 
+dyn_2_smart_cache 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+subroutine dyn_2_smart_cache
       real :: h_read_in
       real :: un_read_in
       real :: vn_read_in
@@ -3906,74 +3868,85 @@ end subroutine vernieuw
       real :: un_j_km1
       real :: vn_j_k
       real :: vn_jm1_k
-
---------------------------------------------------------------------------------
-
-    ! F4 Comment: read pipe dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe
-    call readPipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
-    h_buffer(1004) = h_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__un_j_k__pipe
-    call readPipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
-    un_buffer(1004) = un_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__vn_j_k__pipe
-    call readPipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
-    vn_buffer(1004) = vn_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-
---------------------------------------------------------------------------------
-
-    !$PRAGMA unroll
-    do i = 0, i<1004, 1
-        h_buffer(i) = h_buffer(i+1)
-        un_buffer(i) = un_buffer(i+1)
-        vn_buffer(i) = vn_buffer(i+1)
+      integer :: i
+      integer :: count
+      integer :: compIndex
+      integer, parameter :: nloop = 503 
+      integer, parameter :: smartCacheSize = 1005 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 503 
+    do count = 0, count<nloop, 1
+        compIndex = count-maxPositiveOffset
+        !$PRAGMA unroll
+        do i = 0, i<smartCacheSize-1, 1
+                h_buffer(i) = h_buffer(i+1)
+                un_buffer(i) = un_buffer(i+1)
+                vn_buffer(i) = vn_buffer(i+1)
+        end do
+        if (count<smartCacheSize) then
+                ! F4 Comment: read pipe dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe
+                call readPipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
+                h_buffer(1004) = h_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__un_j_k__pipe
+                call readPipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
+                un_buffer(1004) = un_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__vn_j_k__pipe
+                call readPipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
+                vn_buffer(1004) = vn_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
+        if (compIndex>=0) then
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_k__pipe
+                h_j_k = h_buffer(503)
+                call writePipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_km1__pipe
+                h_j_km1 = h_buffer(1)
+                call writePipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_kp1__pipe
+                h_j_kp1 = h_buffer(1005)
+                call writePipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jm1_k__pipe
+                h_jm1_k = h_buffer(502)
+                call writePipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jp1_k__pipe
+                h_jp1_k = h_buffer(504)
+                call writePipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_k__pipe
+                un_j_k = un_buffer(1005)
+                call writePipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_km1__pipe
+                un_j_km1 = un_buffer(503)
+                call writePipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_j_k__pipe
+                vn_j_k = vn_buffer(1005)
+                call writePipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe
+                vn_jm1_k = vn_buffer(1004)
+                call writePipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
     end do
+end subroutine dyn_2_smart_cache
+
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_k__pipe
-    h_j_k = h_buffer(503)
-    call writePipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_km1__pipe
-    h_j_km1 = h_buffer(1)
-    call writePipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_kp1__pipe
-    h_j_kp1 = h_buffer(1005)
-    call writePipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jm1_k__pipe
-    h_jm1_k = h_buffer(502)
-    call writePipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jp1_k__pipe
-    h_jp1_k = h_buffer(504)
-    call writePipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_k__pipe
-    un_j_k = un_buffer(1005)
-    call writePipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_km1__pipe
-    un_j_km1 = un_buffer(503)
-    call writePipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_j_k__pipe
-    vn_j_k = vn_buffer(1005)
-    call writePipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe
-    vn_jm1_k = vn_buffer(1004)
-    call writePipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- Decls for shapiro_smart_cache 
+shapiro_smart_cache 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+subroutine shapiro_smart_cache
       real :: vn_read_in
       real :: un_read_in
       real :: etan_read_in
@@ -3994,83 +3967,93 @@ end subroutine vernieuw
       real :: wet_j_k
       real :: wet_jp1_k
       real :: wet_j_km1
-
---------------------------------------------------------------------------------
-
-    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__etan_j_k__pipe
-    call readPipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
-    etan_buffer(1004) = etan_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__un_j_k__pipe
-    call readPipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
-    un_buffer(1004) = un_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__vn_j_k__pipe
-    call readPipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
-    vn_buffer(1004) = vn_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe
-    call readPipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
-    wet_buffer(1004) = wet_read_in
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-
---------------------------------------------------------------------------------
-
-    !$PRAGMA unroll
-    do i = 0, i<1004, 1
-        vn_buffer(i) = vn_buffer(i+1)
-        un_buffer(i) = un_buffer(i+1)
-        etan_buffer(i) = etan_buffer(i+1)
-        wet_buffer(i) = wet_buffer(i+1)
+      integer :: i
+      integer :: count
+      integer :: compIndex
+      integer, parameter :: nloop = 503 
+      integer, parameter :: smartCacheSize = 1005 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 503 
+    do count = 0, count<nloop, 1
+        compIndex = count-maxPositiveOffset
+        !$PRAGMA unroll
+        do i = 0, i<smartCacheSize-1, 1
+                vn_buffer(i) = vn_buffer(i+1)
+                un_buffer(i) = un_buffer(i+1)
+                etan_buffer(i) = etan_buffer(i+1)
+                wet_buffer(i) = wet_buffer(i+1)
+        end do
+        if (count<smartCacheSize) then
+                ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__etan_j_k__pipe
+                call readPipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
+                etan_buffer(1004) = etan_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__un_j_k__pipe
+                call readPipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
+                un_buffer(1004) = un_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__vn_j_k__pipe
+                call readPipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
+                vn_buffer(1004) = vn_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: read pipe shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe
+                call readPipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
+                wet_buffer(1004) = wet_read_in
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
+        if (compIndex>=0) then
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_k__pipe
+                etan_j_k = etan_buffer(503)
+                call writePipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_km1__pipe
+                etan_j_km1 = etan_buffer(1)
+                call writePipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_kp1__pipe
+                etan_j_kp1 = etan_buffer(1005)
+                call writePipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jm1_k__pipe
+                etan_jm1_k = etan_buffer(502)
+                call writePipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jp1_k__pipe
+                etan_jp1_k = etan_buffer(504)
+                call writePipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__un_j_k__pipe
+                un_j_k = un_buffer(1005)
+                call writePipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__vn_j_k__pipe
+                vn_j_k = vn_buffer(1005)
+                call writePipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_k__pipe
+                wet_j_k = wet_buffer(503)
+                call writePipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_km1__pipe
+                wet_j_km1 = wet_buffer(1)
+                call writePipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_kp1__pipe
+                wet_j_kp1 = wet_buffer(1005)
+                call writePipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jm1_k__pipe
+                wet_jm1_k = wet_buffer(502)
+                call writePipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+                ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jp1_k__pipe
+                wet_jp1_k = wet_buffer(504)
+                call writePipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
+                call memFence(CLK_CHANNEL_MEM_FENCE)
+        end if
     end do
+end subroutine shapiro_smart_cache
+
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_k__pipe
-    etan_j_k = etan_buffer(503)
-    call writePipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_km1__pipe
-    etan_j_km1 = etan_buffer(1)
-    call writePipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_kp1__pipe
-    etan_j_kp1 = etan_buffer(1005)
-    call writePipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jm1_k__pipe
-    etan_jm1_k = etan_buffer(502)
-    call writePipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jp1_k__pipe
-    etan_jp1_k = etan_buffer(504)
-    call writePipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__un_j_k__pipe
-    un_j_k = un_buffer(1005)
-    call writePipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__vn_j_k__pipe
-    vn_j_k = vn_buffer(1005)
-    call writePipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_k__pipe
-    wet_j_k = wet_buffer(503)
-    call writePipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_km1__pipe
-    wet_j_km1 = wet_buffer(1)
-    call writePipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_kp1__pipe
-    wet_j_kp1 = wet_buffer(1005)
-    call writePipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jm1_k__pipe
-    wet_jm1_k = wet_buffer(502)
-    call writePipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jp1_k__pipe
-    wet_jp1_k = wet_buffer(504)
-    call writePipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
-    call memFence(CLK_CHANNEL_MEM_FENCE)
