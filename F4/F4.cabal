@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 858fce1d36b43977df1a04a8c1ae58107478c39a129ea56e0b2fe049ac0827cb
+-- hash: 4d41330f8bce92977fecccf8bd5e3920e9dc5f97f8aafbf9dbeaea06fae8ab2f
 
 name:           F4
 version:        0.1.0.0
@@ -35,6 +35,7 @@ library
       CombineKernels
       CommandLineProcessor
       ConstantFolding
+      DetectDriverLoopSize
       F4
       F95IntrinsicFunctions
       FortranDSL

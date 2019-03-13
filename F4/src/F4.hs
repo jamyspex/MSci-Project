@@ -13,6 +13,7 @@ import           Data.Generics           (everything, everywhere, everywhereM,
                                           gmapQ, gmapT, mkM, mkQ, mkT)
 import qualified Data.Map                as DMap
 import           Debug.Trace
+import           DetectDriverLoopSize
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
@@ -95,6 +96,7 @@ compilerMain args = do
   putStrLn (rule '+' ++ " Kernels " ++ rule '+')
   let guardedMerged = srtWithGuards DMap.! mergedOffloadName
   kernels <- getKernels guardedMerged
+  driverLoopParams <- detectDriverLoopSize kernels
   let mainSubName = mainSub args
   let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
   putStrLn "BEFORE"
@@ -109,7 +111,7 @@ compilerMain args = do
   withPipes <- populatePipes pipelineStages
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarisedKernels <- scalarizeKernels withPipes
-  generateSmartCaches scalarisedKernels
+  generateSmartCaches driverLoopParams scalarisedKernels
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()

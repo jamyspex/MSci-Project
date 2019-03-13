@@ -11,20 +11,22 @@ import           LanguageFortranTools
 import           MiniPP
 import           Utils
 
-generateSmartCaches :: [PipelineStage] -> IO ()
-generateSmartCaches pipeline = mapM_ generateSmartCache smartCaches
+generateSmartCaches :: (Int, Int) -> [PipelineStage] -> IO ()
+generateSmartCaches driverLoopBounds pipeline =
+  mapM_ (generateSmartCache driverLoopBounds) smartCaches
   where
     smartCaches = mapMaybe (\(_, smartCache, _) -> smartCache) pipeline
 
-generateSmartCache :: PipelineItem SharedPipelineData -> IO (ProgUnit Anno)
-generateSmartCache smc@SmartCache {..} = do
+generateSmartCache ::
+     (Int, Int) -> PipelineItem SharedPipelineData -> IO (ProgUnit Anno)
+generateSmartCache driverLoopBounds smc@SmartCache {..} = do
   putStrLn $ rule '~' ++ name ++ " " ++ rule '~'
   putStrLn $ miniPPProgUnit smartCache
   putStrLn $ rule '-'
   return smartCache
   where
     decls = generateDecls smc
-    (body, extraDecls) = buildSmartCacheBody (0, 0) smc -- FIXME need to pass the driver loop bounds here
+    (body, extraDecls) = buildSmartCacheBody driverLoopBounds smc -- FIXME need to pass the driver loop bounds here
     smartCache = sub name (declNode (decls ++ extraDecls)) body
 
 toStringDecl :: [Decl Anno] -> String

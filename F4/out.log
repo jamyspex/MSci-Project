@@ -2060,6 +2060,7 @@ end subroutine vernieuw
  ! ==============================================
 
 
+wet_j_k is largest stream size = 252004
 BEFORE
 dyn_1 requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -3761,7 +3762,7 @@ subroutine dyn_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 503 
+      integer, parameter :: nloop = 252507 
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
@@ -3811,7 +3812,7 @@ subroutine dyn_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 503 
+      integer, parameter :: nloop = 252507 
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
@@ -3871,7 +3872,7 @@ subroutine dyn_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 503 
+      integer, parameter :: nloop = 252507 
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
@@ -3970,7 +3971,7 @@ subroutine shapiro_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 503 
+      integer, parameter :: nloop = 252507 
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
