@@ -3379,7 +3379,6 @@ digraph G {
  Scalarizing Kernels 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-hellow
 Kernel = 
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
       real :: dt

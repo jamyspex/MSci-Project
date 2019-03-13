@@ -17,11 +17,8 @@ import           SmartCacheCodeGen
 import           Utils
 
 scalarizeKernels :: [PipelineStage] -> IO [PipelineStage]
-scalarizeKernels pipeline = do
-  putStrLn "hellow"
-  mapM
-    (\(kern, sc, memAccess) -> scalarizeKernel (kern, sc, memAccess))
-    pipeline
+scalarizeKernels =
+  mapM (\(kern, sc, memAccess) -> scalarizeKernel (kern, sc, memAccess))
 
 scalarizeKernel :: PipelineStage -> IO PipelineStage
 scalarizeKernel (m@Map {..}, sc, ma) = do
@@ -65,13 +62,11 @@ deleteArrayArgs streams kernel =
 
 replaceArrayDeclarations ::
      DMap.Map String (Array, [Stream Anno]) -> ProgUnit Anno -> ProgUnit Anno
-replaceArrayDeclarations replacementMap kernel =
-  trace ("map size = " ++ show (DMap.size replacementMap)) newProgUnit
+replaceArrayDeclarations replacementMap kernel = newProgUnit
   where
     allDecls = getDecls kernel
     arrayDeclRemoved =
-      map (replaceArrayDeclWithStreamingVarDecls replacementMap) $
-      trace ("length allDecls = " ++ show (length allDecls)) allDecls
+      map (replaceArrayDeclWithStreamingVarDecls replacementMap) allDecls
     (Sub subAnno subSrcSpan returnType name args block) = kernel
     (Block blockAnno uses implicit blockSrcSpan decls body) = block
     newDecls =
@@ -82,8 +77,7 @@ replaceArrayDeclarations replacementMap kernel =
              else [decl])
         allDecls
     newDeclNode =
-      buildAstSeq (DSeq nullAnno) (NullDecl nullAnno nullSrcSpan) $
-      trace ("length newDecls = " ++ show (length newDecls)) newDecls
+      buildAstSeq (DSeq nullAnno) (NullDecl nullAnno nullSrcSpan) newDecls
     newBlock = Block blockAnno uses implicit blockSrcSpan newDeclNode body
     newProgUnit = Sub subAnno subSrcSpan returnType name args newBlock
 
