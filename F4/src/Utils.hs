@@ -339,7 +339,10 @@ newtype FPGAMemArray = FPGAMemArray
   } deriving (Show)
 
 data SharedPipelineData
-  = SPD { driverLoopSize :: Int }
+  = SPD {
+  driverLoopLowerBound :: Int,
+  driverLoopUpperBound :: Int
+        }
   | NullPipeLineData
   deriving (Show)
 
