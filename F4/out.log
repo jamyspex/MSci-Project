@@ -3821,16 +3821,32 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: read pipe dyn_0_eta_j_k_reader
-    call readPipe(eta_read_in, dyn_0_eta_j_k_reader)
+    ! F4 Comment: read pipe dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe
+    call readPipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
     eta_buffer(502) = eta_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
 
 --------------------------------------------------------------------------------
 
+    !$PRAGMA unroll
     do i = 0, i<502, 1
         eta_buffer(i) = eta_buffer(i+1)
     end do
+
+--------------------------------------------------------------------------------
+
+    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_k__pipe
+    eta_j_k = eta_buffer(1)
+    call writePipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe
+    eta_j_kp1 = eta_buffer(503)
+    call writePipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe
+    eta_jp1_k = eta_buffer(2)
+    call writePipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_1_smart_cache 
@@ -3844,16 +3860,32 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: read pipe dyn_1_wet_j_k_reader
-    call readPipe(wet_read_in, dyn_1_wet_j_k_reader)
+    ! F4 Comment: read pipe dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe
+    call readPipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
     wet_buffer(502) = wet_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
 
 --------------------------------------------------------------------------------
 
+    !$PRAGMA unroll
     do i = 0, i<502, 1
         wet_buffer(i) = wet_buffer(i+1)
     end do
+
+--------------------------------------------------------------------------------
+
+    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_k__pipe
+    wet_j_k = wet_buffer(1)
+    call writePipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe
+    wet_j_kp1 = wet_buffer(503)
+    call writePipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe
+    wet_jp1_k = wet_buffer(2)
+    call writePipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_2_smart_cache 
@@ -3877,26 +3909,66 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: read pipe dyn_2_h_j_k_reader
-    call readPipe(h_read_in, dyn_2_h_j_k_reader)
+    ! F4 Comment: read pipe dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe
+    call readPipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
     h_buffer(1004) = h_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_1
-    call readPipe(un_read_in, dyn_1)
+    ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__un_j_k__pipe
+    call readPipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
     un_buffer(1004) = un_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_1
-    call readPipe(vn_read_in, dyn_1)
+    ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__vn_j_k__pipe
+    call readPipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
     vn_buffer(1004) = vn_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
 
 --------------------------------------------------------------------------------
 
+    !$PRAGMA unroll
     do i = 0, i<1004, 1
         h_buffer(i) = h_buffer(i+1)
         un_buffer(i) = un_buffer(i+1)
         vn_buffer(i) = vn_buffer(i+1)
     end do
+
+--------------------------------------------------------------------------------
+
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_k__pipe
+    h_j_k = h_buffer(503)
+    call writePipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_km1__pipe
+    h_j_km1 = h_buffer(1)
+    call writePipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_j_kp1__pipe
+    h_j_kp1 = h_buffer(1005)
+    call writePipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jm1_k__pipe
+    h_jm1_k = h_buffer(502)
+    call writePipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__h_jp1_k__pipe
+    h_jp1_k = h_buffer(504)
+    call writePipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_k__pipe
+    un_j_k = un_buffer(1005)
+    call writePipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__un_j_km1__pipe
+    un_j_km1 = un_buffer(503)
+    call writePipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_j_k__pipe
+    vn_j_k = vn_buffer(1005)
+    call writePipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe
+    vn_jm1_k = vn_buffer(1004)
+    call writePipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for shapiro_smart_cache 
@@ -3925,28 +3997,80 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-    ! F4 Comment: read pipe dyn_2
-    call readPipe(etan_read_in, dyn_2)
+    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__etan_j_k__pipe
+    call readPipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
     etan_buffer(1004) = etan_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_2
-    call readPipe(un_read_in, dyn_2)
+    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__un_j_k__pipe
+    call readPipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
     un_buffer(1004) = un_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe dyn_2
-    call readPipe(vn_read_in, dyn_2)
+    ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__vn_j_k__pipe
+    call readPipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
     vn_buffer(1004) = vn_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
-    ! F4 Comment: read pipe shapiro_wet_j_k_reader
-    call readPipe(wet_read_in, shapiro_wet_j_k_reader)
+    ! F4 Comment: read pipe shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe
+    call readPipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
     wet_buffer(1004) = wet_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
 
 --------------------------------------------------------------------------------
 
+    !$PRAGMA unroll
     do i = 0, i<1004, 1
         vn_buffer(i) = vn_buffer(i+1)
         un_buffer(i) = un_buffer(i+1)
         etan_buffer(i) = etan_buffer(i+1)
         wet_buffer(i) = wet_buffer(i+1)
     end do
+
+--------------------------------------------------------------------------------
+
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_k__pipe
+    etan_j_k = etan_buffer(503)
+    call writePipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_km1__pipe
+    etan_j_km1 = etan_buffer(1)
+    call writePipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_j_kp1__pipe
+    etan_j_kp1 = etan_buffer(1005)
+    call writePipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jm1_k__pipe
+    etan_jm1_k = etan_buffer(502)
+    call writePipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__etan_jp1_k__pipe
+    etan_jp1_k = etan_buffer(504)
+    call writePipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__un_j_k__pipe
+    un_j_k = un_buffer(1005)
+    call writePipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__vn_j_k__pipe
+    vn_j_k = vn_buffer(1005)
+    call writePipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_k__pipe
+    wet_j_k = wet_buffer(503)
+    call writePipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_km1__pipe
+    wet_j_km1 = wet_buffer(1)
+    call writePipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_j_kp1__pipe
+    wet_j_kp1 = wet_buffer(1005)
+    call writePipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jm1_k__pipe
+    wet_jm1_k = wet_buffer(502)
+    call writePipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: write pipe shapiro_smart_cache__shapiro__wet_jp1_k__pipe
+    wet_jp1_k = wet_buffer(504)
+    call writePipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
+    call memFence(CLK_CHANNEL_MEM_FENCE)
