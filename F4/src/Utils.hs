@@ -482,9 +482,9 @@ getStreamName (Stream name _ _ _)          = name
 getStreamName (StencilStream name _ _ _ _) = name
 getStreamName (TransitStream name _ _ _)   = name
 
-getArrayName (Stream _ arrayName _ _)          = arrayName
-getArrayName (StencilStream _ arrayName _ _ _) = arrayName
-getArrayName (TransitStream _ arrayName _ _)   = arrayName
+getArrayNameFromStream (Stream _ arrayName _ _)          = arrayName
+getArrayNameFromStream (StencilStream _ arrayName _ _ _) = arrayName
+getArrayNameFromStream (TransitStream _ arrayName _ _)   = arrayName
 
 getAttrs typeDecl =
   case typeDecl of
@@ -546,7 +546,7 @@ readIndex :: String -> Int
 readIndex = round . read
 
 data Array = Array
-  { varName         :: VarName Anno
+  { arrayVarName    :: VarName Anno
   , arrDimensions   :: Int
   , dimensionRanges :: [(Int, Int)]
   } deriving (Show)
@@ -560,7 +560,7 @@ arrayExprQuery arrays expr =
     arrayNames =
       map
         (\array ->
-           let (VarName _ name) = varName array
+           let (VarName _ name) = arrayVarName array
             in name)
         arrays
 
@@ -640,7 +640,7 @@ arrayFromDecl = arrayFromDeclWithRanges False
 arrayFromDeclWithRanges :: Bool -> Decl Anno -> Array
 arrayFromDeclWithRanges withRanges decl@(Decl _ _ _ typeDecl) =
   Array
-    { varName = name
+    { arrayVarName = name
     , arrDimensions = numberOfDimensions
     , dimensionRanges =
         if withRanges
@@ -734,8 +734,8 @@ nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
 -- function takes a list of loop variables and an array access expr and then returns a list of tuples of
 -- the form (array name, loop variable name, maybe (position loop var is used in), nothing if it is not used)
 getLoopIndexPosition :: [String] -> Expr Anno -> [(String, String, Maybe Int)]
-getLoopIndexPosition varNames (Var _ _ ((VarName _ arrayName, indexList):_)) =
-  map (\name -> (arrayName, name, getIndexPos name indexList 0)) varNames
+getLoopIndexPosition arrayVarNames (Var _ _ ((VarName _ arrayName, indexList):_)) =
+  map (\name -> (arrayName, name, getIndexPos name indexList 0)) arrayVarNames
   where
     getIndexPos :: String -> [Expr Anno] -> Int -> Maybe Int
     getIndexPos loopVariableName [] _ = Nothing

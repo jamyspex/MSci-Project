@@ -67,7 +67,7 @@ createStencilRecords arrays stencils =
   map (uncurry createOneStencilRecord) arrayDeclUsagePairs
   where
     arrayDeclMapItems =
-      map (\array -> (getNameFromVarName $ varName array, array)) arrays
+      map (\array -> (getNameFromVarName $ arrayVarName array, array)) arrays
     arrayDeclMap = DMap.fromList arrayDeclMapItems
     stencilMapItems =
       map (\stencils -> (getArrayName $ head stencils, stencils)) stencils

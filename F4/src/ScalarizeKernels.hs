@@ -99,7 +99,7 @@ matchStreamingVarsToArrayDecls streams arrays = matched
       map (\s@(Stream _ arrayName _ _) -> (arrayName, s)) streams
     arrayNameToArrayMap =
       DMap.fromList $
-      map (\arr -> ((getNameFromVarName . varName) arr, arr)) arrays
+      map (\arr -> ((getNameFromVarName . arrayVarName) arr, arr)) arrays
     matched =
       DMap.intersectionWith
         (\arr stream -> (arr, stream))

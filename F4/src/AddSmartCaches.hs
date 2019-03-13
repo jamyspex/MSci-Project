@@ -220,7 +220,7 @@ getLoopVarPositions stencilArrayName Kernel {..} =
     stencilArray =
       filter
         (\arr ->
-           let (VarName _ name) = varName arr
+           let (VarName _ name) = arrayVarName arr
             in name == stencilArrayName) $
       map arrayFromDecl $ getArrayDecls body
     arrayAccess = head $ getArrayReads stencilArray (getSubBody body)

@@ -3821,9 +3821,16 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
+    ! F4 Comment: read pipe dyn_0_eta_j_k_reader
     call readPipe(eta_read_in, dyn_0_eta_j_k_reader)
     eta_buffer(502) = eta_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+
+--------------------------------------------------------------------------------
+
+    do i = 0, i<502, 1
+        eta_buffer(i) = eta_buffer(i+1)
+    end do
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_1_smart_cache 
@@ -3837,9 +3844,16 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
+    ! F4 Comment: read pipe dyn_1_wet_j_k_reader
     call readPipe(wet_read_in, dyn_1_wet_j_k_reader)
     wet_buffer(502) = wet_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+
+--------------------------------------------------------------------------------
+
+    do i = 0, i<502, 1
+        wet_buffer(i) = wet_buffer(i+1)
+    end do
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for dyn_2_smart_cache 
@@ -3863,15 +3877,26 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
+    ! F4 Comment: read pipe dyn_2_h_j_k_reader
     call readPipe(h_read_in, dyn_2_h_j_k_reader)
     h_buffer(1004) = h_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: read pipe dyn_1
     call readPipe(un_read_in, dyn_1)
     un_buffer(1004) = un_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: read pipe dyn_1
     call readPipe(vn_read_in, dyn_1)
     vn_buffer(1004) = vn_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+
+--------------------------------------------------------------------------------
+
+    do i = 0, i<1004, 1
+        h_buffer(i) = h_buffer(i+1)
+        un_buffer(i) = un_buffer(i+1)
+        vn_buffer(i) = vn_buffer(i+1)
+    end do
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Decls for shapiro_smart_cache 
@@ -3900,15 +3925,28 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
+    ! F4 Comment: read pipe dyn_2
     call readPipe(etan_read_in, dyn_2)
     etan_buffer(1004) = etan_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: read pipe dyn_2
     call readPipe(un_read_in, dyn_2)
     un_buffer(1004) = un_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: read pipe dyn_2
     call readPipe(vn_read_in, dyn_2)
     vn_buffer(1004) = vn_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+    ! F4 Comment: read pipe shapiro_wet_j_k_reader
     call readPipe(wet_read_in, shapiro_wet_j_k_reader)
     wet_buffer(1004) = wet_read_in
     call memFence(CLK_CHANNEL_MEM_FENCE)
+
+--------------------------------------------------------------------------------
+
+    do i = 0, i<1004, 1
+        vn_buffer(i) = vn_buffer(i+1)
+        un_buffer(i) = un_buffer(i+1)
+        etan_buffer(i) = etan_buffer(i+1)
+        wet_buffer(i) = wet_buffer(i+1)
+    end do
