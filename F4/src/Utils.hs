@@ -334,8 +334,9 @@ printAllStreams = concatMap (\s -> "\t" ++ printStream s ++ "\n")
 -- -- will likely directly map to a pipe in OpenCL
 -- data Stream = Stream String StreamValueType deriving Show
 -- data StreamValueType = Float deriving Show
-newtype FPGAMemArray = FPGAMemArray
-  { arrayName :: String
+data FPGAMemArray = FPGAMemArray
+  { arrayName :: String,
+    dimensions :: [(Int, Int)]
   } deriving (Show)
 
 data SharedPipelineData

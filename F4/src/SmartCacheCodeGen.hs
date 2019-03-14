@@ -94,7 +94,11 @@ generateDecls smache@SmartCache {..} =
 --
 generatePipeReads :: PipelineItem SharedPipelineData -> [Fortran Anno]
 generatePipeReads SmartCache {..} = concatMap
-  (uncurry $ generatePipeRead assignmentIdx)
+  (\(pipeName, arrayName) -> generatePipeRead assignmentIdx
+                                              pipeName
+                                              (arrayName ++ "_read_in")
+                                              (arrayName ++ "_buffer")
+  )
   toProcess
  where
   toProcess =
@@ -124,7 +128,7 @@ generatePipeWrites SmartCache {..} = fortran
   fortran =
     concatMap
         (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx))) ->
-          generatePipeWrite bufIdx streamName arrayName pipeName
+          generatePipeWrite bufIdx streamName (arrayName ++ "_buffer") pipeName
         )
       $ DMap.elems combined
   pipesMap = DMap.fromList
@@ -163,52 +167,26 @@ generateReadInVars :: PipelineItem SharedPipelineData -> [Decl Anno]
 generateReadInVars SmartCache {..} = map generateReadInVar cacheLines
  where
   generateReadInVar :: SmartCacheItem -> Decl Anno
-  generateReadInVar SmartCacheItem {..} = Decl
-    nullAnno
-    nullSrcSpan
-    [(var readInName, nullExpr, Nothing)]
-    readInType
+  generateReadInVar SmartCacheItem {..} = typedDecl
+    readInName
+    (getFortranTypeForStream inputStream)
    where
-    readInName = arrayName ++ "_read_in"
-    readInType = BaseType nullAnno
-                          (getFortranTypeForStream streamValueType)
-                          []
-                          nullExpr
-                          nullExpr
+    readInName                           = arrayName ++ "_read_in"
     Stream _ arrayName streamValueType _ = inputStream
 
 generateOutVarDecls :: SmartCacheItem -> [Decl Anno]
 generateOutVarDecls SmartCacheItem {..} = map
-  (\name -> Decl nullAnno nullSrcSpan [(var name, nullExpr, Nothing)] streamType
-  )
+  (\name -> typedDecl name (getFortranTypeForStream inputStream))
   outStreamNames
- where
-  outStreamNames = map fst outputStreamNamesAndBufferIndex
-  streamType     = BaseType nullAnno
-                            (getFortranTypeForStream streamValueType)
-                            []
-                            nullExpr
-                            nullExpr
-  Stream _ _ streamValueType _ = inputStream
+  where outStreamNames = map fst outputStreamNamesAndBufferIndex
 
 generateBufferDecls :: PipelineItem SharedPipelineData -> [Decl Anno]
 generateBufferDecls SmartCache {..} = map generateBufferDecl cacheLines
  where
   generateBufferDecl :: SmartCacheItem -> Decl Anno
-  generateBufferDecl SmartCacheItem {..} = Decl
-    nullAnno
-    nullSrcSpan
-    [(var bufName, nullExpr, Nothing)]
-    bufType
-   where
-    bufName = arrayName ++ "_buffer"
-    bufType = BaseType nullAnno
-                       (getFortranTypeForStream streamValueType)
-                       [Dimension nullAnno [(con 1, con smartCacheSize)]]
-                       nullExpr
-                       nullExpr
-    Stream _ arrayName streamValueType _ = inputStream
+  generateBufferDecl SmartCacheItem {..} = bufferDecl
+    (arrayName ++ "_buffer")
+    [(1, smartCacheSize)]
+    (getFortranTypeForStream inputStream)
+    where Stream _ arrayName streamValueType _ = inputStream
 
-getFortranTypeForStream streamValueType = case streamValueType of
-  Float -> Real nullAnno
-  _     -> Integer nullAnno

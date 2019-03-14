@@ -2,6 +2,7 @@
 
 module F4 where
 
+import           MemoryAccessCodeGen
 import           AddKernelLoopGuards
 import           AddMemoryAccessKernels
 import           AddPipesToKernels
@@ -122,6 +123,7 @@ compilerMain args = do
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarisedKernels <- scalarizeKernels withPipes
   generateSmartCaches scalarisedKernels
+  generateMemoryAccess scalarisedKernels
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()

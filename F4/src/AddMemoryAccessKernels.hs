@@ -123,7 +123,10 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
       then []
       else
         [ MemoryReader
-            { memToOutputStreams = [(FPGAMemArray streamName, stream)]
+            { memToOutputStreams = [ ( FPGAMemArray streamName dimensions
+                                     , stream
+                                     )
+                                   ]
             , nextStage          = NullItem
             , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
             , readPipes          = []
@@ -175,7 +178,7 @@ addMemoryWriter pipeline = init pipeline ++ [updatedFinalStage]
 buildMemoryWriter :: String -> [Stream Anno] -> PipelineItem SharedPipelineData
 buildMemoryWriter kernelName streams = MemoryWriter
   { inputStreamsToMem = map
-    (\s@(Stream name _ valueType dims) -> (s, FPGAMemArray name))
+    (\s@(Stream name _ valueType dims) -> (s, FPGAMemArray name dims))
     streams
   , name              = kernelName ++ "_output_writer"
   , readPipes         = []
