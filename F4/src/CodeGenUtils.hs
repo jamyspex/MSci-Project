@@ -1,37 +1,29 @@
 module CodeGenUtils where
 
-import           MiniPP
 import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
+import           MiniPP
 import           Utils
 
-
-data KernelCallingData = KCD { argPositions :: [( Int, String)] } | NullCD deriving (Show)
+data KernelCallingData
+  = KCD { argPositions :: [(Int, String)] }
+  | NullCD
+  deriving (Show)
 
 generatePipeWriteCon :: Int -> String -> String -> String -> [Fortran Anno]
 generatePipeWriteCon sourceIdx = generatePipeWrite (con sourceIdx)
-  -- [ comment ("write pipe " ++ pipeName)
-  -- , assign (var variableName) (arrayVar bufferName [con sourceIdx])
-  -- , call "writePipe" [pipeName, variableName]
-  -- , call "memFence"  ["CLK_CHANNEL_MEM_FENCE"]
-  -- ]
 
 generatePipeWrite :: Expr Anno -> String -> String -> String -> [Fortran Anno]
 generatePipeWrite bufferIdx variableName bufferName pipeName =
   [ comment ("write pipe " ++ pipeName)
   , assign (var variableName) (arrayVar bufferName [bufferIdx])
   , call "writePipe" [pipeName, variableName]
-  , call "memFence"  ["CLK_CHANNEL_MEM_FENCE"]
+  , call "memFence" ["CLK_CHANNEL_MEM_FENCE"]
   ]
 
 generatePipeReadCon :: Int -> String -> String -> String -> [Fortran Anno]
 generatePipeReadCon assignmentIdx = generatePipeRead (con assignmentIdx)
-    -- [ comment ("read pipe " ++ pipeName)
-    -- , call "readPipe" [pipeName, readInVarName]
-    -- , assign (arrayVar bufferName [con assignmentIdx]) (var readInVarName)
-    -- , call "memFence" ["CLK_CHANNEL_MEM_FENCE"]
-    -- ]
 
 generatePipeRead :: Expr Anno -> String -> String -> String -> [Fortran Anno]
 generatePipeRead assignmentIdx pipeName readInVarName bufferName =
