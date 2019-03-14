@@ -4309,6 +4309,7 @@ KCD {argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")]}
 --------------------------------------------------------------------------------
 
 subroutine dyn_0(dt,dx,dy,g)
+      integer, parameter :: nloop = 252004 
       real :: dt
       real :: du_j_k
       real :: dv_j_k
@@ -4327,14 +4328,10 @@ subroutine dyn_0(dt,dx,dy,g)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call readPipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
-! OpenCLStencil (
-!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
-!        ){
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
                 du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
                 dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
-        end if        
-!}
+        end if
         call writePipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call writePipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
@@ -4353,6 +4350,7 @@ KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")]}
 --------------------------------------------------------------------------------
 
 subroutine dyn_1
+      integer, parameter :: nloop = 252004 
       real :: du_j_k
       real :: duu
       real :: dv_j_k
@@ -4383,9 +4381,6 @@ subroutine dyn_1
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call readPipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
-! OpenCLStencil (
-!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
-!        ){
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
                 un_j_k = 0.0
                 uu = u_j_k
@@ -4411,8 +4406,7 @@ subroutine dyn_1
                                                                 vn_j_k = vv+dvv
                                 end if
                 end if
-        end if        
-!}
+        end if
         call writePipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_j_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call writePipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_j_k)
@@ -4431,6 +4425,7 @@ KCD {argPositions = []}
 --------------------------------------------------------------------------------
 
 subroutine dyn_2(dt,dx,dy)
+      integer, parameter :: nloop = 252004 
       real :: dt
       real :: dx
       real :: dy
@@ -4480,11 +4475,6 @@ subroutine dyn_2(dt,dx,dy)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call readPipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
-! OpenCLStencil (
-!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	2 point stencil on 2D array un: [[0,0],[0,-1]]
-!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
-!        ){
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
                 hep = 0.5*(un_j_k+abs(un_j_k))*h_j_k
                 hen = 0.5*(un_j_k-abs(un_j_k))*h_j_kp1
@@ -4499,8 +4489,7 @@ subroutine dyn_2(dt,dx,dy)
                 hsn = 0.5*(vn_jm1_k-abs(vn_jm1_k))*h_j_k
                 hvs = hsp+hsn
                 etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-        end if        
-!}
+        end if
         call writePipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_j_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call writePipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_j_k)
@@ -4521,6 +4510,7 @@ KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy")]}
 --------------------------------------------------------------------------------
 
 subroutine shapiro(eps)
+      integer, parameter :: nloop = 252004 
       real :: eps
       real, intent(In) :: eta_j_k
       real :: etan_jm1_k
@@ -4563,10 +4553,6 @@ subroutine shapiro(eps)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call readPipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
-! OpenCLStencil (
-!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!        ){
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
                 if (wet_j_k==1) then
                                 term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
@@ -4576,8 +4562,7 @@ subroutine shapiro(eps)
                 else
                                 eta_j_k = etan_j_k
                 end if
-        end if        
-!}
+        end if
         call writePipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
         call memFence(CLK_CHANNEL_MEM_FENCE)
         call writePipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
@@ -4598,6 +4583,7 @@ KCD {argPositions = [(0,"eps")]}
 --------------------------------------------------------------------------------
 
 subroutine vernieuw(hmin)
+      integer, parameter :: nloop = 252004 
       real, intent(In) :: eta_j_k
       real, intent(InOut) :: h_j_k
       real, intent(In) :: hmin
