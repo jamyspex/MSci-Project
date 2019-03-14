@@ -4059,8 +4059,6 @@ end subroutine shapiro_smart_cache
 
 
 --------------------------------------------------------------------------------
-dyn_0_eta_j_k_reader
---------------------------------------------------------------------------------
 
 subroutine dyn_0_eta_j_k_reader(eta)
       real, dimension(1:252004) :: eta
@@ -4083,8 +4081,6 @@ KCD {argPositions = [(0,"eta")]}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---------------------------------------------------------------------------------
-dyn_1_wet_j_k_reader
 --------------------------------------------------------------------------------
 
 subroutine dyn_1_wet_j_k_reader(wet)
@@ -4109,8 +4105,6 @@ KCD {argPositions = [(0,"wet")]}
 
 
 --------------------------------------------------------------------------------
-dyn_1_u_j_k_reader
---------------------------------------------------------------------------------
 
 subroutine dyn_1_u_j_k_reader(u)
       real, dimension(1:252004) :: u
@@ -4133,8 +4127,6 @@ KCD {argPositions = [(0,"u")]}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---------------------------------------------------------------------------------
-dyn_1_v_j_k_reader
 --------------------------------------------------------------------------------
 
 subroutine dyn_1_v_j_k_reader(v)
@@ -4159,8 +4151,6 @@ KCD {argPositions = [(0,"v")]}
 
 
 --------------------------------------------------------------------------------
-dyn_2_h_j_k_reader
---------------------------------------------------------------------------------
 
 subroutine dyn_2_h_j_k_reader(h)
       real, dimension(1:252004) :: h
@@ -4183,8 +4173,6 @@ KCD {argPositions = [(0,"h")]}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---------------------------------------------------------------------------------
-dyn_2_eta_j_k_reader
 --------------------------------------------------------------------------------
 
 subroutine dyn_2_eta_j_k_reader(eta)
@@ -4209,8 +4197,6 @@ KCD {argPositions = [(0,"eta")]}
 
 
 --------------------------------------------------------------------------------
-shapiro_wet_j_k_reader
---------------------------------------------------------------------------------
 
 subroutine shapiro_wet_j_k_reader(wet)
       real, dimension(1:252004) :: wet
@@ -4233,8 +4219,6 @@ KCD {argPositions = [(0,"wet")]}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---------------------------------------------------------------------------------
-vernieuw_h_j_k_reader
 --------------------------------------------------------------------------------
 
 subroutine vernieuw_h_j_k_reader(h)
@@ -4259,8 +4243,6 @@ KCD {argPositions = [(0,"h")]}
 
 
 --------------------------------------------------------------------------------
-vernieuw_hzero_j_k_reader
---------------------------------------------------------------------------------
 
 subroutine vernieuw_hzero_j_k_reader(hzero)
       real, dimension(1:252004) :: hzero
@@ -4279,6 +4261,47 @@ end subroutine vernieuw_hzero_j_k_reader
 --------------------------------------------------------------------------------
 
 KCD {argPositions = [(0,"hzero")]}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+
+subroutine vernieuw_output_writer(h,u,v,wet)
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+      real :: h_j_k_read_in
+      real, dimension(1:252004) :: h
+      real :: u_j_k_read_in
+      real, dimension(1:252004) :: u
+      real :: v_j_k_read_in
+      real, dimension(1:252004) :: v
+      real :: wet_j_k_read_in
+      real, dimension(1:252004) :: wet
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: read pipe vernieuw__vernieuw_output_writer__h_j_k__pipe
+        call readPipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k_read_in)
+        h(index) = h_j_k_read_in
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+        ! F4 Comment: read pipe vernieuw__vernieuw_output_writer__u_j_k__pipe
+        call readPipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k_read_in)
+        u(index) = u_j_k_read_in
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+        ! F4 Comment: read pipe vernieuw__vernieuw_output_writer__v_j_k__pipe
+        call readPipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k_read_in)
+        v(index) = v_j_k_read_in
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+        ! F4 Comment: read pipe vernieuw__vernieuw_output_writer__wet_j_k__pipe
+        call readPipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k_read_in)
+        wet(index) = wet_j_k_read_in
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine vernieuw_output_writer
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
