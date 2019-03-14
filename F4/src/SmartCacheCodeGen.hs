@@ -25,7 +25,7 @@ generateSmartCache smc@SmartCache {..} = do
  where
   decls              = generateDecls smc
   (body, extraDecls) = buildSmartCacheBody smc -- FIXME need to pass the driver loop bounds here
-  smartCache         = sub name (declNode (decls ++ extraDecls)) body
+  smartCache         = sub name (declNode (decls ++ extraDecls)) body []
 
 toStringDecl :: [Decl Anno] -> String
 toStringDecl decls =
@@ -40,7 +40,7 @@ buildSmartCacheBody
   :: PipelineItem SharedPipelineData -> (Fortran Anno, [Decl Anno])
 buildSmartCacheBody smc@SmartCache {..} =
   ( for mainLoopVarName
-        driverLoopLowerBound
+        (driverLoopLowerBound + 1)
         (var mainLoopBoundName)
         mainLoopBody
   , requiredDecls ++ controlDecls
@@ -94,10 +94,10 @@ generateDecls smache@SmartCache {..} =
 --
 generatePipeReads :: PipelineItem SharedPipelineData -> [Fortran Anno]
 generatePipeReads SmartCache {..} = concatMap
-  (\(pipeName, arrayName) -> generatePipeRead assignmentIdx
-                                              pipeName
-                                              (arrayName ++ "_read_in")
-                                              (arrayName ++ "_buffer")
+  (\(pipeName, arrayName) -> generatePipeReadCon assignmentIdx
+                                                 pipeName
+                                                 (arrayName ++ "_read_in")
+                                                 (arrayName ++ "_buffer")
   )
   toProcess
  where
@@ -107,7 +107,7 @@ generatePipeReads SmartCache {..} = concatMap
           (name, getArrayNameFromStream inputStream)
         )
       $ DMap.elems combined
-  assignmentIdx = smartCacheSize - 1
+  assignmentIdx = smartCacheSize
   pipesMap      = DMap.fromList
     $ map (\p@(Pipe _ _ _ _ stream) -> (getStreamName stream, p)) readPipes
   smartCacheItemMap = DMap.fromList $ map
@@ -118,9 +118,7 @@ generatePipeReads SmartCache {..} = concatMap
                                    smartCacheItemMap
 
 generatePipeWriteBlock :: PipelineItem SharedPipelineData -> Fortran Anno
-generatePipeWriteBlock smartCache =
-  buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
-    $ generatePipeWrites smartCache
+generatePipeWriteBlock smartCache = block $ generatePipeWrites smartCache
 
 generatePipeWrites :: PipelineItem SharedPipelineData -> [Fortran Anno]
 generatePipeWrites SmartCache {..} = fortran
@@ -128,7 +126,10 @@ generatePipeWrites SmartCache {..} = fortran
   fortran =
     concatMap
         (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx))) ->
-          generatePipeWrite bufIdx streamName (arrayName ++ "_buffer") pipeName
+          generatePipeWriteCon bufIdx
+                               streamName
+                               (arrayName ++ "_buffer")
+                               pipeName
         )
       $ DMap.elems combined
   pipesMap = DMap.fromList
@@ -147,7 +148,7 @@ generateShiftLoop
   :: PipelineItem SharedPipelineData -> String -> ([Fortran Anno], [Decl Anno])
 generateShiftLoop SmartCache {..} smcSizeVariableName =
   ( [ pragma "unroll"
-    , for loopVarName 0 (minus (var smcSizeVariableName) (con 1)) loopBody
+    , for loopVarName 1 (minus (var smcSizeVariableName) (con 1)) loopBody
     ]
   , [intDecl loopVarName]
   )

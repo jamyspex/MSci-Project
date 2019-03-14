@@ -4,16 +4,28 @@ import           Language.Fortran
 import           LanguageFortranTools
 import           Utils
 
-for loopVar initial lhs = For nullAnno
-                              nullSrcSpan
-                              (varName loopVar)
-                              (con initial)
-                              (lessThan (var loopVar) lhs)
-                              (con 1)
+for = for' lessThanEq
+
+for'
+  :: (Expr Anno -> Expr Anno -> Expr Anno)
+  -> String
+  -> Int
+  -> Expr Anno
+  -> Fortran Anno
+  -> Fortran Anno
+for' comparision loopVar initial lhs = For nullAnno
+                                           nullSrcSpan
+                                           (varName loopVar)
+                                           (con initial)
+                                           (comparision (var loopVar) lhs)
+                                           (con 1)
+forLT = for' lessThan
 
 plus = Bin nullAnno nullSrcSpan (Plus nullAnno)
 
 minus = Bin nullAnno nullSrcSpan (Minus nullAnno)
+
+lessThanEq = Bin nullAnno nullSrcSpan (RelLE nullAnno)
 
 lessThan = Bin nullAnno nullSrcSpan (RelLT nullAnno)
 
@@ -27,12 +39,18 @@ argName = ArgName nullAnno
 
 block = buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
 
-sub name decls body = Sub nullAnno
-                          nullSrcSpan
-                          Nothing
-                          (SubName nullAnno name)
-                          (Arg nullAnno (NullArg nullAnno) nullSrcSpan)
-                          block
+sub name decls body args = Sub
+  nullAnno
+  nullSrcSpan
+  Nothing
+  (SubName nullAnno name)
+  (if null args
+    then Arg nullAnno (NullArg nullAnno) nullSrcSpan
+    else Arg nullAnno
+             (buildAstSeq (ASeq nullAnno) (NullArg nullAnno) args)
+             nullSrcSpan
+  )
+  block
  where
   block = Block nullAnno
                 (UseBlock (UseNil nullAnno) NoSrcLoc)

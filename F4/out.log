@@ -3765,16 +3765,16 @@ subroutine dyn_0_smart_cache
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
-    do count = 0, count<nloop, 1
+    do count = 1, count<=nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
-        do i = 0, i<smartCacheSize-1, 1
+        do i = 1, i<=smartCacheSize-1, 1
                 eta_buffer(i) = eta_buffer(i+1)
         end do
         if (count<smartCacheSize) then
                 ! F4 Comment: read pipe dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe
                 call readPipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
-                eta_buffer(502) = eta_read_in
+                eta_buffer(503) = eta_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
         end if
         if (compIndex>=0) then
@@ -3815,16 +3815,16 @@ subroutine dyn_1_smart_cache
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
-    do count = 0, count<nloop, 1
+    do count = 1, count<=nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
-        do i = 0, i<smartCacheSize-1, 1
+        do i = 1, i<=smartCacheSize-1, 1
                 wet_buffer(i) = wet_buffer(i+1)
         end do
         if (count<smartCacheSize) then
                 ! F4 Comment: read pipe dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe
                 call readPipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(502) = wet_read_in
+                wet_buffer(503) = wet_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
         end if
         if (compIndex>=0) then
@@ -3875,10 +3875,10 @@ subroutine dyn_2_smart_cache
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
-    do count = 0, count<nloop, 1
+    do count = 1, count<=nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
-        do i = 0, i<smartCacheSize-1, 1
+        do i = 1, i<=smartCacheSize-1, 1
                 h_buffer(i) = h_buffer(i+1)
                 un_buffer(i) = un_buffer(i+1)
                 vn_buffer(i) = vn_buffer(i+1)
@@ -3886,15 +3886,15 @@ subroutine dyn_2_smart_cache
         if (count<smartCacheSize) then
                 ! F4 Comment: read pipe dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe
                 call readPipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
-                h_buffer(1004) = h_read_in
+                h_buffer(1005) = h_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
                 ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__un_j_k__pipe
                 call readPipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1004) = un_read_in
+                un_buffer(1005) = un_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
                 ! F4 Comment: read pipe dyn_1__dyn_2_smart_cache__vn_j_k__pipe
                 call readPipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1004) = vn_read_in
+                vn_buffer(1005) = vn_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
         end if
         if (compIndex>=0) then
@@ -3974,10 +3974,10 @@ subroutine shapiro_smart_cache
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
-    do count = 0, count<nloop, 1
+    do count = 1, count<=nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
-        do i = 0, i<smartCacheSize-1, 1
+        do i = 1, i<=smartCacheSize-1, 1
                 vn_buffer(i) = vn_buffer(i+1)
                 un_buffer(i) = un_buffer(i+1)
                 etan_buffer(i) = etan_buffer(i+1)
@@ -3986,19 +3986,19 @@ subroutine shapiro_smart_cache
         if (count<smartCacheSize) then
                 ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__etan_j_k__pipe
                 call readPipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
-                etan_buffer(1004) = etan_read_in
+                etan_buffer(1005) = etan_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
                 ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__un_j_k__pipe
                 call readPipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1004) = un_read_in
+                un_buffer(1005) = un_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
                 ! F4 Comment: read pipe dyn_2__shapiro_smart_cache__vn_j_k__pipe
                 call readPipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1004) = vn_read_in
+                vn_buffer(1005) = vn_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
                 ! F4 Comment: read pipe shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe
                 call readPipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(1004) = wet_read_in
+                wet_buffer(1005) = wet_read_in
                 call memFence(CLK_CHANNEL_MEM_FENCE)
         end if
         if (compIndex>=0) then
@@ -4062,8 +4062,23 @@ end subroutine shapiro_smart_cache
 dyn_0_eta_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_0_eta_j_k_reader(eta)
       real, dimension(1:252004) :: eta
       real :: eta_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe
+        eta_j_k = eta(index)
+        call writePipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_0_eta_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"eta")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4072,8 +4087,23 @@ dyn_0_eta_j_k_reader
 dyn_1_wet_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_1_wet_j_k_reader(wet)
       real, dimension(1:252004) :: wet
       real :: wet_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe
+        wet_j_k = wet(index)
+        call writePipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_1_wet_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"wet")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4082,8 +4112,23 @@ dyn_1_wet_j_k_reader
 dyn_1_u_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_1_u_j_k_reader(u)
       real, dimension(1:252004) :: u
       real :: u_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe
+        u_j_k = u(index)
+        call writePipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_1_u_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"u")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4092,8 +4137,23 @@ dyn_1_u_j_k_reader
 dyn_1_v_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_1_v_j_k_reader(v)
       real, dimension(1:252004) :: v
       real :: v_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe
+        v_j_k = v(index)
+        call writePipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_1_v_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"v")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4102,8 +4162,23 @@ dyn_1_v_j_k_reader
 dyn_2_h_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_2_h_j_k_reader(h)
       real, dimension(1:252004) :: h
       real :: h_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe
+        h_j_k = h(index)
+        call writePipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_2_h_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"h")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4112,8 +4187,23 @@ dyn_2_h_j_k_reader
 dyn_2_eta_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine dyn_2_eta_j_k_reader(eta)
       real, dimension(1:252004) :: eta
       real :: eta_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe
+        eta_j_k = eta(index)
+        call writePipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine dyn_2_eta_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"eta")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4122,8 +4212,23 @@ dyn_2_eta_j_k_reader
 shapiro_wet_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine shapiro_wet_j_k_reader(wet)
       real, dimension(1:252004) :: wet
       real :: wet_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe
+        wet_j_k = wet(index)
+        call writePipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine shapiro_wet_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"wet")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4132,8 +4237,23 @@ shapiro_wet_j_k_reader
 vernieuw_h_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine vernieuw_h_j_k_reader(h)
       real, dimension(1:252004) :: h
       real :: h_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe
+        h_j_k = h(index)
+        call writePipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine vernieuw_h_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"h")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4142,8 +4262,23 @@ vernieuw_h_j_k_reader
 vernieuw_hzero_j_k_reader
 --------------------------------------------------------------------------------
 
+subroutine vernieuw_hzero_j_k_reader(hzero)
       real, dimension(1:252004) :: hzero
       real :: hzero_j_k
+      integer, parameter :: nLoop = 252004 
+      integer :: index
+    do index = 1, index<=nLoop, 1
+        ! F4 Comment: write pipe vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe
+        hzero_j_k = hzero(index)
+        call writePipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
+        call memFence(CLK_CHANNEL_MEM_FENCE)
+    end do
+end subroutine vernieuw_hzero_j_k_reader
+
+
+--------------------------------------------------------------------------------
+
+KCD {argPositions = [(0,"hzero")]}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
