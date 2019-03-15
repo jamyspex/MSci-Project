@@ -17,12 +17,12 @@ type SubNameStr = String
 type SrcName = String
 
 data SubRec = MkSubRec
-  { subAst          :: ProgUnit Anno
-  , subSrcFile      :: String
-  , subSrcLines     :: [String]
-  , subName         :: String
-  , argTranslations :: ArgumentTranslationTable
-  , parallelise     :: Bool
+  { subAst            :: ProgUnit Anno
+  , subSrcFile        :: String
+  , subSrcLines       :: [String]
+  , subName           :: String
+  , argTranslations   :: ArgumentTranslationTable
+  , parallelise       :: Bool
   }
 
 data ArgumentTranslation = ArgTrans
@@ -109,13 +109,14 @@ instance Show SmartCacheItem where
           (TransitStream name _ _ dims) -> (name, dims)
 
 data Kernel = Kernel
-  { inputs              :: [Stream Anno]
-  , outputs             :: [Stream Anno]
-  , kernelName          :: String
-  , outputReductionVars :: [String]
-  , body                :: ProgUnit Anno
-  , order               :: Int
-  , loopVars            :: [String]
+  { inputs                 :: [Stream Anno]
+  , outputs                :: [Stream Anno]
+  , kernelName             :: String
+  , driverLoopVariableName :: String
+  , outputReductionVars    :: [String]
+  , body                   :: ProgUnit Anno
+  , order                  :: Int
+  , loopVars               :: [String]
   } deriving (Data, Typeable)
 
 instance Show Kernel where
@@ -335,14 +336,15 @@ printAllStreams = concatMap (\s -> "\t" ++ printStream s ++ "\n")
 -- data Stream = Stream String StreamValueType deriving Show
 -- data StreamValueType = Float deriving Show
 data FPGAMemArray = FPGAMemArray
-  { arrayName :: String,
+  { arrayName  :: String,
     dimensions :: [(Int, Int)]
   } deriving (Show)
 
 data SharedPipelineData
   = SPD {
-  driverLoopLowerBound :: Int,
-  driverLoopUpperBound :: Int
+  driverLoopLowerBound   :: Int,
+  driverLoopUpperBound   :: Int,
+  driverLoopIndexName :: String
         }
   | NullPipeLineData
   deriving (Show)
