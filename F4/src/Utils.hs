@@ -632,6 +632,10 @@ getArrayReads = getArrayAccesses ArrayRead
 arrayFromDecl :: Decl Anno -> Array
 arrayFromDecl = arrayFromDeclWithRanges False
 
+getArrayDeclDimensions :: Decl Anno -> [(Int, Int)]
+getArrayDeclDimensions (Decl _ _ _ typeDecl) =
+  map getArrayDimensionConstants $ getArrayDimensions typeDecl
+
 arrayFromDeclWithRanges :: Bool -> Decl Anno -> Array
 arrayFromDeclWithRanges withRanges decl@(Decl _ _ _ typeDecl) = Array
   { arrayVarName    = name
@@ -675,6 +679,8 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl = not . null . getArrayDimensions . getDeclType
 
+nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
+
 debug_displaySubRoutineTable :: SubroutineTable -> Bool -> IO ()
 debug_displaySubRoutineTable srt withAst = case withAst of
   False -> mapM_ (debug_displaySubTableEntry withAst) asList
@@ -715,9 +721,6 @@ debug_displaySubTableEntry showAst sr = do
     )
   putStrLn $ hl ++ "\n"
   where hl = (take 80 $ repeat '=')
-
--- null nodes useful AST construction
-nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
 
 -- function takes a list of loop variables and an array access expr and then returns a list of tuples of
 -- the form (array name, loop variable name, maybe (position loop var is used in), nothing if it is not used)

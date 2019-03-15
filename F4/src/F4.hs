@@ -7,6 +7,7 @@ import           AddMemoryAccessKernels
 import           AddPipesToKernels
 import           AddSmartCaches
 import           AddTransitStreams
+import           AddSynthesisedLoopVars
 import           CommandLineProcessor           ( F4Opts(..)
                                                 , f4CmdParser
                                                 )
@@ -111,6 +112,8 @@ compilerMain args = do
   let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
   putStrLn "BEFORE"
   kernelsWithTransitStreams <- addTransitStreams kernels
+  putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
+  withLoopVarsSynthesised <- synthesiseLoopVars kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required

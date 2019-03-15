@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1e962145a7941ece998258a8797ad75f01dc1ba0080000ef88884042fd456f86
+-- hash: 3ea47ee730cf0a24d56805420f0af4521a6bfbf4da0ea1753502979127c7bb73
 
 name:           F4
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       AddMemoryAccessKernels
       AddPipesToKernels
       AddSmartCaches
+      AddSynthesisedLoopVars
       AddTransitStreams
       CodeGenUtils
       CombineKernels

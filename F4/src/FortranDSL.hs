@@ -52,12 +52,8 @@ sub name decls body args = Sub
   )
   block
  where
-  block = Block nullAnno
-                (UseBlock (UseNil nullAnno) NoSrcLoc)
-                (ImplicitNull nullAnno)
-                nullSrcSpan
-                decls
-                body
+  block =
+    Block nullAnno nullUseBlock (ImplicitNull nullAnno) nullSrcSpan decls body
 
 argList args = ArgList nullAnno $ buildAstSeq (ESeq nullAnno nullSrcSpan)
                                               (NullExpr nullAnno nullSrcSpan)
