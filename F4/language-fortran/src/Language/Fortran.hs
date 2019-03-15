@@ -272,6 +272,7 @@ data Expr  p = Con p SrcSpan String
              | Null p SrcSpan
              | ESeq p SrcSpan (Expr p) (Expr p)
              | Bound p SrcSpan (Expr p) (Expr p)
+             | Mod p SrcSpan (Expr p) (Expr p)
              | Sqrt p SrcSpan (Expr p) -- WV: This is silly, should be handled either for all intrinsics or none
              | ArrayCon p SrcSpan [(Expr p)]
              | AssgExpr p SrcSpan String (Expr p) -- WV: This is for use in e.g. parameter declarations I guess

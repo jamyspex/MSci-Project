@@ -440,6 +440,8 @@ miniPP expr =
     (ESeq _ _ e1 e2) -> miniPP e1 ++ ", " ++ miniPP e2
     (Bound _ _ e1 e2) -> miniPP e1 ++ " , " ++ miniPP e2
     (ArrayCon _ _ es) -> "(" ++ intercalate "," (map miniPP es) ++ ")"
+    (Mod _ _ expr1 expr2) ->
+      "mod(" ++ miniPP expr1 ++ ", " ++ miniPP expr2 ++ ")"
     (Sqrt _ _ expr1) -> "sqrt(" ++ miniPP expr1 ++ ")" -- WV: This is silly, should be handled either for all intrinsics or none
     (AssgExpr _ _ name e1) -> name ++ " = " ++ miniPP e1
     (ParenthesizedExpr _ _ innerExpr) -> "(" ++ miniPP innerExpr ++ ")"
