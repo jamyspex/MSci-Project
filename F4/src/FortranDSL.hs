@@ -132,7 +132,13 @@ intParam name val =
     [(var name, con val, Nothing)]
     (BaseType nullAnno (Integer nullAnno) [Parameter nullAnno] nullExpr nullExpr)
 
+varC name = var [name]
+
 var name = arrayVar name []
+
+writePipe = call "write_pipe"
+
+readPipe = call "read_pipe"
 
 arrayVar name indices = Var nullAnno nullSrcSpan [(varName name, indices)]
 

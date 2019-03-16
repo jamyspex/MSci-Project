@@ -28,7 +28,7 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
         { argPositions =
             imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
         }
-    loopVarName = "index"
+    loopVarName = driverLoopIndexName sharedData
     driverLoopBoundVarName = "nloop"
     mainLoop =
       for
@@ -42,7 +42,7 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
     decls =
       declNode $
       intParam driverLoopBoundVarName (driverLoopUpperBound sharedData) :
-      getDecls fortran
+      intDecl loopVarName : getDecls fortran
     args = getArgs fortran
     loopVars = getLoopVarNames fortran
     loopVarArgsRemoved =
@@ -84,9 +84,7 @@ generatePipeReadsMapKernel Map {..} =
 
 generatePipeAccessKernel :: String -> (Pipe, Stream Anno) -> [Fortran Anno]
 generatePipeAccessKernel action (Pipe _ _ pipeName _ _, stream) =
-  [ call (action ++ "Pipe") [pipeName, getStreamName stream]
-  , call "memFence" ["CLK_CHANNEL_MEM_FENCE"]
-  ]
+  [call (action ++ "Pipe") [pipeName, getStreamName stream]]
 
 generatePipeWritesMapKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
 generatePipeWritesMapKernel Map {..} =

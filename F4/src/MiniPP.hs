@@ -179,6 +179,7 @@ miniPPD decl =
                  ttups)
        in "      " ++ ty_str ++ " :: " ++ ttups_str -- indent is ad hoc!
     DSeq _ d1 d2 -> miniPPD d1 ++ "\n" ++ miniPPD d2
+    NullDecl _ _ -> ""
     _ -> "! UNSUPPORTED in miniPPD! " ++ show decl
 
 miniPPF :: Fortran Anno -> String

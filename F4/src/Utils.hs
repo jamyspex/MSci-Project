@@ -386,7 +386,12 @@ convertKernelToPipelineItem k@Kernel {..} =
         , stageNumber = order
         , readPipes = []
         , writtenPipes = []
-        , sharedData = NullPipeLineData
+        , sharedData =
+            SPD
+              { driverLoopLowerBound = 0
+              , driverLoopUpperBound = 0
+              , driverLoopIndexName = driverLoopVariableName
+              }
         }
     ReduceKernel ->
       Reduce
@@ -399,7 +404,12 @@ convertKernelToPipelineItem k@Kernel {..} =
         , stageNumber = order
         , readPipes = []
         , writtenPipes = []
-        , sharedData = NullPipeLineData
+        , sharedData =
+            SPD
+              { driverLoopLowerBound = 0
+              , driverLoopUpperBound = 0
+              , driverLoopIndexName = driverLoopVariableName
+              }
         }
 
 data KernelType

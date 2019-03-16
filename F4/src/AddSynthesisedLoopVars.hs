@@ -31,7 +31,7 @@ synthesiseLoopVars kernels = do
                 concatMap (\k -> kernelName k ++ " -> ") kernels ++
                 "contains streams of different sizes!")
 
-loopVarName = "nloop"
+loopVarName = "count"
 
 addToOneKernel :: Kernel -> IO Kernel
 addToOneKernel kernel = do

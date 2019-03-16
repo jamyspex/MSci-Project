@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4a7fd73b0223f7fa26b9357cdf3d02d926b23f518a42afb3bc0130c97e75507d
+-- hash: 5f4d821e626a0b1ebc213eeebae3707680dde5271b302d96f18d82955b28dcac
 
 name:           F4
 version:        0.1.0.0
@@ -33,6 +33,7 @@ library
       AddSmartCaches
       AddSynthesisedLoopVars
       AddTransitStreams
+      BuildDeviceModule
       CodeGenUtils
       CombineKernels
       CommandLineProcessor

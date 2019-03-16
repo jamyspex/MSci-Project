@@ -16,10 +16,8 @@ generatePipeWriteCon sourceIdx = generatePipeWrite (con sourceIdx)
 
 generatePipeWrite :: Expr Anno -> String -> String -> String -> [Fortran Anno]
 generatePipeWrite bufferIdx variableName bufferName pipeName =
-  [ comment ("write pipe " ++ pipeName)
-  , assign (var variableName) (arrayVar bufferName [bufferIdx])
-  , call "writePipe" [pipeName, variableName]
-  , call "memFence" ["CLK_CHANNEL_MEM_FENCE"]
+  [ assign (var variableName) (arrayVar bufferName [bufferIdx])
+  , writePipe [pipeName, variableName]
   ]
 
 generatePipeReadCon :: Int -> String -> String -> String -> [Fortran Anno]
@@ -27,10 +25,8 @@ generatePipeReadCon assignmentIdx = generatePipeRead (con assignmentIdx)
 
 generatePipeRead :: Expr Anno -> String -> String -> String -> [Fortran Anno]
 generatePipeRead assignmentIdx pipeName readInVarName bufferName =
-  [ comment ("read pipe " ++ pipeName)
-  , call "readPipe" [pipeName, readInVarName]
+  [ readPipe [pipeName, readInVarName]
   , assign (arrayVar bufferName [assignmentIdx]) (var readInVarName)
-  , call "memFence" ["CLK_CHANNEL_MEM_FENCE"]
   ]
 
 getFortranTypeForStream (Stream _ _ streamValueType _) =

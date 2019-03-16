@@ -8,6 +8,7 @@ import           AddPipesToKernels
 import           AddSmartCaches
 import           AddSynthesisedLoopVars
 import           AddTransitStreams
+import           BuildDeviceModule
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
 import           Data.Generics           (everything, everywhere, everywhereM,
@@ -121,6 +122,7 @@ compilerMain args = do
   generateSmartCaches scalarisedKernels
   generateMemoryAccess scalarisedKernels
   generateKernels scalarisedKernels
+  buildDeviceModule scalarisedKernels
   return ()
 
 validateInputFiles :: Program LFT.Anno -> IO ()
