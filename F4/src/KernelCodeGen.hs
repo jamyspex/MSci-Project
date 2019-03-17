@@ -84,7 +84,7 @@ generatePipeReadsMapKernel Map {..} =
 
 generatePipeAccessKernel :: String -> (Pipe, Stream Anno) -> [Fortran Anno]
 generatePipeAccessKernel action (Pipe _ _ pipeName _ _, stream) =
-  [call (action ++ "Pipe") [pipeName, getStreamName stream]]
+  [call (action ++ "_pipe") [pipeName, getStreamName stream]]
 
 generatePipeWritesMapKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
 generatePipeWritesMapKernel Map {..} =

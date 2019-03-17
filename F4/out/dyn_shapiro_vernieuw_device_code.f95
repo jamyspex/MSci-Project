@@ -127,10 +127,10 @@ subroutine dyn_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507
-      integer, parameter :: smartCacheSize = 503
-      integer, parameter :: maxPositiveOffset = 503
-      integer, parameter :: maxNegativeOffset = 0
+      integer, parameter :: nloop = 252507 
+      integer, parameter :: smartCacheSize = 503 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 0 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -153,7 +153,7 @@ subroutine dyn_0_smart_cache
 end subroutine dyn_0_smart_cache
 
 subroutine dyn_0(dt,dx,dy,g)
-      integer, parameter :: nloop = 252004
+      integer, parameter :: nloop = 252004 
       integer :: count
       real :: dt
       real :: du_j_k
@@ -167,17 +167,17 @@ subroutine dyn_0(dt,dx,dy,g)
       integer :: j
       integer :: k
     do count = 1, nloop, 1
-        call readPipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
-        call readPipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
-        call readPipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
+        call read_pipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
+        call read_pipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
+        call read_pipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
                 du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
                 dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
         end if
-        call writePipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
-        call writePipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
+        call write_pipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
+        call write_pipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
     end do
 end subroutine dyn_0
 
@@ -229,10 +229,10 @@ subroutine dyn_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507
-      integer, parameter :: smartCacheSize = 503
-      integer, parameter :: maxPositiveOffset = 503
-      integer, parameter :: maxNegativeOffset = 0
+      integer, parameter :: nloop = 252507 
+      integer, parameter :: smartCacheSize = 503 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 0 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -255,7 +255,7 @@ subroutine dyn_1_smart_cache
 end subroutine dyn_1_smart_cache
 
 subroutine dyn_1
-      integer, parameter :: nloop = 252004
+      integer, parameter :: nloop = 252004 
       integer :: count
       real :: du_j_k
       real :: duu
@@ -273,13 +273,13 @@ subroutine dyn_1
       integer :: wet_jp1_k
       integer :: wet_j_k
     do count = 1, nloop, 1
-        call readPipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
-        call readPipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
-        call readPipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
-        call readPipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
-        call readPipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
-        call readPipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
-        call readPipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
+        call read_pipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
+        call read_pipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
+        call read_pipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
+        call read_pipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
+        call read_pipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
+        call read_pipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
+        call read_pipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
@@ -308,8 +308,8 @@ subroutine dyn_1
                                 end if
                 end if
         end if
-        call writePipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_j_k)
-        call writePipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_j_k)
+        call write_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_j_k)
+        call write_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_j_k)
     end do
 end subroutine dyn_1
 
@@ -358,10 +358,10 @@ subroutine dyn_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507
-      integer, parameter :: smartCacheSize = 1005
-      integer, parameter :: maxPositiveOffset = 503
-      integer, parameter :: maxNegativeOffset = 503
+      integer, parameter :: nloop = 252507 
+      integer, parameter :: smartCacheSize = 1005 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 503 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -402,7 +402,7 @@ subroutine dyn_2_smart_cache
 end subroutine dyn_2_smart_cache
 
 subroutine dyn_2(dt,dx,dy)
-      integer, parameter :: nloop = 252004
+      integer, parameter :: nloop = 252004 
       integer :: count
       real :: dt
       real :: dx
@@ -433,16 +433,16 @@ subroutine dyn_2(dt,dx,dy)
       real :: vn_jm1_k
       real :: vn_j_k
     do count = 1, nloop, 1
-        call readPipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
-        call readPipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
-        call readPipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
-        call readPipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
-        call readPipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
+        call read_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
+        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
+        call read_pipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
+        call read_pipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
+        call read_pipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
@@ -460,9 +460,9 @@ subroutine dyn_2(dt,dx,dy)
                 hvs = hsp+hsn
                 etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end if
-        call writePipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_j_k)
-        call writePipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_j_k)
-        call writePipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_j_k)
+        call write_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_j_k)
+        call write_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_j_k)
+        call write_pipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_j_k)
     end do
 end subroutine dyn_2
 
@@ -503,10 +503,10 @@ subroutine shapiro_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507
-      integer, parameter :: smartCacheSize = 1005
-      integer, parameter :: maxPositiveOffset = 503
-      integer, parameter :: maxNegativeOffset = 503
+      integer, parameter :: nloop = 252507 
+      integer, parameter :: smartCacheSize = 1005 
+      integer, parameter :: maxPositiveOffset = 503 
+      integer, parameter :: maxNegativeOffset = 503 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -556,7 +556,7 @@ subroutine shapiro_smart_cache
 end subroutine shapiro_smart_cache
 
 subroutine shapiro(eps)
-      integer, parameter :: nloop = 252004
+      integer, parameter :: nloop = 252004 
       integer :: count
       real :: eps
       real :: eta_j_k
@@ -576,18 +576,18 @@ subroutine shapiro(eps)
       integer :: wet_jp1_k
       integer :: wet_j_km1
     do count = 1, nloop, 1
-        call readPipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
-        call readPipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
-        call readPipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
-        call readPipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
-        call readPipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
-        call readPipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
-        call readPipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
-        call readPipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
-        call readPipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
-        call readPipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
-        call readPipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
-        call readPipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
+        call read_pipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
+        call read_pipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
+        call read_pipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
+        call read_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
+        call read_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
+        call read_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
+        call read_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
+        call read_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
+        call read_pipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
+        call read_pipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
+        call read_pipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
+        call read_pipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
@@ -600,9 +600,9 @@ subroutine shapiro(eps)
                                 eta_j_k = etan_j_k
                 end if
         end if
-        call writePipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
-        call writePipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
-        call writePipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
+        call write_pipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
+        call write_pipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
+        call write_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
     end do
 end subroutine shapiro
 
@@ -633,7 +633,7 @@ subroutine vernieuw_hzero_j_k_reader(hzero)
 end subroutine vernieuw_hzero_j_k_reader
 
 subroutine vernieuw(hmin)
-      integer, parameter :: nloop = 252004
+      integer, parameter :: nloop = 252004 
       integer :: count
       real :: eta_j_k
       real :: h_j_k
@@ -647,11 +647,11 @@ subroutine vernieuw(hmin)
       real :: vn_j_k
       integer :: wet_j_k
     do count = 1, nloop, 1
-        call readPipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
-        call readPipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
-        call readPipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
-        call readPipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
-        call readPipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
+        call read_pipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
+        call read_pipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
+        call read_pipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
+        call read_pipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
+        call read_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
         j = count/502
         k = mod(count, 502)
         h_j_k = hzero_j_k+eta_j_k
@@ -661,10 +661,10 @@ subroutine vernieuw(hmin)
         end if
         u_j_k = un_j_k
         v_j_k = vn_j_k
-        call writePipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k)
-        call writePipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k)
-        call writePipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k)
-        call writePipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k)
+        call write_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k)
+        call write_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k)
+        call write_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k)
+        call write_pipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k)
     end do
 end subroutine vernieuw
 
