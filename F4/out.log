@@ -2098,6 +2098,7 @@ Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 Produced at: dyn_1
 Consumed at: vernieuw
 
+Transit Streams Added
  ! ==============================================
  ! Name: dyn_0 Order: 0
  ! Input streams:
@@ -3896,9 +3897,9 @@ subroutine dyn_2(dt,dx,dy,j,k)
       integer :: j
       integer :: k
       real :: un_j_k
+      real :: un_j_km1
       real :: vn_j_k
       real :: vn_jm1_k
-      real :: vn_j_k
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !	2 point stencil on 2D array un: [[0,0],[0,-1]]
@@ -4669,9 +4670,9 @@ subroutine dyn_2(dt,dx,dy)
       integer :: j
       integer :: k
       real :: un_j_k
+      real :: un_j_km1
       real :: vn_j_k
       real :: vn_jm1_k
-      real :: vn_j_k
     do count = 1, nloop, 1
         call read_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
         call read_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
@@ -5256,9 +5257,9 @@ subroutine dyn_2(dt,dx,dy)
       integer :: j
       integer :: k
       real :: un_j_k
+      real :: un_j_km1
       real :: vn_j_k
       real :: vn_jm1_k
-      real :: vn_j_k
     do count = 1, nloop, 1
         call read_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
         call read_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)

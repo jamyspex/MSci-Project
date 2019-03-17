@@ -6,9 +6,11 @@ module ScalarizeKernels where
 import           AddMemoryAccessKernels
 import           Data.Generics
 import           Data.List
+import           Data.List.Utils
 import qualified Data.Map               as DMap
 import qualified Data.Set               as Set
 import           Debug.Trace
+import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -90,6 +92,7 @@ matchStreamingVarsToArrayDecls streams arrays = matched
       map (\grp -> ((fst . head) grp, map snd grp)) groupedByArray
     groupedByArray =
       groupBy (\(n1, _) (n2, _) -> n1 == n2) $
+      sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) $
       map (\s@(Stream _ arrayName _ _) -> (arrayName, s)) streams
     arrayNameToArrayMap =
       DMap.fromList $
@@ -103,9 +106,9 @@ matchStreamingVarsToArrayDecls streams arrays = matched
 replaceArrayDeclWithStreamingVarDecls ::
      DMap.Map String (Array, [Stream Anno]) -> Decl Anno -> [Decl Anno]
 replaceArrayDeclWithStreamingVarDecls replacementMap currentDecl =
-  map (\(Stream name _ _ _) -> makeDecl name) streams
+  map makeDecl $ uniq $ map (\(Stream name _ _ _) -> name) streams
   where
-    (_, streams) = replacementMap DMap.! declName
+    (array, streams) = replacementMap DMap.! declName
     (Decl _ _ _ fortranType) = currentDecl
     (baseType, attrs, kind, len) =
       ( getBaseType fortranType
@@ -124,7 +127,7 @@ replaceArrayDeclWithStreamingVarDecls replacementMap currentDecl =
       Decl
         nullAnno
         nullSrcSpan
-        [(makeVar name, NullExpr nullAnno nullSrcSpan, Nothing)]
+        [(var name, NullExpr nullAnno nullSrcSpan, Nothing)]
         updatedType
     declName = declNameAsString currentDecl
 
@@ -139,10 +142,8 @@ convertArrayAccesses arrays streams kernel = allArrayAccessExprsReplaced
 subsitutionStreamVars :: [Array] -> [Stream Anno] -> Expr Anno -> Expr Anno
 subsitutionStreamVars arrays streams expr
   | isArrayAccess arrays expr =
-    makeVar $ convertArrayAccessToStreamVarName arrays expr
+    var $ convertArrayAccessToStreamVarName arrays expr
   | otherwise = expr
-
-makeVar name = Var nullAnno nullSrcSpan [(VarName nullAnno name, [])]
 
 -- check if expression is an array access
 isArrayAccess :: [Array] -> Expr Anno -> Bool
