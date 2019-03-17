@@ -27,6 +27,8 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
       KCD
         { argPositions =
             imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
+        , kernelName = name
+        , subroutineName = originalSubName
         }
     loopVarName = driverLoopIndexName sharedData
     driverLoopBoundVarName = "nloop"

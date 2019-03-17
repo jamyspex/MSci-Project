@@ -127,7 +127,8 @@ compilerMain args = do
   generateSmartCaches scalarisedKernels
   generateAndPrintMemoryAccess scalarisedKernels
   generateKernels scalarisedKernels
-  (fileName, deviceCode) <- buildDeviceModule scalarisedKernels
+  (fileName, deviceCode, callingData) <- buildDeviceModule scalarisedKernels
+  mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
 

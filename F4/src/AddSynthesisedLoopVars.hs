@@ -19,9 +19,7 @@ import           Utils
 -- the original loopVariables from the driver loop. This allows them
 -- to be used in the previously added loop guards.
 synthesiseLoopVars :: [Kernel] -> IO [Kernel]
-synthesiseLoopVars kernels = do
-  updatedKernels <- mapM addToOneKernel validatedKernels
-  return updatedKernels
+synthesiseLoopVars kernels = mapM addToOneKernel validatedKernels
   where
     pipelineIsValid = allStreamsSameSize kernels
     validatedKernels =
@@ -68,13 +66,9 @@ removeIntentFromLoopVars loopVars kernel = kernel {body = newKernelCode}
     withIntentRemovedFromLoopVarDecls =
       map
         (\d ->
-           trace
-             ("loop vars = " ++
-              show loopVars ++
-              " decl name = " ++ (getNameFromVarName . getVarNameG) d)
-             (if (getNameFromVarName . getVarNameG) d `elem` loopVars
-                then removeIntentAttr d
-                else d))
+           if (getNameFromVarName . getVarNameG) d `elem` loopVars
+             then removeIntentAttr d
+             else d)
         allDecls
     removeIntentAttr :: Decl Anno -> Decl Anno
     removeIntentAttr d@(Decl an srcSpn expr fortranType) =

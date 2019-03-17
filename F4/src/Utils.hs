@@ -114,6 +114,7 @@ data Kernel = Kernel
   , kernelName             :: String
   , driverLoopVariableName :: String
   , outputReductionVars    :: [String]
+  , originalSubroutineName :: String
   , body                   :: ProgUnit Anno
   , order                  :: Int
   , loopVars               :: [String]
@@ -185,25 +186,27 @@ isTransit stream =
 -- Data type used to represent a processing pipeline
 -- for output to a Fortran kernel file
 data PipelineItem a
-  = Map { inputStreams  :: [Stream Anno]
-        , outputStreams :: [Stream Anno]
-        , name          :: String
-        , fortran       :: ProgUnit Anno
-        , nextStage     :: PipelineItem a
-        , stageNumber   :: Int
-        , readPipes     :: [Pipe]
-        , writtenPipes  :: [Pipe]
-        , sharedData    :: a }
-  | Reduce { inputStreams  :: [Stream Anno]
-           , outputStreams :: [Stream Anno]
-           , name          :: String
-           , reductionVars :: [String]
-           , fortran       :: ProgUnit Anno
-           , nextStage     :: PipelineItem a
-           , stageNumber   :: Int
-           , readPipes     :: [Pipe]
-           , writtenPipes  :: [Pipe]
-           , sharedData    :: a }
+  = Map { inputStreams    :: [Stream Anno]
+        , outputStreams   :: [Stream Anno]
+        , name            :: String
+        , fortran         :: ProgUnit Anno
+        , originalSubName :: String
+        , nextStage       :: PipelineItem a
+        , stageNumber     :: Int
+        , readPipes       :: [Pipe]
+        , writtenPipes    :: [Pipe]
+        , sharedData      :: a }
+  | Reduce { inputStreams    :: [Stream Anno]
+           , outputStreams   :: [Stream Anno]
+           , name            :: String
+           , reductionVars   :: [String]
+           , fortran         :: ProgUnit Anno
+           , originalSubName :: String
+           , nextStage       :: PipelineItem a
+           , stageNumber     :: Int
+           , readPipes       :: [Pipe]
+           , writtenPipes    :: [Pipe]
+           , sharedData      :: a }
   | SmartCache { inputStreams   :: [Stream Anno]
                , outputStreams  :: [Stream Anno]
                , name           :: String
@@ -382,6 +385,7 @@ convertKernelToPipelineItem k@Kernel {..} =
         , outputStreams = outputs
         , name = kernelName
         , fortran = body
+        , originalSubName = originalSubroutineName
         , nextStage = NullItem
         , stageNumber = order
         , readPipes = []
@@ -400,6 +404,7 @@ convertKernelToPipelineItem k@Kernel {..} =
         , reductionVars = outputReductionVars
         , name = kernelName
         , fortran = body
+        , originalSubName = originalSubroutineName
         , nextStage = NullItem
         , stageNumber = order
         , readPipes = []

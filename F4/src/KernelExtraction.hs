@@ -17,9 +17,11 @@ import           Utils
 getKernels :: SubRec -> IO [Kernel]
 getKernels subrec = do
   mapM_
-    (\(_, b) ->
+    (\(_, originalName, b) ->
        putStrLn
          ("\n--------------------\n" ++
+          originalName ++
+          "\n--------------------\n" ++
           miniPPProgUnit b ++ "\n======================\n"))
     kernelSubsAndOrder
   putStrLn $ "no. of kernels: " ++ (show . length) kernelSubsAndOrder
@@ -68,15 +70,17 @@ getOldSubsQuery fortran =
 -- e.g. insert all the appropriate decls and arguments
 -- and give them a name. Arguments:
 -- (function body, (Original name, Maybe sub split number)) ->
--- globalOrderNumber -> all decls -> all args -> (global order, kernel sub)
+-- globalOrderNumber -> all decls -> all args -> (global order, original subname, kernel sub)
 makeKernelSub ::
      [Decl Anno]
   -> [ArgName Anno]
   -> (Fortran Anno, (String, Maybe Int))
   -> Int
-  -> (Int, ProgUnit Anno)
+  -> (Int, String, ProgUnit Anno)
 makeKernelSub decls args (body, (originalName, splitNum)) globalOrder =
-  (globalOrder, Sub nullAnno nullSrcSpan Nothing name argList block)
+  ( globalOrder
+  , originalName
+  , Sub nullAnno nullSrcSpan Nothing name argList block)
   where
     argsComparable = getComparableItems args getArgName
     declComparable = getComparableItems decls declNameAsString
@@ -155,8 +159,8 @@ getKernelBody name fortran =
 -- mechanics of usesIndexVariablesAndConstantOffset can be used to do this. The function
 -- validateExprListContents in Utils.hs can be used. Along with a check that the variables
 -- used to index the array are the loop variables.
-buildKernel :: (Int, ProgUnit Anno) -> Kernel
-buildKernel (order, sub) =
+buildKernel :: (Int, String, ProgUnit Anno) -> Kernel
+buildKernel (order, originalName, sub) =
   if arrayWritesValid
     then kernel
     else error "Array write invalid"
@@ -185,6 +189,7 @@ buildKernel (order, sub) =
         , outputReductionVars = reductionVars
         , body = sub
         , order = order
+        , originalSubroutineName = originalName
         , driverLoopVariableName = ""
         , loopVars = loopVariables
         , kernelName = getSubName sub

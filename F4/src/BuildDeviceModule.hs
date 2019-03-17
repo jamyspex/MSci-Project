@@ -13,11 +13,12 @@ import           MiniPP
 import           SmartCacheCodeGen
 import           Utils
 
-buildDeviceModule :: [PipelineStage] -> IO (String, ProgUnit Anno)
+buildDeviceModule ::
+     [PipelineStage] -> IO (String, ProgUnit Anno, [KernelCallingData])
 buildDeviceModule pipeline = do
   putStrLn $ rule '-' ++ " Pipe Init Sub " ++ rule '-'
   putStrLn $ miniPPProgUnit deviceModule
-  return (moduleName, deviceModule)
+  return (moduleName, deviceModule, callingData)
   where
     deviceModule = fortranModule moduleName pipeDecls (pipeInitSub : kernels)
     kernels = concat kernelsSubLists
@@ -41,12 +42,18 @@ pipeInitSubName = "pipe_initialisation"
 
 generateStage :: PipelineStage -> ([KernelCallingData], [ProgUnit Anno])
 generateStage (kernel, smartCache, memAccess) =
-  ( memWriteKCD ++ memReadKCD ++ [kernelCallingData]
+  ( memWriteKCD ++ memReadKCD ++ smartCacheCallingData ++ [kernelCallingData]
   , memoryReaderKernels ++
     smartCacheKernel ++ [computeKernel] ++ memoryWriterKernels)
   where
     (computeKernel, kernelCallingData) = generateKernelCode kernel
-    smartCacheKernel = maybe [] (\s -> [generateSmartCache s]) smartCache
+    (smartCacheKernel, smartCacheCallingData) =
+      maybe
+        ([], [])
+        (\s ->
+           let (sm, kcd) = generateSmartCache s
+            in ([sm], [kcd]))
+        smartCache
     (memoryReaderKernels, memReadKCD) =
       unzip $
       map generateMemoryReader $

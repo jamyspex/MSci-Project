@@ -11,32 +11,32 @@ Files with subroutines to be parallelised:
 	dyn
 	vernieuw
 	shapiro
-File containing main subroutine: 
+File containing main subroutine:
 	main.f95
 Source directory:
 	./Shallow-Water-2D
 Fixed form: False
 Loop fusion bound: Nothing
-CPP Defines: 
+CPP Defines:
 CPP Excludes:
 
 "Executing compiler main..."
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/main_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/sub_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/init_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/main_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/sub_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/init_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$'
 Parsing ./Shallow-Water-2D/main.f95
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/dyn_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/shapiro_tmp.f95 | grep -v -E '^\s*$'
+cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '^\s*$'
 Parsing ./Shallow-Water-2D/dyn.f95
 Parsing ./Shallow-Water-2D/shapiro.f95
 Parsing ./Shallow-Water-2D/vernieuw.f95
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines not for offload 
+ Subroutines not for offload
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
@@ -44,8 +44,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -99,7 +99,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop 
+        stop
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -177,7 +177,7 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines for offload 
+ Subroutines for offload
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
@@ -185,8 +185,8 @@ Subroutine name: dyn
 Filename: ./Shallow-Water-2D/dyn.f95
 Source:
 subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
-      integer(4), parameter :: ny = 500 
-      integer(4), parameter :: nx = 500 
+      integer(4), parameter :: ny = 500
+      integer(4), parameter :: nx = 500
       integer :: j
       integer :: k
       real, intent(In) :: dx
@@ -283,8 +283,8 @@ Subroutine name: shapiro
 Filename: ./Shallow-Water-2D/shapiro.f95
 Source:
 subroutine shapiro(j,k,wet,etan,eps,eta)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       integer, intent(InOut) :: j
       integer, intent(InOut) :: k
       integer, dimension(0:ny+1,0:nx+1), intent(In) :: wet
@@ -319,8 +319,8 @@ Subroutine name: vernieuw
 Filename: ./Shallow-Water-2D/vernieuw.f95
 Source:
 subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -359,16 +359,16 @@ This subroutine will be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Subroutines for offload merged 
+ Subroutines for offload merged
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
+Filename:
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -500,8 +500,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -555,7 +555,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop 
+        stop
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -633,16 +633,16 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Map + Fold Detection 
+ Map + Fold Detection
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
+Filename:
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -771,16 +771,16 @@ This subroutine will be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Stencil Detection 
+ Stencil Detection
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
+Filename:
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -828,7 +828,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
 !}
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -860,7 +860,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
         end if
     end if
 !}
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -883,7 +883,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     hvs = hsp+hsn
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -902,7 +902,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
         eta(j,k) = etan(j,k)
     end if
 !}
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -931,8 +931,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -986,7 +986,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop 
+        stop
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1064,16 +1064,16 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Combined 
+ Combined
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
+Filename:
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -1119,7 +1119,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
     dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -1149,7 +1149,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 vn(j,k) = vv+dvv
         end if
     end if
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1170,7 +1170,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
     hvs = hsp+hsn
     etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -1187,7 +1187,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     else
         eta(j,k) = etan(j,k)
     end if
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -1214,8 +1214,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -1269,7 +1269,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop 
+        stop
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1347,16 +1347,16 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Loop Guards 
+ With Loop Guards
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
 Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
+Filename:
 Source:
 subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -1404,7 +1404,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -1436,7 +1436,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 end if
         end if
     end if
-!}    
+!}
 !}
 ! OpenCLStencil (
 !	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
@@ -1459,7 +1459,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: shapiro {
@@ -1478,7 +1478,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 !}
 ! Original Subroutine Name: vernieuw {
@@ -1505,8 +1505,8 @@ Subroutine name: wave2d
 Filename: ./Shallow-Water-2D/main.f95
 Source:
 program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+      integer(4), parameter :: nx = 500
+      integer(4), parameter :: ny = 500
       real :: dt
       real :: dx
       real :: dy
@@ -1560,7 +1560,7 @@ program wave2d
     write(6, *)("lambda = ", lambda)
     if (lambda>1) then
         write(6, *)("This will not work. Do you know why?")
-        stop 
+        stop
     end if
     open(10, file='eta.dat', form='formatted')
     open(20, file='h.dat', form='formatted')
@@ -1638,10 +1638,12 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Kernels 
+ Kernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+--------------------
+dyn
 --------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
       real :: dt
@@ -1661,13 +1663,15 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
 
 ======================
 
 
+--------------------
+dyn
 --------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501) :: du
@@ -1713,13 +1717,15 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
 
 ======================
 
 
+--------------------
+dyn
 --------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
       real :: dt
@@ -1765,13 +1771,15 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
 
 ======================
 
 
+--------------------
+shapiro
 --------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
       real :: eps
@@ -1798,13 +1806,15 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
 
 ======================
 
 
+--------------------
+vernieuw
 --------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
@@ -1859,7 +1869,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
  ! ==============================================
@@ -1921,7 +1931,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
  ! ==============================================
@@ -1981,7 +1991,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
  ! ==============================================
@@ -2020,7 +2030,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
  ! ==============================================
@@ -2126,7 +2136,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
  ! ==============================================
@@ -2189,7 +2199,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
  ! ==============================================
@@ -2252,7 +2262,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
  ! ==============================================
@@ -2296,7 +2306,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
  ! ==============================================
@@ -2344,7 +2354,7 @@ end subroutine vernieuw
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Synthesised Loop Vars 
+ With Synthesised Loop Vars
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
  ! ==============================================
@@ -2376,7 +2386,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
  ! ==============================================
@@ -2441,7 +2451,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
  ! ==============================================
@@ -2506,7 +2516,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
  ! ==============================================
@@ -2552,7 +2562,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
  ! ==============================================
@@ -2602,7 +2612,7 @@ end subroutine vernieuw
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Smart Caches 
+ With Smart Caches
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 "------------------------------------------"
@@ -2637,7 +2647,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
  ! ==============================================
@@ -2706,7 +2716,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
  ! ==============================================
@@ -2779,7 +2789,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
  ! ==============================================
@@ -2835,7 +2845,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
  ! ==============================================
@@ -2888,7 +2898,7 @@ end subroutine vernieuw
 "------------------------------------------"
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Memory Readers 
+ With Memory Readers
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 --------------  PIPELINE STAGE  ---------------
@@ -2928,14 +2938,14 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
 
 --------------------------------------------------------------------------------
 SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Just 
+Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_0_smart_cache
@@ -3041,14 +3051,14 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
 
 --------------------------------------------------------------------------------
 SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Just 
+Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_1_smart_cache
@@ -3176,14 +3186,14 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
 
 --------------------------------------------------------------------------------
 SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Just 
+Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: dyn_2_smart_cache
@@ -3319,14 +3329,14 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
 
 --------------------------------------------------------------------------------
 SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Just 
+Just
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a smart cache kernel.
 Name: shapiro_smart_cache
@@ -3499,7 +3509,7 @@ Memory to streams:
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Routing Pipes 
+ Routing Pipes
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Pipe "dyn_0" "dyn_1" "dyn_0__dyn_1__du_j_k__pipe" Float (Stream "du_j_k" "du" Float [(0,501),(0,501)])
@@ -3660,10 +3670,10 @@ digraph G {
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Scalarizing Kernels 
+ Scalarizing Kernels
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Kernel = 
+Kernel =
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
       real :: dt
       real, dimension(0:501,0:501) :: du
@@ -3684,11 +3694,11 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
         du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
         dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
 
-Streams = 
+Streams =
 subroutine dyn_0(dt,dx,dy,g,j,k)
       real :: dt
       real :: du_j_k
@@ -3711,11 +3721,11 @@ subroutine dyn_0(dt,dx,dy,g,j,k)
         du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
         dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_0
 
-Kernel = 
+Kernel =
 subroutine dyn_1(j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -3762,11 +3772,11 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
 
-Streams = 
+Streams =
 subroutine dyn_1(j,k)
       real :: du_j_k
       real :: duu
@@ -3815,11 +3825,11 @@ subroutine dyn_1(j,k)
                 end if
         end if
     end if
-!}    
+!}
 !}
 end subroutine dyn_1
 
-Kernel = 
+Kernel =
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
       real :: dt
       real :: dx
@@ -3866,11 +3876,11 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
         hvs = hsp+hsn
         etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
 
-Streams = 
+Streams =
 subroutine dyn_2(dt,dx,dy,j,k)
       real :: dt
       real :: dx
@@ -3923,11 +3933,11 @@ subroutine dyn_2(dt,dx,dy,j,k)
         hvs = hsp+hsn
         etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
     end if
-!}    
+!}
 !}
 end subroutine dyn_2
 
-Kernel = 
+Kernel =
 subroutine shapiro(eps,eta,etan,j,k,wet)
       real :: eps
       real, dimension(0:501,0:501), intent(In) :: eta
@@ -3955,11 +3965,11 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
                 eta(j,k) = etan(j,k)
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
 
-Streams = 
+Streams =
 subroutine shapiro(eps,j,k)
       real :: eps
       real :: eta_j_k
@@ -3995,11 +4005,11 @@ subroutine shapiro(eps,j,k)
                 eta_j_k = etan_j_k
         end if
     end if
-!}    
+!}
 !}
 end subroutine shapiro
 
-Kernel = 
+Kernel =
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(In) :: eta
       real, dimension(0:501,0:501), intent(InOut) :: h
@@ -4025,7 +4035,7 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 !}
 end subroutine vernieuw
 
-Streams = 
+Streams =
 subroutine vernieuw(hmin,j,k)
       real :: eta_j_k
       real :: h_j_k
@@ -4053,7 +4063,7 @@ end subroutine vernieuw
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_0_smart_cache 
+dyn_0_smart_cache
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 subroutine dyn_0_smart_cache
@@ -4065,10 +4075,10 @@ subroutine dyn_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -4093,9 +4103,13 @@ end subroutine dyn_0_smart_cache
 
 --------------------------------------------------------------------------------
 
+KCD {kernelName = "dyn_0_smart_cache", argPositions = [], subroutineName = ""}
+
+--------------------------------------------------------------------------------
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_1_smart_cache 
+dyn_1_smart_cache
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 subroutine dyn_1_smart_cache
@@ -4107,10 +4121,10 @@ subroutine dyn_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -4135,9 +4149,13 @@ end subroutine dyn_1_smart_cache
 
 --------------------------------------------------------------------------------
 
+KCD {kernelName = "dyn_1_smart_cache", argPositions = [], subroutineName = ""}
+
+--------------------------------------------------------------------------------
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_2_smart_cache 
+dyn_2_smart_cache
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 subroutine dyn_2_smart_cache
@@ -4159,10 +4177,10 @@ subroutine dyn_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -4205,9 +4223,13 @@ end subroutine dyn_2_smart_cache
 
 --------------------------------------------------------------------------------
 
+KCD {kernelName = "dyn_2_smart_cache", argPositions = [], subroutineName = ""}
+
+--------------------------------------------------------------------------------
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-shapiro_smart_cache 
+shapiro_smart_cache
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 subroutine shapiro_smart_cache
@@ -4234,10 +4256,10 @@ subroutine shapiro_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -4289,6 +4311,10 @@ end subroutine shapiro_smart_cache
 
 --------------------------------------------------------------------------------
 
+KCD {kernelName = "shapiro_smart_cache", argPositions = [], subroutineName = ""}
+
+--------------------------------------------------------------------------------
+
 
 --------------------------------------------------------------------------------
 
@@ -4308,7 +4334,7 @@ end subroutine dyn_0_eta_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"eta")]}
+KCD {kernelName = "dyn_0_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4331,7 +4357,7 @@ end subroutine dyn_1_wet_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"wet")]}
+KCD {kernelName = "dyn_1_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4354,7 +4380,7 @@ end subroutine dyn_1_u_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"u")]}
+KCD {kernelName = "dyn_1_u_j_k_reader", argPositions = [(0,"u")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4377,7 +4403,7 @@ end subroutine dyn_1_v_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"v")]}
+KCD {kernelName = "dyn_1_v_j_k_reader", argPositions = [(0,"v")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4400,7 +4426,7 @@ end subroutine dyn_2_h_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"h")]}
+KCD {kernelName = "dyn_2_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4423,7 +4449,7 @@ end subroutine dyn_2_eta_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"eta")]}
+KCD {kernelName = "dyn_2_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4446,7 +4472,7 @@ end subroutine shapiro_wet_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"wet")]}
+KCD {kernelName = "shapiro_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4469,7 +4495,7 @@ end subroutine vernieuw_h_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"h")]}
+KCD {kernelName = "vernieuw_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4492,7 +4518,7 @@ end subroutine vernieuw_hzero_j_k_reader
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"hzero")]}
+KCD {kernelName = "vernieuw_hzero_j_k_reader", argPositions = [(0,"hzero")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4527,7 +4553,7 @@ end subroutine vernieuw_output_writer
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")]}
+KCD {kernelName = "vernieuw_output_writer", argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")], subroutineName = ""}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4535,7 +4561,7 @@ KCD {argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")]}
 --------------------------------------------------------------------------------
 
 subroutine dyn_0(dt,dx,dy,g)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: du_j_k
@@ -4566,7 +4592,7 @@ end subroutine dyn_0
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")]}
+KCD {kernelName = "dyn_0", argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")], subroutineName = "dyn"}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4574,7 +4600,7 @@ KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")]}
 --------------------------------------------------------------------------------
 
 subroutine dyn_1
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: du_j_k
       real :: duu
@@ -4635,7 +4661,7 @@ end subroutine dyn_1
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = []}
+KCD {kernelName = "dyn_1", argPositions = [], subroutineName = "dyn"}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4643,7 +4669,7 @@ KCD {argPositions = []}
 --------------------------------------------------------------------------------
 
 subroutine dyn_2(dt,dx,dy)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: dx
@@ -4710,7 +4736,7 @@ end subroutine dyn_2
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy")]}
+KCD {kernelName = "dyn_2", argPositions = [(0,"dt"),(1,"dx"),(2,"dy")], subroutineName = "dyn"}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4718,7 +4744,7 @@ KCD {argPositions = [(0,"dt"),(1,"dx"),(2,"dy")]}
 --------------------------------------------------------------------------------
 
 subroutine shapiro(eps)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eps
       real :: eta_j_k
@@ -4771,7 +4797,7 @@ end subroutine shapiro
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"eps")]}
+KCD {kernelName = "shapiro", argPositions = [(0,"eps")], subroutineName = "shapiro"}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4779,7 +4805,7 @@ KCD {argPositions = [(0,"eps")]}
 --------------------------------------------------------------------------------
 
 subroutine vernieuw(hmin)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eta_j_k
       real :: h_j_k
@@ -4817,13 +4843,13 @@ end subroutine vernieuw
 
 --------------------------------------------------------------------------------
 
-KCD {argPositions = [(0,"hmin")]}
+KCD {kernelName = "vernieuw", argPositions = [(0,"hmin")], subroutineName = "vernieuw"}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 --------------------------------------------------------------------------------
- Pipe Init Sub 
+ Pipe Init Sub
 --------------------------------------------------------------------------------
 
 module dyn_shapiro_vernieuw_device_code
@@ -4955,10 +4981,10 @@ subroutine dyn_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -4981,7 +5007,7 @@ subroutine dyn_0_smart_cache
 end subroutine dyn_0_smart_cache
 
 subroutine dyn_0(dt,dx,dy,g)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: du_j_k
@@ -5057,10 +5083,10 @@ subroutine dyn_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -5083,7 +5109,7 @@ subroutine dyn_1_smart_cache
 end subroutine dyn_1_smart_cache
 
 subroutine dyn_1
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: du_j_k
       real :: duu
@@ -5186,10 +5212,10 @@ subroutine dyn_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -5230,7 +5256,7 @@ subroutine dyn_2_smart_cache
 end subroutine dyn_2_smart_cache
 
 subroutine dyn_2(dt,dx,dy)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: dx
@@ -5331,10 +5357,10 @@ subroutine shapiro_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -5384,7 +5410,7 @@ subroutine shapiro_smart_cache
 end subroutine shapiro_smart_cache
 
 subroutine shapiro(eps)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eps
       real :: eta_j_k
@@ -5461,7 +5487,7 @@ subroutine vernieuw_hzero_j_k_reader(hzero)
 end subroutine vernieuw_hzero_j_k_reader
 
 subroutine vernieuw(hmin)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eta_j_k
       real :: h_j_k
@@ -5523,3 +5549,22 @@ end subroutine vernieuw_output_writer
 
 end module dyn_shapiro_vernieuw_device_code
 
+KCD {kernelName = "dyn_0_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
+KCD {kernelName = "dyn_0_smart_cache", argPositions = [], subroutineName = ""}
+KCD {kernelName = "dyn_0", argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")], subroutineName = "dyn"}
+KCD {kernelName = "dyn_1_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
+KCD {kernelName = "dyn_1_u_j_k_reader", argPositions = [(0,"u")], subroutineName = ""}
+KCD {kernelName = "dyn_1_v_j_k_reader", argPositions = [(0,"v")], subroutineName = ""}
+KCD {kernelName = "dyn_1_smart_cache", argPositions = [], subroutineName = ""}
+KCD {kernelName = "dyn_1", argPositions = [], subroutineName = "dyn"}
+KCD {kernelName = "dyn_2_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
+KCD {kernelName = "dyn_2_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
+KCD {kernelName = "dyn_2_smart_cache", argPositions = [], subroutineName = ""}
+KCD {kernelName = "dyn_2", argPositions = [(0,"dt"),(1,"dx"),(2,"dy")], subroutineName = "dyn"}
+KCD {kernelName = "shapiro_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
+KCD {kernelName = "shapiro_smart_cache", argPositions = [], subroutineName = ""}
+KCD {kernelName = "shapiro", argPositions = [(0,"eps")], subroutineName = "shapiro"}
+KCD {kernelName = "vernieuw_output_writer", argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")], subroutineName = ""}
+KCD {kernelName = "vernieuw_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
+KCD {kernelName = "vernieuw_hzero_j_k_reader", argPositions = [(0,"hzero")], subroutineName = ""}
+KCD {kernelName = "vernieuw", argPositions = [(0,"hmin")], subroutineName = "vernieuw"}

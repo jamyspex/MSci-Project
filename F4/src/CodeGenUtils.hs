@@ -7,7 +7,9 @@ import           MiniPP
 import           Utils
 
 data KernelCallingData
-  = KCD { argPositions :: [(Int, String)] }
+  = KCD { kernelName     :: String
+        , argPositions   :: [(Int, String)]
+        , subroutineName :: String }
   | NullCD
   deriving (Show)
 

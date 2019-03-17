@@ -51,7 +51,11 @@ generateMemoryReader memRead@MemoryReader {..} =
     valid = length writtenPipes == 1 && length memToOutputStreams == 1
     kernel = sub name decls mainLoop arrayArg
     callingData =
-      KCD {argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg}
+      KCD
+        { kernelName = name
+        , argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg
+        , subroutineName = ""
+        }
     arrayArg = [argName memBufferName]
     decls = declNode (memBufferDecl : readOutVarDecl : loopVarDecls)
     memBufferName = originalArrayName
@@ -105,7 +109,11 @@ generateMemoryWriter memWriter@MemoryWriter {..} =
     driverLoopBoundVarName = "nLoop"
     kernel = sub name decls mainLoop arrayArg
     callingData =
-      KCD {argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg}
+      KCD
+        { kernelName = name
+        , argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg
+        , subroutineName = ""
+        }
     arrayArg = pipeReadArgs
     decls = declNode (concat pipeReadDecls ++ map intDecl loopVars)
     valid = all (== head allBuffDimensions) allBuffDimensions

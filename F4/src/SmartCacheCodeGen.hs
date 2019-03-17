@@ -23,12 +23,16 @@ generateAndPrintSmartCache smc@SmartCache {..} = do
   putStrLn $ rule '~' ++ name ++ " " ++ rule '~'
   putStrLn $ miniPPProgUnit smartCache
   putStrLn $ rule '-'
+  print kcd
+  putStrLn $ rule '-'
   return smartCache
   where
-    smartCache = generateSmartCache smc
+    (smartCache, kcd) = generateSmartCache smc
 
-generateSmartCache :: PipelineItem SharedPipelineData -> ProgUnit Anno
-generateSmartCache smc@SmartCache {..} = smartCache
+generateSmartCache ::
+     PipelineItem SharedPipelineData -> (ProgUnit Anno, KernelCallingData)
+generateSmartCache smc@SmartCache {..} =
+  (smartCache, KCD {subroutineName = "", kernelName = name, argPositions = []})
   where
     decls = generateDecls smc
     (body, extraDecls) = buildSmartCacheBody smc -- FIXME need to pass the driver loop bounds here
