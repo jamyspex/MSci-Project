@@ -3,6 +3,7 @@
 
 module AddSynthesisedLoopVars where
 
+import           Control.Monad.Extra
 import           Data.Generics
 import           Data.List
 import qualified Data.Map             as DMap
@@ -19,16 +20,25 @@ import           Utils
 -- the original loopVariables from the driver loop. This allows them
 -- to be used in the previously added loop guards.
 synthesiseLoopVars :: [Kernel] -> IO [Kernel]
-synthesiseLoopVars kernels = mapM addToOneKernel validatedKernels
-  where
-    pipelineIsValid = allStreamsSameSize kernels
-    validatedKernels =
-      if pipelineIsValid
-        then kernels
-        else error
-               ("Pipeline " ++
-                concatMap (\k -> kernelName k ++ " -> ") kernels ++
-                "contains streams of different sizes!")
+synthesiseLoopVars kernels = do
+  unlessM
+    (allStreamsSameSize kernels)
+    (error
+       ("Pipeline " ++
+        (kernelName . head) kernels ++
+        concatMap (\k -> " -> " ++ kernelName k) (tail kernels) ++
+        "\ncontains streams of different sizes!"))
+  mapM addToOneKernel kernels
+  -- where
+  --   pipelineIsValid = allStreamsSameSize kernels
+  --   validatedKernels =
+  --     if pipelineIsValid
+  --       then kernels
+  --       else error
+  --              ("Pipeline " ++
+  --               (kernelName . head) kernels ++
+  --               concatMap (\k -> " -> " ++ kernelName k) (tail kernels) ++
+  --               "\ncontains streams of different sizes!")
 
 loopVarName = "count"
 
@@ -202,9 +212,15 @@ getLoopVarToRange kernelCode =
           where
             arrayDims = getArrayDeclDimensions decl
 
-allStreamsSameSize :: [Kernel] -> Bool
-allStreamsSameSize kernels = valid
+allStreamsSameSize :: [Kernel] -> IO Bool
+allStreamsSameSize kernels = do
+  mapM_ printSize allStreams
+  return valid
   where
+    printSize s =
+      putStrLn
+        ("stream = " ++
+         getStreamName s ++ " dims = " ++ show (getStreamDimensions s))
     allStreams = concatMap inputs kernels ++ concatMap outputs kernels
     allSizes = map getStreamDimensions allStreams
     valid = all (== head allSizes) allSizes
