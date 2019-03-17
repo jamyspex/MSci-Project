@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-cse #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module F4 where
 
@@ -11,6 +12,7 @@ import           AddTransitStreams
 import           BuildDeviceModule
 import           CommandLineProcessor    (F4Opts (..), f4CmdParser)
 import           ConstantFolding
+import           Control.Monad.Extra
 import           Data.Generics           (everything, everywhere, everywhereM,
                                           gmapQ, gmapT, mkM, mkQ, mkT)
 import qualified Data.Map                as DMap
@@ -30,6 +32,9 @@ import           SanityChecks
 import           ScalarizeKernels
 import           SmartCacheCodeGen
 import           StencilDetection
+import           System.Directory
+import           System.FilePath.Posix
+import           System.IO
 import           Transformer
 import           Utils
 
@@ -120,10 +125,19 @@ compilerMain args = do
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarisedKernels <- scalarizeKernels withPipes
   generateSmartCaches scalarisedKernels
-  generateMemoryAccess scalarisedKernels
+  generateAndPrintMemoryAccess scalarisedKernels
   generateKernels scalarisedKernels
-  buildDeviceModule scalarisedKernels
+  (fileName, deviceCode) <- buildDeviceModule scalarisedKernels
+  writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
+
+writeToFile :: F4Opts -> String -> String -> IO ()
+writeToFile F4Opts {..} fileName contents = do
+  createDirectoryIfMissing True outputDir
+  whenM (doesFileExist filePath) (removeFile filePath)
+  writeFile filePath contents
+  where
+    filePath = joinPath [outputDir, fileName]
 
 validateInputFiles :: Program LFT.Anno -> IO ()
 validateInputFiles fileAst = do

@@ -706,6 +706,15 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl = not . null . getArrayDimensions . getDeclType
 
+getBaseType (BaseType _ baseType _ _ _) = baseType
+getBaseType (ArrayT _ _ baseType _ _ _) = baseType
+
+getKind (BaseType _ _ _ kind _) = kind
+getKind (ArrayT _ _ _ _ kind _) = kind
+
+getLen (BaseType _ _ _ _ len) = len
+getLen (ArrayT _ _ _ _ _ len) = len
+
 nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
 
 debug_displaySubRoutineTable :: SubroutineTable -> Bool -> IO ()

@@ -13,11 +13,8 @@ import           LanguageFortranTools
 import           MiniPP
 import           Utils
 
-generateMemoryAccess ::
-     [PipelineStage] -> IO [(ProgUnit Anno, KernelCallingData)]
-generateMemoryAccess pipeline = do
-  mapM_ showProgUnitWithCallingData (memoryReaders ++ memoryWriters)
-  return (memoryReaders ++ memoryWriters)
+generateMemoryAccess :: [PipelineStage] -> [(ProgUnit Anno, KernelCallingData)]
+generateMemoryAccess pipeline = memoryReaders ++ memoryWriters
   where
     memoryAccess = concatMap (\(_, _, memAc) -> memAc) pipeline
     memoryReaders =
@@ -35,6 +32,14 @@ generateMemoryAccess pipeline = do
            _ -> False)
         memoryAccess
 
+generateAndPrintMemoryAccess ::
+     [PipelineStage] -> IO [(ProgUnit Anno, KernelCallingData)]
+generateAndPrintMemoryAccess pipeline = do
+  mapM_ showProgUnitWithCallingData memoryAccessKernels
+  return memoryAccessKernels
+  where
+    memoryAccessKernels = generateMemoryAccess pipeline
+
 -- TODO add validation to ensure exactly 1 written pipe and 1 stream
 generateMemoryReader ::
      PipelineItem SharedPipelineData -> (ProgUnit Anno, KernelCallingData)
@@ -44,8 +49,6 @@ generateMemoryReader memRead@MemoryReader {..} =
     else error ("More than one output stream from memory reader " ++ name)
   where
     valid = length writtenPipes == 1 && length memToOutputStreams == 1
-    loopVarName = "index"
-    driverLoopBoundVarName = "nLoop"
     kernel = sub name decls mainLoop arrayArg
     callingData =
       KCD {argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg}
@@ -62,11 +65,12 @@ generateMemoryReader memRead@MemoryReader {..} =
       foldl buildDriverLoopNest (writeCode, []) $ zip dimensions loopVars
     writeCode =
       block $
-      generateArrayReadPipeWrite arrayName readOutVarName loopVars pipeName
+      generateArrayReadPipeWrite
+        originalArrayName
+        readOutVarName
+        loopVars
+        pipeName
     Pipe _ _ pipeName _ _ = head writtenPipes
-    pipeWriteCode =
-      block $
-      generatePipeWrite (var loopVarName) readOutVarName memBufferName pipeName
     (FPGAMemArray {..}, stream@(Stream streamName originalArrayName _ _)) =
       head memToOutputStreams
 
@@ -103,17 +107,18 @@ generateMemoryWriter memWriter@MemoryWriter {..} =
     callingData =
       KCD {argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg}
     arrayArg = pipeReadArgs
-    decls = declNode (intDecl loopVarName : concat pipeReadDecls)
+    decls = declNode (concat pipeReadDecls ++ map intDecl loopVars)
     valid = all (== head allBuffDimensions) allBuffDimensions
     allBuffDimensions = map (dimensions . snd) inputStreamsToMem
     loopVars =
-      reverse $
       take ((length . head) allBuffDimensions) $ map (\i -> [chr i]) [97 .. 122]
+    loopVarsReversed = reverse loopVars
     (mainLoop, loopVarDecls) =
       foldl buildDriverLoopNest (block $ concat pipeReadCode, []) $
-      zip (head allBuffDimensions) loopVars
+      zip (head allBuffDimensions) loopVarsReversed
     (pipeReadCode, pipeReadDecls, pipeReadArgs) =
-      unzip3 $ map (generatePipeReadMemWriterBody loopVars) generationData
+      unzip3 $
+      map (generatePipeReadMemWriterBody loopVarsReversed) generationData
     generationData = matchPipesToStreams memWriter
 
 generatePipeReadMemWriterBody ::

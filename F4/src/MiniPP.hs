@@ -62,7 +62,7 @@ truncateAtLength lineLength file =
     fileLines = lines file
     truncateLine :: Bool -> Int -> String -> [String]
     truncateLine previousTrunc lineLength line
-      | all isSpace line = []
+      | all isSpace line = [line]
       | head (dropWhile isSpace line) == '!' && previousTrunc = ["&" ++ line] -- don't truncate comments
       | length line <= lineLength && previousTrunc = ["&" ++ line]
       | previousTrunc =
@@ -220,11 +220,14 @@ miniPPProgUnit prog =
       showArg args ++
       "\n" ++ printBlock b ++ "\nend subroutine " ++ subname ++ "\n"
                     -- (Function _ _ _ _ _ _ b) -> [blockToFortran b]
-    Module _ _ (SubName _ moduleName) _ _ _ p ->
+    Module _ _ (SubName _ moduleName) _ _ decls p ->
       "module " ++
       moduleName ++
-      "\ncontains\n" ++
-      concatMap miniPPProgUnit p ++ "\nend module " ++ moduleName
+      "\n" ++
+      miniPPD decls ++
+      "\ncontains\n\n" ++
+      concatMap (\s -> miniPPProgUnit s ++ "\n") p ++
+      "end module " ++ moduleName
     _ -> "program anno unsuppported"
                     -- (BlockData _ _ _ _ _ _) -> []
                     -- (PSeq _ _ p1 p2) -> getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2

@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase    #-}
 {-# LANGUAGE TupleSections #-}
 
 module AddSynthesisedLoopVars where
@@ -35,15 +36,63 @@ loopVarName = "count"
 
 addToOneKernel :: Kernel -> IO Kernel
 addToOneKernel kernel = do
-  putStrLn $ show kernelWithLoopDerviation
-  return kernelWithLoopDerviation
+  putStrLn $ show kernelWithLoopVarsUpdated
+  return kernelWithLoopVarsUpdated
   where
     streamDimensions = (getStreamDimensions . head . outputs) kernel
     kernelCode = body kernel
     loopVarsAndOperatingRanges = getLoopVarToRange kernelCode
+    loopVarNamesOnly = map (\(_, name, _) -> name) loopVarsAndOperatingRanges
     derivationCode = emitLoopVarDerivationCode loopVarsAndOperatingRanges
     kernelWithLoopDerviation =
       addDerivationCodeToKernelBody derivationCode kernel
+    kernelWithLoopVarsUpdated =
+      removeIntentFromLoopVars loopVarNamesOnly kernelWithLoopDerviation
+
+removeIntentFromLoopVars :: [String] -> Kernel -> Kernel
+removeIntentFromLoopVars loopVars kernel = kernel {body = newKernelCode}
+  where
+    kernelCode@(Sub anno srcSpan returnType name args block) = body kernel
+    (Block blockAnno uses implicit blockSrcSpan _ fortran) = block
+    allDecls = getDecls kernelCode
+    originalSubName = getSubName kernelCode
+    newKernelCode = Sub anno srcSpan returnType name args updatedBlock
+    updatedBlock =
+      Block
+        blockAnno
+        uses
+        implicit
+        blockSrcSpan
+        (declNode withIntentRemovedFromLoopVarDecls)
+        fortran
+    withIntentRemovedFromLoopVarDecls =
+      map
+        (\d ->
+           trace
+             ("loop vars = " ++
+              show loopVars ++
+              " decl name = " ++ (getNameFromVarName . getVarNameG) d)
+             (if (getNameFromVarName . getVarNameG) d `elem` loopVars
+                then removeIntentAttr d
+                else d))
+        allDecls
+    removeIntentAttr :: Decl Anno -> Decl Anno
+    removeIntentAttr d@(Decl an srcSpn expr fortranType) =
+      Decl an srcSpn expr updatedType
+      where
+        updatedType =
+          BaseType nullAnno baseType attrsWithIntentsRemoved kind len
+        (baseType, attrs, kind, len) =
+          ( getBaseType fortranType
+          , getAttrs fortranType
+          , getKind fortranType
+          , getLen fortranType)
+        attrsWithIntentsRemoved =
+          filter
+            (\case
+               (Intent _ _) -> False
+               _ -> True)
+            attrs
 
 addDerivationCodeToKernelBody :: Fortran Anno -> Kernel -> Kernel
 addDerivationCodeToKernelBody dervCode kernel =

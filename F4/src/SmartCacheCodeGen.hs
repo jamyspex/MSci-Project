@@ -13,16 +13,22 @@ import           MiniPP
 import           Utils
 
 generateSmartCaches :: [PipelineStage] -> IO ()
-generateSmartCaches pipeline = mapM_ generateSmartCache smartCaches
+generateSmartCaches pipeline = mapM_ generateAndPrintSmartCache smartCaches
   where
     smartCaches = mapMaybe (\(_, smartCache, _) -> smartCache) pipeline
 
-generateSmartCache :: PipelineItem SharedPipelineData -> IO (ProgUnit Anno)
-generateSmartCache smc@SmartCache {..} = do
+generateAndPrintSmartCache ::
+     PipelineItem SharedPipelineData -> IO (ProgUnit Anno)
+generateAndPrintSmartCache smc@SmartCache {..} = do
   putStrLn $ rule '~' ++ name ++ " " ++ rule '~'
   putStrLn $ miniPPProgUnit smartCache
   putStrLn $ rule '-'
   return smartCache
+  where
+    smartCache = generateSmartCache smc
+
+generateSmartCache :: PipelineItem SharedPipelineData -> ProgUnit Anno
+generateSmartCache smc@SmartCache {..} = smartCache
   where
     decls = generateDecls smc
     (body, extraDecls) = buildSmartCacheBody smc -- FIXME need to pass the driver loop bounds here

@@ -19,7 +19,7 @@ for' comparision loopVar initial lhs =
     nullSrcSpan
     (varName loopVar)
     (con initial)
-    (comparision (var loopVar) lhs)
+    lhs -- (comparision (var loopVar) lhs)
     (con 1)
 
 forLT = for' lessThan
@@ -45,6 +45,14 @@ varName = VarName nullAnno
 argName = ArgName nullAnno
 
 block = buildAstSeq (FSeq nullAnno nullSrcSpan) (NullStmt nullAnno nullSrcSpan)
+
+fortranModule name =
+  Module
+    nullAnno
+    nullSrcSpan
+    (SubName nullAnno name)
+    (UseNil nullAnno)
+    (ImplicitNull nullAnno)
 
 sub name decls body args =
   Sub
