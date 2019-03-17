@@ -127,10 +127,10 @@ subroutine dyn_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -153,7 +153,7 @@ subroutine dyn_0_smart_cache
 end subroutine dyn_0_smart_cache
 
 subroutine dyn_0(dt,dx,dy,g)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: du_j_k
@@ -229,10 +229,10 @@ subroutine dyn_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 503
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 0
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -255,7 +255,7 @@ subroutine dyn_1_smart_cache
 end subroutine dyn_1_smart_cache
 
 subroutine dyn_1
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: du_j_k
       real :: duu
@@ -358,10 +358,10 @@ subroutine dyn_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -402,7 +402,7 @@ subroutine dyn_2_smart_cache
 end subroutine dyn_2_smart_cache
 
 subroutine dyn_2(dt,dx,dy)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: dt
       real :: dx
@@ -431,7 +431,6 @@ subroutine dyn_2(dt,dx,dy)
       real :: un_j_k
       real :: vn_j_k
       real :: vn_jm1_k
-      real :: vn_j_k
     do count = 1, nloop, 1
         call read_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
         call read_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
@@ -503,10 +502,10 @@ subroutine shapiro_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: nloop = 252507
+      integer, parameter :: smartCacheSize = 1005
+      integer, parameter :: maxPositiveOffset = 503
+      integer, parameter :: maxNegativeOffset = 503
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -556,7 +555,7 @@ subroutine shapiro_smart_cache
 end subroutine shapiro_smart_cache
 
 subroutine shapiro(eps)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eps
       real :: eta_j_k
@@ -633,7 +632,7 @@ subroutine vernieuw_hzero_j_k_reader(hzero)
 end subroutine vernieuw_hzero_j_k_reader
 
 subroutine vernieuw(hmin)
-      integer, parameter :: nloop = 252004 
+      integer, parameter :: nloop = 252004
       integer :: count
       real :: eta_j_k
       real :: h_j_k
