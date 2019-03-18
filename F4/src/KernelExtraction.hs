@@ -146,10 +146,7 @@ parseArrayExpr (Var _ _ ((VarName _ arrayName, indexList) : _)) = PAE
   { arrName         = arrayName
   , loopVarsOrdered = loopVars
   }
- where
-  loopVars =
-    map (\expr -> trace ("expr = " ++ miniPP expr) (getLoopVarName expr))
-      $ filter (not . isConstant) indexList
+  where loopVars = map getLoopVarName $ filter (not . isConstant) indexList
 
 getLoopVarName :: Expr Anno -> String
 getLoopVarName t@(Bin _ _ (Plus _) loopVar (Con _ _ offset)) =
