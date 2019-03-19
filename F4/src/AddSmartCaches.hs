@@ -13,7 +13,6 @@ import           GHC.Exts
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
-import           Pipeline
 import           SmartCacheParameterAnalysis
 import           Text.Printf
 import           Utils
@@ -34,10 +33,6 @@ buildSmartCacheForKernel ::
      Kernel -> IO (Kernel, Maybe (PipelineItem SharedPipelineData))
 buildSmartCacheForKernel k = do
   print "------------------------------------------"
- -- print k
- -- mapM_ print smartCacheItems
- -- print "======== Padded items below =============="
- -- mapM_ print paddedSmartCacheItems
   print withInputStreamsUpdated
   print "------------------------------------------"
   return
@@ -143,6 +138,14 @@ padCacheItems inputs = map updateCacheItem inputs
                   outputStreamNamesAndBufferIndex
             }
 
+bodgeMapKeysForLES :: [StencilIndex] -> [StencilIndex]
+bodgeMapKeysForLES =
+  map
+    (\i ->
+       case i of
+         Offset v   -> i
+         Constant v -> Offset v)
+
 -- Using the stencil points match the results from SmartCacheParameterAnalysis with
 -- the generated output variable names. The smart cache buffer will be a standard
 -- Fortran array with 1 based indexing. This means the values from startToPointDistances
@@ -164,11 +167,15 @@ buildSmartCacheItem kernel streamDimensionOrder inStream =
       calculateSmartCacheDetailsForStream
         (defaultIterationOrder streamDimensionOrder)
         inStream
-    pointToStreamNameMap = DMap.fromList outputVars
+    pointToStreamNameMap =
+      (DMap.fromList outputVars) :: DMap.Map [StencilIndex] String
+    bodgedMapForLES = DMap.mapKeys bodgeMapKeysForLES pointToStreamNameMap
+      -- map
+      --   (\(key, val) -> (map (map Offset) $ stripStenIndex key, val))
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           (pointToStreamNameMap DMap.! map Offset point, buffIndex) : acc)
+           (bodgedMapForLES DMap.! (map Offset point), buffIndex) : acc)
         []
         ((startIndex, 1) : startToPointDistances)
 
@@ -213,7 +220,7 @@ getOutputVariableNames loopVarsAndPosition (Stencil _ _ _ stenIndices (VarName _
 -- loop var usage is consistent across arrays in a kernel thanks to
 -- validateIndexingAndMakeUnique in AddrnelLoopGuards.hs
 getLoopVarPositions :: String -> Kernel -> [(String, Maybe Int)]
-getLoopVarPositions stencilArrayName Kernel {..} =
+getLoopVarPositions stencilArrayName kern@Kernel {..} =
   map (\(_, loopV, mPos) -> (loopV, mPos)) $
   getLoopIndexPosition loopVars arrayAccess
   where
@@ -222,5 +229,7 @@ getLoopVarPositions stencilArrayName Kernel {..} =
         (\arr ->
            let (VarName _ name) = arrayVarName arr
             in name == stencilArrayName) $
+      -- trace
+      --   ("stencilArrayName = " ++ stencilArrayName ++ "\nkernel=" ++ show kern) $
       map arrayFromDecl $ getArrayDecls body
     arrayAccess = head $ getArrayReads stencilArray (getSubBody body)

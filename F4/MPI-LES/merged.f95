@@ -251,7 +251,7 @@ contains
   &then
          u(i, j, k) = u(i, j, 77)
          v(i, j, k) = 0.0
-         w(i, j, k) = 0.0
+         w(i, j, k) = 0.0 ! FIXME need to work out how to fix statements like this
       end if
       !}
       if (n == n0) then
