@@ -2080,15 +2080,27 @@ BEFORE
 dyn_1 requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 dyn_1 requires:
+Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+dyn_1 requires:
+Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+dyn_1 requires:
 Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 dyn_1 requires:
 Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
 dyn_2 requires:
 StencilStream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 dyn_2 requires:
+StencilStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+dyn_2 requires:
+StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+dyn_2 requires:
 Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 shapiro requires:
+StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+shapiro requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+vernieuw requires:
+Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
 Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
@@ -2101,6 +2113,24 @@ Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 
 --------------------------------------------------------------------------------
 
+Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_0
+Consumed at: dyn_1
+Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_0
+Consumed at: dyn_1
+TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: dyn_2
+TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: dyn_2
+TransitStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_2
+Consumed at: shapiro
+Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+Produced at: shapiro
+Consumed at: vernieuw
 Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 Produced at: dyn_1
 Consumed at: vernieuw

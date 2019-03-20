@@ -101,10 +101,7 @@ buildTransitStream (Stream name arrayName valueType dims) =
 buildTransitStream s = s
 
 printMismatch kernels (order, stream) =
-  (trace "lol" (kernelName (kernels !! order)))
-    ++ " requires:\n"
-    ++ printStream stream
-    ++ "\n"
+  kernelName (kernels !! order) ++ " requires:\n" ++ printStream stream ++ "\n"
 
 printPotentialTransitStreams kernels ((producedAt, consumedAt), stream) =
   printStream stream
@@ -179,7 +176,8 @@ getUnmatchedInputStreams kernels = if valid
       []
       requiredInputStreams
     checkIfStreamsMatched :: Stream Anno -> [(Int, Stream Anno)]
-    checkIfStreamsMatched s@(StencilStream name _ _ _ _) = check s name
-    checkIfStreamsMatched s@(Stream name _ _ _         ) = check s name
+    checkIfStreamsMatched s@(StencilStream _ arrayName _ _ _) =
+      check s arrayName
+    checkIfStreamsMatched s@(Stream _ arrayName _ _) = check s arrayName
     check s name =
       if Set.member name availableStreams then [] else [(order kernel, s)]
