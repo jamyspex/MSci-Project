@@ -112,16 +112,15 @@ calculateSmartCacheDetailsForStream kernel itOrder sten
           )
       . sortStencils
       )
-      all
-  pairsFromStart =
-    map (\(size, (_, point)) -> (point, size))
-      $ filter
-          (\(_, (start, end)) ->
-            not centralPointNeedsAdded
-              || (start /= centralIdxStriped && end /= centralIdxStriped)
-          )
-      $ filter (\(_, (start, _)) -> start == maxStart) all
-
+      centralIdxRemoved --all
+  pairsFromStart = map (\(size, (_, point)) -> (point, size))
+    $ filter (\(_, (start, _)) -> start == maxStart) centralIdxRemoved
+  centralIdxRemoved = filter
+    (\(_, (start, end)) ->
+      not centralPointNeedsAdded
+        || (start /= centralIdxStriped && end /= centralIdxStriped)
+    )
+    all
 getMaxOffset
   :: [(Int, ([Int], [Int]))]
   -> (([Int], [Int]) -> [Int])
@@ -173,8 +172,18 @@ getMaxOffset all select centralIdx = if (not . null) filtered
 -- significant index in this case -2 and 2 and repeats the process
 calculateSmartCacheSizeForAllPairsOfStencilPoints
   :: [Int] -> Stream Anno -> [(Int, ([Int], [Int]))]
-calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream _ _ _ arrayDimens stencil)
-  = stencilSizesAndIndexPairs
+calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream streamName _ _ arrayDimens stencil)
+  = trace
+    (  "calculateSmartCacheSizeForAllPairsOfStencilPoints: stream = "
+    ++ streamName
+    ++ " stencilDimens = "
+    ++ show stencilDimens
+    ++ " stencil indices = "
+    ++ show stencilIndices
+    ++ " result = "
+    ++ show stencilSizesAndIndexPairs
+    )
+    stencilSizesAndIndexPairs
  where
   (Stencil _ stencilDimens _ stencilIndices _) = stencil
   stencilIndicesInts                           = stripStenIndex stencilIndices
@@ -184,9 +193,11 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
     filter (\(x, y) -> compareIndices x y iterationOrder == LT) allIndexPairs
   stencilSizesAndIndexPairs = map go smallIndexFirstOnly
   go (l1, l2) =
-    let initial = ((l1, l2), True, 0)
-        ((ol1, ol2), _, totArea) =
-          foldl combineReaches initial (reverse iterationOrder)
+    let initial                  = ((l1, l2), True, 0)
+        ((ol1, ol2), _, totArea) = foldl
+          combineReaches
+          initial
+          (reverse $ take (length l1) iterationOrder)
         offset =
           headNote "SmartCacheParameterAnalysis: line 164" ol1
             - headNote "SmartCacheParameterAnalysis: line 165" ol2
@@ -201,7 +212,11 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
         ((idx1, idx2), False, areaSoFar + calculateReach component (idx1, idx2))
       else ((idx1, idx2), False, areaSoFar)
    where
-    i1 = trace "line 204" idx1 !! component
+    i1 =
+      trace
+          ("line 204 idx1 = " ++ show idx1 ++ " component = " ++ show component)
+          idx1
+        !! component
     i2 = trace "line 205" idx2 !! component
   calculateReach :: Int -> ([Int], [Int]) -> Int
   calculateReach pos (ind1, ind2) = numBlocks

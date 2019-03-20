@@ -332,7 +332,9 @@ inNest = inNestedGrid()
 #ifdef TIMINGS
         call system_clock(timestamp(1), clock_rate)
 #endif
+#ifdef CALC_BOUNDS
         call bondv1(u,z2,dzn,v,w,n,n0,dt,dxs) !WV: via halos + gatheraaa/bbb. Sideflow etc should be OK as in outer domain ???
+#endif
 #if defined( MPI ) && defined( NESTED_LES)
 if (n>n_nest0) then
 #endif
