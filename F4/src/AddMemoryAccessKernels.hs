@@ -114,9 +114,10 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
     availableStreams
     requiredInputStreams
   withKernelOutputStreams = foldl
-    (\set (Stream name _ _ _) -> Set.insert name set)
+    (\set stream -> Set.insert (getStreamName stream) set)
     withConsumedStreamsRemoved
     (outputStreams kernel)
+      -- (Stream name _ _ _) -> Set.insert name set)
   buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
   buildMemoryReader stream@(Stream streamName _ valueType dimensions) =
     if streamAvailable

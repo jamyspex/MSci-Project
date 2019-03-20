@@ -2213,8 +2213,8 @@ end subroutine dyn_1
  !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2276,8 +2276,8 @@ end subroutine dyn_2
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2465,8 +2465,8 @@ end subroutine dyn_1
  !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2530,8 +2530,8 @@ end subroutine dyn_2
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2738,8 +2738,8 @@ end subroutine dyn_1
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_jm1_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2813,8 +2813,8 @@ end subroutine dyn_2
  !	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -3133,8 +3133,8 @@ Input Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_jm1_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 OutputStreams:
-	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 readPipes:
 writtenPipes:
@@ -3295,8 +3295,8 @@ Input Streams:
 	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
 	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
 OutputStreams:
-	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 readPipes:
 writtenPipes:
