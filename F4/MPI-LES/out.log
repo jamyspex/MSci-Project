@@ -10996,11 +10996,9 @@ end subroutine bondv1_10
  ! ==============================================
  ! Name: bondv1_11 Order: 14
  ! Input streams:
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array v: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -11026,15 +11024,9 @@ end subroutine bondv1_11
  ! ==============================================
  ! Name: bondv1_12 Order: 15
  ! Input streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -11054,10 +11046,6 @@ end subroutine bondv1_12
  ! ==============================================
  ! Name: velfg_0 Order: 16
  ! Input streams:
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	2 point stencil on 1D array dx1: [[0],[1]]
  !	StencilStream: dy1 array name: dy1 type: Float dimensions: [(0,301)]!	5 point stencil on 1D array dy1: [[C=0],[C=1],[0],[1],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
@@ -11066,10 +11054,6 @@ end subroutine bondv1_12
  !	StencilStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	6 point stencil on 3D array w: [[1,0,C=1],[1,0,0],[1,0,-1],[0,0,C=1],[0,0,0],[0,0,-1]]
  !	Stream: dzn array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11166,11 +11150,7 @@ end subroutine velfg_0
  ! ==============================================
  ! Name: velfg_1 Order: 17
  ! Input streams:
- !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
  !	StencilStream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]!	2 point stencil on 1D array dy1: [[0],[1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
@@ -11179,9 +11159,6 @@ end subroutine velfg_0
  !	StencilStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	6 point stencil on 3D array w: [[0,1,C=1],[0,1,0],[0,1,-1],[0,0,C=1],[0,0,0],[0,0,-1]]
  !	Stream: dzn array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11279,9 +11256,6 @@ end subroutine velfg_1
  ! ==============================================
  ! Name: velfg_2 Order: 18
  ! Input streams:
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
@@ -11291,8 +11265,6 @@ end subroutine velfg_1
  !	StencilStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	6 point stencil on 3D array v: [[0,C=0,0],[0,C=0,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1]]
  !	StencilStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	9 point stencil on 3D array w: [[1,0,0],[0,C=0,0],[0,C=1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0],[-1,0,0]]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11385,16 +11357,12 @@ end subroutine velfg_2
  ! ==============================================
  ! Name: velfg_3 Order: 19
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11418,16 +11386,12 @@ end subroutine velfg_3
  ! ==============================================
  ! Name: velfg_4 Order: 20
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11451,16 +11415,12 @@ end subroutine velfg_4
  ! ==============================================
  ! Name: velfg_5 Order: 21
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -11485,8 +11445,6 @@ end subroutine velfg_5
  ! ==============================================
  ! Name: feedbf Order: 22
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
  !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
@@ -11503,8 +11461,6 @@ end subroutine velfg_5
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
  !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
@@ -11577,8 +11533,6 @@ end subroutine feedbf
  ! Name: les_0 Order: 23
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11589,8 +11543,6 @@ end subroutine feedbf
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11620,8 +11572,6 @@ end subroutine les_0
  ! Name: les_1 Order: 24
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11639,8 +11589,6 @@ end subroutine les_0
  !	Stream: diu9_i_j_k array name: diu9 type: Float dimensions: [(0,302),(0,302),(0,82)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11707,8 +11655,6 @@ end subroutine les_1
  ! Name: les_2 Order: 25
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11717,8 +11663,6 @@ end subroutine les_1
  !	StencilStream: sm_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[C=1,0,0],[C=300,0,0]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11747,8 +11691,6 @@ end subroutine les_2
  ! Name: les_3 Order: 26
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11757,8 +11699,6 @@ end subroutine les_2
  !	StencilStream: sm_i_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11789,8 +11729,6 @@ end subroutine les_3
  ! Name: les_4 Order: 27
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11799,8 +11737,6 @@ end subroutine les_3
  !	StencilStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11831,13 +11767,10 @@ end subroutine les_4
  ! Name: les_5 Order: 28
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu1_i_j_k array name: diu1 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
  !	StencilStream: diu2_i_j_k array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
  !	StencilStream: diu3_i_j_k array name: diu3 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
@@ -11851,12 +11784,9 @@ end subroutine les_4
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -11932,12 +11862,9 @@ end subroutine les_5
  ! Name: les_6 Order: 29
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu1_i_j array name: diu1 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu1: [[1,0,C=1],[0,0,C=1]]
  !	StencilStream: diu2_i_j array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,C=1],[0,0,C=1]]
  !	StencilStream: diu4_i_j array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,C=1],[1,-1,C=1]]
@@ -11953,11 +11880,9 @@ end subroutine les_5
  !	Stream: uspd_i_j array name: uspd type: Float dimensions: [(0,301),(0,301)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: f_i_j array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -12029,12 +11954,10 @@ end subroutine les_6
  ! Name: les_7 Order: 30
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu2_i_j_k array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,0],[-1,1,0]]
  !	StencilStream: diu4_i_j_k array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,0],[0,0,0]]
  !	StencilStream: diu5_i_j_k array name: diu5 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu5: [[0,1,0],[0,0,0]]
@@ -12048,11 +11971,9 @@ end subroutine les_6
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -12128,11 +12049,9 @@ end subroutine les_7
  ! Name: les_8 Order: 31
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu2_i_j array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,C=1],[-1,1,C=1]]
  !	StencilStream: diu4_i_j array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,C=1],[0,0,C=1]]
  !	StencilStream: diu5_i_j array name: diu5 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu5: [[0,1,C=1],[0,0,C=1]]
@@ -13173,11 +13092,9 @@ end subroutine bondv1_10
  ! ==============================================
  ! Name: bondv1_11 Order: 14
  ! Input streams:
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	2 point stencil on 3D array v: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -13205,15 +13122,9 @@ end subroutine bondv1_11
  ! ==============================================
  ! Name: bondv1_12 Order: 15
  ! Input streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -13235,10 +13146,6 @@ end subroutine bondv1_12
  ! ==============================================
  ! Name: velfg_0 Order: 16
  ! Input streams:
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	2 point stencil on 1D array dx1: [[0],[1]]
  !	StencilStream: dy1 array name: dy1 type: Float dimensions: [(0,301)]!	5 point stencil on 1D array dy1: [[C=0],[C=1],[0],[1],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
@@ -13247,10 +13154,6 @@ end subroutine bondv1_12
  !	StencilStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	6 point stencil on 3D array w: [[1,0,C=1],[1,0,0],[1,0,-1],[0,0,C=1],[0,0,0],[0,0,-1]]
  !	Stream: dzn array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13350,11 +13253,7 @@ end subroutine velfg_0
  ! ==============================================
  ! Name: velfg_1 Order: 17
  ! Input streams:
- !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
  !	StencilStream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]!	2 point stencil on 1D array dy1: [[0],[1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
@@ -13363,9 +13262,6 @@ end subroutine velfg_0
  !	StencilStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	6 point stencil on 3D array w: [[0,1,C=1],[0,1,0],[0,1,-1],[0,0,C=1],[0,0,0],[0,0,-1]]
  !	Stream: dzn array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13466,9 +13362,6 @@ end subroutine velfg_1
  ! ==============================================
  ! Name: velfg_2 Order: 18
  ! Input streams:
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	StencilStream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]!	3 point stencil on 1D array dx1: [[0],[1],[-1]]
@@ -13478,8 +13371,6 @@ end subroutine velfg_1
  !	StencilStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]!	6 point stencil on 3D array v: [[0,C=0,0],[0,C=0,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1]]
  !	StencilStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]!	9 point stencil on 3D array w: [[1,0,0],[0,C=0,0],[0,C=1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0],[-1,0,0]]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13575,16 +13466,12 @@ end subroutine velfg_2
  ! ==============================================
  ! Name: velfg_3 Order: 19
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: f_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13610,16 +13497,12 @@ end subroutine velfg_3
  ! ==============================================
  ! Name: velfg_4 Order: 20
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: g_i_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13645,16 +13528,12 @@ end subroutine velfg_4
  ! ==============================================
  ! Name: velfg_5 Order: 21
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -13681,8 +13560,6 @@ end subroutine velfg_5
  ! ==============================================
  ! Name: feedbf Order: 22
  ! Input streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
  !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
@@ -13699,8 +13576,6 @@ end subroutine velfg_5
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
  !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
@@ -13776,8 +13651,6 @@ end subroutine feedbf
  ! Name: les_0 Order: 23
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13788,8 +13661,6 @@ end subroutine feedbf
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13820,8 +13691,6 @@ end subroutine les_0
  ! Name: les_1 Order: 24
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13839,8 +13708,6 @@ end subroutine les_0
  !	Stream: diu9_i_j_k array name: diu9 type: Float dimensions: [(0,302),(0,302),(0,82)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13910,8 +13777,6 @@ end subroutine les_1
  ! Name: les_2 Order: 25
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13920,8 +13785,6 @@ end subroutine les_1
  !	StencilStream: sm_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[C=1,0,0],[C=300,0,0]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13952,8 +13815,6 @@ end subroutine les_2
  ! Name: les_3 Order: 26
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13962,8 +13823,6 @@ end subroutine les_2
  !	StencilStream: sm_i_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,C=1,0],[0,C=300,0]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -13996,8 +13855,6 @@ end subroutine les_3
  ! Name: les_4 Order: 27
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -14006,8 +13863,6 @@ end subroutine les_3
  !	StencilStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]!	2 point stencil on 3D array sm: [[0,0,C=1],[0,0,C=80]]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -14040,13 +13895,10 @@ end subroutine les_4
  ! Name: les_5 Order: 28
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu1_i_j_k array name: diu1 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu1: [[1,0,0],[0,0,0]]
  !	StencilStream: diu2_i_j_k array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,0],[0,0,0]]
  !	StencilStream: diu3_i_j_k array name: diu3 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu3: [[0,0,0],[0,0,1]]
@@ -14060,12 +13912,9 @@ end subroutine les_4
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -14144,12 +13993,9 @@ end subroutine les_5
  ! Name: les_6 Order: 29
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu1_i_j array name: diu1 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu1: [[1,0,C=1],[0,0,C=1]]
  !	StencilStream: diu2_i_j array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,C=1],[0,0,C=1]]
  !	StencilStream: diu4_i_j array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,C=1],[1,-1,C=1]]
@@ -14165,11 +14011,9 @@ end subroutine les_5
  !	Stream: uspd_i_j array name: uspd type: Float dimensions: [(0,301),(0,301)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: f_i_j array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -14243,12 +14087,10 @@ end subroutine les_6
  ! Name: les_7 Order: 30
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu2_i_j_k array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,0],[-1,1,0]]
  !	StencilStream: diu4_i_j_k array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,0],[0,0,0]]
  !	StencilStream: diu5_i_j_k array name: diu5 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu5: [[0,1,0],[0,0,0]]
@@ -14262,11 +14104,9 @@ end subroutine les_6
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: sm_i_j array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
@@ -14345,11 +14185,9 @@ end subroutine les_7
  ! Name: les_8 Order: 31
  ! Input streams:
  !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	StencilStream: diu2_i_j array name: diu2 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu2: [[0,1,C=1],[-1,1,C=1]]
  !	StencilStream: diu4_i_j array name: diu4 type: Float dimensions: [(0,302),(0,302),(0,82)]!	2 point stencil on 3D array diu4: [[1,0,C=1],[0,0,C=1]]
  !	StencilStream: diu5_i_j array name: diu5 type: Float dimensions: [(-1,302),(0,302),(0,82)]!	2 point stencil on 3D array diu5: [[0,1,C=1],[0,0,C=1]]
@@ -14960,8 +14798,8 @@ end subroutine press_10
  !	Stream: dxs_i array name: dxs type: Float dimensions: [(0,300)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: p_0_p1__ array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
- !	Stream: p_0___ array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -15002,8 +14840,8 @@ end subroutine velnw_0
  !	Stream: dys_j array name: dys type: Float dimensions: [(0,300)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: p_0__p1_ array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
- !	Stream: p_0___ array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -15044,8 +14882,8 @@ end subroutine velnw_1
  !	Stream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	Stream: p_0___ array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
- !	Stream: p_0___p1 array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ !	Stream: p_0_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  ! Output Reduction Variables:
@@ -15219,8 +15057,8 @@ end subroutine bondv1_3
  !	Stream: dxs array name: dxs type: Float dimensions: [(0,300)]
  !	Stream: w_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_299__ array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_300__ array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_299_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_300_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	TransitStream: w_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -15257,8 +15095,8 @@ end subroutine bondv1_4
  !	Stream: dxs array name: dxs type: Float dimensions: [(0,300)]
  !	Stream: u_i_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	Stream: v_300__ array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_301__ array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_300_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_301_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	TransitStream: u_i_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: w_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
@@ -15295,8 +15133,8 @@ end subroutine bondv1_5
  !	Stream: dxs array name: dxs type: Float dimensions: [(0,300)]
  !	Stream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: w_300__ array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	Stream: w_301__ array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_300_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_301_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  ! Output streams:
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -15332,8 +15170,8 @@ end subroutine bondv1_6
  ! Input streams:
  !	Stream: w_i_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u__1_ array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u__300_ array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_1_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_300_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	TransitStream: w_i_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -15365,8 +15203,8 @@ end subroutine bondv1_7
  ! Input streams:
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	Stream: v__1_ array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v__300_ array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_1_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_300_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: w_i_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
@@ -15398,8 +15236,8 @@ end subroutine bondv1_8
  ! Input streams:
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: w__1_ array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
- !	Stream: w__300_ array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_1_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_300_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  ! Output streams:
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -15432,8 +15270,8 @@ end subroutine bondv1_9
  ! Name: bondv1_10 Order: 13
  ! Input streams:
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u___1 array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u___80 array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_1 array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_80 array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
@@ -15464,12 +15302,10 @@ end subroutine bondv1_10
  ! ==============================================
  ! Name: bondv1_11 Order: 14
  ! Input streams:
- !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v___1 array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v___80 array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_1 array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_80 array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -15499,15 +15335,9 @@ end subroutine bondv1_11
  ! ==============================================
  ! Name: bondv1_12 Order: 15
  ! Input streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: v_i_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output Reduction Variables:
@@ -15523,6 +15353,140 @@ subroutine bondv1_12(w)
     w(i,j,80) = 0.0
 !}
 end subroutine bondv1_12
+ ! ==============================================
+
+
+"------------------------------------------"
+"------------------------------------------"
+ ! ==============================================
+ ! Name: velfg_0 Order: 16
+ ! Input streams:
+ !	Stream: dzn array name: dzn type: Float dimensions: [(-1,82)]
+ !	Stream: dx1_ip1 array name: dx1 type: Float dimensions: [(-1,301)]
+ !	Stream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]
+ !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
+ !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
+ !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
+ !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
+ !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
+ !	Stream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]
+ !	Stream: dzs_km1 array name: dzs type: Float dimensions: [(-1,82)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Output streams:
+ !	TransitStream: w_i_j array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	TransitStream: v_i_j array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine velfg_0(dx1,dy1,dzn,dzs,f,u,v,w)
+      real(4) :: cov1_i
+      real(4) :: cov2_j
+      real(4) :: cov3_k
+      real(4) :: cov1_ip1
+      real(4) :: cov2_jp1
+      real(4) :: cov3_kp1
+      real(4) :: covc
+      real(4) :: covx1
+      real(4) :: covy1
+      real(4) :: covz1
+      real(4) :: diu1_
+      real(4) :: diu2_
+      real(4) :: diu3_
+      real(4) :: diu1_ip1
+      real(4) :: diu2_jp1
+      real(4) :: diu3_kp1
+      real(4), dimension(-1:301), intent(In) :: dx1
+      real(4), dimension(0:301), intent(In) :: dy1
+      real(4), dimension(-1:82), intent(In) :: dzn
+      real(4), dimension(-1:82), intent(In) :: dzs
+      real(4), dimension(0:300,0:300,0:80), intent(InOut) :: f
+      integer :: i
+      integer :: j
+      integer :: k
+      real(4) :: nou1_
+      real(4) :: nou2_
+      real(4) :: nou3_
+      real(4) :: nou1_ip1
+      real(4) :: nou2_jp1
+      real(4) :: nou3_kp1
+      real(4), dimension(0:301,-1:301,0:81), intent(InOut) :: u
+      real(4), dimension(0:301,-1:301,0:81), intent(InOut) :: v
+      real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
+! OpenCLStencil (
+!	2 point stencil on 1D array dx1: [[0],[1]]
+!	5 point stencil on 1D array dy1: [[C=0],[C=1],[0],[1],[-1]]
+!	2 point stencil on 1D array dzs: [[0],[-1]]
+!	10 point stencil on 3D array u: [[1,0,0],[0,C=0,0],[0,C=1,0],[0,1,0],[0,0,C=1],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0],[-1,0,0]]
+!	6 point stencil on 3D array v: [[1,C=0,0],[1,0,0],[1,-1,0],[0,C=0,0],[0,0,0],[0,-1,0]]
+!	6 point stencil on 3D array w: [[1,0,C=1],[1,0,0],[1,0,-1],[0,0,C=1],[0,0,0],[0,0,-1]]
+!    ){
+! OpenCLMap ( ["dx1","dzs","k","j"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+        nou1_ = (u(i-1,j,k)+u(i,j,k))/2.
+        diu1_ = (-u(i-1,j,k)+u(i,j,k))/dx1(i)
+        cov1_i = nou1_*diu1_
+        nou1_ip1 = (u(i,j,k)+u(i+1,j,k))/2.
+        diu1_ip1 = (-u(i,j,k)+u(i+1,j,k))/dx1(i+1)
+        cov1_ip1 = nou1_ip1*diu1_ip1
+        if (i==300) then
+                cov1_ip1 = cov1_i
+        end if
+        nou2_ = (dx1(i+1)*v(i,j-1,k)+dx1(i)*v(i+1,j-1,k))/(dx1(i)+dx1(i+1))
+        diu2_ = 2.*(-u(i,j-1,k)+u(i,j,k))/(dy1(j-1)+dy1(j))
+        cov2_j = nou2_*diu2_
+        nou2_jp1 = (dx1(i+1)*v(i,j,k)+dx1(i)*v(i+1,j,k))/(dx1(i)+dx1(i+1))
+        diu2_jp1 = 2.*(-u(i,j,k)+u(i,j+1,k))/(dy1(j)+dy1(j+1))
+        cov2_jp1 = nou2_jp1*diu2_jp1
+        if (j==300) then
+                nou2_ = (dx1(i+1)*v(i,0,k)+dx1(i)*v(i+1,0,k))/(dx1(i)+dx1(i+1))
+                diu2_ = 2.*(-u(i,0,k)+u(i,1,k))/(dy1(0)+dy1(1))
+                cov2_jp1 = nou2_*diu2_
+        end if
+        nou3_ = (dx1(i+1)*w(i,j,k-1)+dx1(i)*w(i+1,j,k-1))/(dx1(i)+dx1(i+1))
+        diu3_ = (-u(i,j,k-1)+u(i,j,k))/dzs(k-1)
+        cov3_k = nou3_*diu3_
+        nou3_kp1 = (dx1(i+1)*w(i,j,k)+dx1(i)*w(i+1,j,k))/(dx1(i)+dx1(i+1))
+        diu3_kp1 = (-u(i,j,k)+u(i,j,k+1))/dzs(k)
+        cov3_kp1 = nou3_kp1*diu3_kp1
+        if (k==1) then
+                nou3_ = 0.5*(dx1(i+1)*w(i,j,1)+dx1(i)*w(i+1,j,1))/(dx1(i)+dx1(i+1))
+                diu3_ = 0.4*u(i,j,1)/(alog(5.0*dzn(1))*0.2*dzn(1))
+                cov3_k = nou3_*diu3_
+        end if
+        covx1 = (dx1(i+1)*cov1_i+dx1(i)*cov1_ip1)/(dx1(i)+dx1(i+1))
+        covy1 = (cov2_j+cov2_jp1)/2.
+        covz1 = (cov3_k+cov3_kp1)/2.
+        covc = covx1+covy1+covz1
+        f(i,j,k) = (-covc)
+    end if
+!}    
+!}
+end subroutine velfg_0
  ! ==============================================
 
 
