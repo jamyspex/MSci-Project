@@ -180,6 +180,7 @@ buildSmartCacheItem kernel streamDimensionOrder inStream = cacheItem
                   $ getLoopVarPositions arrayName kernel
           in  DummySmartCacheItem
                 { inputStream       = inStream
+                , size              = 0
                 , outputStreamNames = map
                   (\stenIndices -> arrayName ++ concat
                     (imap

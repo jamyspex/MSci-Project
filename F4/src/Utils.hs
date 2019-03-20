@@ -77,9 +77,22 @@ data SmartCacheItem
                    , outputStreamNamesAndBufferIndex :: [(String, Int)] }
   | SmartCacheTransitItem { inputStream :: Stream Anno
                           , size        :: Int }
-  | DummySmartCacheItem { inputStream :: Stream Anno, outputStreamNames :: [String] }
+  | DummySmartCacheItem { inputStream       :: Stream Anno,
+                          outputStreamNames :: [String],
+                          size              :: Int }
 
 instance Show SmartCacheItem where
+  show DummySmartCacheItem {..} =
+    "-------------------------------\n" ++
+    "WARNING: This is a dummy smart cache item\n" ++
+    "The compiler could not generate a smart\n" ++
+    "cache item for this stream because it is\n" ++
+    "accesed using a stencil with constant values!\n" ++
+    "Input stream: " ++
+    getStreamName inputStream ++
+    "\nOutput streams: " ++
+    concatMap (\name -> "\t" ++ name ++ "\n") outputStreamNames ++
+    "-------------------------\n"
   show SmartCacheItem {..} =
     "-------------------------------\n" ++
     "Smart cache item\n" ++
@@ -163,14 +176,10 @@ data Stream p
   deriving (Show, Typeable, Data)
 
 instance Eq (Stream p) where
-  (==) (Stream name1 _ _ _) (Stream name2 _ _ _) = name1 == name2
+  (==) s1 s2 = getStreamName s1 == getStreamName s2
 
 instance Ord (Stream p) where
-  compare (Stream name1 _ _ _) (Stream name2 _ _ _) = name1 `compare` name2
- -- compare (TransitStream name1 _ _) (TransitStream name2 _ _) =
- --   name1 `compare` name2
- -- compare (Stream name1 _ _) (TransitStream name2 _ _) = name1 `compare` name2
- -- compare (TransitStream name1 _ _) (Stream name2 _ _) = name2 `compare` name2
+  compare s1 s2 = getStreamName s1 `compare` getStreamName s2
 
 convertStencilStream (StencilStream name arrayName valueType dims _) =
   Stream name arrayName valueType dims

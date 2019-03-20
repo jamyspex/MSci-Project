@@ -4,6 +4,7 @@
 
 module AddMemoryAccessKernels where
 
+import           Debug.Trace
 import           Data.Foldable
 import           Data.Ix
 import           Data.List                     as List
@@ -110,7 +111,7 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
   requiredInputStreams       = getRequiredInputStreams kernel smartCache
   requiredMemoryReaders      = concatMap buildMemoryReader requiredInputStreams
   withConsumedStreamsRemoved = foldl
-    (\set (Stream name _ _ _) -> Set.delete name set)
+    (\set stream -> Set.delete (getStreamName stream) set)
     availableStreams
     requiredInputStreams
   withKernelOutputStreams = foldl
@@ -119,8 +120,32 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
     (outputStreams kernel)
       -- (Stream name _ _ _) -> Set.insert name set)
   buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
-  buildMemoryReader stream@(Stream streamName _ valueType dimensions) =
-    if streamAvailable
+  buildMemoryReader stream@Stream{} = checkForAvailablityAndBuild stream
+    -- if streamAvailable
+    --   then []
+    --   else
+    --     [ MemoryReader
+    --         { memToOutputStreams = [ ( FPGAMemArray streamName dimensions
+    --                                  , stream
+    --                                  )
+    --                                ]
+    --         , nextStage          = NullItem
+    --         , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
+    --         , readPipes          = []
+    --         , writtenPipes       = []
+    --         , sharedData         = NullPipeLineData
+    --         }
+    --     ]
+    -- where streamAvailable = Set.member streamName availableStreams
+  buildMemoryReader stream@(StencilStream streamName arrayName valueType dimensions _)
+    = trace
+      (  "WARNING: emitting memory reader for unresolved stencil stream: "
+      ++ streamName
+      )
+      checkForAvailablityAndBuild
+      (Stream streamName arrayName valueType dimensions)
+  checkForAvailablityAndBuild stream@(Stream streamName _ valueType dimensions)
+    = if streamAvailable
       then []
       else
         [ MemoryReader
@@ -136,8 +161,6 @@ foldOverPipeline (availableStreams, pipeline) currentStageIdx =
             }
         ]
     where streamAvailable = Set.member streamName availableStreams
-  buildMemoryReader stream = error $ show stream
-
 -- used to signify the position a stream is required at. 
 -- Allows streams to enter and exit smartcache with the same name
 data StreamPosition = SmartCacheIn | KernelIn deriving (Eq, Ord)

@@ -66,14 +66,19 @@ addPipesToPipelineItems pipeline = do
     (prevStageWithPipes, currStageWithPipes) =
       addPipesToPipelineStages previousStage currentStage newPipes
     getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
-    getPipe (stream, dest) = if valid
+    getPipe (stream, dest) = if True --valid
       then buildPipe sourceName destName stream
       else error "Stream has different name in map"
      where
-      valid      = getStreamName stream == getStreamName streamFromMap
-      streamName = getStreamName stream
-      (source, streamFromMap) =
-        pickSource dest $ availableStreams DMap.! streamName
+      -- valid = getStreamName stream == getStreamName streamFromMap
+      -- streamName = getStreamName stream
+      -- (source, streamFromMap) = pickSource dest $ trace
+      --   ("for source for stream " ++ streamName)
+      --   (availableStreams DMap.! streamName)
+      streamName              = getArrayNameFromStream stream
+      (source, streamFromMap) = pickSource dest $ trace
+        ("for source for stream " ++ streamName)
+        (availableStreams DMap.! streamName)
       sourceName = name source
       destName   = name dest
 
@@ -142,15 +147,39 @@ pickSource
   :: PipelineItem SharedPipelineData
   -> [(PipelineItem SharedPipelineData, Stream Anno)]
   -> (PipelineItem SharedPipelineData, Stream Anno)
-pickSource dest@SmartCache{} sources = maximumBy
-  (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
-  (removeDestFromSources dest sources)
-pickSource dest@MemoryWriter{} sources = maximumBy
-  (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
-  (removeDestFromSources dest sources)
-pickSource dest sources = maximumBy
-  (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
-  (removeDestFromSources dest sources)
+pickSource dest@SmartCache{} sources =
+  trace
+      (  "smartcache dest = "
+      ++ name dest
+      ++ " sources = "
+      ++ show (map (name . fst) sources)
+      ++ " dest removed = "
+      ++ show (map (name . fst) (removeDestFromSources dest sources))
+      )
+    $ maximumBy (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
+                (removeDestFromSources dest sources)
+pickSource dest@MemoryWriter{} sources =
+  trace
+      (  "memWriter dest = "
+      ++ name dest
+      ++ " sources = "
+      ++ show (map (name . fst) sources)
+      ++ " dest removed = "
+      ++ show (map (name . fst) (removeDestFromSources dest sources))
+      )
+    $ maximumBy (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
+                (removeDestFromSources dest sources)
+pickSource dest sources =
+  trace
+      (  "unmatched dest = "
+      ++ name dest
+      ++ " sources = "
+      ++ show (map (name . fst) sources)
+      ++ " dest removed = "
+      ++ show (map (name . fst) (removeDestFromSources dest sources))
+      )
+    $ maximumBy (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
+                (removeDestFromSources dest sources)
 
 removeDestFromSources dest = filter (\(s, _) -> name s /= name dest)
 
@@ -213,7 +242,10 @@ buildPipe from to stream = Pipe
   (from ++ "__" ++ to ++ "__" ++ name ++ "__pipe")
   valueType
   stream
-  where (Stream name _ valueType _) = stream
+ where
+  (name, valueType) = case stream of
+    (Stream name _ valueType _         ) -> (name, valueType)
+    (StencilStream name _ valueType _ _) -> (name, valueType)
 
 -- For a pipeline stage create a map from stream name to
 -- (source, stream) so that when getting pipes we know
@@ -249,7 +281,9 @@ makeMap
 makeMap sourceAndStreams = DMap.fromList mapGroups
  where
   mapItems =
-    map (\(source, s) -> (getStreamName s, (source, s))) sourceAndStreams
+    -- map (\(source, s) -> (getStreamName s, (source, s))) sourceAndStreams
+             map (\(source, s) -> (getArrayNameFromStream s, (source, s)))
+                 sourceAndStreams
   toGroupMapItems = sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) mapItems
   grouped         = groupBy (\(n1, _) (n2, _) -> n1 == n2) toGroupMapItems
   mapGroups       = map (\grp -> ((fst . head) grp, map snd grp)) grouped
