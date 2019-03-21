@@ -122,20 +122,10 @@ getComparableItems items getKey = map (\i -> (getKey i, i)) items
 
 -- custom traversal to make sure we don't get duplicate kernels in output
 -- e.g. make sure if we take an OpenCLStencil node don't also include its
--- OpenCLMap/Reduce body for conversion to a kernel subroutine
--- getKernelsQuery :: Bool -> (String, Fortran Anno) -> [Fortran Anno]
--- getKernelsQuery False (name, body) =
---   case body of
---     (FSeq _ _ f1 f2) ->
---       getKernelBody name f1 ++
---       getKernelBody name f2 ++ getKernelsQuery True (name, f2)
---     _ -> getKernelBody name body
--- getKernelsQuery True (name, body) =
---   case body of
---     (FSeq _ _ f1 f2) ->
---       getKernelBody name f1 ++
---       getKernelBody name f2 ++ getKernelsQuery True (name, f2)
---     _ -> []
+-- OpenCLMap/Reduce body for conversion to a kernel subroutine. Also
+-- includes any statements before a OpenCLMap/Reduce/Stencil within the
+-- kernel body. This is nescesary usually in the case of OpenCLReduce
+-- to initialise reduction vars before the loop begins.
 getKernelBodys :: String -> Fortran Anno -> [Fortran Anno]
 getKernelBodys name = go []
   where
@@ -165,16 +155,6 @@ isMainBody body =
     OpenCLStencil {} -> True
     _                -> False
 
--- A kernel is defined as a OpenCLMap/Reduce/Stencil at the top level of a block
--- OriginalSubContainer is used to encapslate the newly split kernels so the original
--- sub name can be used when naming the kernel.
--- getKernelBody :: String -> Fortran Anno -> [Fortran Anno]
--- getKernelBody name fortran =
---   case fortran of
---     map@OpenCLMap {}         -> [OriginalSubContainer nullAnno name map]
---     reduce@OpenCLReduce {}   -> [OriginalSubContainer nullAnno name reduce]
---     stencil@OpenCLStencil {} -> [OriginalSubContainer nullAnno name stencil]
---     _                        -> []
 data ParsedArrayExpr = PAE
   { arrName         :: String
   , loopVarsOrdered :: [String]
@@ -255,12 +235,7 @@ buildKernel (order, originalName, sub) =
     kernel =
       Kernel
         { inputs = inputStreams
-        , outputs =
-            trace
-              ("subname = " ++
-               getSubName sub ++
-               " output streams = " ++ show (map getStreamName outputStreams))
-              outputStreams
+        , outputs = outputStreams
         , outputReductionVars = reductionVars
         , body = sub
         , order = order

@@ -6111,20 +6111,17 @@ end subroutine velnw_2
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
- !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fx_i_j_k array name: fx type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fy_i_j_k array name: fy type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fz_i_j_k array name: fz type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: usum_i_j_k array name: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: vsum_i_j_k array name: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -6657,11 +6654,7 @@ end subroutine press_0
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
- !	Stream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]
- !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
- !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output Reduction Variables:
 ! 	"rhsav"
 ! 	"area"
@@ -7084,20 +7077,17 @@ end subroutine velnw_2
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
- !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fx_i_j_k array name: fx type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fy_i_j_k array name: fy type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fz_i_j_k array name: fz type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: usum_i_j_k array name: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: vsum_i_j_k array name: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -7651,11 +7641,7 @@ end subroutine press_0
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
- !	Stream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]
- !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
- !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output Reduction Variables:
 ! 	"rhsav"
 ! 	"area"
@@ -8094,20 +8080,17 @@ end subroutine velnw_2
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
- !	Stream: bmask1_i_j_k array name: bmask1 type: Float dimensions: [(-1,301),(0,301),(0,81)]
- !	Stream: cmask1_i_j_k array name: cmask1 type: Float dimensions: [(0,301),(-1,301),(0,81)]
- !	Stream: dmask1_i_j_k array name: dmask1 type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fx_i_j_k array name: fx type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fy_i_j_k array name: fy type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: fz_i_j_k array name: fz type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: usum_i_j_k array name: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: vsum_i_j_k array name: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
- !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -8755,11 +8738,7 @@ end subroutine press_0
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
- !	Stream: dx1_i array name: dx1 type: Float dimensions: [(-1,301)]
- !	Stream: dy1_j array name: dy1 type: Float dimensions: [(0,301)]
- !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
- !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ !	TransitStream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output Reduction Variables:
 ! 	"rhsav"
 ! 	"area"
