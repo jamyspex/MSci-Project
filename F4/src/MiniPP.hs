@@ -225,9 +225,9 @@ miniPPProgUnit prog =
       moduleName ++
       "\n" ++
       miniPPD decls ++
-      "\ncontains\n\n" ++
+      "\ncontains\n" ++
       concatMap (\s -> miniPPProgUnit s ++ "\n") p ++
-      "end module " ++ moduleName
+      "\nend module " ++ moduleName
     _ -> "program anno unsuppported"
                     -- (BlockData _ _ _ _ _ _) -> []
                     -- (PSeq _ _ p1 p2) -> getFortranFromProgUnit p1 ++ getFortranFromProgUnit p2
