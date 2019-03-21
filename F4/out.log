@@ -1483,13 +1483,15 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 !}
 ! Original Subroutine Name: vernieuw {
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 !}
 end subroutine dyn_shapiro_vernieuw_merged
@@ -1829,13 +1831,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
@@ -2068,13 +2072,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2380,13 +2386,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2633,13 +2641,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2896,13 +2906,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -3186,13 +3198,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -3765,13 +3779,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
@@ -4328,13 +4344,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+                wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
@@ -4354,13 +4372,15 @@ subroutine vernieuw(hmin,j,k)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h_j_k = hzero_j_k+eta_j_k
-    wet_j_k = 1
-    if (h_j_k<hmin) then
-        wet_j_k = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h_j_k = hzero_j_k+eta_j_k
+        wet_j_k = 1
+        if (h_j_k<hmin) then
+                wet_j_k = 0
+        end if
+        u_j_k = un_j_k
+        v_j_k = vn_j_k
     end if
-    u_j_k = un_j_k
-    v_j_k = vn_j_k
 !}
 end subroutine vernieuw
 
@@ -5025,13 +5045,15 @@ subroutine vernieuw(hmin)
         call read_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
         j = count/502
         k = mod(count, 502)
-        h_j_k = hzero_j_k+eta_j_k
-        wet_j_k = 1
-        if (h_j_k<hmin) then
-                wet_j_k = 0
+        if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+                h_j_k = hzero_j_k+eta_j_k
+                wet_j_k = 1
+                if (h_j_k<hmin) then
+                                wet_j_k = 0
+                end if
+                u_j_k = un_j_k
+                v_j_k = vn_j_k
         end if
-        u_j_k = un_j_k
-        v_j_k = vn_j_k
         call write_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k)
         call write_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k)
         call write_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k)
