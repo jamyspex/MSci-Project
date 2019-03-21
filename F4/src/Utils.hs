@@ -403,6 +403,12 @@ data StreamValueType =
   Float
   deriving (Show, Data, Typeable)
 
+getReductionVarNameQuery :: Fortran Anno -> [String]
+getReductionVarNameQuery fortran = case fortran of
+  OpenCLReduce _ _ _ _ _ _ redVar _ -> map getVarName redVar
+  _ -> []
+  where getVarName (varname, _) = getNameFromVarName varname
+
 -- TODO if you find you need stuff later on that you had in Kernel
 -- this is probably where you need to change
 convertKernelToPipelineItem :: Kernel -> PipelineItem SharedPipelineData

@@ -332,8 +332,3 @@ getLoopVarNames subBody = case subBody of
   _                              -> []
   where getVarName (varname, _, _, _) = getNameFromVarName varname
 
-getReductionVarNameQuery :: Fortran Anno -> [String]
-getReductionVarNameQuery fortran = case fortran of
-  OpenCLReduce _ _ _ _ _ _ redVar _ -> map getVarName redVar
-  _ -> []
-  where getVarName (varname, _) = getNameFromVarName varname
