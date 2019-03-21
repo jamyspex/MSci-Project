@@ -129,6 +129,7 @@ data Kernel = Kernel
   , kernelName             :: String
   , driverLoopVariableName :: String
   , outputReductionVars    :: [String]
+  , inputReductionVars :: [String]
   , originalSubroutineName :: String
   , body                   :: ProgUnit Anno
   , order                  :: Int
@@ -147,6 +148,8 @@ instance Show Kernel where
     concatMap (\s -> " !\t" ++ printStream s ++ "\n") inS ++
     " ! Output streams:\n" ++
     concatMap (\s -> " !\t" ++ printStream s ++ "\n") outS ++
+    " ! Input Reduction Variables:\n" ++
+    concatMap (\r -> "! \t" ++ show r ++ "\n") inR ++
     " ! Output Reduction Variables:\n" ++
     concatMap (\r -> "! \t" ++ show r ++ "\n") outR ++
     " ! --------------------------------------------\n" ++
@@ -156,6 +159,7 @@ instance Show Kernel where
       outS = outputs kernel
       name = kernelName kernel
       outR = outputReductionVars kernel
+      inR = inputReductionVars kernel
       b = body kernel
       o = order kernel
 
@@ -208,7 +212,8 @@ data PipelineItem a
   | Reduce { inputStreams    :: [Stream Anno]
            , outputStreams   :: [Stream Anno]
            , name            :: String
-           , reductionVars   :: [String]
+           , outputReduceVariables   :: [String]
+           , inputReduceVariables :: [String]
            , fortran         :: ProgUnit Anno
            , originalSubName :: String
            , nextStage       :: PipelineItem a
@@ -303,6 +308,10 @@ instance Show (PipelineItem SharedPipelineData) where
     printAllStreams inputStreams ++
     "Output Streams:\n" ++
     printAllStreams outputStreams ++
+    "Output reduction vars: \n" ++
+    concatMap (\r -> "!\t" ++ r ++ "\n") outputReduceVariables ++
+    "Input reduction vars: \n" ++
+    concatMap (\r -> "!\t" ++ r ++ "\n") inputReduceVariables ++
     "readPipes:\n" ++
     printPipes readPipes ++
     "writtenPipes:\n" ++
@@ -415,17 +424,18 @@ convertKernelToPipelineItem k@Kernel {..} = case kernelType k of
       }
     }
   ReduceKernel -> Reduce
-    { inputStreams    = inputs
-    , outputStreams   = outputs
-    , reductionVars   = outputReductionVars
-    , name            = kernelName
-    , fortran         = body
-    , originalSubName = originalSubroutineName
-    , nextStage       = NullItem
-    , stageNumber     = order
-    , readPipes       = []
-    , writtenPipes    = []
-    , sharedData      = SPD
+    { inputStreams          = inputs
+    , outputStreams         = outputs
+    , outputReduceVariables = outputReductionVars
+    , inputReduceVariables  = []
+    , name                  = kernelName
+    , fortran               = body
+    , originalSubName       = originalSubroutineName
+    , nextStage             = NullItem
+    , stageNumber           = order
+    , readPipes             = []
+    , writtenPipes          = []
+    , sharedData            = SPD
       { driverLoopLowerBound = 0
       , driverLoopUpperBound = 0
       , driverLoopIndexName  = driverLoopVariableName

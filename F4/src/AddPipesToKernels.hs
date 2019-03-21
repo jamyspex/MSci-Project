@@ -70,15 +70,15 @@ addPipesToPipelineItems pipeline = do
       then buildPipe sourceName destName stream
       else error "Stream has different name in map"
      where
-      -- valid = getStreamName stream == getStreamName streamFromMap
-      -- streamName = getStreamName stream
-      -- (source, streamFromMap) = pickSource dest $ trace
-      --   ("for source for stream " ++ streamName)
-      --   (availableStreams DMap.! streamName)
-      streamName              = getArrayNameFromStream stream
+      valid = getStreamName stream == getStreamName streamFromMap
+      streamName = getStreamName stream
       (source, streamFromMap) = pickSource dest $ trace
         ("for source for stream " ++ streamName)
         (availableStreams DMap.! streamName)
+      -- streamName              = getArrayNameFromStream stream
+      -- (source, streamFromMap) = pickSource dest $ trace
+      --   ("for source for stream " ++ streamName)
+      --   (availableStreams DMap.! streamName)
       sourceName = name source
       destName   = name dest
 
@@ -281,9 +281,9 @@ makeMap
 makeMap sourceAndStreams = DMap.fromList mapGroups
  where
   mapItems =
-    -- map (\(source, s) -> (getStreamName s, (source, s))) sourceAndStreams
-             map (\(source, s) -> (getArrayNameFromStream s, (source, s)))
-                 sourceAndStreams
+    map (\(source, s) -> (getStreamName s, (source, s))) sourceAndStreams
+             -- map (\(source, s) -> (getArrayNameFromStream s, (source, s)))
+    --             sourceAndStreams
   toGroupMapItems = sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) mapItems
   grouped         = groupBy (\(n1, _) (n2, _) -> n1 == n2) toGroupMapItems
   mapGroups       = map (\grp -> ((fst . head) grp, map snd grp)) grouped
