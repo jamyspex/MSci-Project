@@ -139,7 +139,6 @@ contains
 
 
 !wall function
-
       do j=1,jp
         do i=1,ip
          uspd(i,j)=(u(i,j,1)**2+((0.5*(v(i,j-1,1)+v(i,j,1))*dx1(i+1)&
@@ -185,7 +184,7 @@ contains
         end do
         end do
 #endif
-      
+
 ! --u velocity
       do k = 1,kp
       do j = 1,jp
@@ -194,11 +193,11 @@ contains
 !1
       nou1_ = ( u(i-1,j,k)+u(i,j,k))/2. ! i.e 2-point average of u in i-direction
       diu1_ = (-u(i-1,j,k)+u(i,j,k))/dx1(i) ! i.e. du/dx
-      cov1_i = nou1_*diu1_ 
+      cov1_i = nou1_*diu1_
 
       nou1_ip1 = ( u(i,j,k)+u(i+1,j,k))/2. ! i.e 2-point average of u in i-direction
       diu1_ip1 = (-u(i,j,k)+u(i+1,j,k))/dx1(i+1) ! i.e. du/dx
-      cov1_ip1 = nou1_ip1*diu1_ip1 
+      cov1_ip1 = nou1_ip1*diu1_ip1
 
 ! This is OK if we have the top row
 ! But it makes me wonder, if u has the correct bounds, then it should be correct anyway, assuming dx is constant
@@ -209,7 +208,7 @@ contains
       if (isBottomRow(procPerRow) .and. (i==ip)) cov1_ip1 = cov1_i
 #endif
 
-!2      
+!2
       nou2_ = (dx1(i+1)*v(i,j-1,k)+dx1(i)*v(i+1,j-1,k)) /(dx1(i)+dx1(i+1))
       diu2_ = 2.*(-u(i,j-1,k)+u(i,j,k))/(dy1(j-1)+dy1(j))
       cov2_j = nou2_*diu2_
@@ -306,9 +305,9 @@ contains
           nou5_ = ( v(i,1,k)+v(i,2,k))/2.
           diu5_ = (-v(i,1,k)+v(i,2,k))/dy1(j)
           cov5_jp1 = nou5_*diu5_
-      end if  
+      end if
 #endif
-      
+
 
 !6
         nou6_ = (dy1(j+1)*w(i,j,k-1)+dy1(j)*w(i,j+1,k-1)) /(dy1(j)+dy1(j+1))
@@ -341,7 +340,7 @@ contains
 !-- molecular viscous term is neglected
 !        dfv1(i,j,k) = (-diu4(i,j,k)+diu4(i+1,j,k))/dx1(i)  +2.*(-diu5(i,j,k)+diu5(i,j+1, &
 !      k))/(dy1(j)+dy1(j+1)) +(-diu6(i,j,k)+diu6(i,j,k+1))/dzn(k)
-!        df = vn*dfv1(i,j,k) 
+!        df = vn*dfv1(i,j,k)
 !        g(i,j,k) = (-covc+df)
 !--
         g(i,j,k) = (-covc)
@@ -392,7 +391,7 @@ contains
       nou9_ = ( w(i,j,k-1)+w(i,j,k))/2.
       diu9_ = (-w(i,j,k-1)+w(i,j,k))/dzn(k)
       cov9_k = nou9_*diu9_
-      
+
       nou9_kp1 = ( w(i,j,k)+w(i,j,k+1))/2.
       diu9_kp1 = (-w(i,j,k)+w(i,j,k+1))/dzn(k+1)
       cov9_kp1 = nou9_kp1*diu9_kp1
@@ -409,10 +408,10 @@ contains
 !-- molecular viscous term is neglected
 !        dfw1(i,j,k) = (-diu7(i,j,k)+diu7(i+1,j,k))/dx1(i)  +(-diu8(i,j,k)+diu8(i,j+1, &
 !      k))/dy1(j) +(-diu9(i,j,k)+diu9(i,j,k+1))/dzs(k)
-!        df = vn*dfw1(i,j,k)  
+!        df = vn*dfw1(i,j,k)
 !        h(i,j,k) = (-covc+df)
 !--
-        h(i,j,k) = (-covc)      
+        h(i,j,k) = (-covc)
       end do
       end do
       end do
@@ -443,7 +442,7 @@ contains
 #endif
 #endif
 !
-      
+
 ! =======================================
 #ifdef WV_DEBUG
     print *, 'F95 FGHSUM after velfg:',sum(f)+sum(g)+sum(h)

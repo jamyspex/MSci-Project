@@ -72,6 +72,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
     integer, parameter  :: nmaxp = 50 ! WV was 50
     real, parameter  :: omega = 1.
 
+#ifdef CALC_BOUNDS
 #if !defined( INLINE_BOUND_CALCS ) || defined( MPI )
     call bondfg(f,g,h)
 #else
@@ -95,7 +96,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
    end do
       end do
 #endif
-
+#endif
     do k = 1,kp
         do j = 1,jp
             do i = 1,ip

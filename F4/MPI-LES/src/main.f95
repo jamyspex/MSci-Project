@@ -341,6 +341,7 @@ if (n>n_nest0) then
 #ifdef TIMINGS
         call system_clock(timestamp(2), clock_rate)
 #endif
+#ifdef CALC_BOUNDS
 #ifdef WV_NEW_VELFG
       call velfg(dx1,dy1,dzn,f, &
       g,dzs,h,u,v,w)
@@ -355,6 +356,7 @@ if (n>n_nest0) then
         nou1,nou2,nou3,nou4,nou5,nou6,nou7,nou8,nou9, &
 #endif
         uspd,vspd) !WV: calls vel2 which uses halos
+#endif
 #endif
 #ifdef TIMINGS
         call system_clock(timestamp(3), clock_rate)
