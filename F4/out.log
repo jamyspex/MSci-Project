@@ -2503,6 +2503,8 @@ end subroutine dyn_1
  !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
@@ -2560,9 +2562,13 @@ end subroutine dyn_2
  ! ==============================================
  ! Name: shapiro Order: 3
  ! Input streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:

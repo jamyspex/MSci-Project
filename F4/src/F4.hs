@@ -120,9 +120,9 @@ compilerMain args = do
   putStrLn "BEFORE"
   kernelsWithTransitStreams <- addTransitStreams kernels
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
-  kernelsWithReductionVarsLinked <- linkReductionVars kernels
+  kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
-  withLoopVarsSynthesised <- synthesiseLoopVars kernelsWithTransitStreams
+  withLoopVarsSynthesised <- synthesiseLoopVars kernelsWithReductionVarsLinked
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required

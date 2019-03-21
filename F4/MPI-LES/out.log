@@ -4826,6 +4826,7 @@ no. of kernels: 17
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_0(dt,dxs,f,p,ro,u)
@@ -4861,6 +4862,7 @@ end subroutine velnw_0
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_1(dt,dys,g,p,ro,v)
@@ -4896,6 +4898,7 @@ end subroutine velnw_1
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
  ! Output streams:
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_2(dt,dzs,h,p,ro,w)
@@ -4950,6 +4953,7 @@ end subroutine velnw_2
  !	Stream: usum_i_j_k array name: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: vsum_i_j_k array name: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsum,w,wsum)
@@ -5017,6 +5021,7 @@ end subroutine feedbf
  !	Stream: diu9_i_j_k array name: diu9 type: Float dimensions: [(0,302),(0,302),(0,82)]
  ! Output streams:
  !	Stream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
@@ -5088,6 +5093,7 @@ end subroutine les_0
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
@@ -5171,6 +5177,7 @@ end subroutine les_1
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
@@ -5253,6 +5260,7 @@ end subroutine les_2
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  ! Output streams:
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
@@ -5335,6 +5343,7 @@ end subroutine les_3
  !	Stream: gold_i_j_k array name: gold type: Float dimensions: [(1,300),(1,300),(1,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: hold_i_j_k array name: hold type: Float dimensions: [(1,300),(1,300),(1,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine adam(f,fold,g,gold,h,hold)
@@ -5381,6 +5390,7 @@ end subroutine adam
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
@@ -5424,6 +5434,7 @@ end subroutine press_0
  !	Stream: dzn_k array name: dzn type: Float dimensions: [(-1,82)]
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
 ! 	"rhsav"
 ! 	"area"
@@ -5455,6 +5466,7 @@ end subroutine press_1
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_2(rhs)
@@ -5489,6 +5501,7 @@ end subroutine press_2
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
 ! 	"pav"
 ! 	"pco"
@@ -5599,6 +5612,7 @@ end subroutine press_3
  !	Stream: p_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: p_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_4(p)
@@ -5623,6 +5637,7 @@ end subroutine press_4
  !	StencilStream: p_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
  ! Output streams:
  !	Stream: p_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_5(p)
@@ -5648,6 +5663,7 @@ end subroutine press_5
  !	StencilStream: p_i_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
  ! Output streams:
  !	Stream: p_i_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_6(p)
@@ -5673,6 +5689,7 @@ end subroutine press_6
  !	StencilStream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
  ! Output streams:
  !	Stream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_7(p)
@@ -5987,6 +6004,7 @@ Transit Streams Added
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  ! Output streams:
  !	Stream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_0(dt,dxs,f,p,ro,u)
@@ -6025,6 +6043,7 @@ end subroutine velnw_0
  ! Output streams:
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_1(dt,dys,g,p,ro,v)
@@ -6065,6 +6084,7 @@ end subroutine velnw_1
  !	TransitStream: v_i_j_k array name: v type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	TransitStream: u_i_j_k array name: u type: Float dimensions: [(0,301),(-1,301),(0,81)]
  !	Stream: w_i_j_k array name: w type: Float dimensions: [(0,301),(-1,301),(-1,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine velnw_2(dt,dzs,h,p,ro,w)
@@ -6123,6 +6143,7 @@ end subroutine velnw_2
  !	Stream: usum_i_j_k array name: usum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: vsum_i_j_k array name: vsum type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: wsum_i_j_k array name: wsum type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsum,w,wsum)
@@ -6203,6 +6224,7 @@ end subroutine feedbf
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
@@ -6286,6 +6308,7 @@ end subroutine les_0
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
@@ -6381,6 +6404,7 @@ end subroutine les_1
  !	TransitStream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: sm_i_j_k array name: sm type: Float dimensions: [(-1,301),(-1,301),(0,81)]
  !	Stream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
@@ -6474,6 +6498,7 @@ end subroutine les_2
  !	TransitStream: g_i_j_k array name: g type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	TransitStream: f_i_j_k array name: f type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
@@ -6563,6 +6588,7 @@ end subroutine les_3
  !	Stream: gold_i_j_k array name: gold type: Float dimensions: [(1,300),(1,300),(1,80)]
  !	Stream: h_i_j_k array name: h type: Float dimensions: [(0,300),(0,300),(0,80)]
  !	Stream: hold_i_j_k array name: hold type: Float dimensions: [(1,300),(1,300),(1,80)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine adam(f,fold,g,gold,h,hold)
@@ -6610,6 +6636,7 @@ end subroutine adam
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
@@ -6655,6 +6682,7 @@ end subroutine press_0
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	TransitStream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
 ! 	"rhsav"
 ! 	"area"
@@ -6687,6 +6715,7 @@ end subroutine press_1
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_2(rhs)
@@ -6722,6 +6751,7 @@ end subroutine press_2
  !	Stream: rhs_i_j_k array name: rhs type: Float dimensions: [(0,301),(0,301),(0,81)]
  ! Output streams:
  !	Stream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
 ! 	"pav"
 ! 	"pco"
@@ -6833,6 +6863,7 @@ end subroutine press_3
  !	Stream: p_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
  ! Output streams:
  !	Stream: p_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_4(p)
@@ -6858,6 +6889,7 @@ end subroutine press_4
  !	StencilStream: p_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
  ! Output streams:
  !	Stream: p_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_5(p)
@@ -6884,6 +6916,7 @@ end subroutine press_5
  !	StencilStream: p_i_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
  ! Output streams:
  !	Stream: p_i_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_6(p)
@@ -6910,6 +6943,7 @@ end subroutine press_6
  !	StencilStream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
  ! Output streams:
  !	Stream: p_i_j array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine press_7(p)
