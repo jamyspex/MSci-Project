@@ -645,10 +645,7 @@ This subroutine will not be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: du indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: dv indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ]
 -------------------------------------------
@@ -683,22 +680,13 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
+[ArrayAccess: du indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: dv indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: u indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: du indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: v indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: dv indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ]
 -------------------------------------------
 
@@ -721,32 +709,11 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
+[ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ]
 -------------------------------------------
 
@@ -764,23 +731,9 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
+[ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
 ]
 -------------------------------------------
 
@@ -797,16 +750,14 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: hzero indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
+[ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: h indices = [LoopVar "j",LoopVar "k"]
-,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: hzero indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: u indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: v indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
+,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
 -------------------------------------------
 
