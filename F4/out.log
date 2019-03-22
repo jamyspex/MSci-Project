@@ -648,6 +648,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: dv indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ]
+["j","k"]
 -------------------------------------------
 
 ! Original Subroutine Name: dyn {
@@ -688,6 +689,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
+["j","k"]
 -------------------------------------------
 
 ! Original Subroutine Name: dyn {
@@ -715,6 +717,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: un indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ]
+["j","k"]
 -------------------------------------------
 
 ! Original Subroutine Name: shapiro {
@@ -735,6 +738,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: etan indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
+["j","k"]
 -------------------------------------------
 
 ! Original Subroutine Name: vernieuw {
@@ -759,6 +763,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
+["j","k"]
 -------------------------------------------
 
 
