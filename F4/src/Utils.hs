@@ -8,6 +8,7 @@ import           Data.Generics
 import qualified Data.Map             as DMap
 import           Data.Maybe
 import           Debug.Trace
+import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -161,6 +162,33 @@ instance Show Kernel where
       inR = inputReductionVars kernel
       b = body kernel
       o = order kernel
+
+getLoopNests :: Fortran Anno -> [Fortran Anno]
+getLoopNests = go "" []
+  where
+    go :: String -> [Fortran Anno] -> Fortran Anno -> [Fortran Anno]
+    go _ _ (OriginalSubContainer _ name body) = go name [] body
+    go name preamble (FSeq _ _ f1 f2)
+      | isLoop f1 = osc name (block (preamble ++ [f1])) : go name [] f2
+      | isLoop f2 = [osc name (block $ preamble ++ [f1, f2])]
+      | isOSC f1 = go "" [] f1 ++ go "" [] f2
+      | isOSC f2 = go "" [] f2
+      | isFSeq f2 = go name (preamble ++ [f1]) f2
+      | otherwise = error "can't find main kernel body after preamble"
+    go _ _ (NullStmt _ _) = []
+    go name preamble fortran
+      | isLoop fortran = [osc name (block $ preamble ++ [fortran])]
+      | otherwise = error "encountered fortran that is not main body"
+
+isOSC fortran =
+  case fortran of
+    OriginalSubContainer {} -> True
+    _                       -> False
+
+isLoop fortran =
+  case fortran of
+    For {} -> True
+    _      -> False
 
 osc = OriginalSubContainer nullAnno
 
@@ -590,12 +618,6 @@ extractVarNamesFromExpr expr =
     Var _ _ varnameList -> map fst varnameList
     _                   -> []
 
-buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
-buildAstSeq _ nullNode [] = nullNode
-buildAstSeq _ _ [statement] = statement
-buildAstSeq constructor nullNode (statement:statements) =
-  constructor statement (buildAstSeq constructor nullNode statements)
-
 readIndex :: String -> Int
 readIndex = round . read
 
@@ -628,12 +650,12 @@ allVarsQuery expr =
     v@Var {} -> [v]
     _        -> []
 
-data ArrayAccess
+data ArrayAccessType
   = ArrayRead
   | ArrayWrite
   deriving (Show)
 
-getArrayAccesses :: ArrayAccess -> [Array] -> Fortran Anno -> [Expr Anno]
+getArrayAccesses :: ArrayAccessType -> [Array] -> Fortran Anno -> [Expr Anno]
 getArrayAccesses readOrWrite arrays fortran = allArrayExprs
   where
     allArrayExprs =
@@ -754,8 +776,6 @@ getKind (ArrayT _ _ _ _ kind _) = kind
 
 getLen (BaseType _ _ _ _ len) = len
 getLen (ArrayT _ _ _ _ _ len) = len
-
-nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
 
 debug_displaySubRoutineTable :: SubroutineTable -> Bool -> IO ()
 debug_displaySubRoutineTable srt withAst =

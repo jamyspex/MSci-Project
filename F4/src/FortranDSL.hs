@@ -2,8 +2,8 @@ module FortranDSL where
 
 import           Language.Fortran
 import           LanguageFortranTools
-import           Utils
 
+-- import           Utils
 for = for' lessThanEq
 
 for' ::
@@ -23,6 +23,14 @@ for' comparision loopVar initial lhs =
     (con 1)
 
 forLT = for' lessThan
+
+nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
+
+buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
+buildAstSeq _ nullNode [] = nullNode
+buildAstSeq _ _ [statement] = statement
+buildAstSeq constructor nullNode (statement:statements) =
+  constructor statement (buildAstSeq constructor nullNode statements)
 
 plus = Bin nullAnno nullSrcSpan (Plus nullAnno)
 

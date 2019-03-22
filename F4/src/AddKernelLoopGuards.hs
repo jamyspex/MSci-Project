@@ -9,6 +9,7 @@ import qualified Data.Map              as DMap
 import           Data.Maybe
 import           Debug.Trace
 import           F95IntrinsicFunctions
+import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP

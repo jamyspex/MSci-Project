@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2cd82deb9f0dfeb8b758279b7d8d1a7bcce87460c88c483878ac6ab5a1a3b1b3
+-- hash: da0eba1852016abfdf9dcbdc823dd68fbc5f48fccee0857f89870b86adf2a562
 
 name:           F4
 version:        0.1.0.0
@@ -55,6 +55,7 @@ library
       Pipeline
       Platform
       PreProcessor
+      RemoveConstantsFromStencils
       SanityChecks
       ScalarizeKernels
       SmartCacheCodeGen

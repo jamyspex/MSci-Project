@@ -10,11 +10,12 @@ import           AddSmartCaches
 import           AddSynthesisedLoopVars
 import           AddTransitStreams
 import           BuildDeviceModule
-import           CommandLineProcessor      (F4Opts (..), f4CmdParser)
+import           CommandLineProcessor        (F4Opts (..), f4CmdParser)
 import           Control.Monad.Extra
-import           Data.Generics             (everything, everywhere, everywhereM,
-                                            gmapQ, gmapT, mkM, mkQ, mkT)
-import qualified Data.Map                  as DMap
+import           Data.Generics               (everything, everywhere,
+                                              everywhereM, gmapQ, gmapT, mkM,
+                                              mkQ, mkT)
+import qualified Data.Map                    as DMap
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
@@ -22,13 +23,14 @@ import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
-import qualified LanguageFortranTools      as LFT
+import qualified LanguageFortranTools        as LFT
 import           LinkReductionVars
 import           MemoryAccessCodeGen
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
-import           Parser                    (parseProgramData)
+import           Parser                      (parseProgramData)
+import           RemoveConstantsFromStencils
 import           SanityChecks
 import           ScalarizeKernels
 import           SmartCacheCodeGen
@@ -67,6 +69,8 @@ compilerMain args = do
   let mergedForOffload =
         DMap.filter parallelise subroutineTableWithOffloadSubsMerged
   let mergedOffloadName = head $ DMap.keys mergedForOffload
+  putStrLn (rule '+' ++ " Stencil Constant Removal " ++ rule '+')
+  removeConstantsFromStencils $ mergedForOffload DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
   splitMergedMethodInPipelines $ mergedForOffload DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')

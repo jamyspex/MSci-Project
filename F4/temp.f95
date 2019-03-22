@@ -24,20 +24,12 @@
                     end do
                 end do
             end do
-        end do
-    end do
-    do l = 1, 50, 1
-        do nrd = 0, 1, 1
             do k = 0, 81, 1
                 do j = 0, 301, 1
                     p(0,0,j,k) = p(0,1,j,k)
                     p(0,301,j,k) = p(0,300,j,k)
                 end do
             end do
-        end do
-    end do
-    do l = 1, 50, 1
-        do nrd = 0, 1, 1
             do k = 0, 81, 1
                 do i = 0, 301, 1
                     p(0,i,0,k) = p(0,i,300,k)
@@ -45,8 +37,6 @@
                 end do
             end do
         end do
-    end do
-    do l = 1, 50, 1
         do j = 0, 301, 1
             do i = 0, 301, 1
                 p(0,i,j,0) = p(0,i,j,1)
