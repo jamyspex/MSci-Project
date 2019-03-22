@@ -149,20 +149,24 @@ data Bound
 -- where the dimensions are equal and guards are not required. For those
 -- that do require guards return (Loop var name, Bound) tuples to be
 -- converted to conditions in the inserted guard.
+-- NOTE At the moment this does conditionally insert the guards it just
+-- think this makes it easier to derive the driver loop bounds.
 getRequiredGuards :: [CombinedMapItem] -> [(String, Bound)]
 getRequiredGuards = concatMap processOneCMI
   where
     processOneCMI :: CombinedMapItem -> [(String, Bound)]
-    processOneCMI combinedMapItem = potentialLowerBound ++ potentialUpperBound
+    processOneCMI combinedMapItem =
+      (loopVarName, LWB accessLWB) : [(loopVarName, UPB accessUPB)]
+     -- potentialLowerBound ++ potentialUpperBound
+        -- potentialLowerBound =
+        --   if declLWB == accessLWB
+        --     then []
+        --     else [(loopVarName, LWB accessUPB)]
+        -- potentialUpperBound =
+        --   if declUPB == accessUPB
+        --     then []
+        --     else [(loopVarName, UPB accessUPB)]
       where
-        potentialLowerBound =
-          if declLWB == accessLWB
-            then []
-            else [(loopVarName, LWB accessLWB)]
-        potentialUpperBound =
-          if declUPB == accessUPB
-            then []
-            else [(loopVarName, UPB accessUPB)]
         (declLWB, declUPB) = declItem combinedMapItem
         (loopVarName, (accessLWB, accessUPB)) = accessItem combinedMapItem
 

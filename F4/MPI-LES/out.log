@@ -374,17 +374,17 @@ subroutine adam(n,nmax,data21,fold,gold,hold,f,g,h)
       real(4) :: fd,gd,hd
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                fd = f(i,j,k)
-                                gd = g(i,j,k)
-                                hd = h(i,j,k)
-                                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
-                                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
-                                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
-                                fold(i,j,k) = fd
-                                gold(i,j,k) = gd
-                                hold(i,j,k) = hd
-                end do
+            do i = 1, ip, 1
+                fd = f(i,j,k)
+                gd = g(i,j,k)
+                hd = h(i,j,k)
+                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
+                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
+                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
+                fold(i,j,k) = fd
+                gold(i,j,k) = gd
+                hold(i,j,k) = hd
+            end do
         end do
     end do
 end subroutine adam
@@ -423,29 +423,29 @@ subroutine feedbf(usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,dt,beta,fx,fy,
       real(4) :: f1x,f1y,f1z,f2x,f2y,f2z
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
-                                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
-                                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
-                                f1x = alpha*usum(i,j,k)*dt
-                                f1y = alpha*vsum(i,j,k)*dt
-                                f1z = alpha*wsum(i,j,k)*dt
-                                f2x = beta*u(i,j,k)*bmask1(i,j,k)
-                                f2y = beta*v(i,j,k)*cmask1(i,j,k)
-                                f2z = beta*w(i,j,k)*dmask1(i,j,k)
-                                fx(i,j,k) = f1x+f2x
-                                fy(i,j,k) = f1y+f2y
-                                fz(i,j,k) = f1z+f2z
-                end do
+            do i = 1, ip, 1
+                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
+                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
+                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
+                f1x = alpha*usum(i,j,k)*dt
+                f1y = alpha*vsum(i,j,k)*dt
+                f1z = alpha*wsum(i,j,k)*dt
+                f2x = beta*u(i,j,k)*bmask1(i,j,k)
+                f2y = beta*v(i,j,k)*cmask1(i,j,k)
+                f2z = beta*w(i,j,k)*dmask1(i,j,k)
+                fx(i,j,k) = f1x+f2x
+                fy(i,j,k) = f1y+f2y
+                fz(i,j,k) = f1z+f2z
+            end do
         end do
     end do
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                f(i,j,k) = f(i,j,k)+fx(i,j,k)
-                                g(i,j,k) = g(i,j,k)+fy(i,j,k)
-                                h(i,j,k) = h(i,j,k)+fz(i,j,k)
-                end do
+            do i = 1, ip, 1
+                f(i,j,k) = f(i,j,k)+fx(i,j,k)
+                g(i,j,k) = g(i,j,k)+fy(i,j,k)
+                h(i,j,k) = h(i,j,k)+fz(i,j,k)
+            end do
         end do
     end do
 end subroutine feedbf
@@ -510,92 +510,92 @@ subroutine les(delx1,dx1,dy1,dzn,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm
       real(4) :: vfu,vfv,vfw
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                dudxx1 = diu1(i,j,k)
-                                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
-                                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
-                                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
-                                dvdyx1 = diu5(i,j,k)
-                                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
-                                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
-                                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
-                                dwdzx1 = diu9(i,j,k)
-                                csx1 = cs0
-                                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dv&
-&dzx1)**2+(dudzx1+dwdxx1)**2)
-                end do
+            do i = 1, ip, 1
+                dudxx1 = diu1(i,j,k)
+                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
+                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
+                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
+                dvdyx1 = diu5(i,j,k)
+                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
+                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
+                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
+                dwdzx1 = diu9(i,j,k)
+                csx1 = cs0
+                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dvdzx1)**2+(dudzx1&
+&+dwdxx1)**2)
+            end do
         end do
     end do
     do k = 2, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                evsx2 = sm(i+1,j,k)
-                                evsx1 = sm(i,j,k)
-                                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i&
-&,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                                visux2 = (evsx2)*2.*diu1(i+1,j,k)
-                                visux1 = (evsx1)*2.*diu1(i,j,k)
-                                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-                                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-                                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-                                f(i,j,k) = (f(i,j,k)+vfu)
-                end do
+            do i = 1, ip, 1
+                evsx2 = sm(i+1,j,k)
+                evsx1 = sm(i,j,k)
+                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*s&
+&m(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visux2 = (evsx2)*2.*diu1(i+1,j,k)
+                visux1 = (evsx1)*2.*diu1(i,j,k)
+                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+                f(i,j,k) = (f(i,j,k)+vfu)
+            end do
         end do
     end do
     do k = 2, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                evsy2 = sm(i,j+1,k)
-                                evsy1 = sm(i,j,k)
-                                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i&
-&,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1&
-&,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
-                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
-                                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
-                                visvy1 = (evsy1)*2.*diu5(i,j,k)
-                                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
-                                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
-                                g(i,j,k) = (g(i,j,k)+vfv)
-                end do
+            do i = 1, ip, 1
+                evsy2 = sm(i,j+1,k)
+                evsy1 = sm(i,j,k)
+                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*s&
+&m(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)&
+&*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
+                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
+                visvy1 = (evsy1)*2.*diu5(i,j,k)
+                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
+                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
+                g(i,j,k) = (g(i,j,k)+vfv)
+            end do
         end do
     end do
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                evsz2 = sm(i,j,k+1)
-                                evsz1 = sm(i,j,k)
-                                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1&
-&,j,k+1)+dx1(i-1)*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
-                                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i&
-&,j,k+1)+dy1(j)*sm(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
-                                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j&
-&-1,k+1)+dy1(j-1)*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
-                                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
-                                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
-                                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
-                                viswz1 = (evsz1)*2.*diu9(i,j,k)
-                                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
-                                h(i,j,k) = (h(i,j,k)+vfw)
-                end do
+            do i = 1, ip, 1
+                evsz2 = sm(i,j,k+1)
+                evsz1 = sm(i,j,k)
+                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1,j,k+1)+dx1(i-1)&
+&*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
+                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i,j,k+1)+dy1(j)*s&
+&m(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
+                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j-1,k+1)+dy1(j-1)&
+&*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
+                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
+                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
+                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
+                viswz1 = (evsz1)*2.*diu9(i,j,k)
+                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
+                h(i,j,k) = (h(i,j,k)+vfw)
+            end do
         end do
     end do
     return 
@@ -653,132 +653,111 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax)
       real, parameter :: omega = 1. 
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(&
-&k)
-                                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+&
-&rhs(i,j,k)/dt
-                end do
+            do i = 1, ip, 1
+                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
+                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
+            end do
         end do
     end do
     rhsav = 0.0
     area = 0.0
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
-                                area = area+dx1(i)*dy1(j)*dzn(k)
-                end do
+            do i = 1, ip, 1
+                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
+                area = area+dx1(i)*dy1(j)*dzn(k)
+            end do
         end do
     end do
     rhsav = rhsav/area
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                rhs(i,j,k) = rhs(i,j,k)-rhsav
-                end do
+            do i = 1, ip, 1
+                rhs(i,j,k) = rhs(i,j,k)-rhsav
+            end do
         end do
     end do
     do l = 1, nmaxp, 1
         sor = 0.0
         do nrd = 0, 1, 1
-                do k = 1, kp, 1
-                                do j = 1, jp, 1
-                                                                do i = 1, ip, 1
-                                                                                                                                dz1 &
-&= dzs(k-1)
-                                                                                                                                dz2 &
-&= dzs(k)
-                                                                                                                                cn4s&
-& = 2./(dz1*(dz1+dz2))
-                                                                                                                                cn4l&
-& = 2./(dz2*(dz1+dz2))
-                                                                                                                                cn3s&
-& = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                                                                                                                cn3l&
-& = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                                                                                                                cn2s&
-& = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                                                                                                                cn2l&
-& = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                                                                                                                cn1 &
-&= 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                                                                                                                if (&
-&nrd==0) then
-                                                                                                                                    &
-&                                                                                                                            reltmp =&
-& omega*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))&
-&-p(0,i,j,k))
-                                                                                                                                    &
-&                                                                                                                            p(1,i,j,&
-&k) = p(0,i,j,k)+reltmp
-                                                                                                                                else
-                                                                                                                                    &
-&                                                                                                                            reltmp =&
-& omega*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))&
-&-p(1,i,j,k))
-                                                                                                                                    &
-&                                                                                                                            p(0,i,j,&
-&k) = p(1,i,j,k)+reltmp
-                                                                                                                                end &
-&if
-                                                                end do
-                                end do
+            do k = 1, kp, 1
+                do j = 1, jp, 1
+                    do i = 1, ip, 1
+                        dz1 = dzs(k-1)
+                        dz2 = dzs(k)
+                        cn4s = 2./(dz1*(dz1+dz2))
+                        cn4l = 2./(dz2*(dz1+dz2))
+                        cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                        cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                        cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                        if (nrd==0) then
+                            reltmp = omega*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,&
+&j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                            p(1,i,j,k) = p(0,i,j,k)+reltmp
+                        else
+                            reltmp = omega*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,&
+&j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                            p(0,i,j,k) = p(1,i,j,k)+reltmp
+                        end if
+                    end do
                 end do
-                do k = 0, kp+1, 1
-                                do j = 0, jp+1, 1
-                                                                p(0,0,j,k) = p(0,1,j,k)
-                                                                p(0,ip+1,j,k) = p(0,ip,j,k)
-                                end do
+            end do
+            do k = 0, kp+1, 1
+                do j = 0, jp+1, 1
+                    p(0,0,j,k) = p(0,1,j,k)
+                    p(0,ip+1,j,k) = p(0,ip,j,k)
                 end do
-                do k = 0, kp+1, 1
-                                do i = 0, ip+1, 1
-                                                                p(0,i,0,k) = p(0,i,jp,k)
-                                                                p(0,i,jp+1,k) = p(0,i,1,k)
-                                end do
+            end do
+            do k = 0, kp+1, 1
+                do i = 0, ip+1, 1
+                    p(0,i,0,k) = p(0,i,jp,k)
+                    p(0,i,jp+1,k) = p(0,i,1,k)
                 end do
+            end do
         end do
         do j = 0, jp+1, 1
-                do i = 0, ip+1, 1
-                                p(0,i,j,0) = p(0,i,j,1)
-                                p(0,i,j,kp+1) = p(0,i,j,kp)
-                end do
+            do i = 0, ip+1, 1
+                p(0,i,j,0) = p(0,i,j,1)
+                p(0,i,j,kp+1) = p(0,i,j,kp)
+            end do
         end do
     end do
     pav = 0.0
     pco = 0.0
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-                                pco = pco+dx1(i)*dy1(j)*dzn(k)
-                end do
+            do i = 1, ip, 1
+                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+                pco = pco+dx1(i)*dy1(j)*dzn(k)
+            end do
         end do
     end do
     pav = pav/pco
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                p(0,i,j,k) = p(0,i,j,k)-pav
-                end do
+            do i = 1, ip, 1
+                p(0,i,j,k) = p(0,i,j,k)-pav
+            end do
         end do
     end do
     do k = 0, kp+1, 1
         do j = 0, jp+1, 1
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,ip+1,j,k) = p(0,ip,j,k)
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,ip+1,j,k) = p(0,ip,j,k)
         end do
     end do
     do k = 0, kp+1, 1
         do i = 0, ip+1, 1
-                p(0,i,0,k) = p(0,i,jp,k)
-                p(0,i,jp+1,k) = p(0,i,1,k)
+            p(0,i,0,k) = p(0,i,jp,k)
+            p(0,i,jp+1,k) = p(0,i,1,k)
         end do
     end do
     do j = 0, jp+1, 1
         do i = 0, ip+1, 1
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,kp+1) = p(0,i,j,kp)
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,kp+1) = p(0,i,j,kp)
         end do
     end do
 end subroutine press
@@ -825,26 +804,26 @@ subroutine velnw(p,ro,dxs,u,dt,f,dys,v,g,dzs,w,h)
       real(4) :: pz
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
-                                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
-                end do
+            do i = 1, ip, 1
+                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
+                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
+            end do
         end do
     end do
     do k = 1, kp, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
-                                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
-                end do
+            do i = 1, ip, 1
+                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
+                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
+            end do
         end do
     end do
     do k = 1, kp-1, 1
         do j = 1, jp, 1
-                do i = 1, ip, 1
-                                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
-                                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
-                end do
+            do i = 1, ip, 1
+                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
+                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
+            end do
         end do
     end do
     return 
@@ -1230,296 +1209,275 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 ! Original Subroutine Name: velnw {
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
-                                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
-                end do
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
+                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
+            end do
         end do
     end do
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
-                                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
-                end do
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
+                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
+            end do
         end do
     end do
     do k = 1, 79, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
-                                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
-                end do
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
+                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
+            end do
         end do
     end do
 !}
 ! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
-                                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
-                                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
-                                f1x = alpha*usum(i,j,k)*dt
-                                f1y = alpha*vsum(i,j,k)*dt
-                                f1z = alpha*wsum(i,j,k)*dt
-                                f2x = beta*u(i,j,k)*bmask1(i,j,k)
-                                f2y = beta*v(i,j,k)*cmask1(i,j,k)
-                                f2z = beta*w(i,j,k)*dmask1(i,j,k)
-                                fx(i,j,k) = f1x+f2x
-                                fy(i,j,k) = f1y+f2y
-                                fz(i,j,k) = f1z+f2z
-                end do
+            do i = 1, 300, 1
+                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
+                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
+                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
+                f1x = alpha*usum(i,j,k)*dt
+                f1y = alpha*vsum(i,j,k)*dt
+                f1z = alpha*wsum(i,j,k)*dt
+                f2x = beta*u(i,j,k)*bmask1(i,j,k)
+                f2y = beta*v(i,j,k)*cmask1(i,j,k)
+                f2z = beta*w(i,j,k)*dmask1(i,j,k)
+                fx(i,j,k) = f1x+f2x
+                fy(i,j,k) = f1y+f2y
+                fz(i,j,k) = f1z+f2z
+            end do
         end do
     end do
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                f(i,j,k) = f(i,j,k)+fx(i,j,k)
-                                g(i,j,k) = g(i,j,k)+fy(i,j,k)
-                                h(i,j,k) = h(i,j,k)+fz(i,j,k)
-                end do
+            do i = 1, 300, 1
+                f(i,j,k) = f(i,j,k)+fx(i,j,k)
+                g(i,j,k) = g(i,j,k)+fy(i,j,k)
+                h(i,j,k) = h(i,j,k)+fz(i,j,k)
+            end do
         end do
     end do
 !}
 ! Original Subroutine Name: les {
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                dudxx1 = diu1(i,j,k)
-                                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
-                                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
-                                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
-                                dvdyx1 = diu5(i,j,k)
-                                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
-                                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
-                                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
-                                dwdzx1 = diu9(i,j,k)
-                                csx1 = 0.14
-                                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dv&
-&dzx1)**2+(dudzx1+dwdxx1)**2)
-                end do
+            do i = 1, 300, 1
+                dudxx1 = diu1(i,j,k)
+                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
+                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
+                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
+                dvdyx1 = diu5(i,j,k)
+                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
+                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
+                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
+                dwdzx1 = diu9(i,j,k)
+                csx1 = 0.14
+                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dvdzx1)**2+(dudzx1&
+&+dwdxx1)**2)
+            end do
         end do
     end do
     do k = 2, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                evsx2 = sm(i+1,j,k)
-                                evsx1 = sm(i,j,k)
-                                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i&
-&,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                                visux2 = (evsx2)*2.*diu1(i+1,j,k)
-                                visux1 = (evsx1)*2.*diu1(i,j,k)
-                                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-                                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-                                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-                                f(i,j,k) = (f(i,j,k)+vfu)
-                end do
+            do i = 1, 300, 1
+                evsx2 = sm(i+1,j,k)
+                evsx1 = sm(i,j,k)
+                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*s&
+&m(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visux2 = (evsx2)*2.*diu1(i+1,j,k)
+                visux1 = (evsx1)*2.*diu1(i,j,k)
+                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+                f(i,j,k) = (f(i,j,k)+vfu)
+            end do
         end do
     end do
     do k = 2, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                evsy2 = sm(i,j+1,k)
-                                evsy1 = sm(i,j,k)
-                                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i&
-&,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1&
-&,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
-                                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*&
-&sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
-                                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
-                                visvy1 = (evsy1)*2.*diu5(i,j,k)
-                                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
-                                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
-                                g(i,j,k) = (g(i,j,k)+vfv)
-                end do
+            do i = 1, 300, 1
+                evsy2 = sm(i,j+1,k)
+                evsy1 = sm(i,j,k)
+                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*s&
+&m(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)&
+&*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)&
+&*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
+                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
+                visvy1 = (evsy1)*2.*diu5(i,j,k)
+                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
+                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
+                g(i,j,k) = (g(i,j,k)+vfv)
+            end do
         end do
     end do
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                evsz2 = sm(i,j,k+1)
-                                evsz1 = sm(i,j,k)
-                                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i&
-&,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1&
-&,j,k+1)+dx1(i-1)*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
-                                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i&
-&,j,k+1)+dy1(j)*sm(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
-                                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j&
-&-1,k+1)+dy1(j-1)*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
-                                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
-                                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
-                                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
-                                viswz1 = (evsz1)*2.*diu9(i,j,k)
-                                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
-                                h(i,j,k) = (h(i,j,k)+vfw)
-                end do
+            do i = 1, 300, 1
+                evsz2 = sm(i,j,k+1)
+                evsz1 = sm(i,j,k)
+                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*s&
+&m(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1,j,k+1)+dx1(i-1)&
+&*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
+                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i,j,k+1)+dy1(j)*s&
+&m(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
+                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j-1,k+1)+dy1(j-1)&
+&*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
+                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
+                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
+                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
+                viswz1 = (evsz1)*2.*diu9(i,j,k)
+                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
+                h(i,j,k) = (h(i,j,k)+vfw)
+            end do
         end do
     end do
 !}
 ! Original Subroutine Name: adam {
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                fd = f(i,j,k)
-                                gd = g(i,j,k)
-                                hd = h(i,j,k)
-                                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
-                                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
-                                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
-                                fold(i,j,k) = fd
-                                gold(i,j,k) = gd
-                                hold(i,j,k) = hd
-                end do
+            do i = 1, 300, 1
+                fd = f(i,j,k)
+                gd = g(i,j,k)
+                hd = h(i,j,k)
+                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
+                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
+                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
+                fold(i,j,k) = fd
+                gold(i,j,k) = gd
+                hold(i,j,k) = hd
+            end do
         end do
     end do
 !}
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(&
-&k)
-                                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+&
-&rhs(i,j,k)/dt
-                end do
+            do i = 1, 300, 1
+                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
+                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
+            end do
         end do
     end do
     rhsav = 0.0
     area = 0.0
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
-                                area = area+dx1(i)*dy1(j)*dzn(k)
-                end do
+            do i = 1, 300, 1
+                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
+                area = area+dx1(i)*dy1(j)*dzn(k)
+            end do
         end do
     end do
     rhsav = rhsav/area
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                rhs(i,j,k) = rhs(i,j,k)-rhsav
-                end do
+            do i = 1, 300, 1
+                rhs(i,j,k) = rhs(i,j,k)-rhsav
+            end do
         end do
     end do
     do l = 1, 50, 1
         sor = 0.0
         do nrd = 0, 1, 1
-                do k = 1, 80, 1
-                                do j = 1, 300, 1
-                                                                do i = 1, 300, 1
-                                                                                                                                dz1 &
-&= dzs(k-1)
-                                                                                                                                dz2 &
-&= dzs(k)
-                                                                                                                                cn4s&
-& = 2./(dz1*(dz1+dz2))
-                                                                                                                                cn4l&
-& = 2./(dz2*(dz1+dz2))
-                                                                                                                                cn3s&
-& = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                                                                                                                cn3l&
-& = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                                                                                                                cn2s&
-& = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                                                                                                                cn2l&
-& = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                                                                                                                cn1 &
-&= 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                                                                                                                if (&
-&nrd==0) then
-                                                                                                                                    &
-&                                                                                                                            reltmp =&
-& 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p&
-&(0,i,j,k))
-                                                                                                                                    &
-&                                                                                                                            p(1,i,j,&
-&k) = p(0,i,j,k)+reltmp
-                                                                                                                                else
-                                                                                                                                    &
-&                                                                                                                            reltmp =&
-& 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p&
-&(1,i,j,k))
-                                                                                                                                    &
-&                                                                                                                            p(0,i,j,&
-&k) = p(1,i,j,k)+reltmp
-                                                                                                                                end &
-&if
-                                                                end do
-                                end do
+            do k = 1, 80, 1
+                do j = 1, 300, 1
+                    do i = 1, 300, 1
+                        dz1 = dzs(k-1)
+                        dz2 = dzs(k)
+                        cn4s = 2./(dz1*(dz1+dz2))
+                        cn4l = 2./(dz2*(dz1+dz2))
+                        cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                        cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                        cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                        if (nrd==0) then
+                            reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,&
+&k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                            p(1,i,j,k) = p(0,i,j,k)+reltmp
+                        else
+                            reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,&
+&k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                            p(0,i,j,k) = p(1,i,j,k)+reltmp
+                        end if
+                    end do
                 end do
-                do k = 0, 81, 1
-                                do j = 0, 301, 1
-                                                                p(0,0,j,k) = p(0,1,j,k)
-                                                                p(0,301,j,k) = p(0,300,j,k)
-                                end do
+            end do
+            do k = 0, 81, 1
+                do j = 0, 301, 1
+                    p(0,0,j,k) = p(0,1,j,k)
+                    p(0,301,j,k) = p(0,300,j,k)
                 end do
-                do k = 0, 81, 1
-                                do i = 0, 301, 1
-                                                                p(0,i,0,k) = p(0,i,300,k)
-                                                                p(0,i,301,k) = p(0,i,1,k)
-                                end do
+            end do
+            do k = 0, 81, 1
+                do i = 0, 301, 1
+                    p(0,i,0,k) = p(0,i,300,k)
+                    p(0,i,301,k) = p(0,i,1,k)
                 end do
+            end do
         end do
         do j = 0, 301, 1
-                do i = 0, 301, 1
-                                p(0,i,j,0) = p(0,i,j,1)
-                                p(0,i,j,81) = p(0,i,j,80)
-                end do
+            do i = 0, 301, 1
+                p(0,i,j,0) = p(0,i,j,1)
+                p(0,i,j,81) = p(0,i,j,80)
+            end do
         end do
     end do
     pav = 0.0
     pco = 0.0
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-                                pco = pco+dx1(i)*dy1(j)*dzn(k)
-                end do
+            do i = 1, 300, 1
+                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+                pco = pco+dx1(i)*dy1(j)*dzn(k)
+            end do
         end do
     end do
     pav = pav/pco
     do k = 1, 80, 1
         do j = 1, 300, 1
-                do i = 1, 300, 1
-                                p(0,i,j,k) = p(0,i,j,k)-pav
-                end do
+            do i = 1, 300, 1
+                p(0,i,j,k) = p(0,i,j,k)-pav
+            end do
         end do
     end do
     do k = 0, 81, 1
         do j = 0, 301, 1
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,301,j,k) = p(0,300,j,k)
         end do
     end do
     do k = 0, 81, 1
         do i = 0, 301, 1
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
+            p(0,i,0,k) = p(0,i,300,k)
+            p(0,i,301,k) = p(0,i,1,k)
         end do
     end do
     do j = 0, 301, 1
         do i = 0, 301, 1
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end do
     end do
 !}
@@ -1530,6 +1488,375 @@ Argument translations:
 
 This subroutine will be offloaded to the FPGA
 ================================================================================
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Pipeline Detection 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+! Original Subroutine Name: velnw {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
+                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
+            end do
+        end do
+    end do
+!}
+("velnw",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: velnw {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
+                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
+            end do
+        end do
+    end do
+!}
+("velnw",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: velnw {
+    do k = 1, 79, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
+                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
+            end do
+        end do
+    end do
+!}
+("velnw",3,7110000)
+
+----------------------------------------
+
+! Original Subroutine Name: feedbf {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
+                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
+                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
+                f1x = alpha*usum(i,j,k)*dt
+                f1y = alpha*vsum(i,j,k)*dt
+                f1z = alpha*wsum(i,j,k)*dt
+                f2x = beta*u(i,j,k)*bmask1(i,j,k)
+                f2y = beta*v(i,j,k)*cmask1(i,j,k)
+                f2z = beta*w(i,j,k)*dmask1(i,j,k)
+                fx(i,j,k) = f1x+f2x
+                fy(i,j,k) = f1y+f2y
+                fz(i,j,k) = f1z+f2z
+            end do
+        end do
+    end do
+!}
+("feedbf",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: feedbf {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                f(i,j,k) = f(i,j,k)+fx(i,j,k)
+                g(i,j,k) = g(i,j,k)+fy(i,j,k)
+                h(i,j,k) = h(i,j,k)+fz(i,j,k)
+            end do
+        end do
+    end do
+!}
+("feedbf",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: les {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                dudxx1 = diu1(i,j,k)
+                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
+                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
+                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
+                dvdyx1 = diu5(i,j,k)
+                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
+                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
+                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
+                dwdzx1 = diu9(i,j,k)
+                csx1 = 0.14
+                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dvdzx1)**2+(dudzx1+dwdxx1)**2)
+            end do
+        end do
+    end do
+!}
+("les",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: les {
+    do k = 2, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                evsx2 = sm(i+1,j,k)
+                evsx1 = sm(i,j,k)
+                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visux2 = (evsx2)*2.*diu1(i+1,j,k)
+                visux1 = (evsx1)*2.*diu1(i,j,k)
+                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
+                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
+                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
+                f(i,j,k) = (f(i,j,k)+vfu)
+            end do
+        end do
+    end do
+!}
+("les",3,7110000)
+
+----------------------------------------
+
+! Original Subroutine Name: les {
+    do k = 2, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                evsy2 = sm(i,j+1,k)
+                evsy1 = sm(i,j,k)
+                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
+                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
+                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
+                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
+                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
+                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
+                visvy1 = (evsy1)*2.*diu5(i,j,k)
+                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
+                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
+                g(i,j,k) = (g(i,j,k)+vfv)
+            end do
+        end do
+    end do
+!}
+("les",3,7110000)
+
+----------------------------------------
+
+! Original Subroutine Name: les {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                evsz2 = sm(i,j,k+1)
+                evsz1 = sm(i,j,k)
+                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
+                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1,j,k+1)+dx1(i-1)*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
+                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i,j,k+1)+dy1(j)*sm(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
+                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j-1,k+1)+dy1(j-1)*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
+                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
+                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
+                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
+                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
+                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
+                viswz1 = (evsz1)*2.*diu9(i,j,k)
+                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
+                h(i,j,k) = (h(i,j,k)+vfw)
+            end do
+        end do
+    end do
+!}
+("les",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: adam {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                fd = f(i,j,k)
+                gd = g(i,j,k)
+                hd = h(i,j,k)
+                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
+                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
+                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
+                fold(i,j,k) = fd
+                gold(i,j,k) = gd
+                hold(i,j,k) = hd
+            end do
+        end do
+    end do
+!}
+("adam",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
+                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
+            end do
+        end do
+    end do
+!}
+("press",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    rhsav = 0.0
+    area = 0.0
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
+                area = area+dx1(i)*dy1(j)*dzn(k)
+            end do
+        end do
+    end do
+!}
+("press",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    rhsav = rhsav/area
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                rhs(i,j,k) = rhs(i,j,k)-rhsav
+            end do
+        end do
+    end do
+!}
+("press",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    do l = 1, 50, 1
+        sor = 0.0
+        do nrd = 0, 1, 1
+            do k = 1, 80, 1
+                do j = 1, 300, 1
+                    do i = 1, 300, 1
+                        dz1 = dzs(k-1)
+                        dz2 = dzs(k)
+                        cn4s = 2./(dz1*(dz1+dz2))
+                        cn4l = 2./(dz2*(dz1+dz2))
+                        cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                        cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                        cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                        if (nrd==0) then
+                            reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                            p(1,i,j,k) = p(0,i,j,k)+reltmp
+                        else
+                            reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                            p(0,i,j,k) = p(1,i,j,k)+reltmp
+                        end if
+                    end do
+                end do
+            end do
+            do k = 0, 81, 1
+                do j = 0, 301, 1
+                    p(0,0,j,k) = p(0,1,j,k)
+                    p(0,301,j,k) = p(0,300,j,k)
+                end do
+            end do
+            do k = 0, 81, 1
+                do i = 0, 301, 1
+                    p(0,i,0,k) = p(0,i,300,k)
+                    p(0,i,301,k) = p(0,i,1,k)
+                end do
+            end do
+        end do
+        do j = 0, 301, 1
+            do i = 0, 301, 1
+                p(0,i,j,0) = p(0,i,j,1)
+                p(0,i,j,81) = p(0,i,j,80)
+            end do
+        end do
+    end do
+!}
+("press",5,720000000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    pav = 0.0
+    pco = 0.0
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+                pco = pco+dx1(i)*dy1(j)*dzn(k)
+            end do
+        end do
+    end do
+!}
+("press",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    pav = pav/pco
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                p(0,i,j,k) = p(0,i,j,k)-pav
+            end do
+        end do
+    end do
+!}
+("press",3,7200000)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    do k = 0, 81, 1
+        do j = 0, 301, 1
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,301,j,k) = p(0,300,j,k)
+        end do
+    end do
+!}
+("press",2,24764)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    do k = 0, 81, 1
+        do i = 0, 301, 1
+            p(0,i,0,k) = p(0,i,300,k)
+            p(0,i,301,k) = p(0,i,1,k)
+        end do
+    end do
+!}
+("press",2,24764)
+
+----------------------------------------
+
+! Original Subroutine Name: press {
+    do j = 0, 301, 1
+        do i = 0, 301, 1
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
+        end do
+    end do
+!}
+("press",2,91204)
+
+----------------------------------------
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1868,37 +2195,37 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(i,1,300,1)"],["nrd","l"]) {
-                dz1 = dzs(k-1)
-                dz2 = dzs(k)
-                cn4s = 2./(dz1*(dz1+dz2))
-                cn4l = 2./(dz2*(dz1+dz2))
-                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                if (nrd==0) then
-                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,&
-&i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                else
-                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,&
-&i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                end if
+            dz1 = dzs(k-1)
+            dz2 = dzs(k)
+            cn4s = 2./(dz1*(dz1+dz2))
+            cn4l = 2./(dz2*(dz1+dz2))
+            cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+            cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+            cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+            cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+            cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+            if (nrd==0) then
+                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(&
+&0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                p(1,i,j,k) = p(0,i,j,k)+reltmp
+            else
+                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(&
+&1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                p(0,i,j,k) = p(1,i,j,k)+reltmp
+            end if
 !}
 !}
 !}
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
 ! OpenCLMap ( [],["p"],["(j,0,301,1)"],["nrd","l"]) {
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,301,j,k) = p(0,300,j,k)
 !}
 !}
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
 ! OpenCLMap ( [],["p"],["(i,0,301,1)"],["nrd","l"]) {
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
+            p(0,i,0,k) = p(0,i,300,k)
+            p(0,i,301,k) = p(0,i,1,k)
 !}
 !}
         end do
@@ -2589,51 +2916,51 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(i,1,300,1)"],["nrd","l"]) {
-                dz1 = dzs(k-1)
-                dz2 = dzs(k)
-                cn4s = 2./(dz1*(dz1+dz2))
-                cn4l = 2./(dz2*(dz1+dz2))
-                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                if (nrd==0) then
-                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,&
-&i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                else
-                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,&
-&i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                end if
+            dz1 = dzs(k-1)
+            dz2 = dzs(k)
+            cn4s = 2./(dz1*(dz1+dz2))
+            cn4l = 2./(dz2*(dz1+dz2))
+            cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+            cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+            cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+            cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+            cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+            if (nrd==0) then
+                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(&
+&0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                p(1,i,j,k) = p(0,i,j,k)+reltmp
+            else
+                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(&
+&1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                p(0,i,j,k) = p(1,i,j,k)+reltmp
+            end if
 !}
 !}
-!}                
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
 ! OpenCLMap ( [],["p"],["(j,0,301,1)"],["nrd","l"]) {
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,301,j,k) = p(0,300,j,k)
 !}
-!}                
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
 ! OpenCLMap ( [],["p"],["(i,0,301,1)"],["nrd","l"]) {
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
+            p(0,i,0,k) = p(0,i,300,k)
+            p(0,i,301,k) = p(0,i,1,k)
 !}
-!}                
+!}            
 !}
         end do
 ! OpenCLStencil (
@@ -3285,43 +3612,43 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                dz1 = dzs(k-1)
-                dz2 = dzs(k)
-                cn4s = 2./(dz1*(dz1+dz2))
-                cn4l = 2./(dz2*(dz1+dz2))
-                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                if (nrd==0) then
-                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,&
-&i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                else
-                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,&
-&i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                end if
-!}                
+            dz1 = dzs(k-1)
+            dz2 = dzs(k)
+            cn4s = 2./(dz1*(dz1+dz2))
+            cn4l = 2./(dz2*(dz1+dz2))
+            cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+            cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+            cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+            cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+            cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+            if (nrd==0) then
+                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(&
+&0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                p(1,i,j,k) = p(0,i,j,k)+reltmp
+            else
+                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(&
+&1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                p(0,i,j,k) = p(1,i,j,k)+reltmp
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
-!}                
+            p(0,0,j,k) = p(0,1,j,k)
+            p(0,301,j,k) = p(0,300,j,k)
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
-!}                
+            p(0,i,0,k) = p(0,i,300,k)
+            p(0,i,301,k) = p(0,i,1,k)
+!}            
 !}
         end do
 ! OpenCLStencil (
@@ -3931,7 +4258,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !}
 ! Original Subroutine Name: adam {
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -3982,58 +4309,58 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -4056,7 +4383,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -4066,7 +4393,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -4076,7 +4403,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -4523,7 +4850,7 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -4661,58 +4988,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -4762,7 +5089,7 @@ subroutine press_5(p)
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -4784,7 +5111,7 @@ subroutine press_6(p)
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -4806,7 +5133,7 @@ subroutine press_7(p)
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -5360,7 +5687,7 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -5539,58 +5866,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -5648,7 +5975,7 @@ subroutine press_5(p)
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -5674,7 +6001,7 @@ subroutine press_6(p)
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -5700,7 +6027,7 @@ subroutine press_7(p)
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -6605,7 +6932,7 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -6789,58 +7116,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -6900,7 +7227,7 @@ subroutine press_5(p)
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -6927,7 +7254,7 @@ subroutine press_6(p)
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -6954,7 +7281,7 @@ subroutine press_7(p)
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -7579,7 +7906,7 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -7765,58 +8092,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -7878,7 +8205,7 @@ subroutine press_5(p)
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -7905,7 +8232,7 @@ subroutine press_6(p)
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
 !    ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -7932,7 +8259,7 @@ subroutine press_7(p)
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !    ){
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -8584,7 +8911,7 @@ subroutine adam(f,fold,g,gold,h,hold)
     i = mod(count, 301)
     j = mod(count/81, 301)
     k = count/24381
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -8773,58 +9100,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -8888,7 +9215,7 @@ subroutine press_5(p)
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
     j = mod(count, 303)
     k = count/82
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -8917,7 +9244,7 @@ subroutine press_6(p)
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     i = mod(count, 303)
     k = count/82
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -8946,7 +9273,7 @@ subroutine press_7(p)
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
     i = mod(count, 303)
     j = count/303
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
@@ -9692,7 +10019,7 @@ subroutine adam(f,fold,g,gold,h,hold)
     i = mod(count, 301)
     j = mod(count/81, 301)
     k = count/24381
-    if ((i>=1) .and. (j>=1) .and. (k>=1)) then
+    if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
         hd = h(i,j,k)
@@ -9914,58 +10241,58 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
 !	14 point stencil on 4D array p: [[C=0,1,0,0],[C=0,0,1,0],[C=0,0,0,0],[C=0,0,0,1],[C=0,0,0,-1],[C=0,0,-1,0],[C=0,-1,0,0],[C=1,1,0,0],[C=1,0,1,0],[C=1,0,0,0],[C=1,0,0,1],[C=1,0,0,-1],[C=1,0,-1,0],[C=1,-1,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],["nrd","l"]) {
-                if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
-                                dz1 = dzs(k-1)
-                                dz2 = dzs(k)
-                                cn4s = 2./(dz1*(dz1+dz2))
-                                cn4l = 2./(dz2*(dz1+dz2))
-                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                                if (nrd==0) then
-                                                                reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+&
-&1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                                                                p(1,i,j,k) = p(0,i,j,k)+reltmp
-                                else
-                                                                reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+&
-&1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                                                                p(0,i,j,k) = p(1,i,j,k)+reltmp
-                                end if
+            if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
+                dz1 = dzs(k-1)
+                dz2 = dzs(k)
+                cn4s = 2./(dz1*(dz1+dz2))
+                cn4l = 2./(dz2*(dz1+dz2))
+                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                if (nrd==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4&
+&s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
+                    p(1,i,j,k) = p(0,i,j,k)+reltmp
+                else
+                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4&
+&s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
+                    p(0,i,j,k) = p(1,i,j,k)+reltmp
                 end if
-!}                
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,C=1,0,0],[C=0,C=300,0,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],["nrd","l"]) {
-                if ((j<=301)) then
-                                p(0,0,j,k) = p(0,1,j,k)
-                                p(0,301,j,k) = p(0,300,j,k)
-                end if
-!}                
+            if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,0,j,k) = p(0,1,j,k)
+                p(0,301,j,k) = p(0,300,j,k)
+            end if
+!}            
 !}
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,C=1,0],[C=0,0,C=300,0]]
-!                ){
+!            ){
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],["nrd","l"]) {
-                if ((i<=301)) then
-                                p(0,i,0,k) = p(0,i,300,k)
-                                p(0,i,301,k) = p(0,i,1,k)
-                end if
-!}                
+            if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
+                p(0,i,0,k) = p(0,i,300,k)
+                p(0,i,301,k) = p(0,i,1,k)
+            end if
+!}            
 !}
         end do
 ! OpenCLStencil (
 !	2 point stencil on 4D array p: [[C=0,0,0,C=1],[C=0,0,0,C=80]]
 !        ){
 ! OpenCLMap ( [],["p"],["(j,0,301,1)","(i,0,301,1)"],["l"]) {
-        if ((i<=301) .and. (j<=301)) then
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+        if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
+            p(0,i,j,0) = p(0,i,j,1)
+            p(0,i,j,81) = p(0,i,j,80)
         end if
 !}        
 !}
@@ -10034,7 +10361,7 @@ subroutine press_5(p)
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(j,0,301,1)"],[]) {
     j = mod(count, 303)
     k = count/82
-    if ((j<=301)) then
+    if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,0,j,k) = p(0,1,j,k)
         p(0,301,j,k) = p(0,300,j,k)
     end if
@@ -10066,7 +10393,7 @@ subroutine press_6(p)
 ! OpenCLMap ( [],["p"],["(k,0,81,1)","(i,0,301,1)"],[]) {
     i = mod(count, 303)
     k = count/82
-    if ((i<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81)) then
         p(0,i,0,k) = p(0,i,300,k)
         p(0,i,301,k) = p(0,i,1,k)
     end if
@@ -10098,7 +10425,7 @@ subroutine press_7(p)
 ! OpenCLMap ( [],[],["(j,0,301,1)","(i,0,301,1)"],[]) {
     i = mod(count, 303)
     j = count/303
-    if ((i<=301) .and. (j<=301)) then
+    if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301)) then
         p(0,i,j,0) = p(0,i,j,1)
         p(0,i,j,81) = p(0,i,j,80)
     end if
