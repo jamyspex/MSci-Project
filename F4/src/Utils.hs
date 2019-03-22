@@ -5,6 +5,7 @@
 module Utils where
 
 import           Data.Generics
+import           Data.List
 import qualified Data.Map             as DMap
 import           Data.Maybe
 import           Debug.Trace
@@ -627,23 +628,26 @@ data Array = Array
   , dimensionRanges :: [(Int, Int)]
   } deriving (Show)
 
-arrayExprQuery :: [Array] -> Expr Anno -> [Expr Anno]
-arrayExprQuery arrays expr =
-  case expr of
-    var@(Var _ _ ((VarName _ name, idx:_):_)) -> [var | name `elem` arrayNames]
-    _ -> []
+arrayExprQuery :: [Array] -> Expr Anno -> [(Expr Anno, Array)]
+arrayExprQuery arrays var@(Var _ _ ((VarName _ name, idx:_):_)) =
+  case foundAt of
+    Just idx -> [(var, arrays !! idx)] -- var | name `elem` arrayNames]
+    _        -> []
   where
-    arrayNames =
-      map
-        (\array ->
-           let (VarName _ name) = arrayVarName array
-            in name)
-        arrays
+    foundAt =
+      findIndex (\Array {..} -> getNameFromVarName arrayVarName == name) arrays
+arrayExprQuery _ _ = []
 
-getAllArrayAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
-getAllArrayAccesses arrays fortran = concatMap (arrayExprQuery arrays) allVars
+getAllArrayAccessesWithMatchingArray ::
+     [Array] -> Fortran Anno -> [(Expr Anno, Array)]
+getAllArrayAccessesWithMatchingArray arrays fortran =
+  concatMap (arrayExprQuery arrays) allVars
   where
     allVars = everything (++) (mkQ [] allVarsQuery) fortran
+
+getAllArrayAccesses :: [Array] -> Fortran Anno -> [Expr Anno]
+getAllArrayAccesses arrays fortran =
+  map fst $ getAllArrayAccessesWithMatchingArray arrays fortran
 
 allVarsQuery expr =
   case expr of
@@ -659,6 +663,7 @@ getArrayAccesses :: ArrayAccessType -> [Array] -> Fortran Anno -> [Expr Anno]
 getArrayAccesses readOrWrite arrays fortran = allArrayExprs
   where
     allArrayExprs =
+      map fst $
       everything (++) (mkQ [] (arrayExprQuery arrays)) exprsFromFortran
     exprsFromFortran =
       case fortran of

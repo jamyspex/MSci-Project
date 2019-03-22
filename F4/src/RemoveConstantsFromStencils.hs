@@ -3,15 +3,19 @@
 
 module RemoveConstantsFromStencils where
 
+import           Data.List
+import           Data.List.Unique
+import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Utils
 
 data ArrayAccess = AA
-  { arrayName :: String
-  , indices   :: [Index]
-  }
+  { arrayName  :: String
+  , indices    :: [Index]
+  , dimensions :: [(Int, Int)]
+  } deriving (Eq, Ord)
 
 instance Show ArrayAccess where
   show AA {..} =
@@ -20,22 +24,35 @@ instance Show ArrayAccess where
 data Index
   = LoopVar String
   | Const Int
-  deriving (Show)
+  deriving (Show, Eq, Ord)
+
+artificalStencilSizeBound = 2
 
 removeConstantsFromStencils :: SubRec -> IO SubRec
 removeConstantsFromStencils subrec@MkSubRec {..} = do
   getLoopNestsAndStencilArrayDecls subAst
   return subrec
 
+getLoopVariableByNestOrder :: Fortran Anno -> [String]
+getLoopVariableByNestOrder (OriginalSubContainer _ _ body) =
+  getLoopVariableByNestOrder body
+getLoopVariableByNestOrder (FSeq _ _ f1 NullStmt {}) =
+  getLoopVariableByNestOrder f1
+getLoopVariableByNestOrder (For _ _ (VarName _ loopVarName) _ _ _ body) =
+  loopVarName : getLoopVariableByNestOrder body
+getLoopVariableByNestOrder _ = []
+
 getLoopNestsAndStencilArrayDecls ::
      ProgUnit Anno -> IO [(Fortran Anno, [ArrayAccess])]
 getLoopNestsAndStencilArrayDecls mergedBody = do
   mapM_
-    (\(ln, arrayAccesses) ->
+    (\(ln, arrayAccesses, loopVarNestOrder) ->
        putStrLn
          (miniPPF ln ++
           "\n" ++
           show arrayAccesses ++
+          "\n" ++
+          show loopVarNestOrder ++
           "\n-------------------------------------------\n"))
     loopNestsToArrayAccesses
   return []
@@ -43,15 +60,25 @@ getLoopNestsAndStencilArrayDecls mergedBody = do
     loopNests = getInnerLoopNests $ getSubBody mergedBody
     allArrays = map (arrayFromDeclWithRanges True) $ getDecls mergedBody
     loopNestsToArrayAccesses =
-      map (\ln -> (ln, parseArrayAccesses allArrays ln)) loopNests
+      map
+        (\ln ->
+           (ln, parseArrayAccesses allArrays ln, getLoopVariableByNestOrder ln))
+        loopNests
 
 parseArrayAccesses :: [Array] -> Fortran Anno -> [ArrayAccess]
-parseArrayAccesses allArrays loopNest = map buildArrayAccess allArrayAccess
+parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
   where
-    allArrayAccess = getAllArrayAccesses allArrays loopNest
-    buildArrayAccess :: Expr Anno -> ArrayAccess
-    buildArrayAccess accessExpr =
-      AA {arrayName = name, indices = map buildIndex indexExprs}
+    uniqueArrayAccesses = sortUniq allParsedArrayAccesses
+    allParsedArrayAccesses = map buildArrayAccess allArrayAccessExprs
+    allArrayAccessExprs =
+      getAllArrayAccessesWithMatchingArray allArrays loopNest
+    buildArrayAccess :: (Expr Anno, Array) -> ArrayAccess
+    buildArrayAccess (accessExpr, Array {..}) =
+      AA
+        { arrayName = name
+        , indices = map buildIndex indexExprs
+        , dimensions = dimensionRanges
+        }
       where
         (Var _ _ [(VarName _ name, indexExprs)]) = accessExpr
         accessIndices = map
@@ -92,21 +119,10 @@ getInnerLoopNests = go "" Nothing
       | loopBodyStatementsOnly body = [osc name topLevel]
       | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
       | otherwise = concatMap (go name Nothing) $ allFors body
-    go _ _ _ = [] --error ("Missing for = \n" ++ miniPPF for)
+    go _ _ _ = []
 
 allFors body =
   case body of
     FSeq _ _ f1 f2 -> allFors f1 ++ allFors f2
     for@For {}     -> [for]
     _              -> []
--- go name preamble (FSeq _ _ f1 f2)
---   | isLoop f1 = osc name (block (preamble ++ [f1])) : go name [] f2
---   | isLoop f2 = [osc name (block $ preamble ++ [f1, f2])]
---   | isOSC f1 = go "" [] f1 ++ go "" [] f2
---   | isOSC f2 = go "" [] f2
---   | isFSeq f2 = go name (preamble ++ [f1]) f2
---   | otherwise = error "can't find main kernel body after preamble"
--- go _ _ (NullStmt _ _) = []
--- go name preamble fortran
---   | isLoop fortran = [osc name (block $ preamble ++ [fortran])]
---   | otherwise = error "encountered fortran that is not main body"

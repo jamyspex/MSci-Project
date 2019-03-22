@@ -1504,13 +1504,12 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: dxs indices = [LoopVar "i"]
 ,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: velnw {
@@ -1523,13 +1522,12 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: dys indices = [LoopVar "j"]
 ,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: velnw {
@@ -1542,13 +1540,12 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dzs indices = [LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: dzs indices = [LoopVar "k"]
 ,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: feedbf {
@@ -1571,31 +1568,20 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: usum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: usum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: bmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: vsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: vsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: bmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: cmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: wsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: wsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: usum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: vsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: wsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: bmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: cmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: dmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fx indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fy indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fz indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: usum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: vsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: wsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: feedbf {
@@ -1610,15 +1596,13 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fx indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fy indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fz indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: les {
@@ -1640,36 +1624,19 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: delx1 indices = [LoopVar "k"]
+,ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu5 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu9 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: delx1 indices = [LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: les {
@@ -1694,88 +1661,19 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: dx1 indices = [LoopVar "i"]
 ,ArrayAccess: dxs indices = [LoopVar "i"]
 ,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
 ,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: les {
@@ -1800,88 +1698,19 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu5 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu5 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: dx1 indices = [LoopVar "i"]
+,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: dys indices = [LoopVar "j"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
 ,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: les {
@@ -1906,88 +1735,18 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu9 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: diu9 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: dx1 indices = [LoopVar "i"]
 ,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
 ,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: adam {
@@ -2008,21 +1767,13 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: fold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: gold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: hold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: gold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: hold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2035,28 +1786,18 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+[ArrayAccess: dx1 indices = [LoopVar "i"]
 ,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
 ,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
 ,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
+,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2073,10 +1814,8 @@ This subroutine will be offloaded to the FPGA
 ,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
 ,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2089,8 +1828,8 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2117,45 +1856,14 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: dzs indices = [LoopVar "k"]
+[ArrayAccess: dxs indices = [LoopVar "i"]
+,ArrayAccess: dys indices = [LoopVar "j"]
 ,ArrayAccess: dzs indices = [LoopVar "k"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
 ,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2168,9 +1876,10 @@ This subroutine will be offloaded to the FPGA
 !}
 [ArrayAccess: p indices = [Const 0,Const 0,LoopVar "j",LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,Const 1,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,Const 300,LoopVar "j",LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 ]
+["k","j"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2182,10 +1891,11 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: p indices = [Const 0,LoopVar "i",Const 0,LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 300,LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
 ]
+["k","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2198,9 +1908,10 @@ This subroutine will be offloaded to the FPGA
 !}
 [ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 0]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 1]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 80]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 ]
+["j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2213,14 +1924,12 @@ This subroutine will be offloaded to the FPGA
         end do
     end do
 !}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
+[ArrayAccess: dx1 indices = [LoopVar "i"]
 ,ArrayAccess: dy1 indices = [LoopVar "j"]
 ,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2233,8 +1942,8 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 ]
+["k","j","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2247,9 +1956,10 @@ This subroutine will be offloaded to the FPGA
 !}
 [ArrayAccess: p indices = [Const 0,Const 0,LoopVar "j",LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,Const 1,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,Const 300,LoopVar "j",LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 ]
+["k","j"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2261,10 +1971,11 @@ This subroutine will be offloaded to the FPGA
     end do
 !}
 [ArrayAccess: p indices = [Const 0,LoopVar "i",Const 0,LoopVar "k"]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 300,LoopVar "k"]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
 ]
+["k","i"]
 -------------------------------------------
 
 ! Original Subroutine Name: press {
@@ -2277,9 +1988,10 @@ This subroutine will be offloaded to the FPGA
 !}
 [ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 0]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 1]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 ,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 80]
+,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 ]
+["j","i"]
 -------------------------------------------
 
 
