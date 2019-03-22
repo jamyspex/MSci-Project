@@ -644,7 +644,7 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-("dyn",1,500)
+("dyn",2,250000)
 
 ----------------------------------------
 
@@ -678,7 +678,7 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-("dyn",1,500)
+("dyn",2,250000)
 
 ----------------------------------------
 
@@ -701,7 +701,7 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-("dyn",1,500)
+("dyn",2,250000)
 
 ----------------------------------------
 
@@ -719,7 +719,7 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-("shapiro",1,500)
+("shapiro",2,250000)
 
 ----------------------------------------
 
@@ -736,7 +736,7 @@ This subroutine will not be offloaded to the FPGA
         end do
     end do
 !}
-("vernieuw",1,502)
+("vernieuw",2,252004)
 
 ----------------------------------------
 
