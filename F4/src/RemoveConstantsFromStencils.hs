@@ -1,20 +1,24 @@
+{-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TupleSections   #-}
 
 module RemoveConstantsFromStencils where
 
+import           Control.Monad
 import           Data.List
 import           Data.List.Unique
+import           Data.Maybe
 import           Debug.Trace
+import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Utils
 
 data ArrayAccess = AA
-  { arrayName  :: String
-  , indices    :: [Index]
-  , dimensions :: [(Int, Int)]
+  { arrayName          :: String
+  , indices            :: [Index]
+  , declaredDimensions :: [(Int, Int)]
   } deriving (Eq, Ord)
 
 instance Show ArrayAccess where
@@ -30,8 +34,119 @@ artificalStencilSizeBound = 2
 
 removeConstantsFromStencils :: SubRec -> IO SubRec
 removeConstantsFromStencils subrec@MkSubRec {..} = do
-  getLoopNestsAndStencilArrayDecls subAst
+  loopNestsAndArrayAccesses <- getLoopNestsAndStencilAccesses subAst
+  mapM_ processLoopNest loopNestsAndArrayAccesses
   return subrec
+
+processLoopNest :: (Fortran Anno, [ArrayAccess]) -> IO (Fortran Anno)
+processLoopNest (loopNest, arrayAccesses) = do
+  putStrLn $ miniPPF loopNest
+  putStrLn $ show arrayAccesses
+  when
+    (isJust highestDimArrayAccessedWithConstant)
+    (putStrLn $ (show . fromJust) highestDimArrayAccessedWithConstant)
+  putStrLn $ "Nesting direction = " ++ show nestingDirection
+  putStrLn "Updated = "
+  putStrLn $ miniPPF withSyntheticLoopsInserted
+  putStrLn "-------------------------------------------"
+  return loopNest
+  where
+    withSyntheticLoopsInserted =
+      insertSyntheticLoops
+        highestDimArrayAccessedWithConstant
+        (fromMaybe [] constantPositions)
+        nestingDirection
+        loopNest
+    constantPositions =
+      fmap getConstantPositions highestDimArrayAccessedWithConstant
+    highestDimArrayAccessedWithConstant =
+      getHighestDimensionArrayAccess accessesValidated
+    accessesValidated = allConstantsUsedInSamePosition arrayAccesses
+    loopVars = getLoopVariableByNestOrder loopNest
+    nestingDirection = detectNestingDirection loopVars arrayAccesses
+
+insertSyntheticLoops ::
+     Maybe ArrayAccess
+  -> [Bool]
+  -> NestingDirection
+  -> Fortran Anno
+  -> Fortran Anno
+insertSyntheticLoops Nothing [] _ loopNest = loopNest
+insertSyntheticLoops (Just AA {..}) constantPositions Normal loopNest =
+  addLoops declaredDimensions (reverse constantPositions) loopNest
+insertSyntheticLoops (Just AA {..}) constantPositions Reverse loopNest =
+  addLoops declaredDimensions constantPositions loopNest
+
+addLoops = addLoops' 0
+
+addLoops' :: Int -> [(Int, Int)] -> [Bool] -> Fortran Anno -> Fortran Anno
+addLoops' level dims insertLoop wholeLoopNest
+  | insertLoop !! level =
+    for "synthIdx" lwb (con upb) (getNestAtLevel level wholeLoopNest)
+  | otherwise = addLoops' (level + 1) dims insertLoop wholeLoopNest
+  where
+    (lwb, upb) = dims !! level
+
+getNestAtLevel :: Int -> Fortran Anno -> Fortran Anno
+getNestAtLevel level = getNestAtLevel' level 0
+
+getNestAtLevel' :: Int -> Int -> Fortran Anno -> Fortran Anno
+getNestAtLevel' level currentLevel (OriginalSubContainer _ _ body) =
+  getNestAtLevel' level currentLevel body
+getNestAtLevel' level currentLevel (FSeq _ _ f1 NullStmt {}) =
+  getNestAtLevel' level currentLevel f1
+getNestAtLevel' level currentLevel body
+  | level == currentLevel = body
+  | otherwise = getNestAtLevel' level (currentLevel + 1) body
+
+-- getNestAtLevel' level currentLevel from =
+--   error
+--     ("missing pattern for = \n" ++
+--      miniPPF from ++
+--      "\nlevel = " ++ show level ++ " currentLevel = " ++ show currentLevel)
+getHighestDimensionArrayAccess :: [ArrayAccess] -> Maybe ArrayAccess
+getHighestDimensionArrayAccess allArrayAccesses =
+  if null onlyWithConstants
+    then Nothing
+    else Just mostConstants
+  where
+    mostConstants =
+      maximumBy
+        (\a1 a2 ->
+           length (declaredDimensions a1) `compare`
+           length (declaredDimensions a2))
+        onlyWithConstants
+    onlyWithConstants =
+      filter
+        (\AA {..} ->
+           any
+             (\case
+                LoopVar _ -> False
+                Const _ -> True)
+             indices)
+        allArrayAccesses
+
+allConstantsUsedInSamePosition :: [ArrayAccess] -> [ArrayAccess]
+allConstantsUsedInSamePosition allArrayAccesses =
+  if all (\grp -> all (== head grp) grp) constantPositions
+    then allArrayAccesses
+    else error
+           "constants are not used in the same positions across stencils of same size"
+  where
+    constantPositions = map (map getConstantPositions) grpdByLength
+    grpdByLength =
+      groupBy
+        (\a1 a2 ->
+           (length . declaredDimensions) a1 == (length . declaredDimensions) a2)
+        allArrayAccesses
+
+getConstantPositions :: ArrayAccess -> [Bool]
+getConstantPositions AA {..} =
+  map
+    (\case
+       LoopVar _ -> False
+       Const _ -> True)
+    indices
 
 getLoopVariableByNestOrder :: Fortran Anno -> [String]
 getLoopVariableByNestOrder (OriginalSubContainer _ _ body) =
@@ -42,28 +157,65 @@ getLoopVariableByNestOrder (For _ _ (VarName _ loopVarName) _ _ _ body) =
   loopVarName : getLoopVariableByNestOrder body
 getLoopVariableByNestOrder _ = []
 
-getLoopNestsAndStencilArrayDecls ::
+getLoopNestsAndStencilAccesses ::
      ProgUnit Anno -> IO [(Fortran Anno, [ArrayAccess])]
-getLoopNestsAndStencilArrayDecls mergedBody = do
-  mapM_
-    (\(ln, arrayAccesses, loopVarNestOrder) ->
-       putStrLn
-         (miniPPF ln ++
-          "\n" ++
-          show arrayAccesses ++
-          "\n" ++
-          show loopVarNestOrder ++
-          "\n-------------------------------------------\n"))
-    loopNestsToArrayAccesses
-  return []
+getLoopNestsAndStencilAccesses mergedBody = do
+  return loopNestsToArrayAccesses
   where
     loopNests = getInnerLoopNests $ getSubBody mergedBody
     allArrays = map (arrayFromDeclWithRanges True) $ getDecls mergedBody
     loopNestsToArrayAccesses =
-      map
-        (\ln ->
-           (ln, parseArrayAccesses allArrays ln, getLoopVariableByNestOrder ln))
-        loopNests
+      map (\ln -> (ln, parseArrayAccesses allArrays ln)) loopNests
+
+data NestingDirection
+  = Normal
+  | Reverse
+  | Undefined
+  | Either
+  deriving (Show, Eq)
+
+detectNestingDirection :: [String] -> [ArrayAccess] -> NestingDirection
+detectNestingDirection loopVarsInNestOrder arrayAccesses =
+  if valid
+    then firstNotEither
+    else error "Index usage ordering not consistent"
+  where
+    allNestingDirections = map (checkOne loopVarsInNestOrder) arrayAccesses
+    firstNotEither =
+      head $
+      filter
+        (\case
+           Either -> False
+           _ -> True)
+        allNestingDirections
+    valid = all (\v -> v == firstNotEither || v == Either) allNestingDirections
+
+checkOne :: [String] -> ArrayAccess -> NestingDirection
+checkOne loopVars arrayAccess =
+  case (forward, backward) of
+    (True, True)   -> Either
+    (True, _)      -> Normal
+    (_, True)      -> Reverse
+    (False, False) -> error "Can not detect loop nesting direction"
+  where
+    forward = go 0 loopVars accessLoopVarsOnly
+    backward = go 0 (reverse loopVars) accessLoopVarsOnly
+    accessLoopVarsOnly =
+      (concatMap
+         (\case
+            LoopVar name -> [name]
+            Const _ -> []) .
+       indices)
+        arrayAccess
+    go :: Int -> [String] -> [String] -> Bool
+    go misMatchCount (lv:lvs) (ai:ais)
+      | misMatchCount == 2 = False
+      | lv == ai = go misMatchCount lvs ais
+      | lv /= ai = go (misMatchCount + 1) lvs ais
+      | otherwise = go misMatchCount lvs ais
+    go misMatchCount _ _
+      | misMatchCount == 2 = False
+      | otherwise = True
 
 parseArrayAccesses :: [Array] -> Fortran Anno -> [ArrayAccess]
 parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
@@ -77,7 +229,7 @@ parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
       AA
         { arrayName = name
         , indices = map buildIndex indexExprs
-        , dimensions = dimensionRanges
+        , declaredDimensions = dimensionRanges
         }
       where
         (Var _ _ [(VarName _ name, indexExprs)]) = accessExpr

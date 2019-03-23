@@ -4,16 +4,14 @@ import           Language.Fortran
 import           LanguageFortranTools
 
 -- import           Utils
-for = for' lessThanEq
-
-for' ::
-     (Expr Anno -> Expr Anno -> Expr Anno)
-  -> String
-  -> Int
-  -> Expr Anno
-  -> Fortran Anno
-  -> Fortran Anno
-for' comparision loopVar initial lhs =
+--      for = for' lessThanEq
+for
+     -- (Expr Anno -> Expr Anno -> Expr Anno)
+ -- ->
+ ::
+     String -> Int -> Expr Anno -> Fortran Anno -> Fortran Anno
+-- comparision
+for loopVar initial lhs =
   For
     nullAnno
     nullSrcSpan
@@ -22,8 +20,7 @@ for' comparision loopVar initial lhs =
     lhs -- (comparision (var loopVar) lhs)
     (con 1)
 
-forLT = for' lessThan
-
+-- forLT = for' lessThan
 nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
 
 buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
