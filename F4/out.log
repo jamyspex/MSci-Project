@@ -649,9 +649,7 @@ This subroutine will not be offloaded to the FPGA
 ,ArrayAccess: eta indices = [LoopVar "j",LoopVar "k"]
 ]
 Nesting direction = Normal
-
 -------------------------------------------
-
 ! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
@@ -691,9 +689,7 @@ Nesting direction = Normal
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
 Nesting direction = Normal
-
 -------------------------------------------
-
 ! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
@@ -720,9 +716,7 @@ Nesting direction = Normal
 ,ArrayAccess: vn indices = [LoopVar "j",LoopVar "k"]
 ]
 Nesting direction = Normal
-
 -------------------------------------------
-
 ! Original Subroutine Name: shapiro {
     do j = 1, 500, 1
         do k = 1, 500, 1
@@ -742,9 +736,7 @@ Nesting direction = Normal
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
 Nesting direction = Normal
-
 -------------------------------------------
-
 ! Original Subroutine Name: vernieuw {
     do j = 0, 501, 1
         do k = 0, 501, 1
@@ -768,9 +760,7 @@ Nesting direction = Normal
 ,ArrayAccess: wet indices = [LoopVar "j",LoopVar "k"]
 ]
 Nesting direction = Normal
-
 -------------------------------------------
-
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  Pipeline Detection 
