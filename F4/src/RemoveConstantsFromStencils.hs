@@ -1,6 +1,5 @@
 {-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TupleSections   #-}
 
 module RemoveConstantsFromStencils where
 
@@ -29,8 +28,6 @@ data Index
   = LoopVar String
   | Const Int
   deriving (Show, Eq, Ord)
-
-artificalStencilSizeBound = 2
 
 removeConstantsFromStencils :: SubRec -> IO SubRec
 removeConstantsFromStencils subrec@MkSubRec {..} = do
@@ -120,23 +117,12 @@ addLoops' maxLevel level dims insertLoop loopNest
           Just (For anno srcSpan loopVarName expr1 expr2 expr3)
         _ -> Nothing
 
-getNestAtLevel :: Int -> Fortran Anno -> Fortran Anno
-getNestAtLevel level loopNest = getNestAtLevel' level 0 loopNest
-  where
-    totalNumberOfNests = countLoopNests loopNest
-
-countLoopNests :: Fortran Anno -> Int
-countLoopNests = countLoopNests' 0
-
 getNearestFor :: Fortran Anno -> Fortran Anno
 getNearestFor (OriginalSubContainer _ _ body) = getNearestFor body
 getNearestFor (FSeq _ _ f1 NullStmt {})       = getNearestFor f1
 getNearestFor for@For {}                      = for
 getNearestFor body                            = body
 
--- getNearestFor body
---   | loopBodyStatementsOnly body = body
---   | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
 stripLoopNest :: Fortran Anno -> Fortran Anno
 stripLoopNest (OriginalSubContainer _ _ body) = stripLoopNest body
 stripLoopNest (FSeq _ _ f1 NullStmt {}) = stripLoopNest f1
@@ -145,33 +131,6 @@ stripLoopNest body
   | loopBodyStatementsOnly body = body
   | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
 
-countLoopNests' :: Int -> Fortran Anno -> Int
-countLoopNests' currentCount (OriginalSubContainer _ _ body) =
-  countLoopNests' currentCount body
-countLoopNests' currentCount (FSeq _ _ f1 NullStmt {}) =
-  countLoopNests' currentCount f1
-countLoopNests' currentCount (For _ _ _ _ _ _ body) =
-  countLoopNests' (currentCount + 1) body
-countLoopNests' currentCount body
-  | loopBodyStatementsOnly body = currentCount
-  | otherwise =
-    error ("Can't count number of loop nest in segment:\n" ++ miniPPF body)
-
-getNestAtLevel' :: Int -> Int -> Fortran Anno -> Fortran Anno
-getNestAtLevel' level currentLevel (OriginalSubContainer _ _ body) =
-  getNestAtLevel' level currentLevel body
-getNestAtLevel' level currentLevel (FSeq _ _ f1 NullStmt {}) =
-  getNestAtLevel' level currentLevel f1
-getNestAtLevel' level currentLevel for@(For _ _ _ _ _ _ body)
-  | level == currentLevel = for
-  | otherwise = getNestAtLevel' level (currentLevel + 1) body
-getNestAtLevel' _ _ f = f -- error ("Pattern missing for =\n" ++ miniPPF f)
-
--- getNestAtLevel' level currentLevel from =
---   error
---     ("missing pattern for = \n" ++
---      miniPPF from ++
---      "\nlevel = " ++ show level ++ " currentLevel = " ++ show currentLevel)
 getHighestDimensionArrayAccess :: [ArrayAccess] -> Maybe ArrayAccess
 getHighestDimensionArrayAccess allArrayAccesses =
   if null onlyWithConstants
