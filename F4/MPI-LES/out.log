@@ -1513,10 +1513,10 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 80, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
                     u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
                 end do
@@ -1543,10 +1543,10 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 80, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
                     v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
                 end do
@@ -1573,10 +1573,10 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 79, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 79, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
                     w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
                 end do
@@ -2065,10 +2065,10 @@ ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 80, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     dz1 = dzs(k-1)
                     dz2 = dzs(k)
                     cn4s = 2./(dz1*(dz1+dz2))
@@ -2107,11 +2107,13 @@ ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 0, 81, 1
-            do j = 0, 301, 1
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
+    do k = 0, 81, 1
+        do j = 0, 301, 1
+            do synthIdx2 = 0, 302, 1
+                do synthIdx3 = 0, 1, 1
+                    p(0,0,j,k) = p(0,1,j,k)
+                    p(0,301,j,k) = p(0,300,j,k)
+                end do
             end do
         end do
     end do
@@ -2133,11 +2135,13 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 0, 81, 1
+    do k = 0, 81, 1
+        do synthIdx1 = 0, 302, 1
             do i = 0, 301, 1
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
+                do synthIdx3 = 0, 1, 1
+                    p(0,i,0,k) = p(0,i,300,k)
+                    p(0,i,301,k) = p(0,i,1,k)
+                end do
             end do
         end do
     end do
@@ -2159,11 +2163,13 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
+    do synthIdx0 = 0, 81, 1
         do j = 0, 301, 1
             do i = 0, 301, 1
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+                do synthIdx3 = 0, 1, 1
+                    p(0,i,j,0) = p(0,i,j,1)
+                    p(0,i,j,81) = p(0,i,j,80)
+                end do
             end do
         end do
     end do
@@ -2187,10 +2193,10 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 80, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
                     pco = pco+dx1(i)*dy1(j)*dzn(k)
                 end do
@@ -2213,10 +2219,10 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 1, 80, 1
-            do j = 1, 300, 1
-                do i = 1, 300, 1
+    do k = 1, 80, 1
+        do j = 1, 300, 1
+            do i = 1, 300, 1
+                do synthIdx3 = 0, 1, 1
                     p(0,i,j,k) = p(0,i,j,k)-pav
                 end do
             end do
@@ -2240,11 +2246,13 @@ ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 0, 81, 1
-            do j = 0, 301, 1
-                p(0,0,j,k) = p(0,1,j,k)
-                p(0,301,j,k) = p(0,300,j,k)
+    do k = 0, 81, 1
+        do j = 0, 301, 1
+            do synthIdx2 = 0, 302, 1
+                do synthIdx3 = 0, 1, 1
+                    p(0,0,j,k) = p(0,1,j,k)
+                    p(0,301,j,k) = p(0,300,j,k)
+                end do
             end do
         end do
     end do
@@ -2266,11 +2274,13 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
-        do k = 0, 81, 1
+    do k = 0, 81, 1
+        do synthIdx1 = 0, 302, 1
             do i = 0, 301, 1
-                p(0,i,0,k) = p(0,i,300,k)
-                p(0,i,301,k) = p(0,i,1,k)
+                do synthIdx3 = 0, 1, 1
+                    p(0,i,0,k) = p(0,i,300,k)
+                    p(0,i,301,k) = p(0,i,1,k)
+                end do
             end do
         end do
     end do
@@ -2292,11 +2302,13 @@ ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
 
 Nesting direction = Reverse
 Updated = 
-    do synthIdx = 0, 1, 1
+    do synthIdx0 = 0, 81, 1
         do j = 0, 301, 1
             do i = 0, 301, 1
-                p(0,i,j,0) = p(0,i,j,1)
-                p(0,i,j,81) = p(0,i,j,80)
+                do synthIdx3 = 0, 1, 1
+                    p(0,i,j,0) = p(0,i,j,1)
+                    p(0,i,j,81) = p(0,i,j,80)
+                end do
             end do
         end do
     end do

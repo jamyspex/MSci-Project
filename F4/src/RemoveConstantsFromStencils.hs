@@ -73,31 +73,99 @@ insertSyntheticLoops ::
   -> Fortran Anno
 insertSyntheticLoops Nothing [] _ loopNest = loopNest
 insertSyntheticLoops (Just AA {..}) constantPositions Normal loopNest =
-  addLoops declaredDimensions (reverse constantPositions) loopNest
-insertSyntheticLoops (Just AA {..}) constantPositions Reverse loopNest =
   addLoops declaredDimensions constantPositions loopNest
+insertSyntheticLoops (Just AA {..}) constantPositions Reverse loopNest =
+  addLoops (reverse declaredDimensions) (reverse constantPositions) loopNest
 
-addLoops = addLoops' 0
+addLoops dims insertLoop wholeLoopNest =
+  addLoops' maxNestLevel 0 dims insertLoop wholeLoopNest
+  where
+    maxNestLevel = length dims - 1
 
-addLoops' :: Int -> [(Int, Int)] -> [Bool] -> Fortran Anno -> Fortran Anno
-addLoops' level dims insertLoop wholeLoopNest
+addLoops' ::
+     Int -> Int -> [(Int, Int)] -> [Bool] -> Fortran Anno -> Fortran Anno
+addLoops' maxLevel level dims insertLoop loopNest
+  | level == maxLevel && loopBodyStatementsOnly loopNest && insertLoop !! level =
+    for ("synthIdx" ++ show level) lwb (con upb) loopNest
+  | level == maxLevel && loopBodyStatementsOnly loopNest = loopNest
+  | insertLoop !! level && isJust originalFor =
+    for
+      ("synthIdx" ++ show level)
+      lwb
+      (con upb)
+      (origFor
+         (addLoops'
+            maxLevel
+            (level + 1)
+            dims
+            insertLoop
+            (stripLoopNest loopNest)))
   | insertLoop !! level =
-    for "synthIdx" lwb (con upb) (getNestAtLevel level wholeLoopNest)
-  | otherwise = addLoops' (level + 1) dims insertLoop wholeLoopNest
+    for
+      ("synthIdx" ++ show level)
+      lwb
+      (con upb)
+      (addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest))
+  | isJust originalFor =
+    origFor $
+    addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest)
+  | otherwise =
+    addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest)
   where
     (lwb, upb) = dims !! level
+    origFor = fromJust originalFor
+    originalFor =
+      case getNearestFor loopNest of
+        For anno srcSpan loopVarName expr1 expr2 expr3 fortran ->
+          Just (For anno srcSpan loopVarName expr1 expr2 expr3)
+        _ -> Nothing
 
 getNestAtLevel :: Int -> Fortran Anno -> Fortran Anno
-getNestAtLevel level = getNestAtLevel' level 0
+getNestAtLevel level loopNest = getNestAtLevel' level 0 loopNest
+  where
+    totalNumberOfNests = countLoopNests loopNest
+
+countLoopNests :: Fortran Anno -> Int
+countLoopNests = countLoopNests' 0
+
+getNearestFor :: Fortran Anno -> Fortran Anno
+getNearestFor (OriginalSubContainer _ _ body) = getNearestFor body
+getNearestFor (FSeq _ _ f1 NullStmt {})       = getNearestFor f1
+getNearestFor for@For {}                      = for
+getNearestFor body                            = body
+
+-- getNearestFor body
+--   | loopBodyStatementsOnly body = body
+--   | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
+stripLoopNest :: Fortran Anno -> Fortran Anno
+stripLoopNest (OriginalSubContainer _ _ body) = stripLoopNest body
+stripLoopNest (FSeq _ _ f1 NullStmt {}) = stripLoopNest f1
+stripLoopNest (For _ _ _ _ _ _ body) = body
+stripLoopNest body
+  | loopBodyStatementsOnly body = body
+  | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
+
+countLoopNests' :: Int -> Fortran Anno -> Int
+countLoopNests' currentCount (OriginalSubContainer _ _ body) =
+  countLoopNests' currentCount body
+countLoopNests' currentCount (FSeq _ _ f1 NullStmt {}) =
+  countLoopNests' currentCount f1
+countLoopNests' currentCount (For _ _ _ _ _ _ body) =
+  countLoopNests' (currentCount + 1) body
+countLoopNests' currentCount body
+  | loopBodyStatementsOnly body = currentCount
+  | otherwise =
+    error ("Can't count number of loop nest in segment:\n" ++ miniPPF body)
 
 getNestAtLevel' :: Int -> Int -> Fortran Anno -> Fortran Anno
 getNestAtLevel' level currentLevel (OriginalSubContainer _ _ body) =
   getNestAtLevel' level currentLevel body
 getNestAtLevel' level currentLevel (FSeq _ _ f1 NullStmt {}) =
   getNestAtLevel' level currentLevel f1
-getNestAtLevel' level currentLevel body
-  | level == currentLevel = body
+getNestAtLevel' level currentLevel for@(For _ _ _ _ _ _ body)
+  | level == currentLevel = for
   | otherwise = getNestAtLevel' level (currentLevel + 1) body
+getNestAtLevel' _ _ f = f -- error ("Pattern missing for =\n" ++ miniPPF f)
 
 -- getNestAtLevel' level currentLevel from =
 --   error
@@ -245,9 +313,10 @@ parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
 loopBodyStatementsOnly :: Fortran Anno -> Bool
 loopBodyStatementsOnly fortran =
   case fortran of
-    For {}         -> False
+    For {} -> False
     FSeq _ _ f1 f2 -> loopBodyStatementsOnly f1 && loopBodyStatementsOnly f2
-    _              -> True
+    OriginalSubContainer _ _ body -> loopBodyStatementsOnly body
+    _ -> True
 
 loopBodyOnlyContainsLoop :: Fortran Anno -> Bool
 loopBodyOnlyContainsLoop fortran =
