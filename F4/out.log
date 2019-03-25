@@ -659,6 +659,12 @@ Updated =
     end do
 !}
 Loop variable index pos tuples = 
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: dyn {
@@ -732,6 +738,20 @@ Updated =
     end do
 !}
 Loop variable index pos tuples = 
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: dyn {
@@ -781,6 +801,16 @@ Updated =
     end do
 !}
 Loop variable index pos tuples = 
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: shapiro {
@@ -818,6 +848,12 @@ Updated =
     end do
 !}
 Loop variable index pos tuples = 
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: vernieuw {
@@ -858,6 +894,22 @@ Updated =
     end do
 !}
 Loop variable index pos tuples = 
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
+	(0,"j",LoopVar "j")
+	(1,"k",LoopVar "k")
 
 -------------------------------------------
 
