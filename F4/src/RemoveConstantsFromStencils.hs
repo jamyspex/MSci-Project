@@ -5,6 +5,7 @@ module RemoveConstantsFromStencils where
 
 import           Control.Monad
 import           Data.List
+import           Data.List.Index
 import           Data.List.Unique
 import           Data.Maybe
 import           Debug.Trace
@@ -45,9 +46,13 @@ processLoopNest (loopNest, arrayAccesses) = do
   putStrLn $ "Nesting direction = " ++ show nestingDirection
   putStrLn "Updated = "
   putStrLn $ miniPPF withSyntheticLoopsInserted
+  putStrLn $ "Loop variable index pos tuples = "
+  putStrLn $ concatMap (\t -> "\t" ++ show t ++ "\n") loopVarPosTuples
   putStrLn "-------------------------------------------"
   return loopNest
   where
+    loopVarPosTuples =
+      getLoopVarConstantPosTuples accessesValidated withSyntheticLoopsInserted
     withSyntheticLoopsInserted =
       insertSyntheticLoops
         highestDimArrayAccessedWithConstant
@@ -61,6 +66,21 @@ processLoopNest (loopNest, arrayAccesses) = do
     accessesValidated = allConstantsUsedInSamePosition arrayAccesses
     loopVars = getLoopVariableByNestOrder loopNest
     nestingDirection = detectNestingDirection loopVars arrayAccesses
+
+getLoopVarConstantPosTuples ::
+     [ArrayAccess] -> Fortran Anno -> [(Int, String, Index)]
+getLoopVarConstantPosTuples arrayAccesses loopNest = []
+  where
+    loopVarsOrderedByNesting = getLoopVariableByNestOrder loopNest
+    mostIndicesCount =
+      (length . indices . getHighestDimensionArrayAccessNoMaybe) arrayAccesses
+    buildTuple :: [String] -> ArrayAccess -> [(Int, String, Index)]
+    buildTuple loopVars AA {..} =
+      imap
+        (\pos (loopVar, index) ->
+           let loopVarIndex = pos + (mostIndicesCount - length indices)
+            in (pos, loopVars !! loopVarIndex, index)) $
+      zip loopVars indices
 
 insertSyntheticLoops ::
      Maybe ArrayAccess
@@ -130,6 +150,12 @@ stripLoopNest (For _ _ _ _ _ _ body) = body
 stripLoopNest body
   | loopBodyStatementsOnly body = body
   | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
+
+getHighestDimensionArrayAccessNoMaybe :: [ArrayAccess] -> ArrayAccess
+getHighestDimensionArrayAccessNoMaybe =
+  maximumBy
+    (\a1 a2 ->
+       length (declaredDimensions a1) `compare` length (declaredDimensions a2))
 
 getHighestDimensionArrayAccess :: [ArrayAccess] -> Maybe ArrayAccess
 getHighestDimensionArrayAccess allArrayAccesses =

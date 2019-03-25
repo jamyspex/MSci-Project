@@ -658,6 +658,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: dyn {
     do j = 1, 500, 1
@@ -729,6 +731,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: dyn {
     do j = 1, 500, 1
@@ -776,6 +780,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: shapiro {
     do j = 1, 500, 1
@@ -811,6 +817,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: vernieuw {
     do j = 0, 501, 1
@@ -849,6 +857,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

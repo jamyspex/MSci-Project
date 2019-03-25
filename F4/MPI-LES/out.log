@@ -1523,6 +1523,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: velnw {
     do k = 1, 80, 1
@@ -1553,6 +1555,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: velnw {
     do k = 1, 79, 1
@@ -1583,6 +1587,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
@@ -1639,6 +1645,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
@@ -1671,6 +1679,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: les {
     do k = 1, 80, 1
@@ -1724,6 +1734,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: les {
     do k = 2, 80, 1
@@ -1783,6 +1795,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: les {
     do k = 2, 80, 1
@@ -1842,6 +1856,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: les {
     do k = 1, 80, 1
@@ -1900,6 +1916,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: adam {
     do k = 1, 80, 1
@@ -1944,6 +1962,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -1978,6 +1998,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -2006,6 +2028,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -2029,6 +2053,8 @@ Updated =
         end do
     end do
 !}
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -2089,6 +2115,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 0, 81, 1
@@ -2117,6 +2145,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 0, 81, 1
@@ -2145,6 +2175,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do j = 0, 301, 1
@@ -2173,6 +2205,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -2203,6 +2237,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
@@ -2228,6 +2264,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 0, 81, 1
@@ -2256,6 +2294,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do k = 0, 81, 1
@@ -2284,6 +2324,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 ! Original Subroutine Name: press {
     do j = 0, 301, 1
@@ -2312,6 +2354,8 @@ Updated =
             end do
         end do
     end do
+Loop variable index pos tuples = 
+
 -------------------------------------------
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
