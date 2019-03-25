@@ -650,21 +650,13 @@ This subroutine will not be offloaded to the FPGA
 ]
 Nesting direction = Normal
 Updated = 
-! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
             du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
             dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: dyn {
@@ -707,7 +699,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Normal
 Updated = 
-! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
             un(j,k) = 0.0
@@ -736,22 +727,7 @@ Updated =
             end if
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: dyn {
@@ -781,7 +757,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Normal
 Updated = 
-! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
             hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
@@ -799,18 +774,7 @@ Updated =
             etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: shapiro {
@@ -833,7 +797,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Normal
 Updated = 
-! Original Subroutine Name: shapiro {
     do j = 1, 500, 1
         do k = 1, 500, 1
             if (wet(j,k)==1) then
@@ -846,14 +809,7 @@ Updated =
             end if
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: vernieuw {
@@ -880,7 +836,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Normal
 Updated = 
-! Original Subroutine Name: vernieuw {
     do j = 0, 501, 1
         do k = 0, 501, 1
             h(j,k) = hzero(j,k)+eta(j,k)
@@ -892,24 +847,7 @@ Updated =
             v(j,k) = vn(j,k)
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
-	(0,"j",LoopVar "j")
-	(1,"k",LoopVar "k")
 
 -------------------------------------------
 

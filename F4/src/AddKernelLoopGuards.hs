@@ -204,13 +204,6 @@ buildArrayAccessDimMap loopVarsAndBounds arrayAccessPos = DMap.fromList mapItems
       [((arrName, pos), (loopVarName, loopVarMap DMap.! loopVarName))]
   -- buildOneItem _ (_, _, Nothing) = []
 
--- combines multiple conditions produced by buildLoopGuard with .and.
-combineWithAnd :: [Expr Anno] -> Expr Anno
-combineWithAnd =
-  buildAstSeq
-    (Bin nullAnno nullSrcSpan (And nullAnno))
-    (NullExpr nullAnno nullSrcSpan)
-
 -- build one condition of the form (<loop variable> <=/>= <const>)
 buildLoopGuard :: String -> Bound -> Expr Anno
 buildLoopGuard loopVarName bound =

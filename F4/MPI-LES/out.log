@@ -1517,24 +1517,19 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
-                    u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
+                    if (synthIdx3==0) then
+                        pz = (-p(synthIdx3,i,j,k)+p(synthIdx3,i+1,j,k))/ro/dxs(i)
+                        u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
+                    end if
                 end do
             end do
         end do
     end do
 Loop variable index pos tuples = 
-	(0,"k","dxs",LoopVar "i")
-	(0,"i","f",LoopVar "i")
-	(1,"j","f",LoopVar "j")
-	(2,"k","f",LoopVar "k")
 	(0,"synthIdx3","p",Const 0)
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
 	(3,"k","p",LoopVar "k")
-	(0,"i","u",LoopVar "i")
-	(1,"j","u",LoopVar "j")
-	(2,"k","u",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: velnw {
@@ -1560,24 +1555,19 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
-                    v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
+                    if (synthIdx3==0) then
+                        pz = (-p(synthIdx3,i,j,k)+p(synthIdx3,i,j+1,k))/ro/dys(j)
+                        v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
+                    end if
                 end do
             end do
         end do
     end do
 Loop variable index pos tuples = 
-	(0,"k","dys",LoopVar "j")
-	(0,"i","g",LoopVar "i")
-	(1,"j","g",LoopVar "j")
-	(2,"k","g",LoopVar "k")
 	(0,"synthIdx3","p",Const 0)
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
 	(3,"k","p",LoopVar "k")
-	(0,"i","v",LoopVar "i")
-	(1,"j","v",LoopVar "j")
-	(2,"k","v",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: velnw {
@@ -1603,24 +1593,19 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
-                    w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
+                    if (synthIdx3==0) then
+                        pz = (-p(synthIdx3,i,j,k)+p(synthIdx3,i,j,k+1))/ro/dzs(k)
+                        w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
+                    end if
                 end do
             end do
         end do
     end do
 Loop variable index pos tuples = 
-	(0,"k","dzs",LoopVar "k")
-	(0,"i","h",LoopVar "i")
-	(1,"j","h",LoopVar "j")
-	(2,"k","h",LoopVar "k")
 	(0,"synthIdx3","p",Const 0)
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
 	(3,"k","p",LoopVar "k")
-	(0,"i","w",LoopVar "i")
-	(1,"j","w",LoopVar "j")
-	(2,"k","w",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: feedbf {
@@ -1658,7 +1643,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1677,44 +1661,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","bmask1",LoopVar "i")
-	(1,"j","bmask1",LoopVar "j")
-	(2,"k","bmask1",LoopVar "k")
-	(0,"i","cmask1",LoopVar "i")
-	(1,"j","cmask1",LoopVar "j")
-	(2,"k","cmask1",LoopVar "k")
-	(0,"i","dmask1",LoopVar "i")
-	(1,"j","dmask1",LoopVar "j")
-	(2,"k","dmask1",LoopVar "k")
-	(0,"i","fx",LoopVar "i")
-	(1,"j","fx",LoopVar "j")
-	(2,"k","fx",LoopVar "k")
-	(0,"i","fy",LoopVar "i")
-	(1,"j","fy",LoopVar "j")
-	(2,"k","fy",LoopVar "k")
-	(0,"i","fz",LoopVar "i")
-	(1,"j","fz",LoopVar "j")
-	(2,"k","fz",LoopVar "k")
-	(0,"i","u",LoopVar "i")
-	(1,"j","u",LoopVar "j")
-	(2,"k","u",LoopVar "k")
-	(0,"i","usum",LoopVar "i")
-	(1,"j","usum",LoopVar "j")
-	(2,"k","usum",LoopVar "k")
-	(0,"i","v",LoopVar "i")
-	(1,"j","v",LoopVar "j")
-	(2,"k","v",LoopVar "k")
-	(0,"i","vsum",LoopVar "i")
-	(1,"j","vsum",LoopVar "j")
-	(2,"k","vsum",LoopVar "k")
-	(0,"i","w",LoopVar "i")
-	(1,"j","w",LoopVar "j")
-	(2,"k","w",LoopVar "k")
-	(0,"i","wsum",LoopVar "i")
-	(1,"j","wsum",LoopVar "j")
-	(2,"k","wsum",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: feedbf {
@@ -1737,7 +1684,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1747,26 +1693,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","f",LoopVar "i")
-	(1,"j","f",LoopVar "j")
-	(2,"k","f",LoopVar "k")
-	(0,"i","fx",LoopVar "i")
-	(1,"j","fx",LoopVar "j")
-	(2,"k","fx",LoopVar "k")
-	(0,"i","fy",LoopVar "i")
-	(1,"j","fy",LoopVar "j")
-	(2,"k","fy",LoopVar "k")
-	(0,"i","fz",LoopVar "i")
-	(1,"j","fz",LoopVar "j")
-	(2,"k","fz",LoopVar "k")
-	(0,"i","g",LoopVar "i")
-	(1,"j","g",LoopVar "j")
-	(2,"k","g",LoopVar "k")
-	(0,"i","h",LoopVar "i")
-	(1,"j","h",LoopVar "j")
-	(2,"k","h",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: les {
@@ -1802,7 +1729,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: les {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1820,39 +1746,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"k","delx1",LoopVar "k")
-	(0,"i","diu1",LoopVar "i")
-	(1,"j","diu1",LoopVar "j")
-	(2,"k","diu1",LoopVar "k")
-	(0,"i","diu2",LoopVar "i")
-	(1,"j","diu2",LoopVar "j")
-	(2,"k","diu2",LoopVar "k")
-	(0,"i","diu3",LoopVar "i")
-	(1,"j","diu3",LoopVar "j")
-	(2,"k","diu3",LoopVar "k")
-	(0,"i","diu4",LoopVar "i")
-	(1,"j","diu4",LoopVar "j")
-	(2,"k","diu4",LoopVar "k")
-	(0,"i","diu5",LoopVar "i")
-	(1,"j","diu5",LoopVar "j")
-	(2,"k","diu5",LoopVar "k")
-	(0,"i","diu6",LoopVar "i")
-	(1,"j","diu6",LoopVar "j")
-	(2,"k","diu6",LoopVar "k")
-	(0,"i","diu7",LoopVar "i")
-	(1,"j","diu7",LoopVar "j")
-	(2,"k","diu7",LoopVar "k")
-	(0,"i","diu8",LoopVar "i")
-	(1,"j","diu8",LoopVar "j")
-	(2,"k","diu8",LoopVar "k")
-	(0,"i","diu9",LoopVar "i")
-	(1,"j","diu9",LoopVar "j")
-	(2,"k","diu9",LoopVar "k")
-	(0,"i","sm",LoopVar "i")
-	(1,"j","sm",LoopVar "j")
-	(2,"k","sm",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: les {
@@ -1891,7 +1785,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: les {
     do k = 2, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1912,33 +1805,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","diu1",LoopVar "i")
-	(1,"j","diu1",LoopVar "j")
-	(2,"k","diu1",LoopVar "k")
-	(0,"i","diu2",LoopVar "i")
-	(1,"j","diu2",LoopVar "j")
-	(2,"k","diu2",LoopVar "k")
-	(0,"i","diu3",LoopVar "i")
-	(1,"j","diu3",LoopVar "j")
-	(2,"k","diu3",LoopVar "k")
-	(0,"i","diu4",LoopVar "i")
-	(1,"j","diu4",LoopVar "j")
-	(2,"k","diu4",LoopVar "k")
-	(0,"i","diu7",LoopVar "i")
-	(1,"j","diu7",LoopVar "j")
-	(2,"k","diu7",LoopVar "k")
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dxs",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
-	(0,"i","f",LoopVar "i")
-	(1,"j","f",LoopVar "j")
-	(2,"k","f",LoopVar "k")
-	(0,"i","sm",LoopVar "i")
-	(1,"j","sm",LoopVar "j")
-	(2,"k","sm",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: les {
@@ -1977,7 +1844,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: les {
     do k = 2, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1998,33 +1864,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","diu2",LoopVar "i")
-	(1,"j","diu2",LoopVar "j")
-	(2,"k","diu2",LoopVar "k")
-	(0,"i","diu4",LoopVar "i")
-	(1,"j","diu4",LoopVar "j")
-	(2,"k","diu4",LoopVar "k")
-	(0,"i","diu5",LoopVar "i")
-	(1,"j","diu5",LoopVar "j")
-	(2,"k","diu5",LoopVar "k")
-	(0,"i","diu6",LoopVar "i")
-	(1,"j","diu6",LoopVar "j")
-	(2,"k","diu6",LoopVar "k")
-	(0,"i","diu8",LoopVar "i")
-	(1,"j","diu8",LoopVar "j")
-	(2,"k","diu8",LoopVar "k")
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dys",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
-	(0,"i","g",LoopVar "i")
-	(1,"j","g",LoopVar "j")
-	(2,"k","g",LoopVar "k")
-	(0,"i","sm",LoopVar "i")
-	(1,"j","sm",LoopVar "j")
-	(2,"k","sm",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: les {
@@ -2062,7 +1902,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: les {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2083,32 +1922,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","diu3",LoopVar "i")
-	(1,"j","diu3",LoopVar "j")
-	(2,"k","diu3",LoopVar "k")
-	(0,"i","diu6",LoopVar "i")
-	(1,"j","diu6",LoopVar "j")
-	(2,"k","diu6",LoopVar "k")
-	(0,"i","diu7",LoopVar "i")
-	(1,"j","diu7",LoopVar "j")
-	(2,"k","diu7",LoopVar "k")
-	(0,"i","diu8",LoopVar "i")
-	(1,"j","diu8",LoopVar "j")
-	(2,"k","diu8",LoopVar "k")
-	(0,"i","diu9",LoopVar "i")
-	(1,"j","diu9",LoopVar "j")
-	(2,"k","diu9",LoopVar "k")
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
-	(0,"i","h",LoopVar "i")
-	(1,"j","h",LoopVar "j")
-	(2,"k","h",LoopVar "k")
-	(0,"i","sm",LoopVar "i")
-	(1,"j","sm",LoopVar "j")
-	(2,"k","sm",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: adam {
@@ -2137,7 +1951,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: adam {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2153,26 +1966,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","f",LoopVar "i")
-	(1,"j","f",LoopVar "j")
-	(2,"k","f",LoopVar "k")
-	(0,"i","fold",LoopVar "i")
-	(1,"j","fold",LoopVar "j")
-	(2,"k","fold",LoopVar "k")
-	(0,"i","g",LoopVar "i")
-	(1,"j","g",LoopVar "j")
-	(2,"k","g",LoopVar "k")
-	(0,"i","gold",LoopVar "i")
-	(1,"j","gold",LoopVar "j")
-	(2,"k","gold",LoopVar "k")
-	(0,"i","h",LoopVar "i")
-	(1,"j","h",LoopVar "j")
-	(2,"k","h",LoopVar "k")
-	(0,"i","hold",LoopVar "i")
-	(1,"j","hold",LoopVar "j")
-	(2,"k","hold",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: press {
@@ -2198,7 +1992,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2207,32 +2000,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
-	(0,"i","f",LoopVar "i")
-	(1,"j","f",LoopVar "j")
-	(2,"k","f",LoopVar "k")
-	(0,"i","g",LoopVar "i")
-	(1,"j","g",LoopVar "j")
-	(2,"k","g",LoopVar "k")
-	(0,"i","h",LoopVar "i")
-	(1,"j","h",LoopVar "j")
-	(2,"k","h",LoopVar "k")
-	(0,"i","rhs",LoopVar "i")
-	(1,"j","rhs",LoopVar "j")
-	(2,"k","rhs",LoopVar "k")
-	(0,"i","u",LoopVar "i")
-	(1,"j","u",LoopVar "j")
-	(2,"k","u",LoopVar "k")
-	(0,"i","v",LoopVar "i")
-	(1,"j","v",LoopVar "j")
-	(2,"k","v",LoopVar "k")
-	(0,"i","w",LoopVar "i")
-	(1,"j","w",LoopVar "j")
-	(2,"k","w",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: press {
@@ -2252,7 +2020,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2261,14 +2028,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
-	(0,"i","rhs",LoopVar "i")
-	(1,"j","rhs",LoopVar "j")
-	(2,"k","rhs",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: press {
@@ -2284,7 +2044,6 @@ Loop variable index pos tuples =
 ]
 Nesting direction = Reverse
 Updated = 
-! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2292,11 +2051,7 @@ Updated =
             end do
         end do
     end do
-!}
 Loop variable index pos tuples = 
-	(0,"i","rhs",LoopVar "i")
-	(1,"j","rhs",LoopVar "j")
-	(2,"k","rhs",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: press {
@@ -2338,30 +2093,29 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    dz1 = dzs(k-1)
-                    dz2 = dzs(k)
-                    cn4s = 2./(dz1*(dz1+dz2))
-                    cn4l = 2./(dz2*(dz1+dz2))
-                    cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                    cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                    cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                    cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                    cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                    if (nrd==0) then
-                        reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                        p(1,i,j,k) = p(0,i,j,k)+reltmp
-                    else
-                        reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                        p(0,i,j,k) = p(1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        dz1 = dzs(k-1)
+                        dz2 = dzs(k)
+                        cn4s = 2./(dz1*(dz1+dz2))
+                        cn4l = 2./(dz2*(dz1+dz2))
+                        cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                        cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                        cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                        if (nrd==0) then
+                            reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                            p(synthIdx3+1,i,j,k) = p(synthIdx3,i,j,k)+reltmp
+                        else
+                            reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                            p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                        end if
                     end if
                 end do
             end do
         end do
     end do
 Loop variable index pos tuples = 
-	(0,"k","dxs",LoopVar "i")
-	(0,"k","dys",LoopVar "j")
-	(0,"k","dzs",LoopVar "k")
 	(0,"synthIdx3","p",Const 0)
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
@@ -2370,9 +2124,6 @@ Loop variable index pos tuples =
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
 	(3,"k","p",LoopVar "k")
-	(0,"i","rhs",LoopVar "i")
-	(1,"j","rhs",LoopVar "j")
-	(2,"k","rhs",LoopVar "k")
 
 -------------------------------------------
 ! Original Subroutine Name: press {
@@ -2396,8 +2147,10 @@ Updated =
         do j = 0, 301, 1
             do synthIdx2 = 0, 302, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,0,j,k) = p(0,1,j,k)
-                    p(0,301,j,k) = p(0,300,j,k)
+                    if (synthIdx2==0 .and. synthIdx3==0) then
+                        p(synthIdx3,synthIdx2,j,k) = p(synthIdx3,synthIdx2+1,j,k)
+                        p(synthIdx3,synthIdx2+301,j,k) = p(synthIdx3,synthIdx2+300,j,k)
+                    end if
                 end do
             end do
         end do
@@ -2442,8 +2195,10 @@ Updated =
         do synthIdx1 = 0, 302, 1
             do i = 0, 301, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,i,0,k) = p(0,i,300,k)
-                    p(0,i,301,k) = p(0,i,1,k)
+                    if (synthIdx1==0 .and. synthIdx3==0) then
+                        p(synthIdx3,i,synthIdx1,k) = p(synthIdx3,i,synthIdx1+300,k)
+                        p(synthIdx3,i,synthIdx1+301,k) = p(synthIdx3,i,synthIdx1+1,k)
+                    end if
                 end do
             end do
         end do
@@ -2488,8 +2243,10 @@ Updated =
         do j = 0, 301, 1
             do i = 0, 301, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,i,j,0) = p(0,i,j,1)
-                    p(0,i,j,81) = p(0,i,j,80)
+                    if (synthIdx0==0 .and. synthIdx3==0) then
+                        p(synthIdx3,i,j,synthIdx0) = p(synthIdx3,i,j,synthIdx0+1)
+                        p(synthIdx3,i,j,synthIdx0+81) = p(synthIdx3,i,j,synthIdx0+80)
+                    end if
                 end do
             end do
         end do
@@ -2536,16 +2293,15 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-                    pco = pco+dx1(i)*dy1(j)*dzn(k)
+                    if (synthIdx3==0) then
+                        pav = pav+p(synthIdx3,i,j,k)*dx1(i)*dy1(j)*dzn(k)
+                        pco = pco+dx1(i)*dy1(j)*dzn(k)
+                    end if
                 end do
             end do
         end do
     end do
 Loop variable index pos tuples = 
-	(0,"k","dx1",LoopVar "i")
-	(0,"k","dy1",LoopVar "j")
-	(0,"k","dzn",LoopVar "k")
 	(0,"synthIdx3","p",Const 0)
 	(1,"i","p",LoopVar "i")
 	(2,"j","p",LoopVar "j")
@@ -2571,7 +2327,9 @@ Updated =
         do j = 1, 300, 1
             do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,i,j,k) = p(0,i,j,k)-pav
+                    if (synthIdx3==0) then
+                        p(synthIdx3,i,j,k) = p(synthIdx3,i,j,k)-pav
+                    end if
                 end do
             end do
         end do
@@ -2604,8 +2362,10 @@ Updated =
         do j = 0, 301, 1
             do synthIdx2 = 0, 302, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,0,j,k) = p(0,1,j,k)
-                    p(0,301,j,k) = p(0,300,j,k)
+                    if (synthIdx2==0 .and. synthIdx3==0) then
+                        p(synthIdx3,synthIdx2,j,k) = p(synthIdx3,synthIdx2+1,j,k)
+                        p(synthIdx3,synthIdx2+301,j,k) = p(synthIdx3,synthIdx2+300,j,k)
+                    end if
                 end do
             end do
         end do
@@ -2650,8 +2410,10 @@ Updated =
         do synthIdx1 = 0, 302, 1
             do i = 0, 301, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,i,0,k) = p(0,i,300,k)
-                    p(0,i,301,k) = p(0,i,1,k)
+                    if (synthIdx1==0 .and. synthIdx3==0) then
+                        p(synthIdx3,i,synthIdx1,k) = p(synthIdx3,i,synthIdx1+300,k)
+                        p(synthIdx3,i,synthIdx1+301,k) = p(synthIdx3,i,synthIdx1+1,k)
+                    end if
                 end do
             end do
         end do
@@ -2696,8 +2458,10 @@ Updated =
         do j = 0, 301, 1
             do i = 0, 301, 1
                 do synthIdx3 = 0, 1, 1
-                    p(0,i,j,0) = p(0,i,j,1)
-                    p(0,i,j,81) = p(0,i,j,80)
+                    if (synthIdx0==0 .and. synthIdx3==0) then
+                        p(synthIdx3,i,j,synthIdx0) = p(synthIdx3,i,j,synthIdx0+1)
+                        p(synthIdx3,i,j,synthIdx0+81) = p(synthIdx3,i,j,synthIdx0+80)
+                    end if
                 end do
             end do
         end do

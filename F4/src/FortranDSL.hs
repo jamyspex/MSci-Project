@@ -29,6 +29,15 @@ buildAstSeq _ _ [statement] = statement
 buildAstSeq constructor nullNode (statement:statements) =
   constructor statement (buildAstSeq constructor nullNode statements)
 
+-- combines multiple conditions produced by buildLoopGuard with .and.
+combineWithAnd :: [Expr Anno] -> Expr Anno
+combineWithAnd =
+  buildAstSeq
+    (Bin nullAnno nullSrcSpan (And nullAnno))
+    (NullExpr nullAnno nullSrcSpan)
+
+eq = Bin nullAnno nullSrcSpan (RelEQ nullAnno)
+
 plus = Bin nullAnno nullSrcSpan (Plus nullAnno)
 
 minus = Bin nullAnno nullSrcSpan (Minus nullAnno)
