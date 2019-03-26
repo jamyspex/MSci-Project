@@ -5,6 +5,7 @@ module MiniPP
   , miniPPD
   , miniPPProgram
   , miniPPProgUnit
+  , miniPPProgUnitNoTruncate
   , miniPPP
   , showVarLst
   , showSubName
@@ -120,7 +121,7 @@ miniPPAttr attr =
         (map
            (\(b, e) ->
               if miniPP b == ""
-                then ""
+                then miniPP e
                 else miniPP b ++ ":" ++ miniPP e)
            dim_exp_tups) ++
       ")" -- [(Expr p, Expr p)]
@@ -204,8 +205,10 @@ miniPPProgram :: Program Anno -> String
 miniPPProgram = concatMap miniPPProgUnit
 
 miniPPProgUnit :: ProgUnit Anno -> String
-miniPPProgUnit prog =
-  truncate $
+miniPPProgUnit prog = truncate $ miniPPProgUnitNoTruncate prog
+
+miniPPProgUnitNoTruncate :: ProgUnit Anno -> String
+miniPPProgUnitNoTruncate prog =
   case prog of
     Main _ _ (SubName _ subname) args b p ->
       "program " ++

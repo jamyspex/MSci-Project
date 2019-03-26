@@ -10,12 +10,11 @@ import           AddSmartCaches
 import           AddSynthesisedLoopVars
 import           AddTransitStreams
 import           BuildDeviceModule
-import           CommandLineProcessor        (F4Opts (..), f4CmdParser)
+import           CommandLineProcessor      (F4Opts (..), f4CmdParser)
 import           Control.Monad.Extra
-import           Data.Generics               (everything, everywhere,
-                                              everywhereM, gmapQ, gmapT, mkM,
-                                              mkQ, mkT)
-import qualified Data.Map                    as DMap
+import           Data.Generics             (everything, everywhere, everywhereM,
+                                            gmapQ, gmapT, mkM, mkQ, mkT)
+import qualified Data.Map                  as DMap
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
@@ -23,14 +22,16 @@ import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
-import qualified LanguageFortranTools        as LFT
+import qualified LanguageFortranTools      as LFT
 import           LinkReductionVars
 import           MemoryAccessCodeGen
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
-import           Parser                      (parseProgramData)
-import           RemoveConstantsFromStencils hiding (addLoopGuards)
+import           Parser                    (parseProgramData)
+
+-- import           RemoveConstantsFromStencils hiding (addLoopGuards)
+import           RemoveConstantsWrapper
 import           SanityChecks
 import           ScalarizeKernels
 import           SmartCacheCodeGen
@@ -52,8 +53,13 @@ compilerMain :: F4Opts -> IO ()
 compilerMain args = do
   print "Executing compiler main..."
   -- Parse the Fortran files specified at the command line
-  subroutineTable <- parseProgramData args
+  initalSubroutineTable <- parseProgramData args
   -- seperate out the parsed files to be offloaded to the FPGA
+  subroutineTable <- removeStencilConstantsWrapper args initalSubroutineTable
+  let forOffloadSubTable = DMap.filter parallelise subroutineTable
+  -- withConstantsRemoved <-
+  --   removeConstantsFromStencils $
+  --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   let notForOffloadSubTable = DMap.filter (not . parallelise) subroutineTable
   let forOffloadSubTable = DMap.filter parallelise subroutineTable
   let subroutineNames = DMap.keys forOffloadSubTable
@@ -70,14 +76,11 @@ compilerMain args = do
         head $
         DMap.keys $ DMap.filter parallelise subroutineTableWithOffloadSubsMerged
   putStrLn (rule '+' ++ " Stencil Constant Removal " ++ rule '+')
-  withConstantsRemoved <-
-    removeConstantsFromStencils $
-    subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
-  let srtNoStencilConstants =
-        DMap.insert
-          mergedOffloadName
-          withConstantsRemoved
-          subroutineTableWithOffloadSubsMerged
+  -- let srtNoStencilConstants =
+  --       DMap.insert
+  --         mergedOffloadName
+  --         withConstantsRemoved
+  --         subroutineTableWithOffloadSubsMerged
   -- error "Exit!"
   -- putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
   -- splitMergedMethodInPipelines $
@@ -88,7 +91,9 @@ compilerMain args = do
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
   let (parallelisedSubroutines, parAnnotations) =
         foldl
-          (paralleliseProgUnit_foldl (ioSubs args) srtNoStencilConstants)
+          (paralleliseProgUnit_foldl
+             (ioSubs args)
+             subroutineTableWithOffloadSubsMerged)
           (DMap.empty, [])
           [mergedOffloadName]
   debug_displaySubRoutineTable parallelisedSubroutines False

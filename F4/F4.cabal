@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: da0eba1852016abfdf9dcbdc823dd68fbc5f48fccee0857f89870b86adf2a562
+-- hash: a3d555bc4637a5bf9a2a1d9d94fe87b8016c68a8e2d57dba9d366b829d752c43
 
 name:           F4
 version:        0.1.0.0
@@ -56,6 +56,7 @@ library
       Platform
       PreProcessor
       RemoveConstantsFromStencils
+      RemoveConstantsWrapper
       SanityChecks
       ScalarizeKernels
       SmartCacheCodeGen
@@ -87,6 +88,7 @@ library
     , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010
 
 executable F4-exe
@@ -113,6 +115,7 @@ executable F4-exe
     , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010
 
 test-suite F4-test
@@ -140,4 +143,5 @@ test-suite F4-test
     , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010

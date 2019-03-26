@@ -8,14 +8,16 @@ import           Data.Generics
 import           Data.List
 import           Data.List.Index
 import           Data.List.Unique
-import qualified Data.Map             as DMap
+import qualified Data.Map              as DMap
 import           Data.Maybe
+import qualified Data.Set              as Set
 import           Debug.Trace
+import           F95IntrinsicFunctions
 import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
-import           Utils                hiding (arrayName)
+import           Utils                 hiding (arrayName, nulSrcSpan)
 
 data ArrayAccess = AA
   { arrayName          :: String
@@ -39,16 +41,47 @@ data Index
   | Const Int
   deriving (Show, Eq, Ord)
 
-removeConstantsFromStencils :: SubRec -> IO SubRec
-removeConstantsFromStencils subrec@MkSubRec {..} = do
-  putStrLn $
-    miniPPF
-      (everywhere'
-         (mkT (processMergedSubroutineTransform allArrays))
-         (getSubBody subAst))
-  return subrec
+removeConstantsFromStencilsAndPrint :: SubRec -> IO SubRec
+removeConstantsFromStencilsAndPrint subRec@MkSubRec {..} = do
+  putStrLn $ miniPPProgUnit updatedSub
+  return subRec {subAst = updatedSub}
+  where
+    updatedSub = removeConstantsFromStencils subAst
+
+removeConstantsFromStencils :: ProgUnit Anno -> ProgUnit Anno
+removeConstantsFromStencils subAst = newSub
   where
     allArrays = map (arrayFromDeclWithRanges True) $ getDecls subAst
+    updatedMergedBody =
+      everywhere' (mkT (processMergedSubroutineTransform allArrays)) body
+    updatedDecls = updateDecls subAst updatedMergedBody
+    (Sub subAnno subSrcSpan returnType subName args block) = subAst
+    (Block blockAnno uses implicit blockSrcSpan decls body) = block
+    newBlock =
+      Block blockAnno uses implicit blockSrcSpan updatedDecls updatedMergedBody
+    newSub = Sub subAnno subSrcSpan returnType subName args newBlock
+
+-- The wisdom here is that the only varnames that won't have declarations
+-- are those added by this pass so add a decl for them. The only thing this
+-- pass adds are loop counters so just make intDecls.
+-- DEFINITELY THE MOST ROBUST APPROACH
+-- Also this pass doesn't check for existing
+-- variables named synthIdxN etc. soooo....
+updateDecls :: ProgUnit Anno -> Fortran Anno -> Decl Anno
+updateDecls originalSub newBody = declNode $ originalDecls ++ newDecls
+  where
+    originalDecls = getDecls originalSub
+    originalDeclNames = getDeclNames originalSub
+    allUsedVars = map getNameFromVarName $ getAllVarNames newBody
+    originalDeclsSet = Set.fromList originalDeclNames
+    newDecls =
+      map intDecl $
+      sortUniq $
+      filter
+        (\dn ->
+           dn `Set.notMember` originalDeclsSet &&
+           dn `notElem` f95IntrinsicFunctions)
+        allUsedVars
 
 isTopLevelLoop :: Fortran Anno -> Bool
 isTopLevelLoop fortran
@@ -419,7 +452,6 @@ loopBodyOnlyContainsLoop fortran =
     For {}                      -> True
     FSeq _ _ For {} NullStmt {} -> True
     _                           -> False
---
 -- A beautiful function I worked out with a state machine when working on this
 -- pass but is no longer used in final version :'(
 --
