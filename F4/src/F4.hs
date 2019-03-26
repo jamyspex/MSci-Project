@@ -66,23 +66,29 @@ compilerMain args = do
   let subroutineTableWithOffloadSubsMerged =
         mergeSubsToBeParallelised subroutineTable
   debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
-  let mergedForOffload =
-        DMap.filter parallelise subroutineTableWithOffloadSubsMerged
-  let mergedOffloadName = head $ DMap.keys mergedForOffload
+  let mergedOffloadName =
+        head $
+        DMap.keys $ DMap.filter parallelise subroutineTableWithOffloadSubsMerged
   putStrLn (rule '+' ++ " Stencil Constant Removal " ++ rule '+')
-  removeConstantsFromStencils $ mergedForOffload DMap.! mergedOffloadName
-  error "Exit!"
-  putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
-  splitMergedMethodInPipelines $ mergedForOffload DMap.! mergedOffloadName
+  withConstantsRemoved <-
+    removeConstantsFromStencils $
+    subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
+  let srtNoStencilConstants =
+        DMap.insert
+          mergedOffloadName
+          withConstantsRemoved
+          subroutineTableWithOffloadSubsMerged
+  -- error "Exit!"
+  -- putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
+  -- splitMergedMethodInPipelines $
+  --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
   -- Map and fold detection from Gavin's compiler
   -- < STEP 4 : Parallelise the loops >
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
   let (parallelisedSubroutines, parAnnotations) =
         foldl
-          (paralleliseProgUnit_foldl
-             (ioSubs args)
-             subroutineTableWithOffloadSubsMerged)
+          (paralleliseProgUnit_foldl (ioSubs args) srtNoStencilConstants)
           (DMap.empty, [])
           [mergedOffloadName]
   debug_displaySubRoutineTable parallelisedSubroutines False

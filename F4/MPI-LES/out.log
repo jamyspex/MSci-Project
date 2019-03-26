@@ -1498,24 +1498,6 @@ This subroutine will be offloaded to the FPGA
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
-                pz = (-p(0,i,j,k)+p(0,i+1,j,k))/ro/dxs(i)
-                u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
                 do synthIdx3 = 0, 1, 1
                     if (synthIdx3==0) then
                         pz = (-p(synthIdx3,i,j,k)+p(synthIdx3,i+1,j,k))/ro/dxs(i)
@@ -1525,32 +1507,6 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: velnw {
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                pz = (-p(0,i,j,k)+p(0,i,j+1,k))/ro/dys(j)
-                v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1563,32 +1519,6 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: velnw {
-    do k = 1, 79, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                pz = (-p(0,i,j,k)+p(0,i,j,k+1))/ro/dzs(k)
-                w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: dzs indices = [LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
     do k = 1, 79, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1601,13 +1531,7 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
+!}
 ! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
@@ -1627,44 +1551,6 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: bmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: cmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dmask1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fx indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fy indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fz indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: usum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: vsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: wsum indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
-                vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
-                wsum(i,j,k) = (wsum(i,j,k)+w(i,j,k))*dmask1(i,j,k)
-                f1x = alpha*usum(i,j,k)*dt
-                f1y = alpha*vsum(i,j,k)*dt
-                f1z = alpha*wsum(i,j,k)*dt
-                f2x = beta*u(i,j,k)*bmask1(i,j,k)
-                f2y = beta*v(i,j,k)*cmask1(i,j,k)
-                f2z = beta*w(i,j,k)*dmask1(i,j,k)
-                fx(i,j,k) = f1x+f2x
-                fy(i,j,k) = f1y+f2y
-                fz(i,j,k) = f1z+f2z
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: feedbf {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1675,27 +1561,6 @@ Loop variable index pos tuples =
         end do
     end do
 !}
-[ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fx indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fy indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fz indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                f(i,j,k) = f(i,j,k)+fx(i,j,k)
-                g(i,j,k) = g(i,j,k)+fy(i,j,k)
-                h(i,j,k) = h(i,j,k)+fz(i,j,k)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
 ! Original Subroutine Name: les {
     do k = 1, 80, 1
         do j = 1, 300, 1
@@ -1714,42 +1579,6 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: delx1 indices = [LoopVar "k"]
-,ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu5 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu9 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                dudxx1 = diu1(i,j,k)
-                dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
-                dudzx1 = (diu3(i-1,j,k)+diu3(i-1,j,k+1)+diu3(i,j,k)+diu3(i,j,k+1))*.25
-                dvdxx1 = (diu4(i,j,k)+diu4(i,j-1,k)+diu4(i+1,j,k)+diu4(i+1,j-1,k))*.25
-                dvdyx1 = diu5(i,j,k)
-                dvdzx1 = (diu6(i,j-1,k)+diu6(i,j-1,k+1)+diu6(i,j,k)+diu6(i,j,k+1))*.25
-                dwdxx1 = (diu7(i,j,k)+diu7(i,j,k-1)+diu7(i+1,j,k)+diu7(i+1,j,k-1))*.25
-                dwdyx1 = (diu8(i,j,k)+diu8(i,j,k-1)+diu8(i,j+1,k)+diu8(i,j+1,k-1))*.25
-                dwdzx1 = diu9(i,j,k)
-                csx1 = 0.14
-                sm(i,j,k) = (csx1*delx1(k))**2*sqrt(2.*(dudxx1**2+dvdyx1**2+dwdzx1**2)+(dudyx1+dvdxx1)**2+(dwdyx1+dvdzx1)**2+(dudzx1+dwdxx1)**2)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: les {
     do k = 2, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1770,45 +1599,6 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: diu1 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 2, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                evsx2 = sm(i+1,j,k)
-                evsx1 = sm(i,j,k)
-                evsy2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                evsy1 = (dy1(j+1)*((dx1(i+1)*sm(i,j-1,k)+dx1(i)*sm(i+1,j-1,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                visux2 = (evsx2)*2.*diu1(i+1,j,k)
-                visux1 = (evsx1)*2.*diu1(i,j,k)
-                visuy2 = (evsy2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                visuy1 = (evsy1)*(diu2(i,j,k)+diu4(i+1,j-1,k))
-                visuz2 = (evsz2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                visuz1 = (evsz1)*(diu3(i,j,k)+diu7(i+1,j,k-1))
-                vfu = (visux2-visux1)/dxs(i)+(visuy2-visuy1)/dy1(j)+(visuz2-visuz1)/dzn(k)
-                f(i,j,k) = (f(i,j,k)+vfu)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: les {
     do k = 2, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1829,45 +1619,6 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: diu2 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu4 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu5 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 2, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                evsy2 = sm(i,j+1,k)
-                evsy1 = sm(i,j,k)
-                evsx2 = (dy1(j+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dy1(j)*((dx1(i+1)*sm(i,j+1,k)+dx1(i)*sm(i+1,j+1,k))/(dx1(i)+dx1(i+1))))/(dy1(j)+dy1(j+1))
-                evsx1 = (dy1(j+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dy1(j)*((dx1(i)*sm(i-1,j+1,k)+dx1(i-1)*sm(i,j+1,k))/(dx1(i-1)+dx1(i))))/(dy1(j)+dy1(j+1))
-                evsz2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                evsz1 = (dzn(k)*((dx1(i+1)*sm(i,j,k-1)+dx1(i)*sm(i+1,j,k-1))/(dx1(i)+dx1(i+1)))+dzn(k-1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1))))/(dzn(k-1)+dzn(k))
-                visvx2 = (evsx2)*(diu2(i,j+1,k)+diu4(i+1,j,k))
-                visvx1 = (evsx1)*(diu2(i-1,j+1,k)+diu4(i,j,k))
-                visvy2 = (evsy2)*2.*diu5(i,j+1,k)
-                visvy1 = (evsy1)*2.*diu5(i,j,k)
-                visvz2 = (evsz2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                visvz1 = (evsz1)*(diu6(i,j,k)+diu8(i,j+1,k-1))
-                vfv = (visvx2-visvx1)/dx1(i)+(visvy2-visvy1)/dys(j)+(visvz2-visvz1)/dzn(k)
-                g(i,j,k) = (g(i,j,k)+vfv)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: les {
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -1889,42 +1640,6 @@ Loop variable index pos tuples =
         end do
     end do
 !}
-[ArrayAccess: diu3 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu6 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu7 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu8 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: diu9 indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: sm indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                evsz2 = sm(i,j,k+1)
-                evsz1 = sm(i,j,k)
-                evsx2 = (dzn(k+1)*((dx1(i+1)*sm(i,j,k)+dx1(i)*sm(i+1,j,k))/(dx1(i)+dx1(i+1)))+dzn(k)*((dx1(i+1)*sm(i,j,k+1)+dx1(i)*sm(i+1,j,k+1))/(dx1(i)+dx1(i+1))))/(dzn(k)+dzn(k+1))
-                evsx1 = (dzn(k+1)*((dx1(i)*sm(i-1,j,k)+dx1(i-1)*sm(i,j,k))/(dx1(i-1)+dx1(i)))+dzn(k)*((dx1(i)*sm(i-1,j,k+1)+dx1(i-1)*sm(i,j,k+1))/(dx1(i-1)+dx1(i))))/(dzn(k)+dzn(k+1))
-                evsy2 = (dzn(k+1)*((dy1(j+1)*sm(i,j,k)+dy1(j)*sm(i,j+1,k))/(dy1(j)+dy1(j+1)))+dzn(k)*((dy1(j+1)*sm(i,j,k+1)+dy1(j)*sm(i,j+1,k+1))/(dy1(j)+dy1(j+1))))/(dzn(k)+dzn(k+1))
-                evsy1 = (dzn(k+1)*((dy1(j)*sm(i,j-1,k)+dy1(j-1)*sm(i,j,k))/(dy1(j-1)+dy1(j)))+dzn(k)*((dy1(j)*sm(i,j-1,k+1)+dy1(j-1)*sm(i,j,k+1))/(dy1(j-1)+dy1(j))))/(dzn(k)+dzn(k+1))
-                viswx2 = (evsx2)*(diu3(i,j,k+1)+diu7(i+1,j,k))
-                viswx1 = (evsx1)*(diu3(i-1,j,k+1)+diu7(i,j,k))
-                viswy2 = (evsy2)*(diu6(i,j,k+1)+diu8(i,j+1,k))
-                viswy1 = (evsy1)*(diu6(i,j-1,k+1)+diu8(i,j,k))
-                viswz2 = (evsz2)*2.*diu9(i,j,k+1)
-                viswz1 = (evsz1)*2.*diu9(i,j,k)
-                vfw = (viswx2-viswx1)/dx1(i)+(viswy2-viswy1)/dy1(j)+(viswz2-viswz1)/dzn(k)
-                h(i,j,k) = (h(i,j,k)+vfw)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
 ! Original Subroutine Name: adam {
     do k = 1, 80, 1
         do j = 1, 300, 1
@@ -1942,33 +1657,6 @@ Loop variable index pos tuples =
         end do
     end do
 !}
-[ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: fold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: gold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: hold indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                fd = f(i,j,k)
-                gd = g(i,j,k)
-                hd = h(i,j,k)
-                f(i,j,k) = 1.5*f(i,j,k)-0.5*fold(i,j,k)
-                g(i,j,k) = 1.5*g(i,j,k)-0.5*gold(i,j,k)
-                h(i,j,k) = 1.5*h(i,j,k)-0.5*hold(i,j,k)
-                fold(i,j,k) = fd
-                gold(i,j,k) = gd
-                hold(i,j,k) = hd
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
 ! Original Subroutine Name: press {
     do k = 1, 80, 1
         do j = 1, 300, 1
@@ -1978,32 +1666,8 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: f indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: g indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: h indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: u indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: v indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: w indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
-                rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: press {
+    rhsav = 0.0
+    area = 0.0
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2012,26 +1676,7 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
-                area = area+dx1(i)*dy1(j)*dzn(k)
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: press {
+    rhsav = rhsav/area
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2039,256 +1684,75 @@ Loop variable index pos tuples =
             end do
         end do
     end do
-!}
-[ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                rhs(i,j,k) = rhs(i,j,k)-rhsav
+    do l = 1, 50, 1
+        sor = 0.0
+        do nrd = 0, 1, 1
+            do k = 1, 80, 1
+                do j = 1, 300, 1
+                    do i = 1, 300, 1
+                        do synthIdx3 = 0, 1, 1
+                            if (synthIdx3==0) then
+                                dz1 = dzs(k-1)
+                                dz2 = dzs(k)
+                                cn4s = 2./(dz1*(dz1+dz2))
+                                cn4l = 2./(dz2*(dz1+dz2))
+                                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
+                                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
+                                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
+                                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
+                                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
+                                if (nrd==0) then
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                                    p(synthIdx3+1,i,j,k) = p(synthIdx3,i,j,k)+reltmp
+                                else
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                                end if
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+            do k = 0, 81, 1
+                do j = 0, 301, 1
+                    do synthIdx2 = 0, 302, 1
+                        do synthIdx3 = 0, 1, 1
+                            if (synthIdx2==0 .and. synthIdx3==0) then
+                                p(synthIdx3,synthIdx2,j,k) = p(synthIdx3,synthIdx2+1,j,k)
+                                p(synthIdx3,synthIdx2+301,j,k) = p(synthIdx3,synthIdx2+300,j,k)
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+            do k = 0, 81, 1
+                do synthIdx1 = 0, 302, 1
+                    do i = 0, 301, 1
+                        do synthIdx3 = 0, 1, 1
+                            if (synthIdx1==0 .and. synthIdx3==0) then
+                                p(synthIdx3,i,synthIdx1,k) = p(synthIdx3,i,synthIdx1+300,k)
+                                p(synthIdx3,i,synthIdx1+301,k) = p(synthIdx3,i,synthIdx1+1,k)
+                            end if
+                        end do
+                    end do
+                end do
             end do
         end do
-    end do
-Loop variable index pos tuples = 
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                dz1 = dzs(k-1)
-                dz2 = dzs(k)
-                cn4s = 2./(dz1*(dz1+dz2))
-                cn4l = 2./(dz2*(dz1+dz2))
-                cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(0,i+1,j,k)+cn2s*p(0,i-1,j,k)+cn3l*p(0,i,j+1,k)+cn3s*p(0,i,j-1,k)+cn4l*p(0,i,j,k+1)+cn4s*p(0,i,j,k-1)-rhs(i,j,k))-p(0,i,j,k))
-                    p(1,i,j,k) = p(0,i,j,k)+reltmp
-                else
-                    reltmp = 1.0*(cn1*(cn2l*p(1,i+1,j,k)+cn2s*p(1,i-1,j,k)+cn3l*p(1,i,j+1,k)+cn3s*p(1,i,j-1,k)+cn4l*p(1,i,j,k+1)+cn4s*p(1,i,j,k-1)-rhs(i,j,k))-p(1,i,j,k))
-                    p(0,i,j,k) = p(1,i,j,k)+reltmp
-                end if
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: dxs indices = [LoopVar "i"]
-,ArrayAccess: dys indices = [LoopVar "j"]
-,ArrayAccess: dzs indices = [LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-,ArrayAccess: rhs indices = [LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 1,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                do synthIdx3 = 0, 1, 1
-                    if (synthIdx3==0) then
-                        dz1 = dzs(k-1)
-                        dz2 = dzs(k)
-                        cn4s = 2./(dz1*(dz1+dz2))
-                        cn4l = 2./(dz2*(dz1+dz2))
-                        cn3s = 2./(dys(j-1)*(dys(j-1)+dys(j)))
-                        cn3l = 2./(dys(j)*(dys(j-1)+dys(j)))
-                        cn2s = 2./(dxs(i-1)*(dxs(i-1)+dxs(i)))
-                        cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
-                        cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
-                        if (nrd==0) then
-                            reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
-                            p(synthIdx3+1,i,j,k) = p(synthIdx3,i,j,k)+reltmp
-                        else
-                            reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                            p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+        do synthIdx0 = 0, 81, 1
+            do j = 0, 301, 1
+                do i = 0, 301, 1
+                    do synthIdx3 = 0, 1, 1
+                        if (synthIdx0==0 .and. synthIdx3==0) then
+                            p(synthIdx3,i,j,synthIdx0) = p(synthIdx3,i,j,synthIdx0+1)
+                            p(synthIdx3,i,j,synthIdx0+81) = p(synthIdx3,i,j,synthIdx0+80)
                         end if
-                    end if
+                    end do
                 end do
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 1)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 0, 81, 1
-        do j = 0, 301, 1
-            p(0,0,j,k) = p(0,1,j,k)
-            p(0,301,j,k) = p(0,300,j,k)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,Const 0,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 1,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 300,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
-    do k = 0, 81, 1
-        do j = 0, 301, 1
-            do synthIdx2 = 0, 302, 1
-                do synthIdx3 = 0, 1, 1
-                    if (synthIdx2==0 .and. synthIdx3==0) then
-                        p(synthIdx3,synthIdx2,j,k) = p(synthIdx3,synthIdx2+1,j,k)
-                        p(synthIdx3,synthIdx2+301,j,k) = p(synthIdx3,synthIdx2+300,j,k)
-                    end if
-                end do
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 0)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 1)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 300)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 301)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 0, 81, 1
-        do i = 0, 301, 1
-            p(0,i,0,k) = p(0,i,300,k)
-            p(0,i,301,k) = p(0,i,1,k)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",Const 0,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 300,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
-    do k = 0, 81, 1
-        do synthIdx1 = 0, 302, 1
-            do i = 0, 301, 1
-                do synthIdx3 = 0, 1, 1
-                    if (synthIdx1==0 .and. synthIdx3==0) then
-                        p(synthIdx3,i,synthIdx1,k) = p(synthIdx3,i,synthIdx1+300,k)
-                        p(synthIdx3,i,synthIdx1+301,k) = p(synthIdx3,i,synthIdx1+1,k)
-                    end if
-                end do
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 0)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 1)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 300)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 301)
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do j = 0, 301, 1
-        do i = 0, 301, 1
-            p(0,i,j,0) = p(0,i,j,1)
-            p(0,i,j,81) = p(0,i,j,80)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 0]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 1]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 80]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
-
-Nesting direction = Reverse
-Updated = 
-    do synthIdx0 = 0, 81, 1
-        do j = 0, 301, 1
-            do i = 0, 301, 1
-                do synthIdx3 = 0, 1, 1
-                    if (synthIdx0==0 .and. synthIdx3==0) then
-                        p(synthIdx3,i,j,synthIdx0) = p(synthIdx3,i,j,synthIdx0+1)
-                        p(synthIdx3,i,j,synthIdx0+81) = p(synthIdx3,i,j,synthIdx0+80)
-                    end if
-                end do
-            end do
-        end do
-    end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 0)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 1)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 80)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 81)
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                pav = pav+p(0,i,j,k)*dx1(i)*dy1(j)*dzn(k)
-                pco = pco+dx1(i)*dy1(j)*dzn(k)
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: dx1 indices = [LoopVar "i"]
-,ArrayAccess: dy1 indices = [LoopVar "j"]
-,ArrayAccess: dzn indices = [LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
+    pav = 0.0
+    pco = 0.0
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2301,28 +1765,7 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 1, 80, 1
-        do j = 1, 300, 1
-            do i = 1, 300, 1
-                p(0,i,j,k) = p(0,i,j,k)-pav
-            end do
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
+    pav = pav/pco
     do k = 1, 80, 1
         do j = 1, 300, 1
             do i = 1, 300, 1
@@ -2334,30 +1777,6 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 0, 81, 1
-        do j = 0, 301, 1
-            p(0,0,j,k) = p(0,1,j,k)
-            p(0,301,j,k) = p(0,300,j,k)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,Const 0,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 1,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 300,LoopVar "j",LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,Const 301,LoopVar "j",LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
     do k = 0, 81, 1
         do j = 0, 301, 1
             do synthIdx2 = 0, 302, 1
@@ -2370,42 +1789,6 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 0)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 1)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 300)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"synthIdx2","p",Const 301)
-	(2,"j","p",LoopVar "j")
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do k = 0, 81, 1
-        do i = 0, 301, 1
-            p(0,i,0,k) = p(0,i,300,k)
-            p(0,i,301,k) = p(0,i,1,k)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",Const 0,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 1,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 300,LoopVar "k"]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",Const 301,LoopVar "k"]
-
-Nesting direction = Reverse
-Updated = 
     do k = 0, 81, 1
         do synthIdx1 = 0, 302, 1
             do i = 0, 301, 1
@@ -2418,42 +1801,6 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 0)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 1)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 300)
-	(3,"k","p",LoopVar "k")
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"synthIdx1","p",Const 301)
-	(3,"k","p",LoopVar "k")
-
--------------------------------------------
-! Original Subroutine Name: press {
-    do j = 0, 301, 1
-        do i = 0, 301, 1
-            p(0,i,j,0) = p(0,i,j,1)
-            p(0,i,j,81) = p(0,i,j,80)
-        end do
-    end do
-!}
-[ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 0]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 1]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 80]
-,ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
-]
-ArrayAccess: p indices = [Const 0,LoopVar "i",LoopVar "j",Const 81]
-
-Nesting direction = Reverse
-Updated = 
     do synthIdx0 = 0, 81, 1
         do j = 0, 301, 1
             do i = 0, 301, 1
@@ -2466,22 +1813,4 @@ Updated =
             end do
         end do
     end do
-Loop variable index pos tuples = 
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 0)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 1)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 80)
-	(0,"synthIdx3","p",Const 0)
-	(1,"i","p",LoopVar "i")
-	(2,"j","p",LoopVar "j")
-	(3,"synthIdx0","p",Const 81)
-
--------------------------------------------
+!}

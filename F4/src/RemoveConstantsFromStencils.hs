@@ -27,6 +27,13 @@ instance Show ArrayAccess where
   show AA {..} =
     "ArrayAccess: " ++ arrayName ++ " indices = " ++ show indices ++ "\n"
 
+data NestingDirection
+  = Normal
+  | Reverse
+  | Undefined
+  | Either
+  deriving (Show, Eq)
+
 data Index
   = LoopVar String
   | Const Int
@@ -34,24 +41,25 @@ data Index
 
 removeConstantsFromStencils :: SubRec -> IO SubRec
 removeConstantsFromStencils subrec@MkSubRec {..} = do
-  loopNestsAndArrayAccesses <- getLoopNestsAndStencilAccesses subAst
-  mapM_ processLoopNest loopNestsAndArrayAccesses
+  putStrLn $
+    miniPPF
+      (everywhere'
+         (mkT (processMergedSubroutineTransform allArrays))
+         (getSubBody subAst))
   return subrec
+  where
+    allArrays = map (arrayFromDeclWithRanges True) $ getDecls subAst
 
-processLoopNest :: (Fortran Anno, [ArrayAccess]) -> IO (Fortran Anno)
-processLoopNest (loopNest, arrayAccesses) = do
-  putStrLn $ miniPPF loopNest
-  putStrLn $ show arrayAccesses
-  when
-    (isJust highestDimArrayAccessedWithConstant)
-    (putStrLn $ (show . fromJust) highestDimArrayAccessedWithConstant)
-  putStrLn $ "Nesting direction = " ++ show nestingDirection
-  putStrLn "Updated = "
-  putStrLn $ miniPPF withGuardsAdded
-  putStrLn $ "Loop variable index pos tuples = "
-  putStrLn $ concatMap (\t -> "\t" ++ show t ++ "\n") loopVarPosTuples
-  putStrLn "-------------------------------------------"
-  return loopNest
+isTopLevelLoop :: Fortran Anno -> Bool
+isTopLevelLoop fortran
+  | loopBodyOnlyContainsLoop fortran = isTopLevelLoop (stripLoopNest fortran)
+  | loopBodyStatementsOnly fortran = True
+  | otherwise = False
+
+processMergedSubroutineTransform :: [Array] -> Fortran Anno -> Fortran Anno
+processMergedSubroutineTransform allArrays fortran
+  | isTopLevelLoop fortran = withGuardsAdded
+  | otherwise = fortran
   where
     loopVarPosTuples =
       getLoopVarConstantPosTuples
@@ -69,13 +77,14 @@ processLoopNest (loopNest, arrayAccesses) = do
         highestDimArrayAccessedWithConstant
         (fromMaybe [] constantPositions)
         nestingDirection
-        loopNest
+        fortran
     constantPositions =
       fmap getConstantPositions highestDimArrayAccessedWithConstant
+    arrayAccesses = parseArrayAccesses allArrays fortran
     highestDimArrayAccessedWithConstant =
       getHighestDimensionArrayAccess accessesValidated
     accessesValidated = allConstantsUsedInSamePosition arrayAccesses
-    loopVars = getLoopVariableByNestOrder loopNest
+    loopVars = getLoopVariableByNestOrder fortran
     nestingDirection = detectNestingDirection loopVars arrayAccesses
 
 filterLoopVarTups (_, _, _, index) =
@@ -220,11 +229,11 @@ addLoops' ::
      Int -> Int -> [(Int, Int)] -> [Bool] -> Fortran Anno -> Fortran Anno
 addLoops' maxLevel level dims insertLoop loopNest
   | level == maxLevel && loopBodyStatementsOnly loopNest && insertLoop !! level =
-    for ("synthIdx" ++ show level) lwb (con upb) loopNest
+    for loopVarName lwb (con upb) loopNest
   | level == maxLevel && loopBodyStatementsOnly loopNest = loopNest
   | insertLoop !! level && isJust originalFor =
     for
-      ("synthIdx" ++ show level)
+      loopVarName
       lwb
       (con upb)
       (origFor
@@ -236,7 +245,7 @@ addLoops' maxLevel level dims insertLoop loopNest
             (stripLoopNest loopNest)))
   | insertLoop !! level =
     for
-      ("synthIdx" ++ show level)
+      loopVarName
       lwb
       (con upb)
       (addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest))
@@ -247,6 +256,7 @@ addLoops' maxLevel level dims insertLoop loopNest
     addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest)
   where
     (lwb, upb) = dims !! level
+    loopVarName = "synthIdx" ++ show level
     origFor = fromJust originalFor
     originalFor =
       case getNearestFor loopNest of
@@ -326,22 +336,6 @@ getLoopVariableByNestOrder (FSeq _ _ f1 NullStmt {}) =
 getLoopVariableByNestOrder (For _ _ (VarName _ loopVarName) _ _ _ body) =
   loopVarName : getLoopVariableByNestOrder body
 getLoopVariableByNestOrder _ = []
-
-getLoopNestsAndStencilAccesses ::
-     ProgUnit Anno -> [(Fortran Anno, [ArrayAccess])]
-getLoopNestsAndStencilAccesses mergedBody = loopNestsToArrayAccesses
-  where
-    loopNests = getInnerLoopNests $ getSubBody mergedBody
-    allArrays = map (arrayFromDeclWithRanges True) $ getDecls mergedBody
-    loopNestsToArrayAccesses =
-      map (\ln -> (ln, parseArrayAccesses allArrays ln)) loopNests
-
-data NestingDirection
-  = Normal
-  | Reverse
-  | Undefined
-  | Either
-  deriving (Show, Eq)
 
 detectNestingDirection :: [String] -> [ArrayAccess] -> NestingDirection
 detectNestingDirection loopVarsInNestOrder arrayAccesses =
@@ -425,26 +419,25 @@ loopBodyOnlyContainsLoop fortran =
     For {}                      -> True
     FSeq _ _ For {} NullStmt {} -> True
     _                           -> False
-
-getInnerLoopNests :: Fortran Anno -> [Fortran Anno]
-getInnerLoopNests = go "" Nothing
-  where
-    go :: String -> Maybe (Fortran Anno) -> Fortran Anno -> [Fortran Anno]
-    go name topLevel (FSeq _ _ f1 f2) =
-      go name topLevel f1 ++ go name topLevel f2
-    go _ _ (OriginalSubContainer _ name body) = go name Nothing body
-    go name Nothing topLevel@(For _ _ _ _ _ _ body)
-      | loopBodyStatementsOnly body = [osc name topLevel]
-      | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
-      | otherwise = concatMap (go name Nothing) $ allFors body
-    go name (Just topLevel) (For _ _ _ _ _ _ body)
-      | loopBodyStatementsOnly body = [osc name topLevel]
-      | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
-      | otherwise = concatMap (go name Nothing) $ allFors body
-    go _ _ _ = []
-
-allFors body =
-  case body of
-    FSeq _ _ f1 f2 -> allFors f1 ++ allFors f2
-    for@For {}     -> [for]
-    _              -> []
+--
+-- A beautiful function I worked out with a state machine when working on this
+-- pass but is no longer used in final version :'(
+--
+-- Too happy with it to delete it!
+--
+-- getInnerLoopNests :: Fortran Anno -> [Fortran Anno]
+-- getInnerLoopNests = go "" Nothing
+--   where
+--     go :: String -> Maybe (Fortran Anno) -> Fortran Anno -> [Fortran Anno]
+--     go name topLevel (FSeq _ _ f1 f2) =
+--       go name topLevel f1 ++ go name topLevel f2
+--     go _ _ (OriginalSubContainer _ name body) = go name Nothing body
+--     go name Nothing topLevel@(For _ _ _ _ _ _ body)
+--       | loopBodyStatementsOnly body = [topLevel]
+--       | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
+--       | otherwise = concatMap (go name Nothing) $ allFors body
+--     go name (Just topLevel) (For _ _ _ _ _ _ body)
+--       | loopBodyStatementsOnly body = [topLevel]
+--       | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
+--       | otherwise = concatMap (go name Nothing) $ allFors body
+--     go _ _ _ = []
