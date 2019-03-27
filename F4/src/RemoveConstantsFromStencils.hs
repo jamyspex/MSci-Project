@@ -8,21 +8,23 @@ import           Data.Generics
 import           Data.List
 import           Data.List.Index
 import           Data.List.Unique
-import qualified Data.Map              as DMap
+import qualified Data.Map                        as DMap
 import           Data.Maybe
-import qualified Data.Set              as Set
+import qualified Data.Set                        as Set
 import           Debug.Trace
 import           F95IntrinsicFunctions
 import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
-import           Utils                 hiding (arrayName, nulSrcSpan)
+import           RefactorSyntheticStencilIndices
+import           Utils                           hiding (arrayName, nulSrcSpan)
 
 data ArrayAccess = AA
   { arrayName          :: String
   , indices            :: [Index]
   , declaredDimensions :: [(Int, Int)]
+  , isLHS              :: Bool
   } deriving (Eq, Ord)
 
 instance Show ArrayAccess where
@@ -51,7 +53,7 @@ removeConstantsFromStencilsAndPrint subRec@MkSubRec {..} = do
 removeConstantsFromStencils :: ProgUnit Anno -> ProgUnit Anno
 removeConstantsFromStencils subAst = newSub
   where
-    allArrays = map (arrayFromDeclWithRanges True) $ getDecls subAst
+    allArrays = map (arrayFromDeclWithRanges True) $ getArrayDecls subAst
     updatedMergedBody =
       everywhere' (mkT (processMergedSubroutineTransform allArrays)) body
     updatedDecls = updateDecls subAst updatedMergedBody
@@ -64,7 +66,7 @@ removeConstantsFromStencils subAst = newSub
 -- The wisdom here is that the only varnames that won't have declarations
 -- are those added by this pass so add a decl for them. The only thing this
 -- pass adds are loop counters so just make intDecls.
--- DEFINITELY THE MOST ROBUST APPROACH
+-- DEFINITELY NOT THE MOST ROBUST APPROACH
 -- Also this pass doesn't check for existing
 -- variables named synthIdxN etc. soooo....
 updateDecls :: ProgUnit Anno -> Fortran Anno -> Decl Anno
@@ -80,14 +82,8 @@ updateDecls originalSub newBody = declNode $ originalDecls ++ newDecls
       filter
         (\dn ->
            dn `Set.notMember` originalDeclsSet &&
-           dn `notElem` f95IntrinsicFunctions)
+           dn `notElem` f95IntrinsicFunctions && "synthIdx" `isPrefixOf` dn)
         allUsedVars
-
-isTopLevelLoop :: Fortran Anno -> Bool
-isTopLevelLoop fortran
-  | loopBodyOnlyContainsLoop fortran = isTopLevelLoop (stripLoopNest fortran)
-  | loopBodyStatementsOnly fortran = True
-  | otherwise = False
 
 processMergedSubroutineTransform :: [Array] -> Fortran Anno -> Fortran Anno
 processMergedSubroutineTransform allArrays fortran
@@ -100,7 +96,12 @@ processMergedSubroutineTransform allArrays fortran
         nestingDirection
         withSyntheticLoopsInserted
     replacementMap = buildIndexReplacementData loopVarPosTuples
-    withGuardsAdded = addLoopGuards loopVarPosTuples withIndicesReplaced
+    withGuardsAdded = refactorStencilAcceses allArrays withIndicesReplaced
+      -- everywhere
+        -- (mkT (refactorStencilAcceses allArrays))
+        -- withSyntheticLoopsInserted
+        -- withIndicesReplaced
+     -- = addLoopGuards loopVarPosTuples withIndicesReplaced
     withIndicesReplaced =
       everywhere
         (mkT (doIndexReplacement replacementMap))
@@ -289,7 +290,7 @@ addLoops' maxLevel level dims insertLoop loopNest
     addLoops' maxLevel (level + 1) dims insertLoop (stripLoopNest loopNest)
   where
     (lwb, upb) = dims !! level
-    loopVarName = "synthIdx" ++ show level
+    loopVarName = synthIdxPrefix ++ show level
     origFor = fromJust originalFor
     originalFor =
       case getNearestFor loopNest of
@@ -302,14 +303,6 @@ getNearestFor (OriginalSubContainer _ _ body) = getNearestFor body
 getNearestFor (FSeq _ _ f1 NullStmt {})       = getNearestFor f1
 getNearestFor for@For {}                      = for
 getNearestFor body                            = body
-
-stripLoopNest :: Fortran Anno -> Fortran Anno
-stripLoopNest (OriginalSubContainer _ _ body) = stripLoopNest body
-stripLoopNest (FSeq _ _ f1 NullStmt {}) = stripLoopNest f1
-stripLoopNest (For _ _ _ _ _ _ body) = body
-stripLoopNest body
-  | loopBodyStatementsOnly body = body
-  | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
 
 getHighestDimensionArrayAccessNoMaybe :: [ArrayAccess] -> ArrayAccess
 getHighestDimensionArrayAccessNoMaybe =
@@ -344,14 +337,20 @@ allConstantsUsedInSamePosition allArrayAccesses =
   if all (\grp -> all (== head grp) grp) constantPositions
     then allArrayAccesses
     else error
-           "constants are not used in the same positions across stencils of same size"
+           ("constants are not used in the same positions across stencils of same size" ++
+            show allArrayAccesses)
   where
     constantPositions = map (map getConstantPositions) grpdByLength
     grpdByLength =
       groupBy
         (\a1 a2 ->
-           (length . declaredDimensions) a1 == (length . declaredDimensions) a2)
-        allArrayAccesses
+           (length . declaredDimensions) a1 == (length . declaredDimensions) a2) $
+      filter (any isConst . indices) allArrayAccesses
+
+isConst v =
+  case v of
+    Const _ -> True
+    _       -> False
 
 getConstantPositions :: ArrayAccess -> [Bool]
 getConstantPositions AA {..} =
@@ -389,10 +388,11 @@ detectNestingDirection loopVarsInNestOrder arrayAccesses =
 checkOne :: [String] -> ArrayAccess -> NestingDirection
 checkOne loopVars arrayAccess =
   case (forward, backward) of
-    (True, True)   -> Either
-    (True, _)      -> Normal
-    (_, True)      -> Reverse
-    (False, False) -> error "Can not detect loop nesting direction"
+    (True, True) -> Either
+    (True, _) -> Normal
+    (_, True) -> Reverse
+    (False, False) ->
+      error ("Can not detect loop nesting direction" ++ show arrayAccess)
   where
     forward = go 0 loopVars accessLoopVarsOnly
     backward = go 0 (reverse loopVars) accessLoopVarsOnly
@@ -416,14 +416,20 @@ checkOne loopVars arrayAccess =
 parseArrayAccesses :: [Array] -> Fortran Anno -> [ArrayAccess]
 parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
   where
-    uniqueArrayAccesses = sortUniq allParsedArrayAccesses
-    allParsedArrayAccesses = map buildArrayAccess allArrayAccessExprs
-    allArrayAccessExprs =
-      getAllArrayAccessesWithMatchingArray allArrays loopNest
-    buildArrayAccess :: (Expr Anno, Array) -> ArrayAccess
-    buildArrayAccess (accessExpr, Array {..}) =
+    uniqueArrayAccesses =
+      sortUniq (readParsedArrayAccesses ++ writeParsedArrayAccesses)
+    readParsedArrayAccesses = map (buildArrayAccess True) readArrayAccessExprs
+    readArrayAccessExprs =
+      getArrayAccessesWithMatchedArray ArrayRead allArrays loopNest
+    writeParsedArrayAccesses =
+      map (buildArrayAccess False) writeArrayAccessExprs
+    writeArrayAccessExprs =
+      getArrayAccessesWithMatchedArray ArrayWrite allArrays loopNest
+    buildArrayAccess :: Bool -> (Expr Anno, Array) -> ArrayAccess
+    buildArrayAccess isRead (accessExpr, Array {..}) =
       AA
         { arrayName = name
+        , isLHS = not isRead
         , indices = map buildIndex indexExprs
         , declaredDimensions = dimensionRanges
         }
@@ -437,39 +443,3 @@ parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
             Bin _ _ _ lhs _ -> LoopVar $ (getNameFromVarName . getVarName) lhs
             Var _ _ [(VarName _ name, _)] -> LoopVar name
             expr -> error ("missing pattern for \n" ++ miniPP expr)
-
-loopBodyStatementsOnly :: Fortran Anno -> Bool
-loopBodyStatementsOnly fortran =
-  case fortran of
-    For {} -> False
-    FSeq _ _ f1 f2 -> loopBodyStatementsOnly f1 && loopBodyStatementsOnly f2
-    OriginalSubContainer _ _ body -> loopBodyStatementsOnly body
-    _ -> True
-
-loopBodyOnlyContainsLoop :: Fortran Anno -> Bool
-loopBodyOnlyContainsLoop fortran =
-  case fortran of
-    For {}                      -> True
-    FSeq _ _ For {} NullStmt {} -> True
-    _                           -> False
--- A beautiful function I worked out with a state machine when working on this
--- pass but is no longer used in final version :'(
---
--- Too happy with it to delete it!
---
--- getInnerLoopNests :: Fortran Anno -> [Fortran Anno]
--- getInnerLoopNests = go "" Nothing
---   where
---     go :: String -> Maybe (Fortran Anno) -> Fortran Anno -> [Fortran Anno]
---     go name topLevel (FSeq _ _ f1 f2) =
---       go name topLevel f1 ++ go name topLevel f2
---     go _ _ (OriginalSubContainer _ name body) = go name Nothing body
---     go name Nothing topLevel@(For _ _ _ _ _ _ body)
---       | loopBodyStatementsOnly body = [topLevel]
---       | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
---       | otherwise = concatMap (go name Nothing) $ allFors body
---     go name (Just topLevel) (For _ _ _ _ _ _ body)
---       | loopBodyStatementsOnly body = [topLevel]
---       | loopBodyOnlyContainsLoop body = go name (Just topLevel) body
---       | otherwise = concatMap (go name Nothing) $ allFors body
---     go _ _ _ = []

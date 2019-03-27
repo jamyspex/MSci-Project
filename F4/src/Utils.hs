@@ -14,6 +14,8 @@ import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 
+synthIdxPrefix = "synthIdx"
+
 type SubNameStr = String
 
 type SrcName = String
@@ -660,10 +662,14 @@ data ArrayAccessType
   deriving (Show)
 
 getArrayAccesses :: ArrayAccessType -> [Array] -> Fortran Anno -> [Expr Anno]
-getArrayAccesses readOrWrite arrays fortran = allArrayExprs
+getArrayAccesses readOrWrite arrays fortran =
+  map fst $ getArrayAccessesWithMatchedArray readOrWrite arrays fortran
+
+getArrayAccessesWithMatchedArray ::
+     ArrayAccessType -> [Array] -> Fortran Anno -> [(Expr Anno, Array)]
+getArrayAccessesWithMatchedArray readOrWrite arrays fortran = allArrayExprs
   where
     allArrayExprs =
-      map fst $
       everything (++) (mkQ [] (arrayExprQuery arrays)) exprsFromFortran
     exprsFromFortran =
       case fortran of
@@ -738,6 +744,12 @@ arrayFromDeclWithRanges withRanges decl@(Decl _ _ _ typeDecl) =
     numberOfDimensions = length $ getArrayDimensions typeDecl
     name = (getVarName . head . declNameQuery) decl
 
+isTopLevelLoop :: Fortran Anno -> Bool
+isTopLevelLoop fortran
+  | loopBodyOnlyContainsLoop fortran = isTopLevelLoop (stripLoopNest fortran)
+  | loopBodyStatementsOnly fortran = True
+  | otherwise = False
+
 getArrayDimensionConstants :: (Expr Anno, Expr Anno) -> (Int, Int)
 getArrayDimensionConstants (expr1, expr2) =
   (getSingleConstant expr1, getSingleConstant expr2)
@@ -749,7 +761,8 @@ getSingleConstant expr =
     (Con _ _ val) -> read val :: Int
     (Unary _ _ _ (Con _ _ val)) -> negate $ read val :: Int
     (NullExpr _ _) -> 1 -- when array declared with starting index omitted, fortran defaults to 1
-    _ -> error "Expr other than constant in array dimensions. \n"
+    expr ->
+      error ("Expr other than constant in array dimensions. \n" ++ miniPP expr)
 
 getArrayDimensions :: Type Anno -> [(Expr Anno, Expr Anno)]
 getArrayDimensions declType =
@@ -772,6 +785,29 @@ getDeclType (Decl _ _ _ typeDecl) = typeDecl
 
 isArrayDecl :: Decl Anno -> Bool
 isArrayDecl = not . null . getArrayDimensions . getDeclType
+
+loopBodyStatementsOnly :: Fortran Anno -> Bool
+loopBodyStatementsOnly fortran =
+  case fortran of
+    For {} -> False
+    FSeq _ _ f1 f2 -> loopBodyStatementsOnly f1 && loopBodyStatementsOnly f2
+    OriginalSubContainer _ _ body -> loopBodyStatementsOnly body
+    _ -> True
+
+loopBodyOnlyContainsLoop :: Fortran Anno -> Bool
+loopBodyOnlyContainsLoop fortran =
+  case fortran of
+    For {}                      -> True
+    FSeq _ _ For {} NullStmt {} -> True
+    _                           -> False
+
+stripLoopNest :: Fortran Anno -> Fortran Anno
+stripLoopNest (OriginalSubContainer _ _ body) = stripLoopNest body
+stripLoopNest (FSeq _ _ f1 NullStmt {}) = stripLoopNest f1
+stripLoopNest (For _ _ _ _ _ _ body) = body
+stripLoopNest body
+  | loopBodyStatementsOnly body = body
+  | otherwise = error ("Can't strip loop nest from: \n" ++ miniPPF body)
 
 getBaseType (BaseType _ baseType _ _ _) = baseType
 getBaseType (ArrayT _ _ baseType _ _ _) = baseType
