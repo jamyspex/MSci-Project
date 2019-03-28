@@ -13,6 +13,7 @@ import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
+import           Safe
 
 synthIdxPrefix = "synthIdx"
 
@@ -609,7 +610,9 @@ buildIndex loopVarName offset
 
 getVarName (Var _ _ ((varname, _):_)) = varname
 
-getVarNameG expr = head $ everything (++) (mkQ [] extractVarNamesFromExpr) expr
+getVarNameG expr =
+  headNote "getVarNameG: head of empty list" $
+  everything (++) (mkQ [] extractVarNamesFromExpr) expr
 
 getNameFromVarName (VarName _ name) = name
 

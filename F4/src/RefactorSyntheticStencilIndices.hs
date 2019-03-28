@@ -12,161 +12,53 @@ import           MiniPP
 import           Utils
 
 refactorStencilAcceses :: [Array] -> Fortran Anno -> Fortran Anno
-refactorStencilAcceses arrays originalFortran
-  -- stripControl (findBlocksToGuard arrays) originalFortran
- = go originalFortran
+refactorStencilAcceses arrays originalFortran = updated
   where
-    go :: Fortran Anno -> Fortran Anno
-    go (FSeq anno srcSpan f1 f2) = FSeq anno srcSpan (go f1) (go f2)
-    go (OriginalSubContainer _ name body) = go body
-    go f@(For anno srcspn cond expr1 expr2 expr3 body)
-      | blockStatementsOnly body =
-        trace
-          ("loopBodyStatementsOnly = \n" ++ miniPPF body)
-          (For
-             anno
-             srcspn
-             cond
-             expr1
-             expr2
-             expr3
-             (findBlocksToGuard arrays body))
-      -- | loopBodyOnlyContainsLoop body =
-      --   For anno srcspn cond expr1 expr2 expr3 (go body)
-      | otherwise = f --For anno srcspn cond expr1 expr2 expr3 (go body)
-      -- | otherwise = originalFortran
-    --go (Just topLevel) (For anno srcspn cond expr1 expr2 expr3 body)
-    --  | loopBodyStatementsOnly body =
-    --    For anno srcspn cond expr1 expr2 expr3 (findBlocksToGuard arrays body)
-    --  | loopBodyOnlyContainsLoop body =
-    --    For anno srcspn cond expr1 expr2 expr3 (go (Just topLevel) body)
-    --  | otherwise = originalFortran
-    go f = f --originalFortran
+    updated = stripControl (findBlocksToGuard arrays) originalFortran
 
--- refactorStencilAcceses :: [Array] -> Fortran Anno -> Fortran Anno
--- refactorStencilAcceses arrays originalFortran = go originalFortran
---   where
---     go :: Fortran Anno -> Fortran Anno
---     go fortran
---       | blockStatementsOnly fortran =
---         trace
---           ("processing = \n" ++ miniPPF fortran)
---           (findBlocksToGuard arrays fortran)
---       | otherwise = stripControl fortran go
 stripControl :: (Fortran Anno -> Fortran Anno) -> Fortran Anno -> Fortran Anno
--- stripControl trans (FSeq anno srcSpan f1 f2) =
---   FSeq anno srcSpan (stripControl trans f1) (stripControl trans f2)
-stripControl trans (OriginalSubContainer _ name body) = stripControl trans body
-stripControl trans fortran
-  | blockStatementsOnly fortran =
-    case fortran of
-      (For anno srcSpan varname expr1 expr2 expr3 body) ->
-        For anno srcSpan varname expr1 expr2 expr3 (trans body)
-      (If anno srcSpan cond ifBody ifElses elseBody) ->
-        If
-          anno
-          srcSpan
-          cond
-          (trans ifBody)
-          (map (\(cond, body) -> (cond, trans body)) ifElses)
-          (fmap trans elseBody)
-      _ -> fortran
+stripControl trans (FSeq anno srcSpan f1 f2) =
+  FSeq anno srcSpan (stripControl trans f1) (stripControl trans f2)
+stripControl trans (OriginalSubContainer anno srcSpan body) =
+  OriginalSubContainer anno srcSpan (stripControl trans body)
+stripControl trans (For anno srcSpan varname expr1 expr2 expr3 body)
+  | blockStatementsOnly body =
+    For anno srcSpan varname expr1 expr2 expr3 (trans body)
   | otherwise =
-    case fortran of
-      (For anno srcSpan varname expr1 expr2 expr3 body) ->
-        For anno srcSpan varname expr1 expr2 expr3 (stripControl trans body)
-      (If anno srcSpan cond ifBody ifElses elseBody) ->
-        If
-          anno
-          srcSpan
-          cond
-          (stripControl trans ifBody)
-          (map (\(cond, body) -> (cond, stripControl trans body)) ifElses)
-          (fmap (stripControl trans) elseBody)
-      _ -> fortran
+    For anno srcSpan varname expr1 expr2 expr3 (stripControl trans body)
+stripControl trans (If anno srcSpan cond ifBody ifElses elseBody) =
+  If anno srcSpan cond updatedIfBody updatedElseIfs updatedElseBody
+  where
+    updatedIfBody =
+      if blockStatementsOnly ifBody
+        then trans ifBody
+        else stripControl trans ifBody
+    updatedElseIfs =
+      map
+        (\(cond, body) ->
+           ( cond
+           , if blockStatementsOnly body
+               then trans body
+               else stripControl trans body))
+        ifElses
+    updatedElseBody =
+      case elseBody of
+        Nothing -> Nothing
+        Just eb ->
+          if blockStatementsOnly eb
+            then Just $ trans eb
+            else Just $ stripControl trans eb
+stripControl _ f = f
 
--- stripControl (FSeq anno srcSpan f1 f2) trans =
---   FSeq anno srcSpan (trans f1) (trans f2)
--- stripControl (OriginalSubContainer anno name body) trans =
---   OriginalSubContainer anno name (trans body)
--- stripControl f trans = f -- error ("no case for \n" ++ miniPPF f)
 blockStatementsOnly :: Fortran Anno -> Bool
 blockStatementsOnly fortran =
   case fortran of
     For {} -> False
     If {} -> False
     FSeq _ _ f1 f2 -> blockStatementsOnly f1 && blockStatementsOnly f2
-    OriginalSubContainer _ _ body -> blockStatementsOnly body
+    OriginalSubContainer _ _ body -> False
     _ -> True
-    -- go topLevel@(For anno srcspn cond expr1 expr2 expr3 body)
-    --   | loopBodyStatementsOnly body =
-    --     For
-    --       anno
-    --       srcspn
-    --       cond
-    --       expr1
-    --       expr2
-    --       expr3
-    --       (findBlocksToGuard arrays topLevel)
-    --   | loopBodyOnlyContainsLoop body =
-    --     For anno srcspn cond expr1 expr2 expr3 (go (Just topLevel) body)
-    --   | otherwise = originalFortran
-    -- go (For anno srcspn cond expr1 expr2 expr3 body)
-    --   | loopBodyStatementsOnly body =
-    --     For
-    --       anno
-    --       srcspn
-    --       cond
-    --       expr1
-    --       expr2
-    --       expr3
-    --       (findBlocksToGuard arrays topLevel)
-    --   | loopBodyOnlyContainsLoop body =
-    --     For anno srcspn cond expr1 expr2 expr3 (go (Just topLevel) body)
-    --   | otherwise = originalFortran
-    -- go _ = originalFortran
 
--- refactorStencilAcceses :: [Array] -> Fortran Anno -> Fortran Anno
--- refactorStencilAcceses arrays originalFortran = go Nothing originalFortran
---   where
---     go :: Maybe (Fortran Anno) -> Fortran Anno -> Fortran Anno
---     go topLevel (FSeq _ _ f1 NullStmt {}) = go topLevel f1
---     go _ (OriginalSubContainer _ name body) = go Nothing body
---     go Nothing topLevel@(For anno srcspn cond expr1 expr2 expr3 body)
---       | loopBodyStatementsOnly body =
---         For
---           anno
---           srcspn
---           cond
---           expr1
---           expr2
---           expr3
---           (findBlocksToGuard arrays topLevel)
---       | loopBodyOnlyContainsLoop body =
---         For anno srcspn cond expr1 expr2 expr3 (go (Just topLevel) body)
---       | otherwise = originalFortran
---     go (Just topLevel) (For anno srcspn cond expr1 expr2 expr3 body)
---       | loopBodyStatementsOnly body =
---         For
---           anno
---           srcspn
---           cond
---           expr1
---           expr2
---           expr3
---           (findBlocksToGuard arrays topLevel)
---       | loopBodyOnlyContainsLoop body =
---         For anno srcspn cond expr1 expr2 expr3 (go (Just topLevel) body)
---       | otherwise = originalFortran
---     go _ _ = originalFortran
--- blockStatementsOnly :: Fortran Anno -> Bool
--- blockStatementsOnly fortran =
---   case fortran of
---     For {} -> False
---     If {} -> False
---     FSeq _ _ f1 f2 -> blockStatementsOnly f1 && blockStatementsOnly f2
---     OriginalSubContainer _ _ body -> blockStatementsOnly body
---     _ -> True
 -- find blocks of statements leading up to and including an
 -- array write. later this block will have all its stencil accesses
 -- normalised to the array write.
@@ -240,12 +132,16 @@ normaliseStencilWriteAndGuard arrayNames fortran =
       filter
         (\(name, _) -> synthIdxPrefix `isPrefixOf` name)
         writeStencilOffsets
-    writeStencilOffsets = getWriteStencilOffsetsFromExpr arrayNames fortran
+    writeStencilOffsets =
+      everything
+        (++)
+        (mkQ [] (getWriteStencilOffsetsFromExpr arrayNames))
+        fortran
     deltas = map (\(name, offset) -> (name, negate offset)) writeStencilOffsets
 
 updateStencilsInBlock ::
      [String] -> [(String, Int)] -> Fortran Anno -> Fortran Anno
-updateStencilsInBlock arrayNames deltas = everywhere (mkT updateStencilsQuery)
+updateStencilsInBlock arrayNames deltas = everywhere' (mkT updateStencilsQuery)
   where
     updateStencilsQuery :: Expr Anno -> Expr Anno
     updateStencilsQuery expr
@@ -287,6 +183,8 @@ getWriteStencilOffsetsFromExpr :: [String] -> Fortran Anno -> [(String, Int)]
 getWriteStencilOffsetsFromExpr arrays fortran@(Assg _ _ (Var _ _ [(VarName _ name, indices)]) _)
   | isArrayStencilWrite arrays fortran = map getNameAndOffsetFromExpr indices
   | otherwise = []
+getWriteStencilOffsetsFromExpr _ _ = []
+  -- error ("missing pattern for = \n " ++ miniPPF f)
 
 getDefaultOffsets :: [Array] -> Fortran Anno -> [(String, Int)]
 getDefaultOffsets arrays fortran =

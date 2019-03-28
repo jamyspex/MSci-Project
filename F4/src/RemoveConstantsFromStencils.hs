@@ -60,7 +60,13 @@ removeConstantsFromStencils subAst = newSub
     (Sub subAnno subSrcSpan returnType subName args block) = subAst
     (Block blockAnno uses implicit blockSrcSpan decls body) = block
     newBlock =
-      Block blockAnno uses implicit blockSrcSpan updatedDecls updatedMergedBody
+      Block
+        blockAnno
+        uses
+        implicit
+        blockSrcSpan
+        updatedDecls
+        (refactorStencilAcceses allArrays updatedMergedBody)
     newSub = Sub subAnno subSrcSpan returnType subName args newBlock
 
 -- The wisdom here is that the only varnames that won't have declarations
@@ -87,7 +93,7 @@ updateDecls originalSub newBody = declNode $ originalDecls ++ newDecls
 
 processMergedSubroutineTransform :: [Array] -> Fortran Anno -> Fortran Anno
 processMergedSubroutineTransform allArrays fortran
-  | isTopLevelLoop fortran = withGuardsAdded
+  | isTopLevelLoop fortran = withIndicesReplaced -- withGuardsAdded
   | otherwise = fortran
   where
     loopVarPosTuples =
@@ -96,7 +102,7 @@ processMergedSubroutineTransform allArrays fortran
         nestingDirection
         withSyntheticLoopsInserted
     replacementMap = buildIndexReplacementData loopVarPosTuples
-    withGuardsAdded = refactorStencilAcceses allArrays withIndicesReplaced
+    -- withGuardsAdded = refactorStencilAcceses allArrays withIndicesReplaced
       -- everywhere
         -- (mkT (refactorStencilAcceses allArrays))
         -- withSyntheticLoopsInserted

@@ -82,7 +82,7 @@ compilerMain args = do
   -- withConstantsRemoved <-
   --   removeConstantsFromStencilsAndPrint $
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
-  --error "Exit!"
+  -- error "Exit!"
   -- putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
   -- splitMergedMethodInPipelines $
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName

@@ -193,9 +193,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
                                  cn2s*p(0,i-1,j,k) +cn3l*p(0,i,j+1,k) + &
                                  cn3s*p(0,i,j-1,k) +cn4l*p(0,i,j,k+1) + &
                                  cn4s*p(0,i,j,k-1) -rhs(i,j,k))-p(0,i,j,k))
-#ifdef F
                         p(1,i,j,k) = p(0,i,j,k) +reltmp
-#endif
                       else
                           ! buffer 1
                         reltmp = omega*(cn1 *(cn2l*p(1,i+1,j,k) + &

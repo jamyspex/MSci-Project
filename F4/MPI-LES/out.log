@@ -740,12 +740,17 @@ subroutine press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax)
                             cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                             cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                             if (nrd==0) then
-                                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3&
-&s*p(synthIdx3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                                if (synthIdx3==1) then
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,&
+&j+1,k)+cn3s*p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                                    p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                                end if
                             else
-                                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,&
-&k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                                p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                                if (synthIdx3==0) then
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,&
+&j+1,k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                                end if
                             end if
                         end do
                     end do
@@ -1546,12 +1551,17 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
                             cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                             cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                             if (nrd==0) then
-                                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3&
-&s*p(synthIdx3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                                if (synthIdx3==1) then
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,&
+&j+1,k)+cn3s*p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                                    p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                                end if
                             else
-                                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,&
-&k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                                p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                                if (synthIdx3==0) then
+                                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,&
+&j+1,k)+cn3s*p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                                end if
                             end if
                         end do
                     end do
@@ -2047,12 +2057,17 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
             cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
             cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
             if (nrd==0) then
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,&
-&j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                if (synthIdx3==1) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                end if
             else
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthI&
-&dx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                if (synthIdx3==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                end if
             end if
 !}
 !}
@@ -2829,7 +2844,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)","(synthIdx3,0,1,1)","(i,1,300,1)","(synthIdx3,0,1,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
@@ -2845,12 +2860,17 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
             cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
             cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
             if (nrd==0) then
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,&
-&j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                if (synthIdx3==1) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                end if
             else
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthI&
-&dx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                if (synthIdx3==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                end if
             end if
 !}
 !}
@@ -3594,7 +3614,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             dz1 = dzs(k-1)
@@ -3607,12 +3627,17 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
             cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
             cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
             if (nrd==0) then
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx3,i,&
-&j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                if (synthIdx3==1) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                end if
             else
-                reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(synthI&
-&dx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                if (synthIdx3==0) then
+                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
+&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                end if
             end if
 !}            
 !}
@@ -4332,7 +4357,7 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -4347,12 +4372,17 @@ subroutine velnw_feedbf_les_adam_press_merged(alpha,beta,bmask1,cmask1,data21,de
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
@@ -5062,7 +5092,7 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -5077,12 +5107,17 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
@@ -5948,7 +5983,7 @@ end subroutine press_2
  !	StencilStream: dxs_i array name: dxs type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dxs: [[0],[-1]]
  !	StencilStream: dys_j array name: dys type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dys: [[0],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
- !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+ !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,1,0,0],[0,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,300,0],[0,0,-300,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,0,1],[0,0,0,-1]]
@@ -5999,7 +6034,7 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -6014,12 +6049,17 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
@@ -6393,7 +6433,7 @@ StencilStream: dys_j array name: dys type: Float dimensions: [(0,300)]!	2 point 
 press_3 requires:
 StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
 press_3 requires:
-StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 press_3 requires:
 StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,1,0,0],[0,-1,0,0]]
 press_3 requires:
@@ -7257,7 +7297,7 @@ end subroutine press_2
  !	StencilStream: dxs_i array name: dxs type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dxs: [[0],[-1]]
  !	StencilStream: dys_j array name: dys type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dys: [[0],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
- !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+ !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,1,0,0],[0,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,300,0],[0,0,-300,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,0,1],[0,0,0,-1]]
@@ -7308,7 +7348,7 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -7323,12 +7363,17 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
@@ -8294,7 +8339,7 @@ end subroutine press_2
  !	StencilStream: dxs_i array name: dxs type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dxs: [[0],[-1]]
  !	StencilStream: dys_j array name: dys type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dys: [[0],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
- !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+ !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,1,0,0],[0,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,300,0],[0,0,-300,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,0,1],[0,0,0,-1]]
@@ -8345,7 +8390,7 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -8360,12 +8405,17 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
@@ -9370,7 +9420,7 @@ end subroutine press_2
  !	StencilStream: dxs_i array name: dxs type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dxs: [[0],[-1]]
  !	StencilStream: dys_j array name: dys type: Float dimensions: [(0,300)]!	2 point stencil on 1D array dys: [[0],[-1]]
  !	StencilStream: dzs_k array name: dzs type: Float dimensions: [(-1,82)]!	2 point stencil on 1D array dzs: [[0],[-1]]
- !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+ !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,1,0,0],[0,-1,0,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,300,0],[0,0,-300,0]]
  !	StencilStream: p_synthIdx3_i_j_k array name: p type: Float dimensions: [(0,1),(0,302),(0,302),(0,81)]!	2 point stencil on 4D array p: [[0,0,0,1],[0,0,0,-1]]
@@ -9421,7 +9471,7 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
 !	2 point stencil on 1D array dxs: [[0],[-1]]
 !	2 point stencil on 1D array dys: [[0],[-1]]
 !	2 point stencil on 1D array dzs: [[0],[-1]]
-!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,1],[0,0,0,-1],[0,0,-1,0],[0,-1,0,0]]
+!	14 point stencil on 4D array p: [[1,1,0,0],[1,0,1,0],[1,0,0,0],[1,0,0,1],[1,0,0,-1],[1,0,-1,0],[1,-1,0,0],[-1,1,0,0],[-1,0,1,0],[-1,0,0,0],[-1,0,0,1],[-1,0,0,-1],[-1,0,-1,0],[-1,-1,0,0]]
 !            ){
 ! OpenCLMap ( ["dzs","nrd"],["p"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)","(synthIdx3,0,1,1)"],["nrd","l"]) {
             if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80) .and. (synthIdx3>=0) .and. (synthIdx3<=&
@@ -9436,12 +9486,17 @@ subroutine press_3(dx1,dxs,dy1,dys,dzn,dzs,p,rhs)
                 cn2l = 2./(dxs(i)*(dxs(i-1)+dxs(i)))
                 cn1 = 1./(2./(dxs(i-1)*dxs(i))+2./(dys(j-1)*dys(j))+2./(dz1*dz2))
                 if (nrd==0) then
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3,i+1,j,k)+cn2s*p(synthIdx3,i-1,j,k)+cn3l*p(synthIdx3,i,j+1,k)+cn3s*p(synthIdx&
-&3,i,j-1,k)+cn4l*p(synthIdx3,i,j,k+1)+cn4s*p(synthIdx3,i,j,k-1)-rhs(i,j,k))-p(synthIdx3,i,j,k))
+                    if (synthIdx3==1) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3-1,i+1,j,k)+cn2s*p(synthIdx3-1,i-1,j,k)+cn3l*p(synthIdx3-1,i,j+1,k)+cn3s*&
+&p(synthIdx3-1,i,j-1,k)+cn4l*p(synthIdx3-1,i,j,k+1)+cn4s*p(synthIdx3-1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3-1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3-1,i,j,k)+reltmp
+                    end if
                 else
-                    reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*p(sy&
-&nthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
-                    p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    if (synthIdx3==0) then
+                        reltmp = 1.0*(cn1*(cn2l*p(synthIdx3+1,i+1,j,k)+cn2s*p(synthIdx3+1,i-1,j,k)+cn3l*p(synthIdx3+1,i,j+1,k)+cn3s*&
+&p(synthIdx3+1,i,j-1,k)+cn4l*p(synthIdx3+1,i,j,k+1)+cn4s*p(synthIdx3+1,i,j,k-1)-rhs(i,j,k))-p(synthIdx3+1,i,j,k))
+                        p(synthIdx3,i,j,k) = p(synthIdx3+1,i,j,k)+reltmp
+                    end if
                 end if
             end if
 !}            
