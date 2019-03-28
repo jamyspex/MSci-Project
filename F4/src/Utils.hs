@@ -17,6 +17,8 @@ import           Safe
 
 synthIdxPrefix = "synthIdx"
 
+scratchDirName = "scratch"
+
 type SubNameStr = String
 
 type SrcName = String

@@ -6,6 +6,7 @@ import           Data.Generics
 import           Data.List
 import           Data.List.Index
 import           Data.List.Unique
+import           Data.List.Utils
 import qualified Data.Map             as DMap
 import           Data.Tuple.Utils
 import           Debug.Trace
@@ -15,7 +16,25 @@ import           LanguageFortranTools
 import           MiniPP
 import           Utils
 
-splitMergedMethodIntoPipelines :: SubRec -> IO [SubRec]
+updateSubTablesWithPipelines ::
+     SubRec -> SubroutineTable -> IO ([String], SubroutineTable)
+updateSubTablesWithPipelines mergedOffload@MkSubRec {..} subTable = do
+  (pipelineNames, pipelines) <- splitMergedMethodIntoPipelines mergedOffload
+  let pipelinesAdded =
+        foldl
+          (\map subRec@MkSubRec {..} -> DMap.insert subName subRec map)
+          originalMergedDeleted
+          pipelines
+  return (pipelineNames, pipelinesAdded)
+  where
+    originalMergedDeleted = DMap.delete subName subTable
+
+-- writeOutReadBackPipeline :: FilePath -> SubRec -> IO SubRec
+-- writeOutReadBackPipeline tempDir MkSubRec{..} = do
+--
+--   where
+--     tempFile = tempDir </> subName
+splitMergedMethodIntoPipelines :: SubRec -> IO ([String], [SubRec])
 splitMergedMethodIntoPipelines MkSubRec {..} = do
   mapM_
     (\(nest, nestingData) -> do
@@ -23,7 +42,13 @@ splitMergedMethodIntoPipelines MkSubRec {..} = do
        putStrLn $ show nestingData
        putStrLn $ "\n----------------------------------------\n")
     topLevelBlocks
-  return []
+  putStrLn $ rule '=' ++ " Pipelines " ++ rule '-'
+  mapM_
+    (\MkSubRec {..} -> do
+       putStrLn subName
+       putStrLn $ miniPPProgUnit subAst)
+    pipelines
+  return (map Utils.subName pipelines, pipelines)
   where
     pipelines = map (buildOne allArgs allDecls) groupedByNestLevel
     allDecls = getDecls subAst
@@ -46,12 +71,12 @@ buildOne allArgs allDecls (pipelineNumber, pipelineItems) =
     , parallelise = True
     }
   where
-    pipelineBody = block $ map fst pipelineItems
+    pipelineBody = combinePipelineItems $ map fst pipelineItems
     allUsedVars = getUsedVarNames pipelineBody
     pipelineName =
       "pipeline_" ++
       show pipelineNumber ++
-      concatMap (\item -> "_" ++ (fst3 . snd) item) pipelineItems
+      "_" ++ intercalate "_" (uniq $ map (fst3 . snd) pipelineItems)
     newSub =
       Sub
         nullAnno
@@ -73,6 +98,40 @@ buildOne allArgs allDecls (pipelineNumber, pipelineItems) =
       filter
         (\decl -> (getNameFromVarName . getVarNameG) decl `elem` allUsedVars)
         allDecls
+
+-- writeOutSubTable :: SubroutineTable -> FilePath -> IO ()
+-- writeOutSubTable subTable tempDir = mapM_ writeOne $ DMap.elems subTable
+--   where
+--     writeOne :: SubRec -> IO ()
+--     writeOne MkSubRec {..} = do
+--       putStrLn $ "Writing to " ++ tempFileName
+--       writeFile tempFileName (miniPPProgUnitNoTruncate subAst)
+--       where
+--         tempFileName = tempDir </> takeFileName subSrcFile
+combinePipelineItems :: [Fortran Anno] -> Fortran Anno
+combinePipelineItems items = block built
+  where
+    (_, built, _) =
+      foldl combine (firstName, [], []) (map Just items ++ [Nothing])
+    OriginalSubContainer _ firstName _ = head items
+    combine ::
+         (String, [Fortran Anno], [Fortran Anno])
+      -> Maybe (Fortran Anno)
+      -> (String, [Fortran Anno], [Fortran Anno])
+    combine (currentName, built, currentBlock) (Just (OriginalSubContainer anno name body)) =
+      if currentName == name
+        then (name, built, currentBlock ++ [body])
+        else ( name
+             , built ++
+               [OriginalSubContainer anno currentName (block currentBlock)]
+             , [body])
+    combine (currentName, built, currentBlock) Nothing =
+      if currentBlock /= []
+        then ( currentName
+             , built ++
+               [OriginalSubContainer nullAnno currentName (block currentBlock)]
+             , [])
+        else (currentName, built, currentBlock)
 
 getUsedVarNames :: Fortran Anno -> [String]
 getUsedVarNames fortran =

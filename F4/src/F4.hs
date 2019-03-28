@@ -84,22 +84,24 @@ compilerMain args = do
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   -- error "Exit!"
   putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
-  splitMergedMethodIntoPipelines $
-    subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
+  (pipelineNames, pipelineSubroutineTable) <-
+    updateSubTablesWithPipelines
+      (subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName)
+      subroutineTableWithOffloadSubsMerged
+  -- splitMergedMethodIntoPipelines $
+  --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
   -- Map and fold detection from Gavin's compiler
   -- < STEP 4 : Parallelise the loops >
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
   let (parallelisedSubroutines, parAnnotations) =
         foldl
-          (paralleliseProgUnit_foldl
-             (ioSubs args)
-             subroutineTableWithOffloadSubsMerged)
+          (paralleliseProgUnit_foldl (ioSubs args) pipelineSubroutineTable)
           (DMap.empty, [])
-          [mergedOffloadName]
+          pipelineNames
   debug_displaySubRoutineTable parallelisedSubroutines False
   let srtWithParallelisedSubroutines =
-        DMap.union parallelisedSubroutines subroutineTableWithOffloadSubsMerged
+        DMap.union parallelisedSubroutines pipelineSubroutineTable -- subroutineTableWithOffloadSubsMerged
   -- mapM_ (\subRecord -> putStrLn ("\n" ++ hl ++ (fst subRecord) ++ hl ++ (miniPPProgUnit (subAst (snd subRecord))) ++ hl))
   --     (DMap.toList parallelisedSubroutines)
   putStrLn (rule '+' ++ " Stencil Detection " ++ rule '+')
@@ -111,23 +113,25 @@ compilerMain args = do
         foldl
           (combineKernelProgUnit_foldl (loopFusionBound args))
           (srtAfterStenDetect, [])
-          [mergedOffloadName]
+          pipelineNames
   putStrLn (rule '+' ++ " Combined " ++ rule '+')
   let srtAfterKernelCombination =
         DMap.union combinedKernelSubroutines srtAfterStenDetect
   debug_displaySubRoutineTable srtAfterKernelCombination False
-  let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
+  -- let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
-  let withGuards = addLoopGuards combinedOffloadSub
-  let srtWithGuards =
-        DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
+  let withGuards = map addLoopGuards (getOffloadSubs srtAfterKernelCombination)
+  let srtWithGuards = updateSubroutineTable withGuards srtAfterKernelCombination
+      -- DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
   debug_displaySubRoutineTable srtWithGuards False
   putStrLn (rule '+' ++ " Kernels " ++ rule '+')
-  let guardedMerged = srtWithGuards DMap.! mergedOffloadName
-  kernels <- getKernels guardedMerged
+  -- let guardedMerged = srtWithGuards DMap.! mergedOffloadName
+  --
+  -- kernels = [[Kernel]] representing pipelines
+  kernels <- mapM getKernels (getOffloadSubs srtWithGuards)
   driverLoopParams <- detectDriverLoopSize kernels
-  let mainSubName = mainSub args
-  let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
+  -- let mainSubName = mainSub args
+  -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
   putStrLn "BEFORE"
   kernelsWithTransitStreams <- addTransitStreams kernels
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
@@ -150,6 +154,16 @@ compilerMain args = do
   mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
+
+getOffloadSubs :: SubroutineTable -> [SubRec]
+getOffloadSubs subTable =
+  DMap.elems $ DMap.filter (\MkSubRec {..} -> parallelise) subTable
+
+updateSubroutineTable :: [SubRec] -> SubroutineTable -> SubroutineTable
+updateSubroutineTable newSubRecs oldSubTable =
+  foldl (\map (key, subRec) -> DMap.insert key subRec map) oldSubTable newItems
+  where
+    newItems = map (\subrec -> (subName subrec, subrec)) newSubRecs
 
 writeToFile :: F4Opts -> String -> String -> IO ()
 writeToFile F4Opts {..} fileName contents = do
