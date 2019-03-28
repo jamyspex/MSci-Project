@@ -25,10 +25,11 @@ splitMergedMethodIntoPipelines MkSubRec {..} = do
     topLevelBlocks
   return []
   where
+    pipelines = map (buildOne allArgs allDecls) groupedByNestLevel
     allDecls = getDecls subAst
     allArgs = getArgsAsString subAst
     topLevelBlocks = getTopLevelBlockStatements $ getSubBody subAst
-    groupByNestLevel = groupTopLevelBlocks topLevelBlocks
+    groupedByNestLevel = groupTopLevelBlocks topLevelBlocks
 
 buildOne ::
      [String]
