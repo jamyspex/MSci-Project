@@ -147,9 +147,9 @@ addLoopGuards replacementTuples = insertGuards allConditions
       concatMap (take 1 . sortByIndexValue) grpdByLoopVar
     buildCondition (loopVarName, blockEntryValue) =
       var loopVarName `eq` con blockEntryValue
-    allConditions = map buildCondition requiredGuards
+    allConditions = requiredGuards -- map buildCondition requiredGuards
 
-insertGuards :: [Expr Anno] -> Fortran Anno -> Fortran Anno
+insertGuards :: [(String, Int)] -> Fortran Anno -> Fortran Anno
 insertGuards conditions (OriginalSubContainer _ _ body) =
   insertGuards conditions body
 insertGuards conditions (FSeq _ _ f1 NullStmt {}) = insertGuards conditions f1
@@ -157,8 +157,7 @@ insertGuards conditions (For anno src vn expr1 expr2 expr3 body) =
   For anno src vn expr1 expr2 expr3 (insertGuards conditions body)
 insertGuards conditions body
   | loopBodyStatementsOnly body && null conditions = body
-  | loopBodyStatementsOnly body =
-    If nullAnno nullSrcSpan (combineWithAnd conditions) body [] Nothing
+  | loopBodyStatementsOnly body = body --  TempGuard conditions body
   | otherwise = error ("Can't add guards: \n" ++ miniPPF body)
 
 buildIndexReplacementData ::
@@ -194,11 +193,6 @@ doIndexReplacement replacementDataMap expr@(Var anno srcSpan [(VarName vnAnno na
       case idx of
         (Con _ _ val) -> Just (read val :: Int)
         _             -> Nothing
-    buildIndex loopVarName offset
-      | offset > 0 = var loopVarName `plus` con (abs offset)
-      | offset < 0 = var loopVarName `minus` con (abs offset)
-      | offset == 0 = var loopVarName
-      | otherwise = error "Cannot build array index"
 doIndexReplacement _ expr = expr
 
 isArrayAcccesExprUsingConst :: Expr Anno -> Bool

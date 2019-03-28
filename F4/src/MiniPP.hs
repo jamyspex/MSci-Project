@@ -339,6 +339,12 @@ miniPPFT originalTab stmt tab =
     OriginalSubContainer _ subName body ->
       "! Original Subroutine Name: " ++
       subName ++ " {\n" ++ miniPPFT originalTab body tab ++ "\n!}"
+    -- TempGuard conditions body ->
+    --   "! Temp Guard Metadata \n! conditions = " ++
+    --   concatMap
+    --     (\(name, value) -> name ++ " == " ++ show value ++ ", ")
+    --     conditions ++
+    --   " {\n" ++ miniPPFT originalTab body tab ++ "\n!}"
     Return _ _ expr -> tab ++ "return " ++ miniPP expr
     Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
     Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"

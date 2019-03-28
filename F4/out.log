@@ -34,6 +34,10 @@ cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '
 Parsing ./Shallow-Water-2D/dyn.f95
 Parsing ./Shallow-Water-2D/shapiro.f95
 Parsing ./Shallow-Water-2D/vernieuw.f95
+Writing to consts/dyn.f95
+Writing to consts/shapiro.f95
+Writing to consts/vernieuw.f95
+Writing to consts/main.f95
 Writing to scratch/dyn.f95
 Writing to scratch/shapiro.f95
 Writing to scratch/vernieuw.f95

@@ -54,9 +54,9 @@ compilerMain :: F4Opts -> IO ()
 compilerMain args = do
   print "Executing compiler main..."
   -- Parse the Fortran files specified at the command line
-  subroutineTable <- parseProgramData args
+  initialSubroutineTable <- parseProgramData args
   -- seperate out the parsed files to be offloaded to the FPGA
-  -- subroutineTable <- removeStencilConstantsWrapper args initalSubroutineTable
+  subroutineTable <- removeStencilConstantsWrapper args initialSubroutineTable
   let forOffloadSubTable = DMap.filter parallelise subroutineTable
   let notForOffloadSubTable = DMap.filter (not . parallelise) subroutineTable
   let forOffloadSubTable = DMap.filter parallelise subroutineTable
@@ -79,10 +79,10 @@ compilerMain args = do
   --         mergedOffloadName
   --         withConstantsRemoved
   --         subroutineTableWithOffloadSubsMerged
-  withConstantsRemoved <-
-    removeConstantsFromStencilsAndPrint $
-    subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
-  error "Exit!"
+  -- withConstantsRemoved <-
+  --   removeConstantsFromStencilsAndPrint $
+  --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
+  --error "Exit!"
   -- putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
   -- splitMergedMethodInPipelines $
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName

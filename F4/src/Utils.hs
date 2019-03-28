@@ -601,6 +601,12 @@ getDeclNames (Sub _ _ _ _ _ (Block _ _ _ _ decls _)) =
 
 getAllVarNames expr = everything (++) (mkQ [] extractVarNamesFromExpr) expr
 
+buildIndex loopVarName offset
+  | offset > 0 = var loopVarName `plus` con (abs offset)
+  | offset < 0 = var loopVarName `minus` con (abs offset)
+  | offset == 0 = var loopVarName
+  | otherwise = error "Cannot build array index"
+
 getVarName (Var _ _ ((varname, _):_)) = varname
 
 getVarNameG expr = head $ everything (++) (mkQ [] extractVarNamesFromExpr) expr
