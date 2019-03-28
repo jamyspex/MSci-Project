@@ -36,6 +36,15 @@ combineWithAnd =
     (Bin nullAnno nullSrcSpan (And nullAnno))
     (NullExpr nullAnno nullSrcSpan)
 
+argNode :: [String] -> Arg Anno
+argNode names =
+  Arg
+    nullAnno
+    (buildAstSeq (ASeq nullAnno) (NullArg nullAnno) argNames)
+    nullSrcSpan
+  where
+    argNames = map (ArgName nullAnno) names
+
 eq = Bin nullAnno nullSrcSpan (RelEQ nullAnno)
 
 plus = Bin nullAnno nullSrcSpan (Plus nullAnno)

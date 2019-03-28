@@ -73,24 +73,24 @@ findBlocksToGuard arrays wholeBlock =
     arrayWritesAndProceedingStatmentBlocks
   where
     allStatements = stmtsQuery wholeBlock
-    arrayWritesAndProceedingStatmentBlocks =
-      trace
-        ("whole block = \n" ++
-         miniPPF wholeBlock ++
-         "\ntoGuard length = " ++
-         show (length toGuardBlocks) ++
-         "\nall statemetns = " ++
-         concatMap (\s -> miniPPF s ++ "\n") allStatements ++
-         "\nstatements = \n" ++
-         concatMap
-           (\(seg, guard) ->
-              (if guard
-                 then "guarded\n"
-                 else "") ++
-              concatMap (\s -> miniPPF s ++ "\n") seg ++
-              "\n----------------------\n")
-           toGuardBlocks)
-        toGuardBlocks
+    arrayWritesAndProceedingStatmentBlocks
+      -- trace
+      --   ("whole block = \n" ++
+      --    miniPPF wholeBlock ++
+      --    "\ntoGuard length = " ++
+      --    show (length toGuardBlocks) ++
+      --    "\nall statemetns = " ++
+      --    concatMap (\s -> miniPPF s ++ "\n") allStatements ++
+      --    "\nstatements = \n" ++
+      --    concatMap
+      --      (\(seg, guard) ->
+      --         (if guard
+      --            then "guarded\n"
+      --            else "") ++
+      --         concatMap (\s -> miniPPF s ++ "\n") seg ++
+      --         "\n----------------------\n")
+      --      toGuardBlocks)
+     = toGuardBlocks
     toGuardBlocks = getBlocks allStatements [] []
     arrayNames = map (getNameFromVarName . arrayVarName) arrays
     getBlocks ::
@@ -184,7 +184,6 @@ getWriteStencilOffsetsFromExpr arrays fortran@(Assg _ _ (Var _ _ [(VarName _ nam
   | isArrayStencilWrite arrays fortran = map getNameAndOffsetFromExpr indices
   | otherwise = []
 getWriteStencilOffsetsFromExpr _ _ = []
-  -- error ("missing pattern for = \n " ++ miniPPF f)
 
 getDefaultOffsets :: [Array] -> Fortran Anno -> [(String, Int)]
 getDefaultOffsets arrays fortran =
@@ -208,7 +207,7 @@ getNameAndOffsetFromExpr missing =
 guardBlock :: [Array] -> Fortran Anno -> Fortran Anno
 guardBlock arrays blockToBeGuarded
   | syntheticIdxArrayStencilWrite arrayWrites blockToBeGuarded =
-    normaliseStencilWriteAndGuard arrayNames blockToBeGuarded -- do the normalisation and add then add guards
+    normaliseStencilWriteAndGuard arrayNames blockToBeGuarded
   | syntheticLoopIndicesWritten arrayWrites blockToBeGuarded ||
       syntheticLoopIndicesRead arrayReads blockToBeGuarded =
     addGuards (getDefaultOffsets arrays blockToBeGuarded) blockToBeGuarded
@@ -275,12 +274,5 @@ stmtsQuery :: Fortran Anno -> [Fortran Anno]
 stmtsQuery (OriginalSubContainer _ _ body) = stmtsQuery body
 stmtsQuery (FSeq _ _ f1 f2)                = stmtsQuery f1 ++ stmtsQuery f2
 stmtsQuery (For _ _ _ _ _ _ body)          = stmtsQuery body
--- stmtsQuery (If _ _ _ ifBody ifElses elseBody) =
---   stmtsQuery ifBody ++
---   concatMap (\(_, body) -> stmtsQuery body) ifElses ++
---   case elseBody of
---     Nothing -> []
---     Just eb -> stmtsQuery eb
--- stmtsQuery (TempGuard _ body)              = stmtsQuery body
 stmtsQuery NullStmt {}                     = []
 stmtsQuery fortran                         = [fortran]

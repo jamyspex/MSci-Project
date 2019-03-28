@@ -83,9 +83,9 @@ compilerMain args = do
   --   removeConstantsFromStencilsAndPrint $
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   -- error "Exit!"
-  -- putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
-  -- splitMergedMethodInPipelines $
-  --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
+  putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
+  splitMergedMethodIntoPipelines $
+    subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
   -- Map and fold detection from Gavin's compiler
   -- < STEP 4 : Parallelise the loops >

@@ -239,7 +239,9 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
           end do
           end do
 #else
+#ifdef CALC_BOUNDS
             call boundp1(p)
+#endif
 #endif
         end do  ! nrd
 #if defined( TWINNED_BUFFER ) && defined(INLINE_BOUND_CALCS) && !defined(MPI)
@@ -251,7 +253,9 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
       end do
       end do
 #else
+#ifdef CALC_BOUNDS
       call boundp2(p)
+#endif
 #endif
 #ifndef NO_IO
 #ifdef VERBOSE
@@ -331,7 +335,9 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
           end do
           end do
 #else
+#ifdef CALC_BOUNDS
             call boundp1(p)
+#endif
 #endif
 #ifdef WV_DEBUG
     print *, "F95: P_SUM_1=",sum(p)
@@ -346,7 +352,9 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
       end do
       end do
 #else
+#ifdef CALC_BOUNDS
     call boundp2(p)
+#endif
 #endif
 #ifdef WV_DEBUG
     print *, "F95: P_SUM_BOUND=",sum(p)
