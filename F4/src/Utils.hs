@@ -241,16 +241,17 @@ isTransit stream =
 -- Data type used to represent a processing pipeline
 -- for output to a Fortran kernel file
 data PipelineItem a
-  = Map { inputStreams    :: [Stream Anno]
-        , outputStreams   :: [Stream Anno]
-        , name            :: String
-        , fortran         :: ProgUnit Anno
-        , originalSubName :: String
-        , nextStage       :: PipelineItem a
-        , stageNumber     :: Int
-        , readPipes       :: [Pipe]
-        , writtenPipes    :: [Pipe]
-        , sharedData      :: a }
+  = Map { inputStreams         :: [Stream Anno]
+        , outputStreams        :: [Stream Anno]
+        , name                 :: String
+        , inputReduceVariables :: [String]
+        , fortran              :: ProgUnit Anno
+        , originalSubName      :: String
+        , nextStage            :: PipelineItem a
+        , stageNumber          :: Int
+        , readPipes            :: [Pipe]
+        , writtenPipes         :: [Pipe]
+        , sharedData           :: a }
   | Reduce { inputStreams          :: [Stream Anno]
            , outputStreams         :: [Stream Anno]
            , name                  :: String
@@ -336,6 +337,8 @@ instance Show (PipelineItem SharedPipelineData) where
     printAllStreams inputStreams ++
     "OutputStreams:\n" ++
     printAllStreams outputStreams ++
+    "Input reduction vars: \n" ++
+    concatMap (\r -> "\t" ++ r ++ "\n") inputReduceVariables ++
     "readPipes:\n" ++
     printPipes readPipes ++
     "writtenPipes:\n" ++
@@ -350,10 +353,10 @@ instance Show (PipelineItem SharedPipelineData) where
     printAllStreams inputStreams ++
     "Output Streams:\n" ++
     printAllStreams outputStreams ++
-    "Output reduction vars: \n" ++
-    concatMap (\r -> "!\t" ++ r ++ "\n") outputReduceVariables ++
     "Input reduction vars: \n" ++
-    concatMap (\r -> "!\t" ++ r ++ "\n") inputReduceVariables ++
+    concatMap (\r -> "\t" ++ r ++ "\n") inputReduceVariables ++
+    "Output reduction vars: \n" ++
+    concatMap (\r -> "\t" ++ r ++ "\n") outputReduceVariables ++
     "readPipes:\n" ++
     printPipes readPipes ++
     "writtenPipes:\n" ++
@@ -453,6 +456,7 @@ convertKernelToPipelineItem k@Kernel {..} =
         , outputStreams = outputs
         , name = kernelName
         , fortran = body
+        , inputReduceVariables = inputReductionVars
         , originalSubName = originalSubroutineName
         , nextStage = NullItem
         , stageNumber = order
@@ -470,7 +474,7 @@ convertKernelToPipelineItem k@Kernel {..} =
         { inputStreams = inputs
         , outputStreams = outputs
         , outputReduceVariables = outputReductionVars
-        , inputReduceVariables = []
+        , inputReduceVariables = inputReductionVars
         , name = kernelName
         , fortran = body
         , originalSubName = originalSubroutineName

@@ -46,7 +46,12 @@ generateMemoryReader ::
 generateMemoryReader memRead@MemoryReader {..} =
   if valid
     then (kernel, callingData)
-    else error ("More than one output stream from memory reader " ++ name)
+    else error
+           ("More than one output stream from memory reader " ++
+            "\n length writtenPipes == " ++
+            show (length writtenPipes) ++
+            " length memToOutputStreams == " ++
+            show (length memToOutputStreams) ++ name ++ "\n" ++ show memRead)
   where
     valid = length writtenPipes == 1 && length memToOutputStreams == 1
     kernel = sub name decls mainLoop arrayArg

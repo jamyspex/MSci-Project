@@ -3480,6 +3480,7 @@ Input Streams:
 OutputStreams:
 	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
 	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3567,6 +3568,7 @@ Input Streams:
 OutputStreams:
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3702,6 +3704,7 @@ OutputStreams:
 	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3864,6 +3867,7 @@ OutputStreams:
 	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -4009,6 +4013,7 @@ OutputStreams:
 	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
 	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 

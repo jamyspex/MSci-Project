@@ -129,6 +129,35 @@ compilerMain args = do
   --
   -- kernels = [[Kernel]] representing pipelines
   kernels <- mapM getKernels (getOffloadSubs srtWithGuards)
+  -- driverLoopParams <- detectDriverLoopSize kernels
+  -- -- let mainSubName = mainSub args
+  -- -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
+  -- putStrLn "BEFORE"
+  -- kernelsWithTransitStreams <- addTransitStreams kernels
+  -- putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
+  -- kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams
+  -- putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
+  -- withLoopVarsSynthesised <- synthesiseLoopVars kernelsWithReductionVarsLinked
+  -- putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
+  -- -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
+  -- -- preceding smart cache if one is required
+  -- smartCacheKernelPairs <- insertSmartCaches withLoopVarsSynthesised
+  -- putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
+  -- pipelineStages <- addMemoryAccesses smartCacheKernelPairs
+  -- let withSharedDataUpdated =
+  --       updatePipelineSharedData driverLoopParams pipelineStages
+  -- putStrLn (rule '+' ++ " Routing Pipes " ++ rule '+')
+  -- withPipes <- populatePipes withSharedDataUpdated
+  -- putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
+  -- scalarisedKernels <- scalarizeKernels withPipes
+  scalarisedKernels <- concatMapM processPipeline kernels
+  (fileName, deviceCode, callingData) <- buildDeviceModule scalarisedKernels
+  mapM_ print callingData
+  writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
+  return ()
+
+processPipeline :: [Kernel] -> IO [PipelineStage]
+processPipeline kernels = do
   driverLoopParams <- detectDriverLoopSize kernels
   -- let mainSubName = mainSub args
   -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
@@ -149,11 +178,7 @@ compilerMain args = do
   putStrLn (rule '+' ++ " Routing Pipes " ++ rule '+')
   withPipes <- populatePipes withSharedDataUpdated
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
-  scalarisedKernels <- scalarizeKernels withPipes
-  (fileName, deviceCode, callingData) <- buildDeviceModule scalarisedKernels
-  mapM_ print callingData
-  writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
-  return ()
+  scalarizeKernels withPipes
 
 getOffloadSubs :: SubroutineTable -> [SubRec]
 getOffloadSubs subTable =

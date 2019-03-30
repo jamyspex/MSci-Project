@@ -162,7 +162,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
 #endif
 #endif
 #ifndef TWINNED_BUFFER
-                    do i = 1+mod(k+j+nrd,2),ip,2
+                    do i = 1,ip,1 ! do i = 1+mod(k+j+nrd,2),ip,2
 #else
                     do i=1,ip
 #endif
