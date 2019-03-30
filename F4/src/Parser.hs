@@ -299,12 +299,6 @@ populateSubCalls opts sra =
            (subname, filter (checkIfSubOfInterest opts) calls))
         callsInFiles
     subnamesToCallsMap =
-      trace
-        ("callsOfInterest: " ++
-         concatMap
-           (\(key, val) ->
-              key ++ ": " ++ show (map getCalledSubName val) ++ "\n")
-           callsOfInterest) $
       map
         (\(subname, calls) ->
            ( subname

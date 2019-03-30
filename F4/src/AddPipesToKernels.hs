@@ -80,10 +80,7 @@ addPipesToPipelineItems pipeline = do
               getArrayNameFromStream streamFromMap
             streamName = getArrayNameFromStream stream
             (source, streamFromMap) =
-              pickSource dest $
-              trace
-                ("for source for stream " ++ streamName)
-                (availableStreams DMap.! streamName)
+              pickSource dest $ availableStreams DMap.! streamName
       -- streamName              = getArrayNameFromStream stream
       -- (source, streamFromMap) = pickSource dest $ trace
       --   ("for source for stream " ++ streamName)
@@ -156,36 +153,15 @@ pickSource ::
   -> [(PipelineItem SharedPipelineData, Stream Anno)]
   -> (PipelineItem SharedPipelineData, Stream Anno)
 pickSource dest@SmartCache {} sources =
-  trace
-    ("smartcache dest = " ++
-     name dest ++
-     " sources = " ++
-     show (map (name . fst) sources) ++
-     " dest removed = " ++
-     show (map (name . fst) (removeDestFromSources dest sources))) $
   maximumBy
     (\(s1, _) (s2, _) -> compareSmartCacheOpts s1 s2)
     (removeDestFromSources dest sources)
 pickSource dest@MemoryWriter {} sources =
-  trace
-    ("memWriter dest = " ++
-     name dest ++
-     " sources = " ++
-     show (map (name . fst) sources) ++
-     " dest removed = " ++
-     show (map (name . fst) (removeDestFromSources dest sources))) $
   maximumBy
     (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
     (removePreviousKernelOutputsFromMemWriterSources $
      removeDestFromSources dest sources)
 pickSource dest sources =
-  trace
-    ("unmatched dest = " ++
-     name dest ++
-     " sources = " ++
-     show (map (name . fst) sources) ++
-     " dest removed = " ++
-     show (map (name . fst) (removeDestFromSources dest sources))) $
   maximumBy
     (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
     (removeDestFromSources dest sources)
@@ -331,11 +307,7 @@ getAvailableStreamsFromSource MemoryWriter {} = []
 getAvailableStreamsFromSource k@Map {..} = map (k, ) outputStreams
 getAvailableStreamsFromSource k@Reduce {..} =
   map (k, ) outputStreams ++
-  map (\s -> (k, builtDummyStreamFromReductionVar s)) outputReduceVariables
-
-builtDummyStreamFromReductionVar :: String -> Stream Anno
-builtDummyStreamFromReductionVar outputVarName =
-  Stream outputVarName "" Float []
+  map (\s -> (k, buildDummyStreamFromReductionVar s)) outputReduceVariables
 
 -- for a PipelineItem get all the streams it requires
 getRequiredStreams ::
@@ -345,13 +317,13 @@ getRequiredStreams item@Map {..} =
   map (, item) inputStreams ++
   map
     (\inputReductionVar ->
-       (builtDummyStreamFromReductionVar inputReductionVar, item))
+       (buildDummyStreamFromReductionVar inputReductionVar, item))
     inputReduceVariables
 getRequiredStreams item@Reduce {..} =
   map (, item) inputStreams ++
   map
     (\inputReductionVar ->
-       (builtDummyStreamFromReductionVar inputReductionVar, item))
+       (buildDummyStreamFromReductionVar inputReductionVar, item))
     inputReduceVariables
 getRequiredStreams item@SmartCache {..} = map (, item) inputStreams
 getRequiredStreams item@MemoryReader {..} = []

@@ -223,13 +223,7 @@ buildSmartCacheItem kernel streamDimensionOrder inStream = cacheItem
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           (trace
-              ("line 222 : pointsAndDistances = " ++
-               show pointsAndDistances ++
-               " map = " ++
-               show (DMap.toList bodgedMapForLES) ++ " point = " ++ show point)
-              (bodgedMapForLES DMap.! (map Offset point), buffIndex) :
-            acc))
+           (bodgedMapForLES DMap.! (map Offset point), buffIndex) : acc)
         []
         pointsAndDistances
     pointsAndDistances = ((startIndex, 1) : startToPointDistances)
@@ -285,8 +279,6 @@ getLoopVarPositions stencilArrayName kern@Kernel {..} =
         (\arr ->
            let (VarName _ name) = arrayVarName arr
             in name == stencilArrayName) $
-      trace
-        ("stencilArrayName = " ++ stencilArrayName ++ "\nkernel=" ++ show kern) $
       map arrayFromDecl $ getArrayDecls body
     arrayAccess =
       headNote "line 221" $ getAllArrayAccesses stencilArray (getSubBody body)

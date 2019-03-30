@@ -51,6 +51,10 @@ data SmartCacheDetailsForStream
                                , maxNegOffset          :: Int }
   | DummySmartCacheDetailsForStream { stream :: Stream Anno }
 
+buildDummyStreamFromReductionVar :: String -> Stream Anno
+buildDummyStreamFromReductionVar outputVarName =
+  Stream outputVarName "" Float []
+
 instance Show SmartCacheDetailsForStream where
   show smartCacheDetails =
     "Start index: " ++
@@ -573,6 +577,10 @@ getStreamDimensions (TransitStream _ _ _ dims)   = dims
 getStreamName (Stream name _ _ _)          = name
 getStreamName (StencilStream name _ _ _ _) = name
 getStreamName (TransitStream name _ _ _)   = name
+
+getStreamType (Stream _ _ valueType _)          = valueType
+getStreamType (StencilStream _ _ valueType _ _) = valueType
+getStreamType (TransitStream _ _ valueType _)   = valueType
 
 getArrayNameFromStream (Stream _ arrayName _ _)          = arrayName
 getArrayNameFromStream (StencilStream _ arrayName _ _ _) = arrayName

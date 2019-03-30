@@ -135,22 +135,8 @@ getKernelBodys name fortran = go [] fortran
         -- error
         --   ("f1 is FSeq\n f1 = " ++
         --    miniPPF f1 ++ "\nfseq = " ++ miniPPF fseq ++ "\nf2 = " ++ miniPPF f2)
-      | isMainBody f1 =
-        trace
-          ("isMainBody f1: fseq = \n" ++
-           miniPPF fseq ++
-           "\npreamble = \n" ++
-           concatMap (\l -> "\t" ++ miniPPF l ++ "\n") preamble ++
-           "f1 = \n" ++ miniPPF f1)
-          (osc name (block (preamble ++ [f1])) : go [] f2)
-      | isMainBody f2 =
-        trace
-          ("isMainBody f2: fseq = \n" ++
-           miniPPF fseq ++
-           "\npreamble = \n" ++
-           concatMap (\l -> "\t" ++ miniPPF l ++ "\n") preamble ++
-           "f1 = \n" ++ miniPPF f1 ++ "\nf2 = \n" ++ miniPPF f2)
-          [osc name (block $ preamble ++ [f1, f2])]
+      | isMainBody f1 = osc name (block (preamble ++ [f1])) : go [] f2
+      | isMainBody f2 = [osc name (block $ preamble ++ [f1, f2])]
       | isFSeq f2 = go (preamble ++ [f1]) f2
       | otherwise = error "can't find main kernel body after preamble"
     go _ (NullStmt _ _) = []
