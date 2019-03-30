@@ -8727,6 +8727,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -8756,6 +8759,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 302)
+    j = mod(count/82, 302)
+    k = count/24764
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -8790,6 +8796,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -8819,6 +8828,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/82, 303)
+    k = count/24846
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -9773,6 +9785,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -9804,6 +9819,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 302)
+    j = mod(count/82, 302)
+    k = count/24764
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -9840,6 +9858,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -9871,6 +9892,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/82, 303)
+    k = count/24846
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -12626,6 +12650,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -12691,6 +12718,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 302)
+    j = mod(count/82, 302)
+    k = count/24764
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -12735,6 +12765,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -12809,6 +12842,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/82, 303)
+    k = count/24846
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -14932,6 +14968,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -14953,6 +14992,9 @@ subroutine press_1
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1_i*dy1_j*dzn_k*rhs_i_j_k
         area = area+dx1_i*dy1_j*dzn_k
@@ -14970,6 +15012,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 302)
+    j = mod(count/82, 302)
+    k = count/24764
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -14986,6 +15031,9 @@ subroutine press_2
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 302)
+    j = mod(count/82, 302)
+    k = count/24764
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs_i_j_k = rhs_i_j_k-rhsav
     end if
@@ -15006,6 +15054,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -15027,6 +15078,9 @@ subroutine press_3
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
+    i = mod(count, 303)
+    j = mod(count/84, 302)
+    k = count/25368
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0_i_j_k*dx1_i*dy1_j*dzn_k
         pco = pco+dx1_i*dy1_j*dzn_k
@@ -15044,6 +15098,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/82, 303)
+    k = count/24846
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -15060,6 +15117,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
+    i = mod(count, 303)
+    j = mod(count/82, 303)
+    k = count/24846
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0_i_j_k = p0_i_j_k-pav
     end if

@@ -49,7 +49,36 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
     loopVars = getLoopVarNames fortran
     loopVarArgsRemoved =
       filter (\(ArgName _ name) -> name `notElem` loopVars) args
-generateKernelCode Reduce {..} = error "Reduce code gen not yet implemented"
+generateKernelCode reduceKern@Reduce {..} =
+  error "Reduce code gen not yet implemented"
+  where
+    kernel = sub name decls mainLoop loopVarArgsRemoved
+    callingData =
+      KCD
+        { argPositions =
+            imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
+        , kernelName = name
+        , subroutineName = originalSubName
+        }
+    loopVarName = driverLoopIndexName sharedData
+    driverLoopBoundVarName = "nloop"
+    mainLoop =
+      for
+        loopVarName
+        (driverLoopLowerBound sharedData + 1)
+        (var driverLoopBoundVarName)
+        (block [pipeReads, kernelBodyWithoutAnnos, pipeWrites])
+    pipeReads = block $ generatePipeReadsMapKernel reduceKern
+    pipeWrites = block $ generatePipeWritesMapKernel reduceKern
+    kernelBodyWithoutAnnos = stripOpenCLAnnos fortran
+    decls =
+      declNode $
+      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData) :
+      intDecl loopVarName : getDecls fortran
+    args = getArgs fortran
+    loopVars = getLoopVarNames fortran
+    loopVarArgsRemoved =
+      filter (\(ArgName _ name) -> name `notElem` loopVars) args
 
 getLoopVarNames :: ProgUnit Anno -> [String]
 getLoopVarNames kernelBody = map getNameFromVarName loopVars
