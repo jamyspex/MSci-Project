@@ -1598,297 +1598,6 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Loop Guards 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-================================================================================
-Subroutine name: pipeline_0_dyn_shapiro_vernieuw
-Filename: 
-Source:
-subroutine pipeline_0_dyn_shapiro_vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      real :: dt
-      real, dimension(0:501,0:501) :: du
-      real :: duu
-      real, dimension(0:501,0:501) :: dv
-      real :: dvv
-      real :: dx
-      real :: dy
-      real :: eps
-      real, dimension(0:501,0:501), intent(In) :: eta
-      real, dimension(0:501,0:501) :: etan
-      real :: g
-      real, dimension(0:501,0:501), intent(InOut) :: h
-      real :: hen
-      real :: hep
-      real, intent(In) :: hmin
-      real :: hnn
-      real :: hnp
-      real :: hsn
-      real :: hsp
-      real :: hue
-      real :: huw
-      real :: hvn
-      real :: hvs
-      real :: hwn
-      real :: hwp
-      real, dimension(0:501,0:501), intent(In) :: hzero
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real :: term1
-      real :: term2
-      real :: term3
-      real, dimension(0:501,0:501), intent(Out) :: u
-      real, dimension(0:501,0:501), intent(InOut) :: un
-      real :: uu
-      real, dimension(0:501,0:501), intent(Out) :: v
-      real, dimension(0:501,0:501), intent(InOut) :: vn
-      real :: vv
-      integer, dimension(0:501,0:501), intent(Out) :: wet
-! Original Subroutine Name: dyn {
-! OpenCLStencil (
-!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
-!    ){
-! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-        dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-    end if
-!}    
-!}
-! OpenCLStencil (
-!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
-!    ){
-! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        un(j,k) = 0.0
-        uu = u(j,k)
-        duu = du(j,k)
-        if (wet(j,k)==1) then
-            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                un(j,k) = uu+duu
-            end if
-        else
-            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                un(j,k) = uu+duu
-            end if
-        end if
-        vv = v(j,k)
-        dvv = dv(j,k)
-        vn(j,k) = 0.0
-        if (wet(j,k)==1) then
-            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                vn(j,k) = vv+dvv
-            end if
-        else
-            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                vn(j,k) = vv+dvv
-            end if
-        end if
-    end if
-!}    
-!}
-! OpenCLStencil (
-!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	2 point stencil on 2D array un: [[0,0],[0,-1]]
-!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
-!    ){
-! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-        hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-        hue = hep+hen
-        hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-        hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-        huw = hwp+hwn
-        hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-        hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-        hvn = hnp+hnn
-        hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-        hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-        hvs = hsp+hsn
-        etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-    end if
-!}    
-!}
-!}
-! Original Subroutine Name: shapiro {
-! OpenCLStencil (
-!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!    ){
-! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        if (wet(j,k)==1) then
-            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-            eta(j,k) = term1+term2+term3
-        else
-            eta(j,k) = etan(j,k)
-        end if
-    end if
-!}    
-!}
-!}
-! Original Subroutine Name: vernieuw {
-! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
-        h(j,k) = hzero(j,k)+eta(j,k)
-        wet(j,k) = 1
-        if (h(j,k)<hmin) then
-            wet(j,k) = 0
-        end if
-        u(j,k) = un(j,k)
-        v(j,k) = vn(j,k)
-    end if
-!}
-!}
-end subroutine pipeline_0_dyn_shapiro_vernieuw
-
-AST not shown.
-Argument translations:
-
-This subroutine will be offloaded to the FPGA
-================================================================================
-
-================================================================================
-Subroutine name: wave2d
-Filename: scratch/main.f95
-Source:
-program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real :: dt
-      real :: dx
-      real :: dy
-      real :: eps
-      real, dimension(0:ny+1,0:nx+1) :: eta
-      real, dimension(0:ny+1,0:nx+1) :: etan
-      real :: g
-      real, dimension(0:ny+1,0:nx+1) :: h
-      real :: hmin
-      real, dimension(0:ny+1,0:nx+1) :: hzero
-      integer :: j
-      integer :: k
-      real, dimension(0:ny+1,0:nx+1) :: u
-      real, dimension(0:ny+1,0:nx+1) :: un
-      real, dimension(0:ny+1,0:nx+1) :: v
-      real, dimension(0:ny+1,0:nx+1) :: vn
-      integer, dimension(0:ny+1,0:nx+1) :: wet
-      real :: hmax
-      real :: time
-      real :: dtmax
-      real :: c
-      real :: lambda
-      integer :: n
-      integer :: ntot
-      integer :: nout
-      integer :: dummy
-    ntot = 10000
-    eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-    open(90, file='debug.dat', form='formatted')
-    open(10, file='eta0.dat', form='formatted')
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
-    end do
-    close(10)
-    open(10, file='h0.dat', form='formatted')
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(hzero(j,k), k = 0, nx+1)
-    end do
-    close(10)
-    hmax = 0.
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-            hmax = max(hmax,h(j,k))
-        end do
-    end do
-    dummy = 0
-    c = sqrt(2*g*hmax)
-    write(6, *)("c = ", c)
-    lambda = dt*sqrt(g*hmax)/min(dx,dy)
-    write(6, *)("lambda = ", lambda)
-    if (lambda>1) then
-        write(6, *)("This will not work. Do you know why?")
-        stop 
-    end if
-    open(10, file='eta.dat', form='formatted')
-    open(20, file='h.dat', form='formatted')
-    open(30, file='u.dat', form='formatted')
-    open(40, file='v.dat', form='formatted')
-    do j = 26, 26, 1
-        do k = 26, 26, 1
-            eta(j,k) = 1.0
-        end do
-    end do
-    do n = 1, ntot, 1
-        time = REAL(n)*dt
-        call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
-        call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
-    end do
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
-        write(20, '(101F12.6)')(h(j,k), k = 0, nx+1)
-        write(30, '(101F12.6)')(u(j,k), k = 0, nx+1)
-        write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
-    end do
-    write(6, *)("Data output at time = ", time/60.0, " min")
-
-end program wave2d
-
-AST not shown.
-Argument translations:
-	dyn->
-	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	shapiro->
-	    call shapiro(j, k, wet, etan, eps, eta)
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "eps", argument = VarName (fromList []) "eps"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	vernieuw->
-	    call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "eps", argument = VarName (fromList []) "eps"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-
-This subroutine will not be offloaded to the FPGA
-================================================================================
-
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  Kernels 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1910,10 +1619,8 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-        dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-    end if
+    du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+    dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
 !}    
 !}
 end subroutine dyn_0
@@ -1942,30 +1649,28 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 !    ){
 ! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        un(j,k) = 0.0
-        uu = u(j,k)
-        duu = du(j,k)
-        if (wet(j,k)==1) then
-            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                un(j,k) = uu+duu
-            end if
-        else
-            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                un(j,k) = uu+duu
-            end if
+    un(j,k) = 0.0
+    uu = u(j,k)
+    duu = du(j,k)
+    if (wet(j,k)==1) then
+        if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+            un(j,k) = uu+duu
         end if
-        vv = v(j,k)
-        dvv = dv(j,k)
-        vn(j,k) = 0.0
-        if (wet(j,k)==1) then
-            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                vn(j,k) = vv+dvv
-            end if
-        else
-            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                vn(j,k) = vv+dvv
-            end if
+    else
+        if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+            un(j,k) = uu+duu
+        end if
+    end if
+    vv = v(j,k)
+    dvv = dv(j,k)
+    vn(j,k) = 0.0
+    if (wet(j,k)==1) then
+        if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    else
+        if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+            vn(j,k) = vv+dvv
         end if
     end if
 !}    
@@ -2007,21 +1712,19 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 !	2 point stencil on 2D array vn: [[0,0],[-1,0]]
 !    ){
 ! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-        hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-        hue = hep+hen
-        hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-        hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-        huw = hwp+hwn
-        hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-        hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-        hvn = hnp+hnn
-        hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-        hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-        hvs = hsp+hsn
-        etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-    end if
+    hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+    hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+    hue = hep+hen
+    hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+    hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+    huw = hwp+hwn
+    hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+    hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+    hvn = hnp+hnn
+    hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+    hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+    hvs = hsp+hsn
+    etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}    
 !}
 end subroutine dyn_2
@@ -2047,15 +1750,13 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !    ){
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        if (wet(j,k)==1) then
-            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-            eta(j,k) = term1+term2+term3
-        else
-            eta(j,k) = etan(j,k)
-        end if
+    if (wet(j,k)==1) then
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+        term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+        term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+        eta(j,k) = term1+term2+term3
+    else
+        eta(j,k) = etan(j,k)
     end if
 !}    
 !}
@@ -2080,21 +1781,255 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
-        h(j,k) = hzero(j,k)+eta(j,k)
-        wet(j,k) = 1
-        if (h(j,k)<hmin) then
-            wet(j,k) = 0
-        end if
-        u(j,k) = un(j,k)
-        v(j,k) = vn(j,k)
+    h(j,k) = hzero(j,k)+eta(j,k)
+    wet(j,k) = 1
+    if (h(j,k)<hmin) then
+        wet(j,k) = 0
     end if
+    u(j,k) = un(j,k)
+    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
 ======================
 
 no. of kernels: 5
+ ! ==============================================
+ ! Name: dyn_0 Order: 0
+ ! Input streams:
+ !	StencilStream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+ ! Output streams:
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_0(dt,dx,dy,eta,g,j,k)
+      real :: dt
+      real, dimension(0:501,0:501) :: du
+      real, dimension(0:501,0:501) :: dv
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real :: g
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+! OpenCLStencil (
+!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+    dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+!}    
+!}
+end subroutine dyn_0
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: dyn_1 Order: 1
+ ! Input streams:
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_1(j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501) :: du
+      real :: duu
+      real, dimension(0:501,0:501) :: dv
+      real :: dvv
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real :: uu
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real :: vv
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    un(j,k) = 0.0
+    uu = u(j,k)
+    duu = du(j,k)
+    if (wet(j,k)==1) then
+        if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+            un(j,k) = uu+duu
+        end if
+    else
+        if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+            un(j,k) = uu+duu
+        end if
+    end if
+    vv = v(j,k)
+    dvv = dv(j,k)
+    vn(j,k) = 0.0
+    if (wet(j,k)==1) then
+        if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    else
+        if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    end if
+!}    
+!}
+end subroutine dyn_1
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: dyn_2 Order: 2
+ ! Input streams:
+ !	StencilStream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+ !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
+      real :: dt
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real :: hen
+      real :: hep
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+! OpenCLStencil (
+!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+!    ){
+! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+    hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+    hue = hep+hen
+    hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+    hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+    huw = hwp+hwn
+    hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+    hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+    hvn = hnp+hnn
+    hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+    hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+    hvs = hsp+hsn
+    etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+!}    
+!}
+end subroutine dyn_2
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: shapiro Order: 3
+ ! Input streams:
+ !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ ! Output streams:
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine shapiro(eps,eta,etan,j,k,wet)
+      real :: eps
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!    ){
+! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if (wet(j,k)==1) then
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+        term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+        term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+        eta(j,k) = term1+term2+term3
+    else
+        eta(j,k) = etan(j,k)
+    end if
+!}    
+!}
+end subroutine shapiro
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: vernieuw Order: 4
+ ! Input streams:
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real, intent(In) :: hmin
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+    h(j,k) = hzero(j,k)+eta(j,k)
+    wet(j,k) = 1
+    if (h(j,k)<hmin) then
+        wet(j,k) = 0
+    end if
+    u(j,k) = un(j,k)
+    v(j,k) = vn(j,k)
+!}
+end subroutine vernieuw
+ ! ==============================================
+
+
+wet_j_k is largest stream size = 252004
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ With Loop Guards 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
  ! ==============================================
  ! Name: dyn_0 Order: 0
  ! Input streams:
@@ -2127,6 +2062,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 !}
 end subroutine dyn_0
  ! ==============================================
+
 
  ! ==============================================
  ! Name: dyn_1 Order: 1
@@ -2191,6 +2127,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 end subroutine dyn_1
  ! ==============================================
 
+
  ! ==============================================
  ! Name: dyn_2 Order: 2
  ! Input streams:
@@ -2252,6 +2189,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 end subroutine dyn_2
  ! ==============================================
 
+
  ! ==============================================
  ! Name: shapiro Order: 3
  ! Input streams:
@@ -2291,6 +2229,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 !}
 end subroutine shapiro
  ! ==============================================
+
 
  ! ==============================================
  ! Name: vernieuw Order: 4
@@ -2335,7 +2274,6 @@ end subroutine vernieuw
  ! ==============================================
 
 
-wet_j_k is largest stream size = 252004
 BEFORE
 dyn_1 requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
@@ -3510,7 +3448,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 end subroutine dyn_0
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3624,7 +3562,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 end subroutine dyn_1
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3760,7 +3698,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 end subroutine dyn_2
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3904,7 +3842,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 end subroutine shapiro
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4046,7 +3984,7 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 end subroutine vernieuw
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Nothing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
