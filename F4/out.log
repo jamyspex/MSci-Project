@@ -2024,7 +2024,7 @@ end subroutine vernieuw
  ! ==============================================
 
 
-wet_j_k is largest stream size = 252004
+wet_j_k is largest stream size = 252004 dims used to calculate this = [(0,501),(0,501)]
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  With Loop Guards 
