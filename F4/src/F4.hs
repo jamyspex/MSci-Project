@@ -119,16 +119,13 @@ compilerMain args = do
         DMap.union combinedKernelSubroutines srtAfterStenDetect
   debug_displaySubRoutineTable srtAfterKernelCombination False
   -- let combinedOffloadSub = srtAfterKernelCombination DMap.! mergedOffloadName
-  putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
-  let withGuards = map addLoopGuards (getOffloadSubs srtAfterKernelCombination)
-  let srtWithGuards = updateSubroutineTable withGuards srtAfterKernelCombination
       -- DMap.insert mergedOffloadName withGuards srtAfterKernelCombination
-  debug_displaySubRoutineTable srtWithGuards False
+  -- debug_displaySubRoutineTable srtWithGuards False
   putStrLn (rule '+' ++ " Kernels " ++ rule '+')
   -- let guardedMerged = srtWithGuards DMap.! mergedOffloadName
   --
   -- kernels = [[Kernel]] representing pipelines
-  kernels <- mapM getKernels (getOffloadSubs srtWithGuards)
+  kernels <- mapM getKernels (getOffloadSubs srtAfterKernelCombination)
   -- driverLoopParams <- detectDriverLoopSize kernels
   -- -- let mainSubName = mainSub args
   -- -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
@@ -158,15 +155,20 @@ compilerMain args = do
 
 processPipeline :: [Kernel] -> IO [PipelineStage]
 processPipeline kernels = do
-  driverLoopParams <- detectDriverLoopSize kernels
+  driverLoopParams@(largestStreamName, largestStreamDims, _) <-
+    detectDriverLoopSize kernels
+  putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
+  withGuards <- mapM addLoopGuards kernels -- (getOffloadSubs srtAfterKernelCombination)
+  -- let srtWithGuards = updateSubroutineTable withGuards srtAfterKernelCombination
   -- let mainSubName = mainSub args
   -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
   putStrLn "BEFORE"
-  kernelsWithTransitStreams <- addTransitStreams kernels
+  kernelsWithTransitStreams <- addTransitStreams withGuards
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
   kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
-  withLoopVarsSynthesised <- synthesiseLoopVars kernelsWithReductionVarsLinked
+  withLoopVarsSynthesised <-
+    synthesiseLoopVars largestStreamDims kernelsWithReductionVarsLinked
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required

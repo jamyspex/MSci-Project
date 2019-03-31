@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE LambdaCase         #-}
 {-# LANGUAGE RecordWildCards    #-}
 
 module Utils where
@@ -172,6 +173,73 @@ instance Show Kernel where
       inR = inputReductionVars kernel
       b = body kernel
       o = order kernel
+
+data Index
+  = LoopVar String
+  | Const Int
+  deriving (Show, Eq, Ord)
+
+data ArrayAccess = AA
+  { arrName            :: String
+  , indices            :: [Index]
+  , declaredDimensions :: [(Int, Int)]
+  , isLHS              :: Bool
+  } deriving (Eq, Ord)
+
+data NestingDirection
+  = Normal
+  | Reverse
+  | Undefined
+  | Either
+  deriving (Show, Eq)
+
+instance Show ArrayAccess where
+  show AA {..} =
+    "ArrayAccess: " ++ arrName ++ " indices = " ++ show indices ++ "\n"
+
+detectNestingDirection :: [String] -> [ArrayAccess] -> NestingDirection
+detectNestingDirection loopVarsInNestOrder arrayAccesses =
+  if valid
+    then firstNotEither
+    else error "Index usage ordering not consistent"
+  where
+    allNestingDirections = map (checkOne loopVarsInNestOrder) arrayAccesses
+    firstNotEither =
+      head $
+      filter
+        (\case
+           Either -> False
+           _ -> True)
+        allNestingDirections
+    valid = all (\v -> v == firstNotEither || v == Either) allNestingDirections
+
+checkOne :: [String] -> ArrayAccess -> NestingDirection
+checkOne loopVars arrayAccess =
+  case (forward, backward) of
+    (True, True) -> Either
+    (True, _) -> Normal
+    (_, True) -> Reverse
+    (False, False) ->
+      error ("Can not detect loop nesting direction" ++ show arrayAccess)
+  where
+    forward = go 0 loopVars accessLoopVarsOnly
+    backward = go 0 (reverse loopVars) accessLoopVarsOnly
+    accessLoopVarsOnly =
+      (concatMap
+         (\case
+            LoopVar name -> [name]
+            Const _ -> []) .
+       indices)
+        arrayAccess
+    go :: Int -> [String] -> [String] -> Bool
+    go misMatchCount (lv:lvs) (ai:ais)
+      | misMatchCount == 2 = False
+      | lv == ai = go misMatchCount lvs ais
+      | lv /= ai = go (misMatchCount + 1) lvs ais
+      | otherwise = go misMatchCount lvs ais
+    go misMatchCount _ _
+      | misMatchCount == 2 = False
+      | otherwise = True
 
 getLoopNests :: Fortran Anno -> [Fortran Anno]
 getLoopNests = go "" []
@@ -413,9 +481,11 @@ data FPGAMemArray = FPGAMemArray
   } deriving (Show)
 
 data SharedPipelineData
-  = SPD { driverLoopLowerBound :: Int
-        , driverLoopUpperBound :: Int
-        , driverLoopIndexName  :: String }
+  = SPD { driverLoopLowerBound    :: Int
+        , driverLoopUpperBound    :: Int
+        , driverLoopIndexName     :: String
+        , largestStreamDimensions :: [(Int, Int)]
+        , largestStreamName       :: String }
   | NullPipeLineData
   deriving (Show)
 
@@ -471,6 +541,8 @@ convertKernelToPipelineItem k@Kernel {..} =
               { driverLoopLowerBound = 0
               , driverLoopUpperBound = 0
               , driverLoopIndexName = driverLoopVariableName
+              , largestStreamDimensions = []
+              , largestStreamName = ""
               }
         }
     ReduceKernel ->
@@ -491,6 +563,8 @@ convertKernelToPipelineItem k@Kernel {..} =
               { driverLoopLowerBound = 0
               , driverLoopUpperBound = 0
               , driverLoopIndexName = driverLoopVariableName
+              , largestStreamDimensions = []
+              , largestStreamName = ""
               }
         }
 
@@ -884,8 +958,8 @@ debug_displaySubTableEntry showAst sr = do
 -- function takes a list of loop variables and an array access expr and then returns a list of tuples of
 -- the form (array name, loop variable name, maybe (position loop var is used in), nothing if it is not used)
 getLoopIndexPosition :: [String] -> Expr Anno -> [(String, String, Maybe Int)]
-getLoopIndexPosition arrayVarNames (Var _ _ ((VarName _ arrayName, indexList):_)) =
-  map (\name -> (arrayName, name, getIndexPos name indexList 0)) arrayVarNames
+getLoopIndexPosition loopVarNames (Var _ _ ((VarName _ arrayName, indexList):_)) =
+  map (\name -> (arrayName, name, getIndexPos name indexList 0)) loopVarNames
   where
     getIndexPos :: String -> [Expr Anno] -> Int -> Maybe Int
     getIndexPos loopVariableName [] _ = Nothing

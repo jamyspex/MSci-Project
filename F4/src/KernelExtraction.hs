@@ -13,7 +13,7 @@ import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Parser
-import           Utils
+import           Utils                hiding (arrName)
 
 -- Function goes through the merged subroutine and extracts kernel subroutines
 -- for each map/fold returns a module containing all the appropriate subroutines

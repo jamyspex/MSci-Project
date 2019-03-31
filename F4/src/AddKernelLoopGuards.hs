@@ -18,18 +18,32 @@ import           Text.Read
 import           Utils
 
 -- Wrapper function that uses everywhere to operate on the supplied subroutine
-addLoopGuards :: SubRec -> SubRec
-addLoopGuards subRec =
-  subRec
-    { subAst =
-        everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
-    }
+addLoopGuards :: Kernel -> IO Kernel
+addLoopGuards kernel = do
+  putStrLn $ show withLoopGuards
+  return withLoopGuards
   where
-    ast = subAst subRec
+    withLoopGuards =
+      kernel
+        { body =
+            everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
+        }
+    ast = body kernel
     arrayDecls = getArrayDecls ast
     arrays = map arrayFromDecl arrayDecls
     declRangeMap = getDimensionPositionMap arrayDecls
 
+-- addLoopGuards :: SubRec -> SubRec
+-- addLoopGuards subRec =
+--   subRec
+--     { subAst =
+--         everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
+--     }
+--   where
+--     ast = subAst subRec
+--     arrayDecls = getArrayDecls ast
+--     arrays = map arrayFromDecl arrayDecls
+--     declRangeMap = getDimensionPositionMap arrayDecls
 -- Wrapper to let the main function below work with maps and folds
 addLoopGuardToMapOrReduce ::
      DMap.Map (String, Int) (Int, Int)

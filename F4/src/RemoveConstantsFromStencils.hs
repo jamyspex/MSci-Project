@@ -20,29 +20,6 @@ import           MiniPP
 import           RefactorSyntheticStencilIndices
 import           Utils                           hiding (arrayName, nulSrcSpan)
 
-data ArrayAccess = AA
-  { arrayName          :: String
-  , indices            :: [Index]
-  , declaredDimensions :: [(Int, Int)]
-  , isLHS              :: Bool
-  } deriving (Eq, Ord)
-
-instance Show ArrayAccess where
-  show AA {..} =
-    "ArrayAccess: " ++ arrayName ++ " indices = " ++ show indices ++ "\n"
-
-data NestingDirection
-  = Normal
-  | Reverse
-  | Undefined
-  | Either
-  deriving (Show, Eq)
-
-data Index
-  = LoopVar String
-  | Const Int
-  deriving (Show, Eq, Ord)
-
 removeConstantsFromStencilsAndPrint :: SubRec -> IO SubRec
 removeConstantsFromStencilsAndPrint subRec@MkSubRec {..} = do
   putStrLn $ miniPPProgUnit updatedSub
@@ -231,7 +208,7 @@ getLoopVarConstantPosTuples arrayAccesses nestDirection loopNest =
       imap
         (\pos (loopVar, index) ->
            let loopVarIndex = pos + (mostIndicesCount - length indices)
-            in (pos, loopVars !! loopVarIndex, arrayName, index)) $
+            in (pos, loopVars !! loopVarIndex, arrName, index)) $
       zip loopVars indices
 
 hasConst :: ArrayAccess -> Bool
@@ -369,50 +346,49 @@ getLoopVariableByNestOrder (For _ _ (VarName _ loopVarName) _ _ _ body) =
   loopVarName : getLoopVariableByNestOrder body
 getLoopVariableByNestOrder _ = []
 
-detectNestingDirection :: [String] -> [ArrayAccess] -> NestingDirection
-detectNestingDirection loopVarsInNestOrder arrayAccesses =
-  if valid
-    then firstNotEither
-    else error "Index usage ordering not consistent"
-  where
-    allNestingDirections = map (checkOne loopVarsInNestOrder) arrayAccesses
-    firstNotEither =
-      head $
-      filter
-        (\case
-           Either -> False
-           _ -> True)
-        allNestingDirections
-    valid = all (\v -> v == firstNotEither || v == Either) allNestingDirections
-
-checkOne :: [String] -> ArrayAccess -> NestingDirection
-checkOne loopVars arrayAccess =
-  case (forward, backward) of
-    (True, True) -> Either
-    (True, _) -> Normal
-    (_, True) -> Reverse
-    (False, False) ->
-      error ("Can not detect loop nesting direction" ++ show arrayAccess)
-  where
-    forward = go 0 loopVars accessLoopVarsOnly
-    backward = go 0 (reverse loopVars) accessLoopVarsOnly
-    accessLoopVarsOnly =
-      (concatMap
-         (\case
-            LoopVar name -> [name]
-            Const _ -> []) .
-       indices)
-        arrayAccess
-    go :: Int -> [String] -> [String] -> Bool
-    go misMatchCount (lv:lvs) (ai:ais)
-      | misMatchCount == 2 = False
-      | lv == ai = go misMatchCount lvs ais
-      | lv /= ai = go (misMatchCount + 1) lvs ais
-      | otherwise = go misMatchCount lvs ais
-    go misMatchCount _ _
-      | misMatchCount == 2 = False
-      | otherwise = True
-
+-- detectNestingDirection :: [String] -> [ArrayAccess] -> NestingDirection
+-- detectNestingDirection loopVarsInNestOrder arrayAccesses =
+--   if valid
+--     then firstNotEither
+--     else error "Index usage ordering not consistent"
+--   where
+--     allNestingDirections = map (checkOne loopVarsInNestOrder) arrayAccesses
+--     firstNotEither =
+--       head $
+--       filter
+--         (\case
+--            Either -> False
+--            _ -> True)
+--         allNestingDirections
+--     valid = all (\v -> v == firstNotEither || v == Either) allNestingDirections
+--
+-- checkOne :: [String] -> ArrayAccess -> NestingDirection
+-- checkOne loopVars arrayAccess =
+--   case (forward, backward) of
+--     (True, True) -> Either
+--     (True, _) -> Normal
+--     (_, True) -> Reverse
+--     (False, False) ->
+--       error ("Can not detect loop nesting direction" ++ show arrayAccess)
+--   where
+--     forward = go 0 loopVars accessLoopVarsOnly
+--     backward = go 0 (reverse loopVars) accessLoopVarsOnly
+--     accessLoopVarsOnly =
+--       (concatMap
+--          (\case
+--             LoopVar name -> [name]
+--             Const _ -> []) .
+--        indices)
+--         arrayAccess
+--     go :: Int -> [String] -> [String] -> Bool
+--     go misMatchCount (lv:lvs) (ai:ais)
+--       | misMatchCount == 2 = False
+--       | lv == ai = go misMatchCount lvs ais
+--       | lv /= ai = go (misMatchCount + 1) lvs ais
+--       | otherwise = go misMatchCount lvs ais
+--     go misMatchCount _ _
+--       | misMatchCount == 2 = False
+--       | otherwise = True
 parseArrayAccesses :: [Array] -> Fortran Anno -> [ArrayAccess]
 parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
   where
@@ -428,7 +404,7 @@ parseArrayAccesses allArrays loopNest = uniqueArrayAccesses
     buildArrayAccess :: Bool -> (Expr Anno, Array) -> ArrayAccess
     buildArrayAccess isRead (accessExpr, Array {..}) =
       AA
-        { arrayName = name
+        { arrName = name
         , isLHS = not isRead
         , indices = map buildIndex indexExprs
         , declaredDimensions = dimensionRanges
