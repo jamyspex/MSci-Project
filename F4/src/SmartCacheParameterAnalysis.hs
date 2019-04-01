@@ -77,7 +77,7 @@ hasConstantStenValues (StencilStream _ _ _ _ (Stencil _ _ _ stencilIndices _)) =
 calculateSmartCacheDetailsForStream ::
      Maybe Kernel -> [Int] -> Stream Anno -> SmartCacheDetailsForStream
 calculateSmartCacheDetailsForStream kernel itOrder sten
-  | hasConstantStenValues sten = DummySmartCacheDetailsForStream {stream = sten}
+ --  | hasConstantStenValues sten = DummySmartCacheDetailsForStream {stream = sten}
   | otherwise =
     SmartCacheDetailsForStream
       { requiredBufferSize = maxNumBlocks

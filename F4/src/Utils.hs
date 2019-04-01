@@ -43,14 +43,14 @@ type ArgumentTranslationTable
 
 type SubroutineTable = DMap.Map SubNameStr SubRec
 
-data SmartCacheDetailsForStream
-  = SmartCacheDetailsForStream { requiredBufferSize    :: Int
-                               , startIndex            :: [Int]
-                               , endIndex              :: [Int]
-                               , startToPointDistances :: [([Int], Int)]
-                               , maxPosOffset          :: Int
-                               , maxNegOffset          :: Int }
-  | DummySmartCacheDetailsForStream { stream :: Stream Anno }
+data SmartCacheDetailsForStream = SmartCacheDetailsForStream
+  { requiredBufferSize    :: Int
+  , startIndex            :: [Int]
+  , endIndex              :: [Int]
+  , startToPointDistances :: [([Int], Int)]
+  , maxPosOffset          :: Int
+  , maxNegOffset          :: Int
+  }
 
 buildDummyStreamFromReductionVar :: String -> Stream Anno
 buildDummyStreamFromReductionVar outputVarName =
@@ -88,22 +88,8 @@ data SmartCacheItem
                    , outputStreamNamesAndBufferIndex :: [(String, Int)] }
   | SmartCacheTransitItem { inputStream :: Stream Anno
                           , size        :: Int }
-  | DummySmartCacheItem { inputStream       :: Stream Anno
-                        , outputStreamNames :: [String]
-                        , size              :: Int }
 
 instance Show SmartCacheItem where
-  show DummySmartCacheItem {..} =
-    "-------------------------------\n" ++
-    "WARNING: This is a dummy smart cache item\n" ++
-    "The compiler could not generate a smart\n" ++
-    "cache item for this stream because it is\n" ++
-    "accesed using a stencil with constant values!\n" ++
-    "Input stream: " ++
-    getStreamName inputStream ++
-    "\nOutput streams: " ++
-    concatMap (\name -> "\t" ++ name ++ "\n") outputStreamNames ++
-    "-------------------------\n"
   show SmartCacheItem {..} =
     "-------------------------------\n" ++
     "Smart cache item\n" ++

@@ -95,12 +95,6 @@ buildStream SmartCacheItem {..} =
     outputStreamNamesAndBufferIndex
   where
     (Stream _ arrayName inputValueType inputDimensions) = inputStream
-buildStream DummySmartCacheItem {..} =
-  map
-    (\name -> Stream name arrayName inputValueType inputDimensions)
-    outputStreamNames
-  where
-    (StencilStream _ arrayName inputValueType inputDimensions _) = inputStream
 
 -- Update the input streams of the kernel to no longer use stencil streams
 -- and instead use the output streams from the smart cache
@@ -146,15 +140,6 @@ padCacheItems inputs = map updateCacheItem inputs
                   (\(name, idx) -> (name, idx + sizeDiff))
                   outputStreamNamesAndBufferIndex
             }
-    updateCacheItem dummy = dummy
-
-bodgeMapKeysForLES :: [StencilIndex] -> [StencilIndex]
-bodgeMapKeysForLES =
-  map
-    (\i ->
-       case i of
-         Offset v   -> i
-         Constant v -> Offset v)
 
 -- Using the stencil points match the results from SmartCacheParameterAnalysis with
 -- the generated output variable names. The smart cache buffer will be a standard
@@ -163,70 +148,29 @@ bodgeMapKeysForLES =
 buildSmartCacheItem :: Kernel -> Int -> Stream Anno -> SmartCacheItem
 buildSmartCacheItem _ _ transStream@TransitStream {} =
   SmartCacheTransitItem {inputStream = transStream, size = 1}
-buildSmartCacheItem kernel streamDimensionOrder inStream = cacheItem
-  -- SmartCacheItem
-  -- { size                            = requiredBufferSize
-  -- , inputStream                     = convertStencilStream inStream
-  -- , maxPositiveOffset               = maxPosOffset
-  -- , maxNegativeOffset               = maxNegOffset
-  -- , outputStreamNamesAndBufferIndex = pointsAndVarNames
-  -- }
+buildSmartCacheItem kernel streamDimensionOrder inStream =
+  SmartCacheItem
+    { size = requiredBufferSize
+    , inputStream = convertStencilStream inStream
+    , maxPositiveOffset = maxPosOffset
+    , maxNegativeOffset = maxNegOffset
+    , outputStreamNamesAndBufferIndex = pointsAndVarNames
+    }
   where
     outputVars = getSmartCacheOutputVars kernel inStream
-    cacheItem =
-      case calculateSmartCacheDetailsForStream
-             (Just kernel)
-             (defaultIterationOrder streamDimensionOrder)
-             inStream of
-        SmartCacheDetailsForStream {..} ->
-          SmartCacheItem
-            { size = requiredBufferSize
-            , inputStream = convertStencilStream inStream
-            , maxPositiveOffset = maxPosOffset
-            , maxNegativeOffset = maxNegOffset
-            , outputStreamNamesAndBufferIndex = pointsAndVarNames
-            }
-        DummySmartCacheDetailsForStream {..} ->
-          let (StencilStream _ arrayName _ _ (Stencil _ _ _ coords _)) =
-                inStream
-              loopVarPositionMap =
-                DMap.fromList $
-                concatMap (\(n, p) -> [(fromJust p, n) | isJust p]) $
-                getLoopVarPositions arrayName kernel
-           in DummySmartCacheItem
-                { inputStream = inStream
-                , size = 0
-                , outputStreamNames =
-                    map
-                      (\stenIndices ->
-                         arrayName ++
-                         concat
-                           (imap
-                              (\pos idx ->
-                                 "_" ++
-                                 case DMap.lookup pos loopVarPositionMap of
-                                   Just val -> val
-                                   Nothing  -> "" ++ convertStenIdx idx)
-                              stenIndices))
-                      coords
-                }
     SmartCacheDetailsForStream {..} =
       calculateSmartCacheDetailsForStream
         (Just kernel)
         (defaultIterationOrder streamDimensionOrder)
         inStream
-    pointToStreamNameMap =
-      (DMap.fromList outputVars) :: DMap.Map [StencilIndex] String
-    bodgedMapForLES = DMap.mapKeys bodgeMapKeysForLES pointToStreamNameMap
-  -- map
-  --   (\(key, val) -> (map (map Offset) $ stripStenIndex key, val))
+    pointToStreamNameMap = DMap.fromList outputVars
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           (bodgedMapForLES DMap.! (map Offset point), buffIndex) : acc)
+           (pointToStreamNameMap DMap.! map Offset point, buffIndex) : acc)
         []
         pointsAndDistances
-    pointsAndDistances = ((startIndex, 1) : startToPointDistances)
+    pointsAndDistances = (startIndex, 1) : startToPointDistances
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]
