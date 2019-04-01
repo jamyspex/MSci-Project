@@ -8160,9 +8160,9 @@ subroutine velnw_0(dt,dxs,f,ro,u)
 !	2 point stencil on 3D array p0: [[1,0,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i+1,j,k))/ro/dxs(i)
         u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
@@ -8202,9 +8202,9 @@ subroutine velnw_1(dt,dys,g,ro,v)
 !	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dys","dt"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i,j+1,k))/ro/dys(j)
         v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
@@ -8246,9 +8246,9 @@ subroutine velnw_2(dt,dzs,h,ro,w)
 !	2 point stencil on 3D array p0: [[0,0,0],[0,0,1]]
 !    ){
 ! OpenCLMap ( ["ro","dzs","w","dt"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
         pz = (-p0(i,j,k)+p0(i,j,k+1))/ro/dzs(k)
         w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
@@ -8322,9 +8322,9 @@ subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsu
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","u","w","fx","fy","fz"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
         vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
@@ -8411,9 +8411,9 @@ subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
 !	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["diu1","diu5","diu9"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         dudxx1 = diu1(i,j,k)
         dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
@@ -8504,9 +8504,9 @@ subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsx2 = sm(i+1,j,k)
         evsx1 = sm(i,j,k)
@@ -8603,9 +8603,9 @@ subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[-1,1,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsy2 = sm(i,j+1,k)
         evsy1 = sm(i,j,k)
@@ -8699,9 +8699,9 @@ subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
 !	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
 !    ){
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         evsz2 = sm(i,j,k+1)
         evsz1 = sm(i,j,k)
@@ -8767,9 +8767,9 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
@@ -8828,9 +8828,9 @@ subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
 !	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["dx1","dy1","dzn","dt"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
         rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
@@ -8868,9 +8868,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -8900,9 +8900,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -8937,9 +8937,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -8969,9 +8969,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -8998,9 +8998,9 @@ subroutine press_5
 !	2 point stencil on 3D array p0: [[1,0,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( [],["p0"],["(k,0,81,1)","(j,0,301,1)","(synthIdx2,0,302,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    synthIdx2 = mod(count, 83)
+    synthIdx2 = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
         if (synthIdx2==0) then
             p0(synthIdx2,j,k) = p0(synthIdx2+1,j,k)
@@ -9033,9 +9033,9 @@ subroutine press_6
 !	2 point stencil on 3D array p0: [[0,300,0],[0,-300,0]]
 !    ){
 ! OpenCLMap ( ["synthIdx1"],["p0"],["(k,0,81,1)","(synthIdx1,0,302,1)","(i,0,301,1)"],[]) {
-    k = count/25149
-    synthIdx1 = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    synthIdx1 = mod(count/304, 303)
+    k = count/92112
     if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
         if (synthIdx1==0) then
             p0(i,synthIdx1,k) = p0(i,synthIdx1+300,k)
@@ -9068,9 +9068,9 @@ subroutine press_7
 !	2 point stencil on 3D array p0: [[0,0,1],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["synthIdx0"],[],["(synthIdx0,0,81,1)","(j,0,301,1)","(i,0,301,1)"],[]) {
-    synthIdx0 = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    synthIdx0 = count/92112
     if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
         if (synthIdx0==0) then
             p0(i,j,synthIdx0) = p0(i,j,synthIdx0+1)
@@ -9119,9 +9119,9 @@ subroutine velnw_0(dt,dxs,f,ro,u)
 !	2 point stencil on 3D array p0: [[1,0,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i+1,j,k))/ro/dxs(i)
         u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
@@ -9164,9 +9164,9 @@ subroutine velnw_1(dt,dys,g,ro,v)
 !	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dys","dt"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i,j+1,k))/ro/dys(j)
         v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
@@ -9211,9 +9211,9 @@ subroutine velnw_2(dt,dzs,h,ro,w)
 !	2 point stencil on 3D array p0: [[0,0,0],[0,0,1]]
 !    ){
 ! OpenCLMap ( ["ro","dzs","w","dt"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
         pz = (-p0(i,j,k)+p0(i,j,k+1))/ro/dzs(k)
         w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
@@ -9289,9 +9289,9 @@ subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsu
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","u","w","fx","fy","fz"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
         vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
@@ -9398,9 +9398,9 @@ subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
 !	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["diu1","diu5","diu9"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         dudxx1 = diu1(i,j,k)
         dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
@@ -9511,9 +9511,9 @@ subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsx2 = sm(i+1,j,k)
         evsx1 = sm(i,j,k)
@@ -9631,9 +9631,9 @@ subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[-1,1,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsy2 = sm(i,j+1,k)
         evsy1 = sm(i,j,k)
@@ -9748,9 +9748,9 @@ subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
 !	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
 !    ){
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         evsz2 = sm(i,j,k+1)
         evsz1 = sm(i,j,k)
@@ -9815,9 +9815,9 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
@@ -9884,9 +9884,9 @@ subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
 !	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["dx1","dy1","dzn","dt"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
         rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
@@ -9926,9 +9926,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -9960,9 +9960,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -9999,9 +9999,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -10033,9 +10033,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -10065,9 +10065,9 @@ subroutine press_5
 !	2 point stencil on 3D array p0: [[1,0,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( [],["p0"],["(k,0,81,1)","(j,0,301,1)","(synthIdx2,0,302,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    synthIdx2 = mod(count, 83)
+    synthIdx2 = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
         if (synthIdx2==0) then
             p0(synthIdx2,j,k) = p0(synthIdx2+1,j,k)
@@ -10103,9 +10103,9 @@ subroutine press_6
 !	2 point stencil on 3D array p0: [[0,300,0],[0,-300,0]]
 !    ){
 ! OpenCLMap ( ["synthIdx1"],["p0"],["(k,0,81,1)","(synthIdx1,0,302,1)","(i,0,301,1)"],[]) {
-    k = count/25149
-    synthIdx1 = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    synthIdx1 = mod(count/304, 303)
+    k = count/92112
     if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
         if (synthIdx1==0) then
             p0(i,synthIdx1,k) = p0(i,synthIdx1+300,k)
@@ -10141,9 +10141,9 @@ subroutine press_7
 !	2 point stencil on 3D array p0: [[0,0,1],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["synthIdx0"],[],["(synthIdx0,0,81,1)","(j,0,301,1)","(i,0,301,1)"],[]) {
-    synthIdx0 = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    synthIdx0 = count/92112
     if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
         if (synthIdx0==0) then
             p0(i,j,synthIdx0) = p0(i,j,synthIdx0+1)
@@ -10198,9 +10198,9 @@ subroutine velnw_0(dt,dxs,f,ro,u)
 !	2 point stencil on 3D array p0: [[1,0,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i+1,j,k))/ro/dxs(i)
         u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
@@ -10312,9 +10312,9 @@ subroutine velnw_1(dt,dys,g,ro,v)
 !	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dys","dt"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i,j+1,k))/ro/dys(j)
         v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
@@ -10441,9 +10441,9 @@ subroutine velnw_2(dt,dzs,h,ro,w)
 !	2 point stencil on 3D array p0: [[0,0,0],[0,0,1]]
 !    ){
 ! OpenCLMap ( ["ro","dzs","w","dt"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
         pz = (-p0(i,j,k)+p0(i,j,k+1))/ro/dzs(k)
         w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
@@ -10614,9 +10614,9 @@ subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsu
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","u","w","fx","fy","fz"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
         vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
@@ -10838,9 +10838,9 @@ subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
 !	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["diu1","diu5","diu9"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         dudxx1 = diu1(i,j,k)
         dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
@@ -11251,9 +11251,9 @@ subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsx2 = sm(i+1,j,k)
         evsx1 = sm(i,j,k)
@@ -11688,9 +11688,9 @@ subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[-1,1,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsy2 = sm(i,j+1,k)
         evsy1 = sm(i,j,k)
@@ -12124,9 +12124,9 @@ subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
 !	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
 !    ){
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         evsz2 = sm(i,j,k+1)
         evsz1 = sm(i,j,k)
@@ -12501,9 +12501,9 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
@@ -12604,9 +12604,9 @@ subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
 !	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["dx1","dy1","dzn","dt"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
         rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
@@ -12791,9 +12791,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -12859,9 +12859,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -12906,9 +12906,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -12983,9 +12983,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -13031,9 +13031,9 @@ subroutine press_5
 !	2 point stencil on 3D array p0: [[1,0,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( [],["p0"],["(k,0,81,1)","(j,0,301,1)","(synthIdx2,0,302,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    synthIdx2 = mod(count, 83)
+    synthIdx2 = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
         if (synthIdx2==0) then
             p0(synthIdx2,j,k) = p0(synthIdx2+1,j,k)
@@ -13102,9 +13102,9 @@ subroutine press_6
 !	2 point stencil on 3D array p0: [[0,300,0],[0,-300,0]]
 !    ){
 ! OpenCLMap ( ["synthIdx1"],["p0"],["(k,0,81,1)","(synthIdx1,0,302,1)","(i,0,301,1)"],[]) {
-    k = count/25149
-    synthIdx1 = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    synthIdx1 = mod(count/304, 303)
+    k = count/92112
     if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
         if (synthIdx1==0) then
             p0(i,synthIdx1,k) = p0(i,synthIdx1+300,k)
@@ -13173,9 +13173,9 @@ subroutine press_7
 !	2 point stencil on 3D array p0: [[0,0,1],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["synthIdx0"],[],["(synthIdx0,0,81,1)","(j,0,301,1)","(i,0,301,1)"],[]) {
-    synthIdx0 = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    synthIdx0 = count/92112
     if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
         if (synthIdx0==0) then
             p0(i,j,synthIdx0) = p0(i,j,synthIdx0+1)
@@ -14106,9 +14106,9 @@ subroutine velnw_0(dt,dxs,f,ro,u)
 !	2 point stencil on 3D array p0: [[1,0,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i+1,j,k))/ro/dxs(i)
         u(i,j,k) = u(i,j,k)+dt*(f(i,j,k)-pz)
@@ -14134,9 +14134,9 @@ subroutine velnw_0(dt,ro)
 !	2 point stencil on 3D array p0: [[1,0,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dxs","dt"],["u"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0_i_j_k+p0_ip1_j_k)/ro/dxs_i
         u_i_j_k = u_i_j_k+dt*(f_i_j_k-pz)
@@ -14161,9 +14161,9 @@ subroutine velnw_1(dt,dys,g,ro,v)
 !	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dys","dt"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0(i,j,k)+p0(i,j+1,k))/ro/dys(j)
         v(i,j,k) = v(i,j,k)+dt*(g(i,j,k)-pz)
@@ -14189,9 +14189,9 @@ subroutine velnw_1(dt,ro)
 !	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 !    ){
 ! OpenCLMap ( ["ro","dys","dt"],["v"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pz = (-p0_i_j_k+p0_i_jp1_k)/ro/dys_j
         v_i_j_k = v_i_j_k+dt*(g_i_j_k-pz)
@@ -14216,9 +14216,9 @@ subroutine velnw_2(dt,dzs,h,ro,w)
 !	2 point stencil on 3D array p0: [[0,0,0],[0,0,1]]
 !    ){
 ! OpenCLMap ( ["ro","dzs","w","dt"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
         pz = (-p0(i,j,k)+p0(i,j,k+1))/ro/dzs(k)
         w(i,j,k) = w(i,j,k)+dt*(h(i,j,k)-pz)
@@ -14244,9 +14244,9 @@ subroutine velnw_2(dt,ro)
 !	2 point stencil on 3D array p0: [[0,0,0],[0,0,1]]
 !    ){
 ! OpenCLMap ( ["ro","dzs","w","dt"],[],["(k,1,79,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
         pz = (-p0_i_j_k+p0_i_j_kp1)/ro/dzs_k
         w_i_j_k = w_i_j_k+dt*(h_i_j_k-pz)
@@ -14285,9 +14285,9 @@ subroutine feedbf(alpha,beta,bmask1,cmask1,dmask1,dt,f,fx,fy,fz,g,h,u,usum,v,vsu
       real(4), dimension(0:301,-1:301,-1:81), intent(InOut) :: w
       real(4), dimension(0:300,0:300,0:80), intent(InOut) :: wsum
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","u","w","fx","fy","fz"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         usum(i,j,k) = (usum(i,j,k)+u(i,j,k))*bmask1(i,j,k)
         vsum(i,j,k) = (vsum(i,j,k)+v(i,j,k))*cmask1(i,j,k)
@@ -14338,9 +14338,9 @@ subroutine feedbf(alpha,beta,dt)
       real(4) :: w_i_j_k
       real(4) :: wsum_i_j_k
 ! OpenCLMap ( ["bmask1","cmask1","dmask1","alpha","dt","beta","u","w","fx","fy","fz"],["fx","fy","fz"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         usum_i_j_k = (usum_i_j_k+u_i_j_k)*bmask1_i_j_k
         vsum_i_j_k = (vsum_i_j_k+v_i_j_k)*cmask1_i_j_k
@@ -14396,9 +14396,9 @@ subroutine les_0(delx1,diu1,diu2,diu3,diu4,diu5,diu6,diu7,diu8,diu9,sm)
 !	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["diu1","diu5","diu9"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         dudxx1 = diu1(i,j,k)
         dudyx1 = (diu2(i-1,j,k)+diu2(i-1,j+1,k)+diu2(i,j,k)+diu2(i,j+1,k))*.25
@@ -14470,9 +14470,9 @@ subroutine les_0
 !	4 point stencil on 3D array diu8: [[0,1,0],[0,1,-1],[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["diu1","diu5","diu9"],["sm"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         dudxx1 = diu1_i_j_k
         dudyx1 = (diu2_im1_j_k+diu2_im1_jp1_k+diu2_i_j_k+diu2_i_jp1_k)*.25
@@ -14532,9 +14532,9 @@ subroutine les_1(diu1,diu2,diu3,diu4,diu7,dx1,dxs,dy1,dzn,f,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsx2 = sm(i+1,j,k)
         evsx1 = sm(i,j,k)
@@ -14618,9 +14618,9 @@ subroutine les_1
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[1,-1,0],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[0,-1,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu1","dxs","dy1","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsx2 = sm_ip1_j_k
         evsx1 = sm_i_j_k
@@ -14686,9 +14686,9 @@ subroutine les_2(diu2,diu4,diu5,diu6,diu8,dx1,dy1,dys,dzn,g,sm)
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[-1,1,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsy2 = sm(i,j+1,k)
         evsy1 = sm(i,j,k)
@@ -14773,9 +14773,9 @@ subroutine les_2
 !	10 point stencil on 3D array sm: [[1,1,0],[1,0,0],[1,0,1],[1,0,-1],[0,1,0],[0,0,0],[0,0,1],[0,0,-1],[-1,1,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( ["sm","diu5","dx1","dys","dzn"],[],["(k,2,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
         evsy2 = sm_i_jp1_k
         evsy1 = sm_i_j_k
@@ -14840,9 +14840,9 @@ subroutine les_3(diu3,diu6,diu7,diu8,diu9,dx1,dy1,dzn,h,sm)
 !	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
 !    ){
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         evsz2 = sm(i,j,k+1)
         evsz1 = sm(i,j,k)
@@ -14926,9 +14926,9 @@ subroutine les_3
 !	10 point stencil on 3D array sm: [[1,0,0],[1,0,1],[0,1,0],[0,1,1],[0,0,0],[0,0,1],[0,-1,0],[0,-1,1],[-1,0,0],[-1,0,1]]
 !    ){
 ! OpenCLMap ( ["sm","diu9","dx1","dy1","dzn"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         evsz2 = sm_i_j_kp1
         evsz1 = sm_i_j_k
@@ -14968,9 +14968,9 @@ subroutine adam(f,fold,g,gold,h,hold)
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f(i,j,k)
         gd = g(i,j,k)
@@ -15000,9 +15000,9 @@ subroutine adam
       integer :: j
       integer :: k
 ! OpenCLMap ( ["f","g","h","fold","gold","hold"],["f","g","h"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         fd = f_i_j_k
         gd = g_i_j_k
@@ -15042,9 +15042,9 @@ subroutine press_0(dt,dx1,dy1,dzn,f,g,h,rhs,u,v,w)
 !	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["dx1","dy1","dzn","dt"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = (-u(i-1,j,k)+u(i,j,k))/dx1(i)+(-v(i,j-1,k)+v(i,j,k))/dy1(j)+(-w(i,j,k-1)+w(i,j,k))/dzn(k)
         rhs(i,j,k) = (f(i,j,k)-f(i-1,j,k))/dx1(i)+(g(i,j,k)-g(i,j-1,k))/dy1(j)+(h(i,j,k)-h(i,j,k-1))/dzn(k)+rhs(i,j,k)/dt
@@ -15084,9 +15084,9 @@ subroutine press_0(dt)
 !	2 point stencil on 3D array w: [[0,0,0],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["dx1","dy1","dzn","dt"],["rhs"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs_i_j_k = (-u_im1_j_k+u_i_j_k)/dx1_i+(-v_i_jm1_k+v_i_j_k)/dy1_j+(-w_i_j_km1+w_i_j_k)/dzn_k
         rhs_i_j_k = (f_i_j_k-f_im1_j_k)/dx1_i+(g_i_j_k-g_i_jm1_k)/dy1_j+(h_i_j_k-h_i_j_km1)/dzn_k+rhs_i_j_k/dt
@@ -15109,9 +15109,9 @@ subroutine press_1(dx1,dy1,dzn,rhs)
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1(i)*dy1(j)*dzn(k)*rhs(i,j,k)
         area = area+dx1(i)*dy1(j)*dzn(k)
@@ -15133,9 +15133,9 @@ subroutine press_1
     rhsav = 0.0
     area = 0.0
 ! OpenCLReduce ( ["dx1","dy1","dzn","rhs"],["rhsav","area"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(rhsav,0.0)","(area,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhsav = rhsav+dx1_i*dy1_j*dzn_k*rhs_i_j_k
         area = area+dx1_i*dy1_j*dzn_k
@@ -15153,9 +15153,9 @@ subroutine press_2(rhs)
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs(i,j,k) = rhs(i,j,k)-rhsav
     end if
@@ -15172,9 +15172,9 @@ subroutine press_2
       real(4) :: area
     rhsav = rhsav/area
 ! OpenCLMap ( ["rhsav"],[],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         rhs_i_j_k = rhs_i_j_k-rhsav
     end if
@@ -15195,9 +15195,9 @@ subroutine press_3(dx1,dy1,dzn)
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0(i,j,k)*dx1(i)*dy1(j)*dzn(k)
         pco = pco+dx1(i)*dy1(j)*dzn(k)
@@ -15219,9 +15219,9 @@ subroutine press_3
     pav = 0.0
     pco = 0.0
 ! OpenCLReduce ( ["p0","dx1","dy1","dzn"],["pav","pco"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[],["(pav,0.0)","(pco,0.0)"]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         pav = pav+p0_i_j_k*dx1_i*dy1_j*dzn_k
         pco = pco+dx1_i*dy1_j*dzn_k
@@ -15239,9 +15239,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0(i,j,k) = p0(i,j,k)-pav
     end if
@@ -15258,9 +15258,9 @@ subroutine press_4
       real(4) :: pco
     pav = pav/pco
 ! OpenCLMap ( ["pav"],["p0"],["(k,1,80,1)","(j,1,300,1)","(i,1,300,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
         p0_i_j_k = p0_i_j_k-pav
     end if
@@ -15277,9 +15277,9 @@ subroutine press_5
 !	2 point stencil on 3D array p0: [[1,0,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( [],["p0"],["(k,0,81,1)","(j,0,301,1)","(synthIdx2,0,302,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    synthIdx2 = mod(count, 83)
+    synthIdx2 = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
         if (synthIdx2==0) then
             p0(synthIdx2,j,k) = p0(synthIdx2+1,j,k)
@@ -15304,9 +15304,9 @@ subroutine press_5
 !	2 point stencil on 3D array p0: [[1,0,0],[-1,0,0]]
 !    ){
 ! OpenCLMap ( [],["p0"],["(k,0,81,1)","(j,0,301,1)","(synthIdx2,0,302,1)"],[]) {
-    k = count/25149
-    j = mod(count/83, 303)
-    synthIdx2 = mod(count, 83)
+    synthIdx2 = mod(count, 304)
+    j = mod(count/304, 303)
+    k = count/92112
     if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
         if (synthIdx2==0) then
             p0_synthIdx2_j_k = p0_synthIdx2p1_j_k
@@ -15329,9 +15329,9 @@ subroutine press_6
 !	2 point stencil on 3D array p0: [[0,300,0],[0,-300,0]]
 !    ){
 ! OpenCLMap ( ["synthIdx1"],["p0"],["(k,0,81,1)","(synthIdx1,0,302,1)","(i,0,301,1)"],[]) {
-    k = count/25149
-    synthIdx1 = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    synthIdx1 = mod(count/304, 303)
+    k = count/92112
     if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
         if (synthIdx1==0) then
             p0(i,synthIdx1,k) = p0(i,synthIdx1+300,k)
@@ -15356,9 +15356,9 @@ subroutine press_6
 !	2 point stencil on 3D array p0: [[0,300,0],[0,-300,0]]
 !    ){
 ! OpenCLMap ( ["synthIdx1"],["p0"],["(k,0,81,1)","(synthIdx1,0,302,1)","(i,0,301,1)"],[]) {
-    k = count/25149
-    synthIdx1 = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    synthIdx1 = mod(count/304, 303)
+    k = count/92112
     if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
         if (synthIdx1==0) then
             p0_i_synthIdx1_k = p0_i_synthIdx1p300_k
@@ -15381,9 +15381,9 @@ subroutine press_7
 !	2 point stencil on 3D array p0: [[0,0,1],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["synthIdx0"],[],["(synthIdx0,0,81,1)","(j,0,301,1)","(i,0,301,1)"],[]) {
-    synthIdx0 = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    synthIdx0 = count/92112
     if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
         if (synthIdx0==0) then
             p0(i,j,synthIdx0) = p0(i,j,synthIdx0+1)
@@ -15408,9 +15408,9 @@ subroutine press_7
 !	2 point stencil on 3D array p0: [[0,0,1],[0,0,-1]]
 !    ){
 ! OpenCLMap ( ["synthIdx0"],[],["(synthIdx0,0,81,1)","(j,0,301,1)","(i,0,301,1)"],[]) {
-    synthIdx0 = count/25149
-    j = mod(count/83, 303)
-    i = mod(count, 83)
+    i = mod(count, 304)
+    j = mod(count/304, 303)
+    synthIdx0 = count/92112
     if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
         if (synthIdx0==0) then
             p0_i_j_synthIdx0 = p0_i_j_synthIdx0p1
@@ -16108,9 +16108,9 @@ subroutine velnw_0(dt,ro)
         call read_pipe(velnw_0_smart_cache__velnw_0__p0_i_j_k__pipe, p0_i_j_k)
         call read_pipe(velnw_0_smart_cache__velnw_0__p0_ip1_j_k__pipe, p0_ip1_j_k)
         call read_pipe(velnw_0_u_i_j_k_reader__velnw_0__u_i_j_k__pipe, u_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pz = (-p0_i_j_k+p0_ip1_j_k)/ro/dxs_i
             u_i_j_k = u_i_j_k+dt*(f_i_j_k-pz)
@@ -16237,9 +16237,9 @@ subroutine velnw_1(dt,ro)
         call read_pipe(velnw_1_smart_cache__velnw_1__p0_i_jp1_k__pipe, p0_i_jp1_k)
         call read_pipe(velnw_1_smart_cache__velnw_1__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(velnw_1_v_i_j_k_reader__velnw_1__v_i_j_k__pipe, v_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pz = (-p0_i_j_k+p0_i_jp1_k)/ro/dys_j
             v_i_j_k = v_i_j_k+dt*(g_i_j_k-pz)
@@ -16376,9 +16376,9 @@ subroutine velnw_2(dt,ro)
         call read_pipe(velnw_2_smart_cache__velnw_2__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(velnw_2_smart_cache__velnw_2__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(velnw_2_w_i_j_k_reader__velnw_2__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
             pz = (-p0_i_j_k+p0_i_j_kp1)/ro/dzs_k
             w_i_j_k = w_i_j_k+dt*(h_i_j_k-pz)
@@ -16627,9 +16627,9 @@ subroutine feedbf(alpha,beta,dt)
         call read_pipe(feedbf_vsum_i_j_k_reader__feedbf__vsum_i_j_k__pipe, vsum_i_j_k)
         call read_pipe(velnw_2__feedbf__w_i_j_k__pipe, w_i_j_k)
         call read_pipe(feedbf_wsum_i_j_k_reader__feedbf__wsum_i_j_k__pipe, wsum_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             usum_i_j_k = (usum_i_j_k+u_i_j_k)*bmask1_i_j_k
             vsum_i_j_k = (vsum_i_j_k+v_i_j_k)*cmask1_i_j_k
@@ -17060,9 +17060,9 @@ subroutine les_0
         call read_pipe(les_0_smart_cache__les_0__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_0_smart_cache__les_0__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_0_smart_cache__les_0__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             dudxx1 = diu1_i_j_k
             dudyx1 = (diu2_im1_j_k+diu2_im1_jp1_k+diu2_i_j_k+diu2_i_jp1_k)*.25
@@ -17477,9 +17477,9 @@ subroutine les_1
         call read_pipe(les_1_smart_cache__les_1__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_1_smart_cache__les_1__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_1_smart_cache__les_1__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
             evsx2 = sm_ip1_j_k
             evsx1 = sm_i_j_k
@@ -17908,9 +17908,9 @@ subroutine les_2
         call read_pipe(les_2_smart_cache__les_2__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_2_smart_cache__les_2__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_2_smart_cache__les_2__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
             evsy2 = sm_i_jp1_k
             evsy1 = sm_i_j_k
@@ -18327,9 +18327,9 @@ subroutine les_3
         call read_pipe(les_3_smart_cache__les_3__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_3_smart_cache__les_3__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_3_smart_cache__les_3__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             evsz2 = sm_i_j_kp1
             evsz1 = sm_i_j_k
@@ -18430,9 +18430,9 @@ subroutine adam
         call read_pipe(adam_gold_i_j_k_reader__adam__gold_i_j_k__pipe, gold_i_j_k)
         call read_pipe(les_3__adam__h_i_j_k__pipe, h_i_j_k)
         call read_pipe(adam_hold_i_j_k_reader__adam__hold_i_j_k__pipe, hold_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             fd = f_i_j_k
             gd = g_i_j_k
@@ -18625,9 +18625,9 @@ subroutine press_0(dt)
         call read_pipe(press_0_smart_cache__press_0__v_i_jm1_k__pipe, v_i_jm1_k)
         call read_pipe(press_0_smart_cache__press_0__w_i_j_k__pipe, w_i_j_k)
         call read_pipe(press_0_smart_cache__press_0__w_i_j_km1__pipe, w_i_j_km1)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhs_i_j_k = (-u_im1_j_k+u_i_j_k)/dx1_i+(-v_i_jm1_k+v_i_j_k)/dy1_j+(-w_i_j_km1+w_i_j_k)/dzn_k
             rhs_i_j_k = (f_i_j_k-f_im1_j_k)/dx1_i+(g_i_j_k-g_i_jm1_k)/dy1_j+(h_i_j_k-h_i_j_km1)/dzn_k+rhs_i_j_k/dt
@@ -18685,9 +18685,9 @@ subroutine press_1
         call read_pipe(press_0__press_1__rhs_i_j_k__pipe, rhs_i_j_k)
         rhsav = 0.0
         area = 0.0
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhsav = rhsav+dx1_i*dy1_j*dzn_k*rhs_i_j_k
             area = area+dx1_i*dy1_j*dzn_k
@@ -18714,9 +18714,9 @@ subroutine press_2
         call read_pipe(press_1__press_2__rhs_i_j_k__pipe, rhs_i_j_k)
         call read_pipe(press_1__press_2__rhsav__pipe, rhsav)
         rhsav = rhsav/area
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhs_i_j_k = rhs_i_j_k-rhsav
         end if
@@ -18788,9 +18788,9 @@ subroutine press_3
         call read_pipe(press_3_p0_i_j_k_reader__press_3__p0_i_j_k__pipe, p0_i_j_k)
         pav = 0.0
         pco = 0.0
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pav = pav+p0_i_j_k*dx1_i*dy1_j*dzn_k
             pco = pco+dx1_i*dy1_j*dzn_k
@@ -18832,9 +18832,9 @@ subroutine press_4
         call read_pipe(press_3__press_4__pav__pipe, pav)
         call read_pipe(press_3__press_4__pco__pipe, pco)
         pav = pav/pco
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             p0_i_j_k = p0_i_j_k-pav
         end if
@@ -18884,9 +18884,9 @@ subroutine press_5
     do count = 1, nloop, 1
         call read_pipe(press_5_smart_cache__press_5__p0_synthIdx2m1_j_k__pipe, p0_synthIdx2m1_j_k)
         call read_pipe(press_5_smart_cache__press_5__p0_synthIdx2p1_j_k__pipe, p0_synthIdx2p1_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        synthIdx2 = mod(count, 83)
+        synthIdx2 = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
             if (synthIdx2==0) then
                 p0_synthIdx2_j_k = p0_synthIdx2p1_j_k
@@ -18941,9 +18941,9 @@ subroutine press_6
     do count = 1, nloop, 1
         call read_pipe(press_6_smart_cache__press_6__p0_i_synthIdx1m300_k__pipe, p0_i_synthIdx1m300_k)
         call read_pipe(press_6_smart_cache__press_6__p0_i_synthIdx1p300_k__pipe, p0_i_synthIdx1p300_k)
-        k = count/25149
-        synthIdx1 = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        synthIdx1 = mod(count/304, 303)
+        k = count/92112
         if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
             if (synthIdx1==0) then
                 p0_i_synthIdx1_k = p0_i_synthIdx1p300_k
@@ -18998,9 +18998,9 @@ subroutine press_7
     do count = 1, nloop, 1
         call read_pipe(press_7_smart_cache__press_7__p0_i_j_synthIdx0m1__pipe, p0_i_j_synthIdx0m1)
         call read_pipe(press_7_smart_cache__press_7__p0_i_j_synthIdx0p1__pipe, p0_i_j_synthIdx0p1)
-        synthIdx0 = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        synthIdx0 = count/92112
         if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
             if (synthIdx0==0) then
                 p0_i_j_synthIdx0 = p0_i_j_synthIdx0p1

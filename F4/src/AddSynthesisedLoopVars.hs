@@ -142,9 +142,9 @@ emitLoopVarDerivationCode allLoopVarInfo nestingDirection =
   where
     sortedByNestOrder =
       case nestingDirection of
-        _ -> sortOn fst3 allLoopVarInfo
-        -- Reverse -> sortOn (Down . fst3) allLoopVarInfo
-        -- _       -> error "Invalid nesting direction!"
+        Normal  -> sortOn fst3 allLoopVarInfo
+        Reverse -> sortOn (Down . fst3) allLoopVarInfo
+        _       -> error "Invalid nesting direction!"
 
 emitOneLoopVarDerivation ::
      String
@@ -162,14 +162,21 @@ emitOneLoopVarDerivation driverLoopIdxName allLoopVarInfo (nestLevel, loopVarNam
        (if moduloDivisor == 1
           then var driverLoopIdxName
           else divide (var driverLoopIdxName) (con moduloDivisor))
-       (con (upb - lwb + 1)))
+       (con modBy))
   where
-    moduloDivisor = multiplyBounds nestLevel allLoopVarInfo
+    (moduloDivisor, modBy) = getModDivisorAndModBy nestLevel allLoopVarInfo
+
+-- This function was made totally by trial and error so who knows how correct it is
+-- seems to work on LES and 2DSW
+getModDivisorAndModBy nestLevel allLoopVarInfo = (modDivisor, modBy)
+  where
+    modDivisor = product $ toRanges $ drop (nestLevel + 1) allLoopVarInfo
+    modBy = product $ toRanges $ take nestLevel $ drop nestLevel allLoopVarInfo
+
+toRanges = map (\(_, _, (lwb, upb)) -> upb - lwb + 1)
 
 multiplyBounds nestLevel allLoopVarInfo =
-  product $
-  map (\(_, _, (lwb, upb)) -> upb - lwb + 1) $
-  drop (nestLevel + 1) allLoopVarInfo
+  product $ toRanges $ drop (nestLevel + 1) allLoopVarInfo
 
 -- Get a list of all the loop variables and the dimensions of the arrays
 -- they are used to access then validate these are all the same for each variable

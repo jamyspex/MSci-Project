@@ -635,10 +635,10 @@ subroutine velnw_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7645298
-      integer, parameter :: smartCacheSize = 2
-      integer, parameter :: maxPositiveOffset = 2
-      integer, parameter :: maxNegativeOffset = 0
+      integer, parameter :: nloop = 7645298 
+      integer, parameter :: smartCacheSize = 2 
+      integer, parameter :: maxPositiveOffset = 2 
+      integer, parameter :: maxNegativeOffset = 0 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -659,7 +659,7 @@ subroutine velnw_0_smart_cache
 end subroutine velnw_0_smart_cache
 
 subroutine velnw_0(dt,ro)
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4), intent(In) :: dt
       real(4) :: dxs_i
@@ -678,9 +678,9 @@ subroutine velnw_0(dt,ro)
         call read_pipe(velnw_0_smart_cache__velnw_0__p0_i_j_k__pipe, p0_i_j_k)
         call read_pipe(velnw_0_smart_cache__velnw_0__p0_ip1_j_k__pipe, p0_ip1_j_k)
         call read_pipe(velnw_0_u_i_j_k_reader__velnw_0__u_i_j_k__pipe, u_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pz = (-p0_i_j_k+p0_ip1_j_k)/ro/dxs_i
             u_i_j_k = u_i_j_k+dt*(f_i_j_k-pz)
@@ -758,10 +758,10 @@ subroutine velnw_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7645600
-      integer, parameter :: smartCacheSize = 304
-      integer, parameter :: maxPositiveOffset = 304
-      integer, parameter :: maxNegativeOffset = 0
+      integer, parameter :: nloop = 7645600 
+      integer, parameter :: smartCacheSize = 304 
+      integer, parameter :: maxPositiveOffset = 304 
+      integer, parameter :: maxNegativeOffset = 0 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -787,7 +787,7 @@ subroutine velnw_1_smart_cache
 end subroutine velnw_1_smart_cache
 
 subroutine velnw_1(dt,ro)
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4), intent(In) :: dt
       real(4) :: dys_j
@@ -807,9 +807,9 @@ subroutine velnw_1(dt,ro)
         call read_pipe(velnw_1_smart_cache__velnw_1__p0_i_jp1_k__pipe, p0_i_jp1_k)
         call read_pipe(velnw_1_smart_cache__velnw_1__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(velnw_1_v_i_j_k_reader__velnw_1__v_i_j_k__pipe, v_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pz = (-p0_i_j_k+p0_i_jp1_k)/ro/dys_j
             v_i_j_k = v_i_j_k+dt*(g_i_j_k-pz)
@@ -891,10 +891,10 @@ subroutine velnw_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737106
-      integer, parameter :: smartCacheSize = 91810
-      integer, parameter :: maxPositiveOffset = 91810
-      integer, parameter :: maxNegativeOffset = 0
+      integer, parameter :: nloop = 7737106 
+      integer, parameter :: smartCacheSize = 91810 
+      integer, parameter :: maxPositiveOffset = 91810 
+      integer, parameter :: maxNegativeOffset = 0 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -925,7 +925,7 @@ subroutine velnw_2_smart_cache
 end subroutine velnw_2_smart_cache
 
 subroutine velnw_2(dt,ro)
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4), intent(In) :: dt
       real(4) :: dzs_k
@@ -946,9 +946,9 @@ subroutine velnw_2(dt,ro)
         call read_pipe(velnw_2_smart_cache__velnw_2__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(velnw_2_smart_cache__velnw_2__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(velnw_2_w_i_j_k_reader__velnw_2__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=79)) then
             pz = (-p0_i_j_k+p0_i_j_kp1)/ro/dzs_k
             w_i_j_k = w_i_j_k+dt*(h_i_j_k-pz)
@@ -1152,7 +1152,7 @@ subroutine feedbf_wsum_i_j_k_reader(wsum)
 end subroutine feedbf_wsum_i_j_k_reader
 
 subroutine feedbf(alpha,beta,dt)
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4), intent(In) :: alpha
       real(4), intent(In) :: beta
@@ -1197,9 +1197,9 @@ subroutine feedbf(alpha,beta,dt)
         call read_pipe(feedbf_vsum_i_j_k_reader__feedbf__vsum_i_j_k__pipe, vsum_i_j_k)
         call read_pipe(velnw_2__feedbf__w_i_j_k__pipe, w_i_j_k)
         call read_pipe(feedbf_wsum_i_j_k_reader__feedbf__wsum_i_j_k__pipe, wsum_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             usum_i_j_k = (usum_i_j_k+u_i_j_k)*bmask1_i_j_k
             vsum_i_j_k = (vsum_i_j_k+v_i_j_k)*cmask1_i_j_k
@@ -1438,10 +1438,10 @@ subroutine les_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737106
-      integer, parameter :: smartCacheSize = 92113
-      integer, parameter :: maxPositiveOffset = 91810
-      integer, parameter :: maxNegativeOffset = 91810
+      integer, parameter :: nloop = 7737106 
+      integer, parameter :: smartCacheSize = 92113 
+      integer, parameter :: maxPositiveOffset = 91810 
+      integer, parameter :: maxNegativeOffset = 91810 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -1551,7 +1551,7 @@ subroutine les_0_smart_cache
 end subroutine les_0_smart_cache
 
 subroutine les_0
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: csx1
       real(4) :: delx1_k
@@ -1630,9 +1630,9 @@ subroutine les_0
         call read_pipe(les_0_smart_cache__les_0__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_0_smart_cache__les_0__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_0_smart_cache__les_0__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             dudxx1 = diu1_i_j_k
             dudyx1 = (diu2_im1_j_k+diu2_im1_jp1_k+diu2_i_j_k+diu2_i_jp1_k)*.25
@@ -1842,10 +1842,10 @@ subroutine les_1_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737107
-      integer, parameter :: smartCacheSize = 183620
-      integer, parameter :: maxPositiveOffset = 91811
-      integer, parameter :: maxNegativeOffset = 91810
+      integer, parameter :: nloop = 7737107 
+      integer, parameter :: smartCacheSize = 183620 
+      integer, parameter :: maxPositiveOffset = 91811 
+      integer, parameter :: maxNegativeOffset = 91810 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -1965,7 +1965,7 @@ subroutine les_1_smart_cache
 end subroutine les_1_smart_cache
 
 subroutine les_1
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: diu1_ip1_j_k
       real(4) :: diu1_i_j_k
@@ -2047,9 +2047,9 @@ subroutine les_1
         call read_pipe(les_1_smart_cache__les_1__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_1_smart_cache__les_1__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_1_smart_cache__les_1__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
             evsx2 = sm_ip1_j_k
             evsx1 = sm_i_j_k
@@ -2269,10 +2269,10 @@ subroutine les_2_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737107
-      integer, parameter :: smartCacheSize = 183620
-      integer, parameter :: maxPositiveOffset = 91811
-      integer, parameter :: maxNegativeOffset = 91810
+      integer, parameter :: nloop = 7737107 
+      integer, parameter :: smartCacheSize = 183620 
+      integer, parameter :: maxPositiveOffset = 91811 
+      integer, parameter :: maxNegativeOffset = 91810 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -2394,7 +2394,7 @@ subroutine les_2_smart_cache
 end subroutine les_2_smart_cache
 
 subroutine les_2
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: diu2_i_jp1_k
       real(4) :: diu2_im1_jp1_k
@@ -2478,9 +2478,9 @@ subroutine les_2
         call read_pipe(les_2_smart_cache__les_2__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_2_smart_cache__les_2__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_2_smart_cache__les_2__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=2) .and. (k<=80)) then
             evsy2 = sm_i_jp1_k
             evsy1 = sm_i_j_k
@@ -2690,10 +2690,10 @@ subroutine les_3_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737409
-      integer, parameter :: smartCacheSize = 92416
-      integer, parameter :: maxPositiveOffset = 92113
-      integer, parameter :: maxNegativeOffset = 304
+      integer, parameter :: nloop = 7737409 
+      integer, parameter :: smartCacheSize = 92416 
+      integer, parameter :: maxPositiveOffset = 92113 
+      integer, parameter :: maxNegativeOffset = 304 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -2815,7 +2815,7 @@ subroutine les_3_smart_cache
 end subroutine les_3_smart_cache
 
 subroutine les_3
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: diu3_i_j_kp1
       real(4) :: diu3_im1_j_kp1
@@ -2897,9 +2897,9 @@ subroutine les_3
         call read_pipe(les_3_smart_cache__les_3__u_i_j_k__pipe, u_i_j_k)
         call read_pipe(les_3_smart_cache__les_3__v_i_j_k__pipe, v_i_j_k)
         call read_pipe(les_3_smart_cache__les_3__w_i_j_k__pipe, w_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             evsz2 = sm_i_j_kp1
             evsz1 = sm_i_j_k
@@ -2979,7 +2979,7 @@ subroutine adam_hold_i_j_k_reader(hold)
 end subroutine adam_hold_i_j_k_reader
 
 subroutine adam
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: f_i_j_k
       real(4) :: fd
@@ -3000,9 +3000,9 @@ subroutine adam
         call read_pipe(adam_gold_i_j_k_reader__adam__gold_i_j_k__pipe, gold_i_j_k)
         call read_pipe(les_3__adam__h_i_j_k__pipe, h_i_j_k)
         call read_pipe(adam_hold_i_j_k_reader__adam__hold_i_j_k__pipe, hold_i_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             fd = f_i_j_k
             gd = g_i_j_k
@@ -3097,10 +3097,10 @@ subroutine press_0_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7645296
-      integer, parameter :: smartCacheSize = 91507
-      integer, parameter :: maxPositiveOffset = 0
-      integer, parameter :: maxNegativeOffset = 91507
+      integer, parameter :: nloop = 7645296 
+      integer, parameter :: smartCacheSize = 91507 
+      integer, parameter :: maxPositiveOffset = 0 
+      integer, parameter :: maxNegativeOffset = 91507 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -3156,7 +3156,7 @@ subroutine press_0_smart_cache
 end subroutine press_0_smart_cache
 
 subroutine press_0(dt)
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4), intent(In) :: dt
       real(4) :: dx1_i
@@ -3195,9 +3195,9 @@ subroutine press_0(dt)
         call read_pipe(press_0_smart_cache__press_0__v_i_jm1_k__pipe, v_i_jm1_k)
         call read_pipe(press_0_smart_cache__press_0__w_i_j_k__pipe, w_i_j_k)
         call read_pipe(press_0_smart_cache__press_0__w_i_j_km1__pipe, w_i_j_km1)
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhs_i_j_k = (-u_im1_j_k+u_i_j_k)/dx1_i+(-v_i_jm1_k+v_i_j_k)/dy1_j+(-w_i_j_km1+w_i_j_k)/dzn_k
             rhs_i_j_k = (f_i_j_k-f_im1_j_k)/dx1_i+(g_i_j_k-g_i_jm1_k)/dy1_j+(h_i_j_k-h_i_j_km1)/dzn_k+rhs_i_j_k/dt
@@ -3237,7 +3237,7 @@ subroutine press_1_dzn_k_reader(dzn)
 end subroutine press_1_dzn_k_reader
 
 subroutine press_1
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: dx1_i
       real(4) :: dy1_j
@@ -3255,9 +3255,9 @@ subroutine press_1
         call read_pipe(press_0__press_1__rhs_i_j_k__pipe, rhs_i_j_k)
         rhsav = 0.0
         area = 0.0
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhsav = rhsav+dx1_i*dy1_j*dzn_k*rhs_i_j_k
             area = area+dx1_i*dy1_j*dzn_k
@@ -3271,7 +3271,7 @@ subroutine press_1
 end subroutine press_1
 
 subroutine press_2
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       integer :: i
       integer :: j
@@ -3284,9 +3284,9 @@ subroutine press_2
         call read_pipe(press_1__press_2__rhs_i_j_k__pipe, rhs_i_j_k)
         call read_pipe(press_1__press_2__rhsav__pipe, rhsav)
         rhsav = rhsav/area
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             rhs_i_j_k = rhs_i_j_k-rhsav
         end if
@@ -3340,7 +3340,7 @@ subroutine press_3_p0_i_j_k_reader(p0)
 end subroutine press_3_p0_i_j_k_reader
 
 subroutine press_3
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       real(4) :: dx1_i
       real(4) :: dy1_j
@@ -3358,9 +3358,9 @@ subroutine press_3
         call read_pipe(press_3_p0_i_j_k_reader__press_3__p0_i_j_k__pipe, p0_i_j_k)
         pav = 0.0
         pco = 0.0
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             pav = pav+p0_i_j_k*dx1_i*dy1_j*dzn_k
             pco = pco+dx1_i*dy1_j*dzn_k
@@ -3389,7 +3389,7 @@ subroutine press_4_p0_i_j_k_reader(p0)
 end subroutine press_4_p0_i_j_k_reader
 
 subroutine press_4
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       integer :: i
       integer :: j
@@ -3402,9 +3402,9 @@ subroutine press_4
         call read_pipe(press_3__press_4__pav__pipe, pav)
         call read_pipe(press_3__press_4__pco__pipe, pco)
         pav = pav/pco
-        k = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((i>=1) .and. (i<=300) .and. (j>=1) .and. (j<=300) .and. (k>=1) .and. (k<=80)) then
             p0_i_j_k = p0_i_j_k-pav
         end if
@@ -3419,10 +3419,10 @@ subroutine press_5_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7645298
-      integer, parameter :: smartCacheSize = 3
-      integer, parameter :: maxPositiveOffset = 2
-      integer, parameter :: maxNegativeOffset = 2
+      integer, parameter :: nloop = 7645298 
+      integer, parameter :: smartCacheSize = 3 
+      integer, parameter :: maxPositiveOffset = 2 
+      integer, parameter :: maxNegativeOffset = 2 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -3443,7 +3443,7 @@ subroutine press_5_smart_cache
 end subroutine press_5_smart_cache
 
 subroutine press_5
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       integer :: j
       integer :: k
@@ -3454,9 +3454,9 @@ subroutine press_5
     do count = 1, nloop, 1
         call read_pipe(press_5_smart_cache__press_5__p0_synthIdx2m1_j_k__pipe, p0_synthIdx2m1_j_k)
         call read_pipe(press_5_smart_cache__press_5__p0_synthIdx2p1_j_k__pipe, p0_synthIdx2p1_j_k)
-        k = count/25149
-        j = mod(count/83, 303)
-        synthIdx2 = mod(count, 83)
+        synthIdx2 = mod(count, 304)
+        j = mod(count/304, 303)
+        k = count/92112
         if ((j>=0) .and. (j<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx2>=0) .and. (synthIdx2<=302)) then
             if (synthIdx2==0) then
                 p0_synthIdx2_j_k = p0_synthIdx2p1_j_k
@@ -3476,10 +3476,10 @@ subroutine press_6_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7736197
-      integer, parameter :: smartCacheSize = 181801
-      integer, parameter :: maxPositiveOffset = 90901
-      integer, parameter :: maxNegativeOffset = 90901
+      integer, parameter :: nloop = 7736197 
+      integer, parameter :: smartCacheSize = 181801 
+      integer, parameter :: maxPositiveOffset = 90901 
+      integer, parameter :: maxNegativeOffset = 90901 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -3500,7 +3500,7 @@ subroutine press_6_smart_cache
 end subroutine press_6_smart_cache
 
 subroutine press_6
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       integer :: i
       integer :: k
@@ -3511,9 +3511,9 @@ subroutine press_6
     do count = 1, nloop, 1
         call read_pipe(press_6_smart_cache__press_6__p0_i_synthIdx1m300_k__pipe, p0_i_synthIdx1m300_k)
         call read_pipe(press_6_smart_cache__press_6__p0_i_synthIdx1p300_k__pipe, p0_i_synthIdx1p300_k)
-        k = count/25149
-        synthIdx1 = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        synthIdx1 = mod(count/304, 303)
+        k = count/92112
         if ((i>=0) .and. (i<=301) .and. (k>=0) .and. (k<=81) .and. (synthIdx1>=0) .and. (synthIdx1<=302)) then
             if (synthIdx1==0) then
                 p0_i_synthIdx1_k = p0_i_synthIdx1p300_k
@@ -3533,10 +3533,10 @@ subroutine press_7_smart_cache
       integer :: i
       integer :: count
       integer :: compIndex
-      integer, parameter :: nloop = 7737106
-      integer, parameter :: smartCacheSize = 183619
-      integer, parameter :: maxPositiveOffset = 91810
-      integer, parameter :: maxNegativeOffset = 91810
+      integer, parameter :: nloop = 7737106 
+      integer, parameter :: smartCacheSize = 183619 
+      integer, parameter :: maxPositiveOffset = 91810 
+      integer, parameter :: maxNegativeOffset = 91810 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -3557,7 +3557,7 @@ subroutine press_7_smart_cache
 end subroutine press_7_smart_cache
 
 subroutine press_7
-      integer, parameter :: nloop = 7645296
+      integer, parameter :: nloop = 7645296 
       integer :: count
       integer :: i
       integer :: j
@@ -3568,9 +3568,9 @@ subroutine press_7
     do count = 1, nloop, 1
         call read_pipe(press_7_smart_cache__press_7__p0_i_j_synthIdx0m1__pipe, p0_i_j_synthIdx0m1)
         call read_pipe(press_7_smart_cache__press_7__p0_i_j_synthIdx0p1__pipe, p0_i_j_synthIdx0p1)
-        synthIdx0 = count/25149
-        j = mod(count/83, 303)
-        i = mod(count, 83)
+        i = mod(count, 304)
+        j = mod(count/304, 303)
+        synthIdx0 = count/92112
         if ((i>=0) .and. (i<=301) .and. (j>=0) .and. (j<=301) .and. (synthIdx0>=0) .and. (synthIdx0<=81)) then
             if (synthIdx0==0) then
                 p0_i_j_synthIdx0 = p0_i_j_synthIdx0p1
