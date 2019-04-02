@@ -10,12 +10,20 @@ import           AddSmartCaches
 import           AddSynthesisedLoopVars
 import           AddTransitStreams
 import           BuildDeviceModule
-import           CommandLineProcessor        (F4Opts (..), f4CmdParser)
+import           CommandLineProcessor           ( F4Opts(..)
+                                                , f4CmdParser
+                                                )
 import           Control.Monad.Extra
-import           Data.Generics               (everything, everywhere,
-                                              everywhereM, gmapQ, gmapT, mkM,
-                                              mkQ, mkT)
-import qualified Data.Map                    as DMap
+import           Data.Generics                  ( everything
+                                                , everywhere
+                                                , everywhereM
+                                                , gmapQ
+                                                , gmapT
+                                                , mkM
+                                                , mkQ
+                                                , mkT
+                                                )
+import qualified Data.Map                      as DMap
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
@@ -23,15 +31,16 @@ import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
-import qualified LanguageFortranTools        as LFT
+import qualified LanguageFortranTools          as LFT
 import           LinkReductionVars
 import           MemoryAccessCodeGen
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
-import           Parser                      (parseProgramData)
+import           Parser                         ( parseProgramData )
 
-import           RemoveConstantsFromStencils hiding (addLoopGuards)
+import           RemoveConstantsFromStencils
+                                         hiding ( addLoopGuards )
 import           RemoveConstantsWrapper
 import           SanityChecks
 import           ScalarizeKernels
@@ -57,10 +66,10 @@ compilerMain args = do
   initialSubroutineTable <- parseProgramData args
   -- seperate out the parsed files to be offloaded to the FPGA
   subroutineTable <- removeStencilConstantsWrapper args initialSubroutineTable
-  let forOffloadSubTable = DMap.filter parallelise subroutineTable
+  let forOffloadSubTable    = DMap.filter parallelise subroutineTable
   let notForOffloadSubTable = DMap.filter (not . parallelise) subroutineTable
-  let forOffloadSubTable = DMap.filter parallelise subroutineTable
-  let subroutineNames = DMap.keys forOffloadSubTable
+  let forOffloadSubTable    = DMap.filter parallelise subroutineTable
+  let subroutineNames       = DMap.keys forOffloadSubTable
   putStrLn (rule '+' ++ " Subroutines not for offload " ++ rule '+')
   debug_displaySubRoutineTable notForOffloadSubTable False
   putStrLn (rule '+' ++ " Subroutines for offload " ++ rule '+')
@@ -70,10 +79,10 @@ compilerMain args = do
   let subroutineTableWithOffloadSubsMerged =
         mergeSubsToBeParallelised subroutineTable
   debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
-  let mergedOffloadName =
-        head $
-        DMap.keys $ DMap.filter parallelise subroutineTableWithOffloadSubsMerged
-  putStrLn (rule '+' ++ " Stencil Constant Removal " ++ rule '+')
+  let mergedOffloadName = head $ DMap.keys $ DMap.filter
+        parallelise
+        subroutineTableWithOffloadSubsMerged
+  -- putStrLn (rule '+' ++ " Stencil Constant Removal " ++ rule '+')
   -- let srtNoStencilConstants =
   --       DMap.insert
   --         mergedOffloadName
@@ -84,21 +93,19 @@ compilerMain args = do
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   -- error "Exit!"
   putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
-  (pipelineNames, pipelineSubroutineTable) <-
-    updateSubTablesWithPipelines
-      (subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName)
-      subroutineTableWithOffloadSubsMerged
+  (pipelineNames, pipelineSubroutineTable) <- updateSubTablesWithPipelines
+    (subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName)
+    subroutineTableWithOffloadSubsMerged
   -- splitMergedMethodIntoPipelines $
   --   subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
   -- Map and fold detection from Gavin's compiler
   -- < STEP 4 : Parallelise the loops >
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-  let (parallelisedSubroutines, parAnnotations) =
-        foldl
-          (paralleliseProgUnit_foldl (ioSubs args) pipelineSubroutineTable)
-          (DMap.empty, [])
-          pipelineNames
+  let (parallelisedSubroutines, parAnnotations) = foldl
+        (paralleliseProgUnit_foldl (ioSubs args) pipelineSubroutineTable)
+        (DMap.empty, [])
+        pipelineNames
   debug_displaySubRoutineTable parallelisedSubroutines False
   let srtWithParallelisedSubroutines =
         DMap.union parallelisedSubroutines pipelineSubroutineTable -- subroutineTableWithOffloadSubsMerged
@@ -109,11 +116,10 @@ compilerMain args = do
         detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
   debug_displaySubRoutineTable srtAfterStenDetect False
   -- < STEP 5 : Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-  let (combinedKernelSubroutines, combAnnotations) =
-        foldl
-          (combineKernelProgUnit_foldl (loopFusionBound args))
-          (srtAfterStenDetect, [])
-          pipelineNames
+  let (combinedKernelSubroutines, combAnnotations) = foldl
+        (combineKernelProgUnit_foldl (loopFusionBound args))
+        (srtAfterStenDetect, [])
+        pipelineNames
   putStrLn (rule '+' ++ " Combined " ++ rule '+')
   let srtAfterKernelCombination =
         DMap.union combinedKernelSubroutines srtAfterStenDetect
@@ -167,8 +173,8 @@ processPipeline kernels = do
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
   kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
-  withLoopVarsSynthesised <-
-    synthesiseLoopVars largestStreamDims kernelsWithReductionVarsLinked
+  withLoopVarsSynthesised <- synthesiseLoopVars largestStreamDims
+                                                kernelsWithReductionVarsLinked
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
@@ -187,18 +193,18 @@ getOffloadSubs subTable =
   DMap.elems $ DMap.filter (\MkSubRec {..} -> parallelise) subTable
 
 updateSubroutineTable :: [SubRec] -> SubroutineTable -> SubroutineTable
-updateSubroutineTable newSubRecs oldSubTable =
-  foldl (\map (key, subRec) -> DMap.insert key subRec map) oldSubTable newItems
-  where
-    newItems = map (\subrec -> (subName subrec, subrec)) newSubRecs
+updateSubroutineTable newSubRecs oldSubTable = foldl
+  (\map (key, subRec) -> DMap.insert key subRec map)
+  oldSubTable
+  newItems
+  where newItems = map (\subrec -> (subName subrec, subrec)) newSubRecs
 
 writeToFile :: F4Opts -> String -> String -> IO ()
 writeToFile F4Opts {..} fileName contents = do
   createDirectoryIfMissing True outputDir
   whenM (doesFileExist filePath) (removeFile filePath)
   writeFile filePath contents
-  where
-    filePath = joinPath [outputDir, fileName]
+  where filePath = joinPath [outputDir, fileName]
 
 validateInputFiles :: Program LFT.Anno -> IO ()
 validateInputFiles fileAst = do
@@ -206,7 +212,8 @@ validateInputFiles fileAst = do
   mapM_ printErrorOrContinue results
 
 banner =
-  rule '=' ++
-  "F4: Finite-element Fortran for FPGAs\n" ++
-  "This compiler allows Fortran finite element codes to be compiled\n" ++
-  "for execution on FPGA devices via OpenCL" ++ rule '='
+  rule '='
+    ++ "F4: Finite-element Fortran for FPGAs\n"
+    ++ "This compiler allows Fortran finite element codes to be compiled\n"
+    ++ "for execution on FPGA devices via OpenCL"
+    ++ rule '='
