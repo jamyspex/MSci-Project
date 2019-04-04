@@ -6061,7 +6061,11 @@ end subroutine press_7
  ! ==============================================
 
 
-BEFORE
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ With Transit Streams 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 velnw_1 requires:
 StencilStream: p0_i_j_k array name: p0 type: Float dimensions: [(0,302),(0,302),(0,81)]!	2 point stencil on 3D array p0: [[0,1,0],[0,0,0]]
 velnw_1 requires:
@@ -10336,11 +10340,11 @@ Cache Lines:
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 304
-	Max positive offset = 0
+	Max positive offset = 304
 	Max negative offset = 0
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 304
+		u_i_j_k from buffer index = 1
 	-------------------------------
 
 	-------------------------------
@@ -10465,22 +10469,22 @@ Cache Lines:
 	Smart cache item
 	Input stream: v_i_j_k
 	Buffer size: 91810
-	Max positive offset = 0
+	Max positive offset = 91810
 	Max negative offset = 0
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		v_i_j_k from buffer index = 91810
+		v_i_j_k from buffer index = 1
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 91810
-	Max positive offset = 0
+	Max positive offset = 91810
 	Max negative offset = 0
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 91810
+		u_i_j_k from buffer index = 1
 	-------------------------------
 
 	-------------------------------
@@ -10872,66 +10876,66 @@ Cache Lines:
 	Smart cache item
 	Input stream: w_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(-1,81)]
 	Output Streams:
-		w_i_j_k from buffer index = 92113
+		w_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: v_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		v_i_j_k from buffer index = 92113
+		v_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 92113
+		u_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: h_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		h_i_j_k from buffer index = 92113
+		h_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: g_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		g_i_j_k from buffer index = 92113
+		g_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: f_i_j_k
 	Buffer size: 92113
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91810
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		f_i_j_k from buffer index = 92113
+		f_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
@@ -11291,55 +11295,55 @@ Cache Lines:
 	Smart cache item
 	Input stream: w_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(-1,81)]
 	Output Streams:
-		w_i_j_k from buffer index = 183620
+		w_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: v_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		v_i_j_k from buffer index = 183620
+		v_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 183620
+		u_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: h_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		h_i_j_k from buffer index = 183620
+		h_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: g_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		g_i_j_k from buffer index = 183620
+		g_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
@@ -11728,55 +11732,55 @@ Cache Lines:
 	Smart cache item
 	Input stream: w_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(-1,81)]
 	Output Streams:
-		w_i_j_k from buffer index = 183620
+		w_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: v_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		v_i_j_k from buffer index = 183620
+		v_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 183620
+		u_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: f_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		f_i_j_k from buffer index = 183620
+		f_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: h_i_j_k
 	Buffer size: 183620
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 91811
+	Max negative offset = 91810
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		h_i_j_k from buffer index = 183620
+		h_i_j_k from buffer index = 91810
 	-------------------------------
 
 	-------------------------------
@@ -12164,55 +12168,55 @@ Cache Lines:
 	Smart cache item
 	Input stream: w_i_j_k
 	Buffer size: 92416
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 92113
+	Max negative offset = 304
 	Stream Dimensions: [(0,301),(-1,301),(-1,81)]
 	Output Streams:
-		w_i_j_k from buffer index = 92416
+		w_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: v_i_j_k
 	Buffer size: 92416
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 92113
+	Max negative offset = 304
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		v_i_j_k from buffer index = 92416
+		v_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: u_i_j_k
 	Buffer size: 92416
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 92113
+	Max negative offset = 304
 	Stream Dimensions: [(0,301),(-1,301),(0,81)]
 	Output Streams:
-		u_i_j_k from buffer index = 92416
+		u_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: g_i_j_k
 	Buffer size: 92416
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 92113
+	Max negative offset = 304
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		g_i_j_k from buffer index = 92416
+		g_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: f_i_j_k
 	Buffer size: 92416
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 92113
+	Max negative offset = 304
 	Stream Dimensions: [(0,300),(0,300),(0,80)]
 	Output Streams:
-		f_i_j_k from buffer index = 92416
+		f_i_j_k from buffer index = 304
 	-------------------------------
 
 	-------------------------------
@@ -16210,7 +16214,7 @@ subroutine velnw_1_smart_cache
             call write_pipe(velnw_1_smart_cache__velnw_1__p0_i_j_k__pipe, p0_i_j_k)
             p0_i_jp1_k = p0_buffer(304)
             call write_pipe(velnw_1_smart_cache__velnw_1__p0_i_jp1_k__pipe, p0_i_jp1_k)
-            u_i_j_k = u_buffer(304)
+            u_i_j_k = u_buffer(1)
             call write_pipe(velnw_1_smart_cache__velnw_1__u_i_j_k__pipe, u_i_j_k)
         end if
     end do
@@ -16346,9 +16350,9 @@ subroutine velnw_2_smart_cache
             call write_pipe(velnw_2_smart_cache__velnw_2__p0_i_j_k__pipe, p0_i_j_k)
             p0_i_j_kp1 = p0_buffer(91810)
             call write_pipe(velnw_2_smart_cache__velnw_2__p0_i_j_kp1__pipe, p0_i_j_kp1)
-            u_i_j_k = u_buffer(91810)
+            u_i_j_k = u_buffer(1)
             call write_pipe(velnw_2_smart_cache__velnw_2__u_i_j_k__pipe, u_i_j_k)
-            v_i_j_k = v_buffer(91810)
+            v_i_j_k = v_buffer(1)
             call write_pipe(velnw_2_smart_cache__velnw_2__v_i_j_k__pipe, v_i_j_k)
         end if
     end do
@@ -16964,17 +16968,17 @@ subroutine les_0_smart_cache
             call write_pipe(les_0_smart_cache__les_0__diu8_i_jp1_k__pipe, diu8_i_jp1_k)
             diu8_i_jp1_km1 = diu8_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__diu8_i_jp1_km1__pipe, diu8_i_jp1_km1)
-            f_i_j_k = f_buffer(92113)
+            f_i_j_k = f_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__f_i_j_k__pipe, f_i_j_k)
-            g_i_j_k = g_buffer(92113)
+            g_i_j_k = g_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__g_i_j_k__pipe, g_i_j_k)
-            h_i_j_k = h_buffer(92113)
+            h_i_j_k = h_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__h_i_j_k__pipe, h_i_j_k)
-            u_i_j_k = u_buffer(92113)
+            u_i_j_k = u_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__u_i_j_k__pipe, u_i_j_k)
-            v_i_j_k = v_buffer(92113)
+            v_i_j_k = v_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__v_i_j_k__pipe, v_i_j_k)
-            w_i_j_k = w_buffer(92113)
+            w_i_j_k = w_buffer(304)
             call write_pipe(les_0_smart_cache__les_0__w_i_j_k__pipe, w_i_j_k)
         end if
     end do
@@ -17360,9 +17364,9 @@ subroutine les_1_smart_cache
             call write_pipe(les_1_smart_cache__les_1__dzn_km1__pipe, dzn_km1)
             dzn_kp1 = dzn_buffer(183620)
             call write_pipe(les_1_smart_cache__les_1__dzn_kp1__pipe, dzn_kp1)
-            g_i_j_k = g_buffer(183620)
+            g_i_j_k = g_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__g_i_j_k__pipe, g_i_j_k)
-            h_i_j_k = h_buffer(183620)
+            h_i_j_k = h_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__h_i_j_k__pipe, h_i_j_k)
             sm_i_j_k = sm_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__sm_i_j_k__pipe, sm_i_j_k)
@@ -17384,11 +17388,11 @@ subroutine les_1_smart_cache
             call write_pipe(les_1_smart_cache__les_1__sm_ip1_jm1_k__pipe, sm_ip1_jm1_k)
             sm_ip1_jp1_k = sm_buffer(92114)
             call write_pipe(les_1_smart_cache__les_1__sm_ip1_jp1_k__pipe, sm_ip1_jp1_k)
-            u_i_j_k = u_buffer(183620)
+            u_i_j_k = u_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__u_i_j_k__pipe, u_i_j_k)
-            v_i_j_k = v_buffer(183620)
+            v_i_j_k = v_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__v_i_j_k__pipe, v_i_j_k)
-            w_i_j_k = w_buffer(183620)
+            w_i_j_k = w_buffer(91810)
             call write_pipe(les_1_smart_cache__les_1__w_i_j_k__pipe, w_i_j_k)
         end if
     end do
@@ -17789,9 +17793,9 @@ subroutine les_2_smart_cache
             call write_pipe(les_2_smart_cache__les_2__dzn_km1__pipe, dzn_km1)
             dzn_kp1 = dzn_buffer(183620)
             call write_pipe(les_2_smart_cache__les_2__dzn_kp1__pipe, dzn_kp1)
-            f_i_j_k = f_buffer(183620)
+            f_i_j_k = f_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__f_i_j_k__pipe, f_i_j_k)
-            h_i_j_k = h_buffer(183620)
+            h_i_j_k = h_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__h_i_j_k__pipe, h_i_j_k)
             sm_i_j_k = sm_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__sm_i_j_k__pipe, sm_i_j_k)
@@ -17813,11 +17817,11 @@ subroutine les_2_smart_cache
             call write_pipe(les_2_smart_cache__les_2__sm_ip1_j_kp1__pipe, sm_ip1_j_kp1)
             sm_ip1_jp1_k = sm_buffer(92114)
             call write_pipe(les_2_smart_cache__les_2__sm_ip1_jp1_k__pipe, sm_ip1_jp1_k)
-            u_i_j_k = u_buffer(183620)
+            u_i_j_k = u_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__u_i_j_k__pipe, u_i_j_k)
-            v_i_j_k = v_buffer(183620)
+            v_i_j_k = v_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__v_i_j_k__pipe, v_i_j_k)
-            w_i_j_k = w_buffer(183620)
+            w_i_j_k = w_buffer(91810)
             call write_pipe(les_2_smart_cache__les_2__w_i_j_k__pipe, w_i_j_k)
         end if
     end do
@@ -18210,9 +18214,9 @@ subroutine les_3_smart_cache
             call write_pipe(les_3_smart_cache__les_3__dzn_k__pipe, dzn_k)
             dzn_kp1 = dzn_buffer(92416)
             call write_pipe(les_3_smart_cache__les_3__dzn_kp1__pipe, dzn_kp1)
-            f_i_j_k = f_buffer(92416)
+            f_i_j_k = f_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__f_i_j_k__pipe, f_i_j_k)
-            g_i_j_k = g_buffer(92416)
+            g_i_j_k = g_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__g_i_j_k__pipe, g_i_j_k)
             sm_i_j_k = sm_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__sm_i_j_k__pipe, sm_i_j_k)
@@ -18234,11 +18238,11 @@ subroutine les_3_smart_cache
             call write_pipe(les_3_smart_cache__les_3__sm_ip1_j_k__pipe, sm_ip1_j_k)
             sm_ip1_j_kp1 = sm_buffer(92114)
             call write_pipe(les_3_smart_cache__les_3__sm_ip1_j_kp1__pipe, sm_ip1_j_kp1)
-            u_i_j_k = u_buffer(92416)
+            u_i_j_k = u_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__u_i_j_k__pipe, u_i_j_k)
-            v_i_j_k = v_buffer(92416)
+            v_i_j_k = v_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__v_i_j_k__pipe, v_i_j_k)
-            w_i_j_k = w_buffer(92416)
+            w_i_j_k = w_buffer(304)
             call write_pipe(les_3_smart_cache__les_3__w_i_j_k__pipe, w_i_j_k)
         end if
     end do

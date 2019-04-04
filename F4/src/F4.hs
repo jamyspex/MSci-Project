@@ -162,7 +162,7 @@ processPipeline kernels = do
   -- let srtWithGuards = updateSubroutineTable withGuards srtAfterKernelCombination
   -- let mainSubName = mainSub args
   -- let mainArgTrans = argTranslations (notForOffloadSubTable DMap.! mainSubName)
-  putStrLn "BEFORE"
+  putStrLn (rule '+' ++ " With Transit Streams " ++ rule '+')
   kernelsWithTransitStreams <- addTransitStreams withGuards
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
   kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams

@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module AddSmartCaches where
@@ -105,6 +106,12 @@ updateKernelInputStreams smartCacheOutputStreams kernel =
     nonStencilInputs =
       filter (\s -> (not . isTransit) s && (not . isStencil) s) $ inputs kernel
 
+stencilItemsOnly =
+  filter
+    (\case
+       SmartCacheItem {} -> True
+       _ -> False)
+
 -- All the buffers in a smart cache must be the same size e.g. the size of the
 -- largest buffer in order to prevent the processing pipeline deadlocking.
 -- This function takes generated SmartCacheItems and pads any that are smaller
@@ -112,17 +119,21 @@ updateKernelInputStreams smartCacheOutputStreams kernel =
 -- the buffer indices to valid in line with the newly padded size
 padCacheItems :: [SmartCacheItem] -> [SmartCacheItem]
 padCacheItems inputs = map updateCacheItem inputs
+    -- inputSorted = sortBy (\x y -> size y `compare` size x) inputs
+    -- largestSize = size $ headNote "line 108" inputSorted
   where
-    inputSorted = sortBy (\x y -> size y `compare` size x) inputs
-    largestSize = size $ headNote "line 108" inputSorted
+    maxPosOffset = maximum $ map maxPositiveOffset $ stencilItemsOnly inputs
+    maxNegOffset = maximum $ map maxNegativeOffset $ stencilItemsOnly inputs
+    largestSize = maximum $ map size $ stencilItemsOnly inputs
     updateCacheItem :: SmartCacheItem -> SmartCacheItem
     updateCacheItem item@SmartCacheTransitItem {..} =
       SmartCacheItem
         { size = largestSize
         , inputStream = Stream name arrayName inputValueType inputDims
-        , maxNegativeOffset = 0
-        , maxPositiveOffset = 0
-        , outputStreamNamesAndBufferIndex = [(name, largestSize)]
+        , maxNegativeOffset = maxNegOffset
+        , maxPositiveOffset = maxPosOffset
+        , outputStreamNamesAndBufferIndex =
+            [(name, largestSize - (maxPosOffset - 1))]
         }
       where
         (TransitStream name arrayName inputValueType inputDims) = inputStream
