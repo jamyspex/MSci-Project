@@ -70,6 +70,7 @@ contains
         real(kind=4) :: evsx2, evsx1, evsy2, evsy1, evsz2, evsz1
         real(kind=4) :: vfu,vfv,vfw
 
+#ifdef CALC_BOUNDS
 ! WV: as this is passed in, why is it defined here?
 ! --length scale
         do k = 1,kp
@@ -77,6 +78,7 @@ contains
 ! WV: turns out that dy1(0) is not defined!!!
           delx1(k) = (dx1(0)*dy1(0)*dzn(k))**(1./3.)
         end do
+#endif
 !WV: so the next loop produces the undefined values ...
 ! ----
       do k = 1,kp
@@ -163,6 +165,7 @@ contains
 #if !defined( INLINE_BOUND_CALCS ) || defined( MPI )
       call boundsm(sm)
 #else
+#ifdef CALC_BOUNDS
 ! =================================
         do k = 0,kp+1
             do j = -1,jp+1
@@ -184,6 +187,7 @@ contains
             sm(i,j,kp+1) = sm(i,j,kp)
         end do
     end do
+#endif
 #endif
 
 #ifdef WV_DEBUG
@@ -250,7 +254,7 @@ contains
       end do
 
 !wall function
-
+#ifdef CALC_BOUNDS
       do j=1,jp
       do i=1,ip
       evsx2=sm(i+1,j,1)
@@ -297,7 +301,7 @@ contains
       f(i,j,1)=(f(i,j,1)+vfu)
       end do
       end do
-
+#endif
 
 ! --calculation of viscosity terms in momentum eq.(y-comp.)
       do k = 2,kp
@@ -358,7 +362,7 @@ contains
       end do
 
 !wall function
-
+#ifdef CALC_BOUNDS
       do j=1,jp
       do i=1,ip
 !c--eddyviscosity on face
@@ -407,7 +411,7 @@ contains
       g(i,j,1)=(g(i,j,1)+vfv)
       end do
       end do
-
+#endif
 
 
 ! --calculation of viscosity terms in momentum eq.(z-comp.)

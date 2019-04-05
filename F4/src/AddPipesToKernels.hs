@@ -71,14 +71,20 @@ addPipesToPipelineItems pipeline = do
           addPipesToPipelineStages previousStage currentStage newPipes
         getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
         getPipe (stream, dest) =
-          if valid
+          if True --valid
             then buildPipe sourceName destName stream
             else error "Stream has different name in map"
           where
-            valid = getStreamName stream == getStreamName streamFromMap
-            streamName = getStreamName stream
+            valid =
+              getArrayNameFromStream stream ==
+              getArrayNameFromStream streamFromMap
+            streamName = getArrayNameFromStream stream
             (source, streamFromMap) =
               pickSource dest $ availableStreams DMap.! streamName
+      -- streamName              = getArrayNameFromStream stream
+      -- (source, streamFromMap) = pickSource dest $ trace
+      --   ("for source for stream " ++ streamName)
+      --   (availableStreams DMap.! streamName)
             sourceName = name source
             destName = name dest
 
@@ -153,13 +159,36 @@ pickSource dest@SmartCache {} sources =
 pickSource dest@MemoryWriter {} sources =
   maximumBy
     (\(s1, _) (s2, _) -> compareMemWriterOpts s1 s2)
-    (removeDestFromSources dest sources)
+    (removePreviousKernelOutputsFromMemWriterSources $
+     removeDestFromSources dest sources)
 pickSource dest sources =
   maximumBy
     (\(s1, _) (s2, _) -> compareKernelOpts s1 s2)
     (removeDestFromSources dest sources)
 
 removeDestFromSources dest = filter (\(s, _) -> name s /= name dest)
+
+-- Memory writers should only get their inputs from the kernel
+-- in the current pipeline stage so remove any items that are
+-- outputs from the kernel in the previous stage. Inputs to
+-- memory writer should only ever come from a compute kernel as
+-- well so filter out mem readers and smart caches
+removePreviousKernelOutputsFromMemWriterSources ::
+     [(PipelineItem SharedPipelineData, Stream Anno)]
+  -> [(PipelineItem SharedPipelineData, Stream Anno)]
+removePreviousKernelOutputsFromMemWriterSources [] = []
+removePreviousKernelOutputsFromMemWriterSources sources =
+  filter (\(item, _) -> stageNumber item == highestOrder) kernelSourcesOnly
+  where
+    kernelSourcesOnly =
+      filter
+        (\(item, _) ->
+           case item of
+             Map {}    -> True
+             Reduce {} -> True
+             _         -> False)
+        sources
+    highestOrder = maximum $ map (stageNumber . fst) kernelSourcesOnly
 
 -- The functions below are used to rank other pipeline items
 -- in order that they should be selected as the source for a stream
@@ -217,7 +246,10 @@ compareSmartCacheOpts _ _ = Prelude.EQ
 buildPipe from to stream =
   Pipe from to (from ++ "__" ++ to ++ "__" ++ name ++ "__pipe") valueType stream
   where
-    (Stream name _ valueType _) = stream
+    (name, valueType) =
+      case stream of
+        (Stream name _ valueType _)          -> (name, valueType)
+        (StencilStream name _ valueType _ _) -> (name, valueType)
 
 -- For a pipeline stage create a map from stream name to
 -- (source, stream) so that when getting pipes we know
@@ -254,8 +286,10 @@ makeMap sourceAndStreams = DMap.fromList mapGroups
   where
     mapItems =
       map
-        (\(source, s@(Stream name _ _ _)) -> (name, (source, s)))
+        (\(source, s) -> (getArrayNameFromStream s, (source, s)))
         sourceAndStreams
+             -- map (\(source, s) -> (getArrayNameFromStream s, (source, s)))
+    --             sourceAndStreams
     toGroupMapItems = sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) mapItems
     grouped = groupBy (\(n1, _) (n2, _) -> n1 == n2) toGroupMapItems
     mapGroups = map (\grp -> ((fst . head) grp, map snd grp)) grouped
@@ -271,14 +305,26 @@ getAvailableStreamsFromSource smartcache@SmartCache {..} =
   map (smartcache, ) outputStreams
 getAvailableStreamsFromSource MemoryWriter {} = []
 getAvailableStreamsFromSource k@Map {..} = map (k, ) outputStreams
-getAvailableStreamsFromSource k@Reduce {..} = map (k, ) outputStreams
+getAvailableStreamsFromSource k@Reduce {..} =
+  map (k, ) outputStreams ++
+  map (\s -> (k, buildDummyStreamFromReductionVar s)) outputReduceVariables
 
 -- for a PipelineItem get all the streams it requires
 getRequiredStreams ::
      PipelineItem SharedPipelineData
   -> [(Stream Anno, PipelineItem SharedPipelineData)]
-getRequiredStreams item@Map {..} = map (, item) inputStreams
-getRequiredStreams item@Reduce {..} = map (, item) inputStreams
+getRequiredStreams item@Map {..} =
+  map (, item) inputStreams ++
+  map
+    (\inputReductionVar ->
+       (buildDummyStreamFromReductionVar inputReductionVar, item))
+    inputReduceVariables
+getRequiredStreams item@Reduce {..} =
+  map (, item) inputStreams ++
+  map
+    (\inputReductionVar ->
+       (buildDummyStreamFromReductionVar inputReductionVar, item))
+    inputReduceVariables
 getRequiredStreams item@SmartCache {..} = map (, item) inputStreams
 getRequiredStreams item@MemoryReader {..} = []
 getRequiredStreams item@MemoryWriter {..} =
@@ -295,7 +341,7 @@ showMap map =
        " --> \n" ++
        concatMap
          (\(source, stream) ->
-            "\t" ++ name source ++ " " ++ getStreamName stream ++ "\n")
+            "\t" ++ name source ++ " " ++ getArrayNameFromStream stream ++ "\n")
          (map DMap.! key) ++
        "\n")
     ""
@@ -309,7 +355,7 @@ showMapItems =
        "map key = " ++
        streamName ++
        " source = " ++
-       name source ++ " stream = " ++ getStreamName stream ++ "\n")
+       name source ++ " stream = " ++ getArrayNameFromStream stream ++ "\n")
 
 showGrouped ::
      [[(String, (PipelineItem SharedPipelineData, Stream Anno))]] -> String

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d93b8789dbf1e4c2701c7280ff0edd4289cd5777e0f9022c3eb03b71375adbb5
+-- hash: 8e207dfec7b25e2f4ed0401c6d5c5bdb61c1922e5cd9158f74e6ba4393144ef7
 
 name:           F4
 version:        0.1.0.0
@@ -39,12 +39,14 @@ library
       CommandLineProcessor
       ConstantFolding
       DetectDriverLoopSize
+      DetectIndividualPipelines
       F4
       F95IntrinsicFunctions
       FortranDSL
       KernelCodeGen
       KernelExtraction
       LanguageFortranTools
+      LinkReductionVars
       LoopAnalysis
       MemoryAccessCodeGen
       MergeSubroutines
@@ -53,6 +55,9 @@ library
       Pipeline
       Platform
       PreProcessor
+      RefactorSyntheticStencilIndices
+      RemoveConstantsFromStencils
+      RemoveConstantsWrapper
       SanityChecks
       ScalarizeKernels
       SmartCacheCodeGen
@@ -81,8 +86,10 @@ library
     , language-fortran
     , optparse-applicative
     , process
+    , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010
 
 executable F4-exe
@@ -106,8 +113,10 @@ executable F4-exe
     , language-fortran
     , optparse-applicative
     , process
+    , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010
 
 test-suite F4-test
@@ -132,6 +141,8 @@ test-suite F4-test
     , language-fortran
     , optparse-applicative
     , process
+    , safe
     , split
     , syb
+    , temporary
   default-language: Haskell2010

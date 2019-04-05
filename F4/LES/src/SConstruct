@@ -1,0 +1,180 @@
+import os
+import os.path # for getting environmental variables on the system
+
+# Importing OclBuilder, this is not required for ocl=0
+# If you want to build just the Fortran code without OpenCL support, use SConstruct.F95_only
+import OclBuilder
+from OclBuilder import initOcl
+
+# Adding path to includes for kernels
+CWD= os.environ['PWD']
+OclBuilder.kopts='-cl-mad-enable -cl-fast-relaxed-math -I'+CWD+'/../OpenCL/Kernels/'
+
+from OclBuilder import getOpt
+OclBuilder.opts=Variables()
+envF=Environment(useF=1)
+envF=Environment(ENV={'PATH' : os.environ['PATH']})
+
+
+# Basically, it's Linux unless it's OS X
+if os.uname()[0] == "Darwin":
+        OSX=1
+        OSFLAG='-DOSX'
+else:
+        OSX=0
+        OSFLAG='-D__LINUX__'
+
+
+# Then build the rest of the code
+other=''
+WITH_OCL=''
+with_ocl= getOpt('ocl','Use OpenCL','1')
+if with_ocl == '1':
+    WITH_OCL = '-D_OPENCL_LES_WV'
+    envF=initOcl(envF)
+    kernel_opts = envF['KERNEL_OPTS']
+else:
+    envF['F95']=os.environ['FC']
+    envF['LINK']=os.environ['FC']
+    verbose = getOpt('v','Verbose','1')
+    VERBOSE = '-DVERBOSE'
+    if verbose == '0':
+        VERBOSE = ''
+    other = getOpt('D','Other macro','')
+    TIMINGS=''
+    if other !='':
+        TIMINGS = '-D'+other
+
+# GR: MPI specific build config
+WITH_MPI=''
+PROC_PER_ROW=''
+PROC_PER_COL=''
+USE_NETCDF_OUTPUT=''
+with_mpi = getOpt('mpi','Use MPI','0')
+with_nesting = getOpt('nested','Nested Grid','0')
+
+if with_mpi == '1':
+    procPerRow= getOpt('procPerRow', 'Processes Per Row', '2')
+    procPerCol= getOpt('procPerCol', 'Processes Per Col', '2')
+    PROC_PER_ROW = '-DPROC_PER_ROW=' + procPerRow
+    PROC_PER_COL = '-DPROC_PER_COL=' + procPerCol
+    WITH_MPI = '-DMPI'
+#    envF['F95']='mpiifort'
+#    envF['F95']='mpif90'
+    envF['LINK']=envF['F95']
+
+#if other =='':
+#    USE_NETCDF_OUTPUT='-DUSE_NETCDF_OUTPUT'
+    if OSX==0:    
+        envF.Append(LIBS=['netcdf']) # for version less than 4.2.0
+    else:
+        envF.Append(LIBS=['mpi_mpifh','netcdff']) # for version more than and equal to 4.2.0 
+
+
+NESTED_LES=''
+if with_nesting=='1':
+	NESTED_LES='-DNESTED_LES'
+
+GR_DEBUG=''
+gr_debug = getOpt('gr_debug', 'GR Debug', '0')
+if gr_debug == '1':
+    GR_DEBUG='-DGR_DEBUG'
+
+WV_DEBUG=''
+wv_debug = getOpt('wv_debug', 'WV Debug', '0')
+if wv_debug =='1':
+    #WV_DEBUG='-DWV_DEBUG'
+    WV_DEBUG='-DMPI_NEW_WV'
+
+NO_FILE_IO='-DNO_FILE_IO'
+ICAL = '-DICAL=0'
+IFBF='-DIFBF=1'
+IANIME='-DIANIME=1'
+IADAM='-DIADAM=0'
+FFLAGS  = [USE_NETCDF_OUTPUT, WITH_MPI,NESTED_LES, GR_DEBUG, WV_DEBUG, PROC_PER_ROW, PROC_PER_COL, WITH_OCL, NO_FILE_IO, ICAL, IFBF,IANIME, IADAM]
+
+if with_ocl == '0':
+#    FFLAGS += ['-cpp', '-O', '-Wall','-ffree-form', '-fconvert=big-endian', '-mcmodel=medium', VERBOSE,TIMINGS]
+     FFLAGS += ['-cpp', '-O', '-Wall','-ffree-form', '-ffree-line-length-none','-fconvert=big-endian', '-mcmodel=medium', '-fno-range-check','-fbounds-check','-Wuninitialized','-ffpe-trap=invalid,zero,overflow', VERBOSE,TIMINGS]
+#     FFLAGS += ['-cpp', '-O', '-Wall','-ffree-form', '-ffree-line-length-none','-fconvert=big-endian', '-mcmodel=medium','-fbounds-check', VERBOSE,TIMINGS]
+#    FFLAGS += ['-cpp','-Ofast', '-m64', '-Wall','-ffree-form', '-fconvert=big-endian', VERBOSE,TIMINGS]
+
+csources=[]
+#CC= os.environ['CC']
+#envC=Environment(CC=CC)
+#if csources:
+#    envC.Library('csubs',csources)
+
+fsources = []
+
+if with_mpi == '1':
+    fsources += ['./communication_common.f95', './communication_helper.f95', './communication_helper_integer.f95', './communication_helper_mpi.f95', './communication_helper_real.f95']
+if with_nesting == '1':
+	fsources += ['./nesting_support.f95']
+
+if USE_NETCDF_OUTPUT != '':
+    fsources += ['./module_LES_write_netcdf.f95']
+
+fsources+= ['./fortran_helper.f95', './anime.f95','./aveflow.f95','./bondFG.f95','./bondv1.f95','./boundp.f95','./boundsm.f95','./vel2.f95','./velFG.f95','./feedbf.f95','./feedbfm.f95','./les.f95','./grid.f95','./ifdata.f95','./init.f95','./main.f95','./set.f95','./timdata.f95','./common_sn.f95','./params_common_sn.f95']
+
+ffsources=[]
+
+if with_ocl == '1':
+    ffsources = fsources + ['./module_LES_conversions.f95','./module_LES_combined_ocl.f95','./oclWrapper.o']
+else:
+    ffsources = fsources + ['./adam.f95','./press.f95','./velnw.f95']
+
+
+if with_ocl == '1':
+    # Linker flags for OclWrapper
+    OPENCL_DIR=os.environ['OPENCL_DIR']
+    OCL_LDFLAGS =  ['-L.','-L'+OPENCL_DIR+'/OpenCLIntegration']
+else:
+    OCL_LDFLAGS =  []
+
+if OSX == 1:
+# Assuming MacPorts
+    INCLPATH = ['/opt/local/include','/opt/local/include/openmpi-gcc49/','/opt/local/lib/openmpi-gcc49/']
+    LIBPATH = ['/opt/local/lib','/opt/local/lib/openmpi-gcc49/']
+else:
+# test for devtoolset-2 ... so better use a var $DEVTOOLSETROOT?
+    if os.path.exists('/opt/rh/devtoolset-2'):
+        INCLPATH = ['/opt/rh/devtoolset-2/root/usr/include' ]
+        LIBPATH = '/opt/rh/devtoolset-2/root/usr/lib'
+    else:
+# reasonable default ...
+  	NETCDF = os.environ.get('NETCDF_DIR')
+	INCLPATH = [NETCDF + '/include']
+	LIBPATH  = [NETCDF + '/lib']
+#MPICH = os.environ.get('MPICH')
+#INCLPATH = [NETCDF + '/include', MPICH + '/include']
+#LIBPATH = [NETCDF + '/lib', MPICH + '/lib']
+#        INCLPATH = [NETCDF + '/include', '/usr/include']
+#        LIBPATH  = [NETCDF + '/lib', '/usr/local/lib']
+#        INCLPATH = ['/usr/local/include', '/usr/include' ]
+#        LIBPATH = '/usr/local/lib'
+#INCLPATH += ['../OpenCL','../OpenCL/Wrappers']
+
+envF.Append(F95FLAGS=FFLAGS)
+envF.Append(F95PATH=['.',INCLPATH])
+envF.Append(LIBPATH=['.',LIBPATH])
+if OSX != 1:
+    envF.Append(LIBS=['m'])
+
+mpi_ext=''
+if with_mpi == '1':
+    mpi_ext='_mpi'
+
+ocl_ext=''
+if with_ocl == '1':
+    envF.Append(LIBS=['OclWrapperF','stdc++','OclWrapper'])
+    ocl_ext='_ocl'
+    if OSX==1:
+            envF.Append(FRAMEWORKS=['OpenCL'])
+    else:
+            envF.Append(LIBS=['OpenCL'])
+
+if csources:
+    envF.Append(LIBS=['csubs'])
+
+prog = envF.Program('les_main'+ocl_ext+mpi_ext,ffsources)

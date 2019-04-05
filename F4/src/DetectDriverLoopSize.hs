@@ -6,13 +6,19 @@ import           Utils
 
 -- Take all the kernels and find the stream with the largest
 -- dimensions across them all.
-detectDriverLoopSize :: [Kernel] -> IO (Int, Int)
+detectDriverLoopSize :: [Kernel] -> IO (String, [(Int, Int)], (Int, Int))
 detectDriverLoopSize kernels = do
   putStrLn $
-    largestStreamName ++ " is largest stream size = " ++ show largestStreamSize
-  return (0, largestStreamSize)
+    largestStreamName ++
+    " is largest stream size = " ++
+    show largestStreamSize ++
+    " dims used to calculate this = " ++ show largestStreamDimensions
+  return (largestStreamName, largestStreamDimensions, (0, largestStreamSize))
   where
     allStreams = concatMap (\k -> inputs k ++ outputs k) kernels
+    largestStreamDimensions =
+      getStreamDimensions $
+      head $ filter (\s -> getStreamName s == largestStreamName) allStreams
     streamNamesAndSizes =
       map
         (\s -> (getStreamName s, (calculateStreamSize . getStreamDimensions) s))
@@ -25,8 +31,10 @@ detectDriverLoopSize kernels = do
 calculateStreamSize :: [(Int, Int)] -> Int
 calculateStreamSize = foldl (\acc (lwb, upb) -> ((upb - lwb) + 1) * acc) 1
 
-updatePipelineSharedData :: (Int, Int) -> [PipelineStage] -> [PipelineStage]
-updatePipelineSharedData (lowerBound, upperBound) = map updateStage
+updatePipelineSharedData ::
+     (String, [(Int, Int)], (Int, Int)) -> [PipelineStage] -> [PipelineStage]
+updatePipelineSharedData (name, dims, (lowerBound, upperBound)) =
+  map updateStage
   where
     updateStage :: PipelineStage -> PipelineStage
     updateStage (kernel, smartCache, memAccess) =
@@ -36,6 +44,8 @@ updatePipelineSharedData (lowerBound, upperBound) = map updateStage
           (sharedData kernel)
             { driverLoopUpperBound = upperBound
             , driverLoopLowerBound = lowerBound
+            , largestStreamDimensions = dims
+            , largestStreamName = name
             }
         newKernel = updateItem kernel
         newSmartCache = fmap updateItem smartCache

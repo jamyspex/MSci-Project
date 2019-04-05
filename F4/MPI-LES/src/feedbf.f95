@@ -38,6 +38,7 @@ subroutine feedbf(usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
     use params_common_sn
 #else
     use common_sn ! create_new_include_statements() line 102
+    use params_common_sn
 #endif
     real(kind=4), intent(In) :: alpha
     real(kind=4), intent(In) :: beta
@@ -85,7 +86,7 @@ subroutine feedbf(usum,u,bmask1,vsum,v,cmask1,wsum,w,dmask1,alpha,&
 !      do i=20,30
 !      write(*,*) "u",u(i,5,2),i,rank,n
 !      end do
-!    end if 
+!    end if
 #ifndef WV_NEW_FEEDBF
     do k = 1,kp
         do j = 1,jp

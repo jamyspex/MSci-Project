@@ -1,0 +1,2 @@
+rm temp.log
+F4-exe -m main.f95 -s ./src -o temp -D WV_OPENCL,WV_NEW,WV_NEW_VELFG,NO_GLOBAL_SOR,INLINE_BOUND_CALCS,WV_TEST,TWINNED_BUFFER,NO_IO,IFBF=1,IADAM=0 >> temp.log 2>&1

@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module SmartCacheParameterAnalysis where
@@ -5,10 +6,12 @@ module SmartCacheParameterAnalysis where
 import           Control.Exception
 import           Data.Ix
 import           Data.List
+import           Data.Maybe
 import           Data.Ord
 import           Debug.Trace
 import           Language.Fortran
 import           LanguageFortranTools
+import           Safe
 import           Text.Printf
 import           Utils
 
@@ -33,7 +36,8 @@ printResults stream =
     stream
 
 printSmartCacheDetailsForStream stream =
-  print $ calculateSmartCacheDetailsForStream (defaultIterationOrder 3) stream
+  print $
+  calculateSmartCacheDetailsForStream Nothing (defaultIterationOrder 3) stream
 
 -- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential
@@ -51,15 +55,28 @@ count pred = length . filter pred
 
 scSizeOnly sten =
   let SmartCacheDetailsForStream {..} =
-        calculateSmartCacheDetailsForStream (defaultIterationOrder 3) sten
+        calculateSmartCacheDetailsForStream
+          Nothing
+          (defaultIterationOrder 3)
+          sten
    in requiredBufferSize
+
+hasConstantStenValues :: Stream Anno -> Bool
+hasConstantStenValues (StencilStream _ _ _ _ (Stencil _ _ _ stencilIndices _)) =
+  or $
+  concatMap
+    (map
+       (\case
+          Constant _ -> True
+          Offset _ -> False))
+    stencilIndices
 
 -- to work out the maxPosOffset and maxNegOffset fields find the largest reach from
 -- the central point backwards and central point forwards. If the central point (0, 0, 0, ...)
 -- is not present already in the stream add it.
 calculateSmartCacheDetailsForStream ::
-     [Int] -> Stream Anno -> SmartCacheDetailsForStream
-calculateSmartCacheDetailsForStream itOrder sten =
+     Maybe Kernel -> [Int] -> Stream Anno -> SmartCacheDetailsForStream
+calculateSmartCacheDetailsForStream kernel itOrder sten =
   SmartCacheDetailsForStream
     { requiredBufferSize = maxNumBlocks
     , startIndex = maxStart
@@ -86,14 +103,21 @@ calculateSmartCacheDetailsForStream itOrder sten =
         dims
         (Stencil anno dimension (length updatedCoords) updatedCoords varName)
     all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder toProcess
-    (maxNumBlocks, (maxStart, maxEnd)) = (head . sortStencils) all
+    (maxNumBlocks, (maxStart, maxEnd)) =
+      (headNote
+         ("SmartCacheParameterAnalysis: line 89 : stream name = " ++
+          getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel)) .
+       sortStencils)
+        centralIdxRemoved --all
     pairsFromStart =
       map (\(size, (_, point)) -> (point, size)) $
+      filter (\(_, (start, _)) -> start == maxStart) centralIdxRemoved
+    centralIdxRemoved =
       filter
         (\(_, (start, end)) ->
            not centralPointNeedsAdded ||
-           (start /= centralIdxStriped && end /= centralIdxStriped)) $
-      filter (\(_, (start, _)) -> start == maxStart) all
+           (start /= centralIdxStriped && end /= centralIdxStriped))
+        all
 
 getMaxOffset ::
      [(Int, ([Int], [Int]))]
@@ -102,7 +126,9 @@ getMaxOffset ::
   -> Int
 getMaxOffset all select centralIdx =
   if (not . null) filtered
-    then let (offset, _) = (head . sortStencils) filtered
+    then let (offset, _) =
+               (headNote "SmartCacheParameterAnalysis: line 103" . sortStencils)
+                 filtered
           in offset
     else 0
   where
@@ -144,8 +170,18 @@ getMaxOffset all select centralIdx =
 -- significant index in this case -2 and 2 and repeats the process
 calculateSmartCacheSizeForAllPairsOfStencilPoints ::
      [Int] -> Stream Anno -> [(Int, ([Int], [Int]))]
-calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream _ _ _ arrayDimens stencil) =
-  stencilSizesAndIndexPairs
+calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream streamName _ _ arrayDimens stencil)
+    -- trace
+    -- (  "calculateSmartCacheSizeForAllPairsOfStencilPoints: stream = "
+    -- ++ streamName
+    -- ++ " stencilDimens = "
+    -- ++ show stencilDimens
+    -- ++ " stencil indices = "
+    -- ++ show stencilIndices
+    -- ++ " result = "
+    -- ++ show stencilSizesAndIndexPairs
+    -- )
+ = stencilSizesAndIndexPairs
   where
     (Stencil _ stencilDimens _ stencilIndices _) = stencil
     stencilIndicesInts = stripStenIndex stencilIndices
@@ -157,8 +193,13 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
     go (l1, l2) =
       let initial = ((l1, l2), True, 0)
           ((ol1, ol2), _, totArea) =
-            foldl combineReaches initial (reverse iterationOrder)
-          offset = head ol1 - head ol2
+            foldl
+              combineReaches
+              initial
+              (reverse $ take (length l1) iterationOrder)
+          offset =
+            headNote "SmartCacheParameterAnalysis: line 164" ol1 -
+            headNote "SmartCacheParameterAnalysis: line 165" ol2
        in (abs ((totArea + 1) - max 0 offset), (ol1, ol2))
     combineReaches ::
          (([Int], [Int]), Bool, Int) -- ((index components), first iteration, area)
@@ -189,7 +230,13 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
 -- to the total buffer size. The function has to check whether the difference in lower order
 -- axes is subsumed by another index value or not. In the first iteration there no higher order
 -- index that could subsume the difference so skip the check to see if it is > 0
-stripStenIndex = map (map (\(Offset v) -> v))
+stripStenIndex :: [[StencilIndex]] -> [[Int]]
+stripStenIndex = map (map stripOne)
+  where
+    stripOne v =
+      case v of
+        Offset val -> val
+        _          -> 0
 
 -- elementwise comparison of indices based on their
 -- significance as indicated by iterationOrder
@@ -202,9 +249,9 @@ compareIndices i1 i2 iterationOrder =
     sameLength = length i1 == length i2
     orderExpr =
       foldl
-        (\acc cur -> acc <> ((i1 !! cur) `compare` (i2 !! cur)))
+        (\acc cur -> (acc <> ((i1 !! cur) `compare` (i2 !! cur))))
         EQ
-        (reverse iterationOrder)
+        (reverse $ take (length i1) iterationOrder)
 
 -- test method, assertions and test data
 test stream@(StencilStream _ _ _ _ stencil) numBlocksShouldBe startShouldBeIdx endShouldBeIdx maxPosOffsetShouldBe maxNegOffsetShouldBe =
@@ -247,7 +294,10 @@ test stream@(StencilStream _ _ _ _ stencil) numBlocksShouldBe startShouldBeIdx e
     startShouldBe = stencilIndicesInts !! startShouldBeIdx
     endShouldBe = stencilIndicesInts !! endShouldBeIdx
     res@SmartCacheDetailsForStream {..} =
-      calculateSmartCacheDetailsForStream (defaultIterationOrder 3) stream
+      calculateSmartCacheDetailsForStream
+        Nothing
+        (defaultIterationOrder 3)
+        stream
 
 assertions =
   assert
