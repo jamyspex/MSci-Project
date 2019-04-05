@@ -8,6 +8,7 @@ import           Data.List
 import           Data.List.Index
 import qualified Data.Map                    as DMap
 import           Data.Maybe
+import qualified Data.Set                    as Set
 import           Data.Tuple
 import           Debug.Trace
 import           GHC.Exts
@@ -24,8 +25,50 @@ import           Utils
 -- and inserts it into the list with the appropriate position value set.
 insertSmartCaches ::
      [Kernel] -> IO [(Kernel, Maybe (PipelineItem SharedPipelineData))]
-insertSmartCaches = mapM buildSmartCacheForKernel
+insertSmartCaches kernels =
+  mapM buildSmartCacheForKernel kernels -- kernelsAndMemoryStreamable
+ --  where
+ --    kernelsAndMemoryStreamable = findStreamsThatCanComeFromMemoryReader kernels
 
+-- findStreamsThatCanComeFromMemoryReader :: [Kernel] -> [(Kernel, Set.Set String)]
+-- findStreamsThatCanComeFromMemoryReader kernels =
+--   snd $ foldl go (Set.empty, []) kernels
+--   where
+--     go ::
+--          (Set.Set String, [(Kernel, Set.Set String)])
+--       -> Kernel
+--       -> (Set.Set String, [(Kernel, Set.Set String)])
+--     go (availableFromLast, kernelsAndMemoryReadableStreams) currentKernel =
+--       ( availableFromThisKernel
+--       , kernelsAndMemoryReadableStreams ++
+--         [(currentKernel, inputsThatCanComeFromMemory)])
+--       where
+--         availableFromThisKernel =
+--           Set.fromList $ map getStreamName $ outputs currentKernel
+--         previousKernelOutputStreams =
+--           if null kernelsAndMemoryReadableStreams
+--             then []
+--             else (outputs . fst . last) kernelsAndMemoryReadableStreams
+--         requiredInputStreamNames = map getStreamName $ inputs currentKernel
+--         inputsThatCanComeFromMemory =
+--           Set.fromList $
+--           concatMap
+--             (\sn -> [sn | Set.notMember sn availableFromLast])
+--             requiredInputStreamNames
+-- convertInputStreamsToTransitSmartCacheOrNot ::
+--      Set.Set String -> Bool -> [Stream Anno] -> [Stream Anno]
+-- convertInputStreamsToTransitSmartCacheOrNot streamsThatCanComeFromMem allStencilStreamsComeFromMem =
+--   map (convertOne allStencilStreamsComeFromMem)
+--   where
+--     isFromMemory s = getStreamName s `Set.member` streamsThatCanComeFromMem
+--     convertOne True s@Stream {} = s
+--     convertOne False s@(Stream streamName arrayName valueType dims)
+--       -- | isFromMemory s = s
+--       | otherwise = TransitStream streamName arrayName valueType dims
+--     convertOne True (TransitStream streamName arrayName valueType dims) =
+--       Stream streamName arrayName valueType dims
+--     convertOne False s@TransitStream {} = s
+--     convertOne _ s = s
 -- Take a kernel and using SmartCacheParameterAnalysis get the details
 -- of any smart caches required by StencilStream inputs to the kernel.
 -- Then amalgamate the details of the smart caches required by individual
@@ -44,11 +87,21 @@ buildSmartCacheForKernel k = do
         else Just smartCache)
   where
     hasStencilStreams = any isStencil $ inputs k
-    requiredStencilStreams =
+    stencilStreamInputs = filter isStencil $ inputs k
+    -- allStencilStreamsComeFromMem =
+    --   all
+    --     (\s -> getStreamName s `Set.member` streamsThatCanComeFromMem)
+    --     stencilStreamInputs
+    -- temp =
+    --   convertInputStreamsToTransitSmartCacheOrNot
+    --     streamsThatCanComeFromMem
+    --     allStencilStreamsComeFromMem $
+    --   inputs k
+    streamsToGoThroughSmartCache =
       filter (\s -> (hasStencilStreams && isTransit s) || isStencil s) $
       inputs k
     streamDimensionsOrders =
-      map (length . getStreamDimensions) requiredStencilStreams
+      map (length . getStreamDimensions) streamsToGoThroughSmartCache
     numberOfStreamDimensions = head streamDimensionsOrders -- FIXME
   -- if all (== headNote "line 56" streamDimensionsOrders) streamDimensionsOrders
   --   then head streamDimensionsOrders
@@ -56,7 +109,7 @@ buildSmartCacheForKernel k = do
     smartCacheItems =
       map
         (buildSmartCacheItem k numberOfStreamDimensions)
-        requiredStencilStreams
+        streamsToGoThroughSmartCache
     paddedSmartCacheItems = padCacheItems smartCacheItems
     withInputStreamsUpdated =
       updateKernelInputStreams allSmartCacheOutputStreams k
@@ -89,7 +142,11 @@ buildSmartCacheForKernel k = do
 buildStream :: SmartCacheItem -> [Stream Anno]
 buildStream SmartCacheTransitItem {..} = [Stream name arrayName valueType dims]
   where
-    (TransitStream name arrayName valueType dims) = inputStream
+    (name, arrayName, valueType, dims) =
+      ( getStreamName inputStream
+      , getArrayNameFromStream inputStream
+      , getStreamType inputStream
+      , getStreamDimensions inputStream)
 buildStream SmartCacheItem {..} =
   map
     (\(name, _) -> Stream name arrayName inputValueType inputDimensions)
@@ -122,9 +179,15 @@ padCacheItems inputs = map updateCacheItem inputs
     -- inputSorted = sortBy (\x y -> size y `compare` size x) inputs
     -- largestSize = size $ headNote "line 108" inputSorted
   where
-    maxPosOffset = maximum $ map maxPositiveOffset $ stencilItemsOnly inputs
-    maxNegOffset = maximum $ map maxNegativeOffset $ stencilItemsOnly inputs
-    largestSize = maximum $ map size $ stencilItemsOnly inputs
+    maxPosOffset = maximum $ map maxPositiveOffset temp
+    temp =
+      trace
+        ("length maxPosOffset = " ++
+         show (length $ stencilItemsOnly inputs) ++
+         "\ninputs = \n" ++ show inputs)
+        (stencilItemsOnly inputs)
+    maxNegOffset = maximum $ map maxNegativeOffset $ temp -- stencilItemsOnly inputs
+    largestSize = maximum $ map size $ temp -- stencilItemsOnly inputs
     updateCacheItem :: SmartCacheItem -> SmartCacheItem
     updateCacheItem item@SmartCacheTransitItem {..} =
       SmartCacheItem
@@ -136,7 +199,11 @@ padCacheItems inputs = map updateCacheItem inputs
             [(name, largestSize - (maxPosOffset - 1))]
         }
       where
-        (TransitStream name arrayName inputValueType inputDims) = inputStream
+        (name, arrayName, inputValueType, inputDims) =
+          ( getStreamName inputStream
+          , getArrayNameFromStream inputStream
+          , getStreamType inputStream
+          , getStreamDimensions inputStream)
     updateCacheItem org@SmartCacheItem {..} =
       if sizeDiff > 0
         then updated
@@ -157,6 +224,8 @@ padCacheItems inputs = map updateCacheItem inputs
 -- Fortran array with 1 based indexing. This means the values from startToPointDistances
 -- in the SmartCacheDetails structure can be used directly as the indices.
 buildSmartCacheItem :: Kernel -> Int -> Stream Anno -> SmartCacheItem
+buildSmartCacheItem _ _ stream@Stream {} =
+  SmartCacheTransitItem {inputStream = stream, size = 1}
 buildSmartCacheItem _ _ transStream@TransitStream {} =
   SmartCacheTransitItem {inputStream = transStream, size = 1}
 buildSmartCacheItem kernel streamDimensionOrder inStream =

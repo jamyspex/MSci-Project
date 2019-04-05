@@ -1,0 +1,23 @@
+
+================================================================================
+F4: Finite-element Fortran for FPGAs
+This compiler allows Fortran finite element codes to be compiled
+for execution on FPGA devices via OpenCL
+================================================================================
+
+The following command line values were parsed:
+
+Files with subroutines to be parallelised:
+	dyn
+	vernieuw
+	shapiro
+File containing main subroutine: 
+	main.f95
+Source directory:
+	./Shallow-Water-2D
+Fixed form: False
+Loop fusion bound: Nothing
+CPP Defines: 
+CPP Excludes:
+
+"Executing compiler main..."

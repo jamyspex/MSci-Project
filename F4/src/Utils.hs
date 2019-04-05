@@ -90,6 +90,17 @@ data SmartCacheItem
                           , size        :: Int }
 
 instance Show SmartCacheItem where
+  show SmartCacheTransitItem {..} =
+    "-------------------------------\n" ++
+    "Smart cache Transit Item\n" ++
+    "Input stream: " ++
+    name ++
+    "\n" ++ "Buffer size: " ++ show size ++ "-------------------------------\n"
+    where
+      (name, dims) =
+        case inputStream of
+          (Stream name _ _ dims)        -> (name, dims)
+          (TransitStream name _ _ dims) -> (name, dims)
   show SmartCacheItem {..} =
     "-------------------------------\n" ++
     "Smart cache item\n" ++

@@ -76,17 +76,15 @@ hasConstantStenValues (StencilStream _ _ _ _ (Stencil _ _ _ stencilIndices _)) =
 -- is not present already in the stream add it.
 calculateSmartCacheDetailsForStream ::
      Maybe Kernel -> [Int] -> Stream Anno -> SmartCacheDetailsForStream
-calculateSmartCacheDetailsForStream kernel itOrder sten
- --  | hasConstantStenValues sten = DummySmartCacheDetailsForStream {stream = sten}
-  | otherwise =
-    SmartCacheDetailsForStream
-      { requiredBufferSize = maxNumBlocks
-      , startIndex = maxStart
-      , endIndex = maxEnd
-      , startToPointDistances = pairsFromStart
-      , maxPosOffset = getMaxOffset all fst centralIdx
-      , maxNegOffset = getMaxOffset all snd centralIdx
-      }
+calculateSmartCacheDetailsForStream kernel itOrder sten =
+  SmartCacheDetailsForStream
+    { requiredBufferSize = maxNumBlocks
+    , startIndex = maxStart
+    , endIndex = maxEnd
+    , startToPointDistances = pairsFromStart
+    , maxPosOffset = getMaxOffset all fst centralIdx
+    , maxNegOffset = getMaxOffset all snd centralIdx
+    }
   where
     (StencilStream name arrayName valueType dims (Stencil anno dimension numPoints coords varName)) =
       sten

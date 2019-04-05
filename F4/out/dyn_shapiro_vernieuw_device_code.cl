@@ -98,7 +98,7 @@ inline unsigned int F4D2C(
         pipe float vernieuw__vernieuw_output_writer__wet_j_k__pipe __attribute__((xcl_reqd_pipe_depth(32)));
         pipe float vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe __attribute__((xcl_reqd_pipe_depth(32)));
         pipe float vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe __attribute__((xcl_reqd_pipe_depth(32)));
-    
+
 __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_eta_j_k_reader(float *eta) {
 
       float eta_j_k;
@@ -127,7 +127,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_smart_cache() {
       const int maxnegativeoffset = 0;
     for (count = 1;count <= nloop;count += 1) {
                 compindex = count-maxpositiveoffset;
-                
+
 #pragma unroll
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 eta_buffer[F1D2C(1 , i)] = eta_buffer[F1D2C(1 , i+1)];
@@ -223,7 +223,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_smart_cache() {
       const int maxnegativeoffset = 0;
     for (count = 1;count <= nloop;count += 1) {
                 compindex = count-maxpositiveoffset;
-                
+
 #pragma unroll
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 wet_buffer[F1D2C(1 , i)] = wet_buffer[F1D2C(1 , i+1)];
@@ -351,7 +351,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_smart_cache() {
       const int maxnegativeoffset = 503;
     for (count = 1;count <= nloop;count += 1) {
                 compindex = count-maxpositiveoffset;
-                
+
 #pragma unroll
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 h_buffer[F1D2C(1 , i)] = h_buffer[F1D2C(1 , i+1)];
@@ -493,7 +493,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
       const int maxnegativeoffset = 503;
     for (count = 1;count <= nloop;count += 1) {
                 compindex = count-maxpositiveoffset;
-                
+
 #pragma unroll
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 vn_buffer[F1D2C(1 , i)] = vn_buffer[F1D2C(1 , i+1)];
@@ -522,9 +522,9 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
                                 write_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe,&etan_jm1_k);
                                 etan_jp1_k = etan_buffer[F1D2C(1 , 504)];
                                 write_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe,&etan_jp1_k);
-                                un_j_k = un_buffer[F1D2C(1 , 1005)];
+                                un_j_k = un_buffer[F1D2C(1 , 503)];
                                 write_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe,&un_j_k);
-                                vn_j_k = vn_buffer[F1D2C(1 , 1005)];
+                                vn_j_k = vn_buffer[F1D2C(1 , 503)];
                                 write_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe,&vn_j_k);
                                 wet_j_k = wet_buffer[F1D2C(1 , 503)];
                                 write_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe,&wet_j_k);
@@ -671,4 +671,3 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_output_write
         }
     }
     }
-
