@@ -5,6 +5,7 @@ module MiniPP
   , miniPPD
   , miniPPProgram
   , miniPPProgUnit
+  , miniPPProgUnitNoTruncate
   , miniPPP
   , showVarLst
   , showSubName
@@ -120,7 +121,7 @@ miniPPAttr attr =
         (map
            (\(b, e) ->
               if miniPP b == ""
-                then ""
+                then miniPP e
                 else miniPP b ++ ":" ++ miniPP e)
            dim_exp_tups) ++
       ")" -- [(Expr p, Expr p)]
@@ -183,7 +184,7 @@ miniPPD decl =
     _ -> "! UNSUPPORTED in miniPPD! " ++ show decl
 
 miniPPF :: Fortran Anno -> String
-miniPPF stmt = miniPPFT stmt "    "
+miniPPF stmt = miniPPFT "    " stmt "    "
 
 blockToFortran :: Block Anno -> Fortran Anno
 blockToFortran (Block _ _ _ _ _ f) = f
@@ -204,8 +205,10 @@ miniPPProgram :: Program Anno -> String
 miniPPProgram = concatMap miniPPProgUnit
 
 miniPPProgUnit :: ProgUnit Anno -> String
-miniPPProgUnit prog =
-  truncate $
+miniPPProgUnit prog = truncate $ miniPPProgUnitNoTruncate prog
+
+miniPPProgUnitNoTruncate :: ProgUnit Anno -> String
+miniPPProgUnitNoTruncate prog =
   case prog of
     Main _ _ (SubName _ subname) args b p ->
       "program " ++
@@ -243,8 +246,8 @@ printBlock (Block _ _ _ _ decls fortran) =
 --                     ArgName _ argname -> argname
 --                     NullArg _ -> ""
 --                     ASeq _ a1 a2 -> printArgName a1 ++ "," ++ printArgName a2
-miniPPFT :: Fortran Anno -> String -> String
-miniPPFT stmt tab =
+miniPPFT :: String -> Fortran Anno -> String -> String
+miniPPFT originalTab stmt tab =
   case stmt of
     Assg _ _ expr1 expr2 -> tab ++ miniPP expr1 ++ " = " ++ miniPP expr2
     For _ _ (VarName _ v) expr1 expr2 expr3 stmt1 ->
@@ -257,40 +260,47 @@ miniPPFT stmt tab =
       miniPP expr2 ++
       ", " ++
       miniPP expr3 ++
-      "\n" ++ miniPPFT stmt1 (tab ++ tab) ++ "\n" ++ tab ++ "end do"
+      "\n" ++
+      miniPPFT originalTab stmt1 (tab ++ originalTab) ++ "\n" ++ tab ++ "end do"
     DoWhile _ _ expr stmt1 ->
       tab ++
       "do while (" ++
       miniPP expr ++
-      ") " ++ "\n" ++ miniPPFT stmt1 (tab ++ tab) ++ "\n" ++ tab ++ "end do"
-    FSeq _ _ (NullStmt _ _) stmt2 -> miniPPFT stmt2 tab
-    FSeq _ _ stmt1 (NullStmt _ _) -> miniPPFT stmt1 tab
-    FSeq _ _ stmt1 stmt2 -> miniPPFT stmt1 tab ++ "\n" ++ miniPPFT stmt2 tab
+      ") " ++
+      "\n" ++
+      miniPPFT originalTab stmt1 (tab ++ originalTab) ++ "\n" ++ tab ++ "end do"
+    FSeq _ _ (NullStmt _ _) stmt2 -> miniPPFT originalTab stmt2 tab
+    FSeq _ _ stmt1 (NullStmt _ _) -> miniPPFT originalTab stmt1 tab
+    FSeq _ _ stmt1 stmt2 ->
+      miniPPFT originalTab stmt1 tab ++ "\n" ++ miniPPFT originalTab stmt2 tab
     If _ _ expr1 stmt1 exprs_stmts m_stmt ->
       tab ++
       "if (" ++
       miniPP expr1 ++
       ") then\n" ++
-      miniPPFT stmt1 (tab ++ tab) ++
+      miniPPFT originalTab stmt1 (originalTab ++ tab) ++
       "\n" ++
       unlines
         (map
            (\(expr, stmt) ->
               (tab ++
                "else if (" ++
-               miniPP expr ++ ") then\n" ++ miniPPFT stmt (tab ++ tab)))
+               miniPP expr ++
+               ") then\n" ++ miniPPFT originalTab stmt (originalTab ++ tab)))
            exprs_stmts) ++
       "" ++
       (case m_stmt of
          Just (NullStmt _ _) -> "" -- tab++"else"
-         Just stmt -> tab ++ "else\n" ++ miniPPFT stmt (tab ++ tab) ++ "\n"
+         Just stmt ->
+           tab ++
+           "else\n" ++ miniPPFT originalTab stmt (originalTab ++ tab) ++ "\n"
          Nothing -> "") ++
       tab ++ "end if"
     Call _ _ expr (ArgList _ es) ->
       tab ++ "call " ++ miniPP expr ++ "(" ++ miniPP es ++ ")"
     Allocate _ _ expr1 expr2 -> tab ++ "allocate " ++ show (expr1, expr2)
     Goto _ _ lbl -> tab ++ "goto " ++ lbl
-    Label _ _ lbl stmt1 -> lbl ++ tab ++ miniPPFT stmt1 tab
+    Label _ _ lbl stmt1 -> lbl ++ tab ++ miniPPFT originalTab stmt1 tab
     Print _ _ expr exprs ->
       tab ++ "print *, " ++ miniPP expr ++ intercalate "," (map miniPP exprs)
     NullStmt _ _ -> "" -- "! NullStmt"
@@ -304,7 +314,9 @@ miniPPFT stmt tab =
       showVarLst vws ++
       "," ++
       showLoopVarLst lvars ++
-      "," ++ showVarLst ilvars ++ ") {\n" ++ miniPPFT stmt1 tab ++ "\n" ++ "!}"
+      "," ++
+      showVarLst ilvars ++
+      ") {\n" ++ miniPPFT originalTab stmt1 tab ++ "\n" ++ "!}"
     OpenCLReduce _ _ vrs vws lvars ilvars rvarexprs stmt1 ->
       "! OpenCLReduce ( " ++
       showVarLst vrs ++
@@ -316,16 +328,23 @@ miniPPFT stmt tab =
       showVarLst ilvars ++
       "," ++
       showReductionVarLst rvarexprs ++
-      ") {\n" ++ miniPPFT stmt1 tab ++ "\n" ++ "!}"
+      ") {\n" ++ miniPPFT originalTab stmt1 tab ++ "\n" ++ "!}"
     OpenCLStencil _ _ stencils stmt1 ->
       "! OpenCLStencil (\n" ++
       showStencils tab stencils ++
-      "\n" ++ "!" ++ tab ++ "){\n" ++ miniPPFT stmt1 tab ++ tab ++ "\n!}"
+      "\n" ++
+      "!" ++ tab ++ "){\n" ++ miniPPFT originalTab stmt1 tab ++ tab ++ "\n!}"
     OpenCLBufferWrite _ _ (VarName _ v) -> tab ++ "oclWriteBuffer(" ++ v ++ ")" -- FIXME! Should have type info etc oclWrite3DFloatArrayBuffer(p_buf,p_sz,p) This requires a lookup in the context!
     OpenCLBufferRead _ _ (VarName _ v) -> tab ++ "oclWriteBuffer(" ++ v ++ ")" -- FIXME! Should have type info etc
     OriginalSubContainer _ subName body ->
       "! Original Subroutine Name: " ++
-      subName ++ " {\n" ++ miniPPFT body tab ++ "\n!}"
+      subName ++ " {\n" ++ miniPPFT originalTab body tab ++ "\n!}"
+    -- TempGuard conditions body ->
+    --   "! Temp Guard Metadata \n! conditions = " ++
+    --   concatMap
+    --     (\(name, value) -> name ++ " == " ++ show value ++ ", ")
+    --     conditions ++
+    --   " {\n" ++ miniPPFT originalTab body tab ++ "\n!}"
     Return _ _ expr -> tab ++ "return " ++ miniPP expr
     Open _ _ specs -> tab ++ "open(" ++ miniPPSpecs specs tab ++ ")"
     Close _ _ specs -> tab ++ "close(" ++ miniPPSpecs specs tab ++ ")"

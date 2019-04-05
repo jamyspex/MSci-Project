@@ -2,18 +2,16 @@ module FortranDSL where
 
 import           Language.Fortran
 import           LanguageFortranTools
-import           Utils
 
-for = for' lessThanEq
-
-for' ::
-     (Expr Anno -> Expr Anno -> Expr Anno)
-  -> String
-  -> Int
-  -> Expr Anno
-  -> Fortran Anno
-  -> Fortran Anno
-for' comparision loopVar initial lhs =
+-- import           Utils
+--      for = for' lessThanEq
+for
+     -- (Expr Anno -> Expr Anno -> Expr Anno)
+ -- ->
+ ::
+     String -> Int -> Expr Anno -> Fortran Anno -> Fortran Anno
+-- comparision
+for loopVar initial lhs =
   For
     nullAnno
     nullSrcSpan
@@ -22,7 +20,32 @@ for' comparision loopVar initial lhs =
     lhs -- (comparision (var loopVar) lhs)
     (con 1)
 
-forLT = for' lessThan
+-- forLT = for' lessThan
+nullUseBlock = UseBlock (UseNil nullAnno) NoSrcLoc
+
+buildAstSeq :: (a -> a -> a) -> a -> [a] -> a
+buildAstSeq _ nullNode [] = nullNode
+buildAstSeq _ _ [statement] = statement
+buildAstSeq constructor nullNode (statement:statements) =
+  constructor statement (buildAstSeq constructor nullNode statements)
+
+-- combines multiple conditions produced by buildLoopGuard with .and.
+combineWithAnd :: [Expr Anno] -> Expr Anno
+combineWithAnd =
+  buildAstSeq
+    (Bin nullAnno nullSrcSpan (And nullAnno))
+    (NullExpr nullAnno nullSrcSpan)
+
+argNode :: [String] -> Arg Anno
+argNode names =
+  Arg
+    nullAnno
+    (buildAstSeq (ASeq nullAnno) (NullArg nullAnno) argNames)
+    nullSrcSpan
+  where
+    argNames = map (ArgName nullAnno) names
+
+eq = Bin nullAnno nullSrcSpan (RelEQ nullAnno)
 
 plus = Bin nullAnno nullSrcSpan (Plus nullAnno)
 

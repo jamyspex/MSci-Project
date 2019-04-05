@@ -6,6 +6,7 @@ import           CodeGenUtils
 import           Data.Generics
 import           Data.List.Index
 import qualified Data.Map             as DMap
+import           Debug.Trace
 import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
@@ -37,9 +38,9 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
         loopVarName
         (driverLoopLowerBound sharedData + 1)
         (var driverLoopBoundVarName)
-        (block [pipeReads, kernelBodyWithoutAnnos, pipeWrites])
-    pipeReads = block $ generatePipeReadsMapKernel mapKern
-    pipeWrites = block $ generatePipeWritesMapKernel mapKern
+        (block [block pipeReads, kernelBodyWithoutAnnos, block pipeWrites])
+    pipeReads = generatePipeReadsKernel mapKern
+    pipeWrites = generatePipeWritesKernel mapKern
     kernelBodyWithoutAnnos = stripOpenCLAnnos fortran
     decls =
       declNode $
@@ -49,7 +50,42 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
     loopVars = getLoopVarNames fortran
     loopVarArgsRemoved =
       filter (\(ArgName _ name) -> name `notElem` loopVars) args
-generateKernelCode Reduce {..} = error "Reduce code gen not yet implemented"
+generateKernelCode reduceKern@Reduce {..} = (kernel, callingData)
+  where
+    kernel = sub name decls mainLoop loopVarArgsRemoved
+    callingData =
+      KCD
+        { argPositions =
+            imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
+        , kernelName = name
+        , subroutineName = originalSubName
+        }
+    loopVarName = driverLoopIndexName sharedData
+    driverLoopBoundVarName = "nloop"
+    mainLoop =
+      block
+        [ for
+            loopVarName
+            (driverLoopLowerBound sharedData + 1)
+            (var driverLoopBoundVarName)
+            (block [block pipeReads, kernelBodyWithoutAnnos])
+        , for
+            loopVarName
+            (driverLoopLowerBound sharedData + 1)
+            (var driverLoopBoundVarName)
+            (block pipeWrites)
+        ]
+    pipeReads = generatePipeReadsKernel reduceKern
+    pipeWrites = generatePipeWritesKernel reduceKern
+    kernelBodyWithoutAnnos = stripOpenCLAnnos fortran
+    decls =
+      declNode $
+      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData) :
+      intDecl loopVarName : getDecls fortran
+    args = getArgs fortran
+    loopVars = getLoopVarNames fortran
+    loopVarArgsRemoved =
+      filter (\(ArgName _ name) -> name `notElem` loopVars) args
 
 getLoopVarNames :: ProgUnit Anno -> [String]
 getLoopVarNames kernelBody = map getNameFromVarName loopVars
@@ -69,36 +105,54 @@ stripOpenCLAnnos kernelBody = annosRemoved
         (OpenCLStencil _ _ _ body)        -> body
         _                                 -> fortran
 
-generatePipeReadsMapKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
-generatePipeReadsMapKernel Map {..} =
-  concatMap (generatePipeAccessKernel "read") $ DMap.elems combined
+getInReductionVarStreams :: PipelineItem SharedPipelineData -> [Stream Anno]
+getInReductionVarStreams Map {..} =
+  map buildDummyStreamFromReductionVar inputReduceVariables
+getInReductionVarStreams Reduce {..} =
+  map buildDummyStreamFromReductionVar inputReduceVariables
+getInReductionVarStreams _ = []
+
+generatePipeReadsKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
+generatePipeReadsKernel kernel =
+  concatMap (generatePipeAccessKernel ReadPipe) $ DMap.elems combined
   where
     pipesMap =
       DMap.fromList $
-      map (\p@(Pipe _ _ _ _ stream) -> (getStreamName stream, p)) readPipes
-    outputStreamsMap =
+      map (\p@(Pipe _ _ _ _ stream) -> (getStreamName stream, p)) $
+      readPipes kernel
+    inputStreamsMap =
       DMap.fromList $
-      map
-        (\outputStream -> (getStreamName outputStream, outputStream))
-        inputStreams
+      map (\outputStream -> (getStreamName outputStream, outputStream)) $
+      inputStreams kernel ++ getInReductionVarStreams kernel
     combined =
-      DMap.intersectionWith (\pipe sci -> (pipe, sci)) pipesMap outputStreamsMap
+      DMap.intersectionWith (\pipe sci -> (pipe, sci)) pipesMap inputStreamsMap
 
-generatePipeAccessKernel :: String -> (Pipe, Stream Anno) -> [Fortran Anno]
-generatePipeAccessKernel action (Pipe _ _ pipeName _ _, stream) =
-  [call (action ++ "_pipe") [pipeName, getStreamName stream]]
+data PipeAction
+  = ReadPipe
+  | WritePipe
 
-generatePipeWritesMapKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
-generatePipeWritesMapKernel Map {..} =
-  concatMap (generatePipeAccessKernel "write") $ DMap.elems combined
+generatePipeAccessKernel :: PipeAction -> (Pipe, Stream Anno) -> [Fortran Anno]
+generatePipeAccessKernel ReadPipe (Pipe _ _ pipeName _ _, stream) =
+  [call "read_pipe" [pipeName, getStreamName stream]]
+generatePipeAccessKernel WritePipe (Pipe _ _ pipeName _ _, stream) =
+  [call "write_pipe" [pipeName, getStreamName stream]]
+
+getOutReductionVarStreams :: PipelineItem SharedPipelineData -> [Stream Anno]
+getOutReductionVarStreams Reduce {..} =
+  map buildDummyStreamFromReductionVar outputReduceVariables
+getOutReductionVarStreams _ = []
+
+generatePipeWritesKernel :: PipelineItem SharedPipelineData -> [Fortran Anno]
+generatePipeWritesKernel kernel =
+  concatMap (generatePipeAccessKernel WritePipe) $ DMap.elems combined
   where
     pipesMap =
       DMap.fromList $
-      map (\p@(Pipe _ _ _ _ stream) -> (getStreamName stream, p)) writtenPipes
+      map (\p@(Pipe _ _ _ _ stream) -> (getStreamName stream, p)) $
+      writtenPipes kernel
     outputStreamsMap =
       DMap.fromList $
-      map
-        (\outputStream -> (getStreamName outputStream, outputStream))
-        outputStreams
+      map (\outputStream -> (getStreamName outputStream, outputStream)) $
+      outputStreams kernel ++ getOutReductionVarStreams kernel
     combined =
       DMap.intersectionWith (\pipe sci -> (pipe, sci)) pipesMap outputStreamsMap

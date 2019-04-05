@@ -9,6 +9,7 @@ import qualified Data.Map              as DMap
 import           Data.Maybe
 import           Debug.Trace
 import           F95IntrinsicFunctions
+import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
@@ -17,18 +18,32 @@ import           Text.Read
 import           Utils
 
 -- Wrapper function that uses everywhere to operate on the supplied subroutine
-addLoopGuards :: SubRec -> SubRec
-addLoopGuards subRec =
-  subRec
-    { subAst =
-        everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
-    }
+addLoopGuards :: Kernel -> IO Kernel
+addLoopGuards kernel = do
+  putStrLn $ show withLoopGuards
+  return withLoopGuards
   where
-    ast = subAst subRec
+    withLoopGuards =
+      kernel
+        { body =
+            everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
+        }
+    ast = body kernel
     arrayDecls = getArrayDecls ast
     arrays = map arrayFromDecl arrayDecls
     declRangeMap = getDimensionPositionMap arrayDecls
 
+-- addLoopGuards :: SubRec -> SubRec
+-- addLoopGuards subRec =
+--   subRec
+--     { subAst =
+--         everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
+--     }
+--   where
+--     ast = subAst subRec
+--     arrayDecls = getArrayDecls ast
+--     arrays = map arrayFromDecl arrayDecls
+--     declRangeMap = getDimensionPositionMap arrayDecls
 -- Wrapper to let the main function below work with maps and folds
 addLoopGuardToMapOrReduce ::
      DMap.Map (String, Int) (Int, Int)
@@ -149,20 +164,24 @@ data Bound
 -- where the dimensions are equal and guards are not required. For those
 -- that do require guards return (Loop var name, Bound) tuples to be
 -- converted to conditions in the inserted guard.
+-- NOTE At the moment this does conditionally insert the guards it just
+-- think this makes it easier to derive the driver loop bounds.
 getRequiredGuards :: [CombinedMapItem] -> [(String, Bound)]
 getRequiredGuards = concatMap processOneCMI
   where
     processOneCMI :: CombinedMapItem -> [(String, Bound)]
-    processOneCMI combinedMapItem = potentialLowerBound ++ potentialUpperBound
+    processOneCMI combinedMapItem =
+      (loopVarName, LWB accessLWB) : [(loopVarName, UPB accessUPB)]
+     -- potentialLowerBound ++ potentialUpperBound
+        -- potentialLowerBound =
+        --   if declLWB == accessLWB
+        --     then []
+        --     else [(loopVarName, LWB accessUPB)]
+        -- potentialUpperBound =
+        --   if declUPB == accessUPB
+        --     then []
+        --     else [(loopVarName, UPB accessUPB)]
       where
-        potentialLowerBound =
-          if declLWB == accessLWB
-            then []
-            else [(loopVarName, LWB accessLWB)]
-        potentialUpperBound =
-          if declUPB == accessUPB
-            then []
-            else [(loopVarName, UPB accessUPB)]
         (declLWB, declUPB) = declItem combinedMapItem
         (loopVarName, (accessLWB, accessUPB)) = accessItem combinedMapItem
 
@@ -198,13 +217,6 @@ buildArrayAccessDimMap loopVarsAndBounds arrayAccessPos = DMap.fromList mapItems
     buildOneItem loopVarMap (arrName, loopVarName, pos) =
       [((arrName, pos), (loopVarName, loopVarMap DMap.! loopVarName))]
   -- buildOneItem _ (_, _, Nothing) = []
-
--- combines multiple conditions produced by buildLoopGuard with .and.
-combineWithAnd :: [Expr Anno] -> Expr Anno
-combineWithAnd =
-  buildAstSeq
-    (Bin nullAnno nullSrcSpan (And nullAnno))
-    (NullExpr nullAnno nullSrcSpan)
 
 -- build one condition of the form (<loop variable> <=/>= <const>)
 buildLoopGuard :: String -> Bound -> Expr Anno

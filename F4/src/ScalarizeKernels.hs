@@ -40,6 +40,23 @@ scalarizeKernel (m@Map {..}, sc, ma) = do
       replaceArrayDeclarations replacementMap withArraysAccessesConverted
     withArrayArgsDeleted =
       deleteArrayArgs availableStreams withArrayDeclarationsReplaced
+scalarizeKernel (r@Reduce {..}, sc, ma) = do
+  putStrLn $
+    "Kernel = \n" ++
+    miniPPProgUnit fortran ++
+    "\nStreams = \n" ++ miniPPProgUnit withArrayArgsDeleted
+  return (r {fortran = withArrayArgsDeleted}, sc, ma)
+  where
+    arrays = map arrayFromDecl $ getArrayDecls fortran
+    availableStreams = inputStreams ++ outputStreams
+    body = getSubBody fortran
+    withArraysAccessesConverted =
+      convertArrayAccesses arrays availableStreams fortran
+    replacementMap = matchStreamingVarsToArrayDecls availableStreams arrays
+    withArrayDeclarationsReplaced =
+      replaceArrayDeclarations replacementMap withArraysAccessesConverted
+    withArrayArgsDeleted =
+      deleteArrayArgs availableStreams withArrayDeclarationsReplaced
 
 deleteArrayArgs :: [Stream Anno] -> ProgUnit Anno -> ProgUnit Anno
 deleteArrayArgs streams kernel =
@@ -52,8 +69,7 @@ deleteArrayArgs streams kernel =
     block
   where
     allArgs = getArgs kernel
-    replacedByStream =
-      Set.fromList $ map (\(Stream _ arrayName _ _) -> arrayName) streams
+    replacedByStream = Set.fromList $ map getArrayNameFromStream streams -- (Stream _ arrayName _ _) -> arrayName) streams
     arrayArgsRemoved =
       filter
         (\(ArgName _ name) -> name `Set.notMember` replacedByStream)
@@ -93,7 +109,7 @@ matchStreamingVarsToArrayDecls streams arrays = matched
     groupedByArray =
       groupBy (\(n1, _) (n2, _) -> n1 == n2) $
       sortBy (\(n1, _) (n2, _) -> n1 `compare` n2) $
-      map (\s@(Stream _ arrayName _ _) -> (arrayName, s)) streams
+      map (\s -> (getArrayNameFromStream s, s)) streams
     arrayNameToArrayMap =
       DMap.fromList $
       map (\arr -> ((getNameFromVarName . arrayVarName) arr, arr)) arrays
@@ -106,7 +122,7 @@ matchStreamingVarsToArrayDecls streams arrays = matched
 replaceArrayDeclWithStreamingVarDecls ::
      DMap.Map String (Array, [Stream Anno]) -> Decl Anno -> [Decl Anno]
 replaceArrayDeclWithStreamingVarDecls replacementMap currentDecl =
-  map makeDecl $ uniq $ map (\(Stream name _ _ _) -> name) streams
+  map makeDecl $ uniq $ map getStreamName streams
   where
     (array, streams) = replacementMap DMap.! declName
     (Decl _ _ _ fortranType) = currentDecl

@@ -34,6 +34,22 @@ cpp -Wno-invalid-pp-token -P  ./Shallow-Water-2D/vernieuw_tmp.f95 | grep -v -E '
 Parsing ./Shallow-Water-2D/dyn.f95
 Parsing ./Shallow-Water-2D/shapiro.f95
 Parsing ./Shallow-Water-2D/vernieuw.f95
+Writing to consts/dyn.f95
+Writing to consts/shapiro.f95
+Writing to consts/vernieuw.f95
+Writing to consts/main.f95
+Writing to scratch/dyn.f95
+Writing to scratch/shapiro.f95
+Writing to scratch/vernieuw.f95
+Writing to scratch/main.f95
+cpp -Wno-invalid-pp-token -P  scratch/main_tmp.f95 | grep -v -E '^\s*$' 
+Parsing scratch/main.f95
+cpp -Wno-invalid-pp-token -P  scratch/dyn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  scratch/shapiro_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P  scratch/vernieuw_tmp.f95 | grep -v -E '^\s*$' 
+Parsing scratch/dyn.f95
+Parsing scratch/shapiro.f95
+Parsing scratch/vernieuw.f95
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  Subroutines not for offload 
@@ -41,7 +57,7 @@ Parsing ./Shallow-Water-2D/vernieuw.f95
 
 ================================================================================
 Subroutine name: wave2d
-Filename: ./Shallow-Water-2D/main.f95
+Filename: scratch/main.f95
 Source:
 program wave2d
       integer(4), parameter :: nx = 500 
@@ -89,7 +105,7 @@ program wave2d
     hmax = 0.
     do j = 1, ny, 1
         do k = 1, nx, 1
-                hmax = max(hmax,h(j,k))
+            hmax = max(hmax,h(j,k))
         end do
     end do
     dummy = 0
@@ -107,7 +123,7 @@ program wave2d
     open(40, file='v.dat', form='formatted')
     do j = 26, 26, 1
         do k = 26, 26, 1
-                eta(j,k) = 1.0
+            eta(j,k) = 1.0
         end do
     end do
     do n = 1, ntot, 1
@@ -182,7 +198,7 @@ This subroutine will not be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: dyn
-Filename: ./Shallow-Water-2D/dyn.f95
+Filename: scratch/dyn.f95
 Source:
 subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
       integer(4), parameter :: ny = 500 
@@ -191,18 +207,18 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
       integer :: k
       real, intent(In) :: dx
       real, intent(In) :: g
-      real, dimension(0:ny+1,0:nx+1) :: eta
+      real, dimension(0:501,0:501) :: eta
       real, intent(In) :: dt
       real, intent(In) :: dy
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: u
-      integer, dimension(0:ny+1,0:nx+1), intent(In) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: vn
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: h
-      real, dimension(0:ny+1,0:nx+1) :: etan
-      real, dimension(0:ny+1,0:nx+1) :: du
-      real, dimension(0:ny+1,0:nx+1) :: dv
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(In) :: u
+      integer, dimension(0:501,0:501), intent(In) :: wet
+      real, dimension(0:501,0:501), intent(In) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real, dimension(0:501,0:501), intent(In) :: h
+      real, dimension(0:501,0:501) :: etan
+      real, dimension(0:501,0:501) :: du
+      real, dimension(0:501,0:501) :: dv
       real :: uu
       real :: vv
       real :: duu
@@ -219,55 +235,55 @@ subroutine dyn(j,k,dx,g,eta,dt,dy,un,u,wet,v,vn,h,etan)
       real :: hsn
       real :: hnn
       real :: hnp
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-                du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-                dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+            dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
         end do
     end do
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-                un(j,k) = 0.0
-                uu = u(j,k)
-                duu = du(j,k)
-                if (wet(j,k)==1) then
-                                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                                                un(j,k) = uu+duu
-                                end if
-                else
-                                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                                                un(j,k) = uu+duu
-                                end if
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            un(j,k) = 0.0
+            uu = u(j,k)
+            duu = du(j,k)
+            if (wet(j,k)==1) then
+                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                    un(j,k) = uu+duu
                 end if
-                vv = v(j,k)
-                dvv = dv(j,k)
-                vn(j,k) = 0.0
-                if (wet(j,k)==1) then
-                                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                                                vn(j,k) = vv+dvv
-                                end if
-                else
-                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                                                vn(j,k) = vv+dvv
-                                end if
+            else
+                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                    un(j,k) = uu+duu
                 end if
+            end if
+            vv = v(j,k)
+            dvv = dv(j,k)
+            vn(j,k) = 0.0
+            if (wet(j,k)==1) then
+                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            else
+                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            end if
         end do
     end do
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-                hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-                hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-                hue = hep+hen
-                hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-                hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-                huw = hwp+hwn
-                hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-                hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-                hvn = hnp+hnn
-                hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-                hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-                hvs = hsp+hsn
-                etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+            hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+            hue = hep+hen
+            hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+            hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+            huw = hwp+hwn
+            hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+            hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+            hvn = hnp+hnn
+            hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+            hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+            hvs = hsp+hsn
+            etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end do
     end do
 end subroutine dyn
@@ -280,30 +296,30 @@ This subroutine will be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: shapiro
-Filename: ./Shallow-Water-2D/shapiro.f95
+Filename: scratch/shapiro.f95
 Source:
 subroutine shapiro(j,k,wet,etan,eps,eta)
       integer(4), parameter :: nx = 500 
       integer(4), parameter :: ny = 500 
       integer, intent(InOut) :: j
       integer, intent(InOut) :: k
-      integer, dimension(0:ny+1,0:nx+1), intent(In) :: wet
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: etan
+      integer, dimension(0:501,0:501), intent(In) :: wet
+      real, dimension(0:501,0:501), intent(In) :: etan
       real, intent(In) :: eps
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: eta
+      real, dimension(0:501,0:501), intent(Out) :: eta
       real :: term1
       real :: term2
       real :: term3
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-                if (wet(j,k)==1) then
-                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                                eta(j,k) = term1+term2+term3
-                else
-                                eta(j,k) = etan(j,k)
-                end if
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            if (wet(j,k)==1) then
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                eta(j,k) = term1+term2+term3
+            else
+                eta(j,k) = etan(j,k)
+            end if
         end do
     end do
 end subroutine shapiro
@@ -316,7 +332,7 @@ This subroutine will be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: vernieuw
-Filename: ./Shallow-Water-2D/vernieuw.f95
+Filename: scratch/vernieuw.f95
 Source:
 subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       integer(4), parameter :: nx = 500 
@@ -325,28 +341,28 @@ subroutine vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real :: dx
       real :: dy
       real :: eps
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: eta
-      real, dimension(0:ny+1,0:nx+1) :: etan
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
       real :: g
-      real, dimension(0:ny+1,0:nx+1), intent(InOut) :: h
+      real, dimension(0:501,0:501), intent(InOut) :: h
       real, intent(In) :: hmin
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: hzero
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: u
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: un
-      real, dimension(0:ny+1,0:nx+1), intent(Out) :: v
-      real, dimension(0:ny+1,0:nx+1), intent(In) :: vn
-      integer, dimension(0:ny+1,0:nx+1), intent(Out) :: wet
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(In) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(In) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
       integer, intent(InOut) :: k
       integer, intent(InOut) :: j
-    do j = 0, ny+1, 1
-        do k = 0, nx+1, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = un(j,k)
-                v(j,k) = vn(j,k)
+    do j = 0, 501, 1
+        do k = 0, 501, 1
+            h(j,k) = hzero(j,k)+eta(j,k)
+            wet(j,k) = 1
+            if (h(j,k)<hmin) then
+                wet(j,k) = 0
+            end if
+            u(j,k) = un(j,k)
+            v(j,k) = vn(j,k)
         end do
     end do
 end subroutine vernieuw
@@ -410,80 +426,80 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 ! Original Subroutine Name: dyn {
     do j = 1, 500, 1
         do k = 1, 500, 1
-                du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-                dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+            du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+            dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
         end do
     end do
     do j = 1, 500, 1
         do k = 1, 500, 1
-                un(j,k) = 0.0
-                uu = u(j,k)
-                duu = du(j,k)
-                if (wet(j,k)==1) then
-                                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                                                un(j,k) = uu+duu
-                                end if
-                else
-                                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                                                un(j,k) = uu+duu
-                                end if
+            un(j,k) = 0.0
+            uu = u(j,k)
+            duu = du(j,k)
+            if (wet(j,k)==1) then
+                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                    un(j,k) = uu+duu
                 end if
-                vv = v(j,k)
-                dvv = dv(j,k)
-                vn(j,k) = 0.0
-                if (wet(j,k)==1) then
-                                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                                                vn(j,k) = vv+dvv
-                                end if
-                else
-                                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                                                vn(j,k) = vv+dvv
-                                end if
+            else
+                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                    un(j,k) = uu+duu
                 end if
+            end if
+            vv = v(j,k)
+            dvv = dv(j,k)
+            vn(j,k) = 0.0
+            if (wet(j,k)==1) then
+                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            else
+                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            end if
         end do
     end do
     do j = 1, 500, 1
         do k = 1, 500, 1
-                hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-                hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-                hue = hep+hen
-                hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-                hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-                huw = hwp+hwn
-                hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-                hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-                hvn = hnp+hnn
-                hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-                hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-                hvs = hsp+hsn
-                etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+            hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+            hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+            hue = hep+hen
+            hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+            hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+            huw = hwp+hwn
+            hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+            hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+            hvn = hnp+hnn
+            hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+            hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+            hvs = hsp+hsn
+            etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end do
     end do
 !}
 ! Original Subroutine Name: shapiro {
     do j = 1, 500, 1
         do k = 1, 500, 1
-                if (wet(j,k)==1) then
-                                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                                eta(j,k) = term1+term2+term3
-                else
-                                eta(j,k) = etan(j,k)
-                end if
+            if (wet(j,k)==1) then
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                eta(j,k) = term1+term2+term3
+            else
+                eta(j,k) = etan(j,k)
+            end if
         end do
     end do
 !}
 ! Original Subroutine Name: vernieuw {
     do j = 0, 501, 1
         do k = 0, 501, 1
-                h(j,k) = hzero(j,k)+eta(j,k)
-                wet(j,k) = 1
-                if (h(j,k)<hmin) then
-                                wet(j,k) = 0
-                end if
-                u(j,k) = un(j,k)
-                v(j,k) = vn(j,k)
+            h(j,k) = hzero(j,k)+eta(j,k)
+            wet(j,k) = 1
+            if (h(j,k)<hmin) then
+                wet(j,k) = 0
+            end if
+            u(j,k) = un(j,k)
+            v(j,k) = vn(j,k)
         end do
     end do
 !}
@@ -497,7 +513,7 @@ This subroutine will be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: wave2d
-Filename: ./Shallow-Water-2D/main.f95
+Filename: scratch/main.f95
 Source:
 program wave2d
       integer(4), parameter :: nx = 500 
@@ -545,7 +561,7 @@ program wave2d
     hmax = 0.
     do j = 1, ny, 1
         do k = 1, nx, 1
-                hmax = max(hmax,h(j,k))
+            hmax = max(hmax,h(j,k))
         end do
     end do
     dummy = 0
@@ -563,7 +579,7 @@ program wave2d
     open(40, file='v.dat', form='formatted')
     do j = 26, 26, 1
         do k = 26, 26, 1
-                eta(j,k) = 1.0
+            eta(j,k) = 1.0
         end do
     end do
     do n = 1, ntot, 1
@@ -633,16 +649,250 @@ This subroutine will not be offloaded to the FPGA
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ Pipeline Detection 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+! Original Subroutine Name: dyn {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+            dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+        end do
+    end do
+!}
+("dyn",2,250000)
+
+----------------------------------------
+
+! Original Subroutine Name: dyn {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            un(j,k) = 0.0
+            uu = u(j,k)
+            duu = du(j,k)
+            if (wet(j,k)==1) then
+                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                    un(j,k) = uu+duu
+                end if
+            else
+                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                    un(j,k) = uu+duu
+                end if
+            end if
+            vv = v(j,k)
+            dvv = dv(j,k)
+            vn(j,k) = 0.0
+            if (wet(j,k)==1) then
+                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            else
+                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            end if
+        end do
+    end do
+!}
+("dyn",2,250000)
+
+----------------------------------------
+
+! Original Subroutine Name: dyn {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+            hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+            hue = hep+hen
+            hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+            hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+            huw = hwp+hwn
+            hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+            hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+            hvn = hnp+hnn
+            hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+            hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+            hvs = hsp+hsn
+            etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+        end do
+    end do
+!}
+("dyn",2,250000)
+
+----------------------------------------
+
+! Original Subroutine Name: shapiro {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            if (wet(j,k)==1) then
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                eta(j,k) = term1+term2+term3
+            else
+                eta(j,k) = etan(j,k)
+            end if
+        end do
+    end do
+!}
+("shapiro",2,250000)
+
+----------------------------------------
+
+! Original Subroutine Name: vernieuw {
+    do j = 0, 501, 1
+        do k = 0, 501, 1
+            h(j,k) = hzero(j,k)+eta(j,k)
+            wet(j,k) = 1
+            if (h(j,k)<hmin) then
+                wet(j,k) = 0
+            end if
+            u(j,k) = un(j,k)
+            v(j,k) = vn(j,k)
+        end do
+    end do
+!}
+("vernieuw",2,252004)
+
+----------------------------------------
+
+
+================================================================================
+ Pipelines 
+--------------------------------------------------------------------------------
+
+pipeline_0_dyn_shapiro_vernieuw
+subroutine pipeline_0_dyn_shapiro_vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real :: dt
+      real, dimension(0:501,0:501) :: du
+      real :: duu
+      real, dimension(0:501,0:501) :: dv
+      real :: dvv
+      real :: dx
+      real :: dy
+      real :: eps
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      real :: g
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real :: hen
+      real :: hep
+      real, intent(In) :: hmin
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real :: uu
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real :: vv
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! Original Subroutine Name: dyn {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+            dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+        end do
+    end do
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            un(j,k) = 0.0
+            uu = u(j,k)
+            duu = du(j,k)
+            if (wet(j,k)==1) then
+                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                    un(j,k) = uu+duu
+                end if
+            else
+                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                    un(j,k) = uu+duu
+                end if
+            end if
+            vv = v(j,k)
+            dvv = dv(j,k)
+            vn(j,k) = 0.0
+            if (wet(j,k)==1) then
+                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            else
+                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                    vn(j,k) = vv+dvv
+                end if
+            end if
+        end do
+    end do
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+            hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+            hue = hep+hen
+            hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+            hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+            huw = hwp+hwn
+            hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+            hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+            hvn = hnp+hnn
+            hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+            hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+            hvs = hsp+hsn
+            etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+        end do
+    end do
+!}
+! Original Subroutine Name: shapiro {
+    do j = 1, 500, 1
+        do k = 1, 500, 1
+            if (wet(j,k)==1) then
+                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+                eta(j,k) = term1+term2+term3
+            else
+                eta(j,k) = etan(j,k)
+            end if
+        end do
+    end do
+!}
+! Original Subroutine Name: vernieuw {
+    do j = 0, 501, 1
+        do k = 0, 501, 1
+            h(j,k) = hzero(j,k)+eta(j,k)
+            wet(j,k) = 1
+            if (h(j,k)<hmin) then
+                wet(j,k) = 0
+            end if
+            u(j,k) = un(j,k)
+            v(j,k) = vn(j,k)
+        end do
+    end do
+!}
+end subroutine pipeline_0_dyn_shapiro_vernieuw
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  Map + Fold Detection 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
-Subroutine name: dyn_shapiro_vernieuw_merged
+Subroutine name: pipeline_0_dyn_shapiro_vernieuw
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+subroutine pipeline_0_dyn_shapiro_vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -695,11 +945,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     duu = du(j,k)
     if (wet(j,k)==1) then
         if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     else
         if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     end if
     vv = v(j,k)
@@ -707,11 +957,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     vn(j,k) = 0.0
     if (wet(j,k)==1) then
         if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     else
         if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     end if
 !}
@@ -761,7 +1011,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 !}
 !}
 !}
-end subroutine dyn_shapiro_vernieuw_merged
+end subroutine pipeline_0_dyn_shapiro_vernieuw
 
 AST not shown.
 Argument translations:
@@ -775,12 +1025,10 @@ This subroutine will be offloaded to the FPGA
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
-Subroutine name: dyn_shapiro_vernieuw_merged
+Subroutine name: pipeline_0_dyn_shapiro_vernieuw
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+subroutine pipeline_0_dyn_shapiro_vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -840,11 +1088,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     duu = du(j,k)
     if (wet(j,k)==1) then
         if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     else
         if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     end if
     vv = v(j,k)
@@ -852,11 +1100,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     vn(j,k) = 0.0
     if (wet(j,k)==1) then
         if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     else
         if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     end if
 !}
@@ -918,7 +1166,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
 !}
 !}
 !}
-end subroutine dyn_shapiro_vernieuw_merged
+end subroutine pipeline_0_dyn_shapiro_vernieuw
 
 AST not shown.
 Argument translations:
@@ -928,7 +1176,7 @@ This subroutine will be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: wave2d
-Filename: ./Shallow-Water-2D/main.f95
+Filename: scratch/main.f95
 Source:
 program wave2d
       integer(4), parameter :: nx = 500 
@@ -976,7 +1224,7 @@ program wave2d
     hmax = 0.
     do j = 1, ny, 1
         do k = 1, nx, 1
-                hmax = max(hmax,h(j,k))
+            hmax = max(hmax,h(j,k))
         end do
     end do
     dummy = 0
@@ -994,7 +1242,7 @@ program wave2d
     open(40, file='v.dat', form='formatted')
     do j = 26, 26, 1
         do k = 26, 26, 1
-                eta(j,k) = 1.0
+            eta(j,k) = 1.0
         end do
     end do
     do n = 1, ntot, 1
@@ -1068,12 +1316,10 @@ This subroutine will not be offloaded to the FPGA
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ================================================================================
-Subroutine name: dyn_shapiro_vernieuw_merged
+Subroutine name: pipeline_0_dyn_shapiro_vernieuw
 Filename: 
 Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
+subroutine pipeline_0_dyn_shapiro_vernieuw(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real :: dt
       real, dimension(0:501,0:501) :: du
       real :: duu
@@ -1130,11 +1376,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     duu = du(j,k)
     if (wet(j,k)==1) then
         if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     else
         if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                un(j,k) = uu+duu
+            un(j,k) = uu+duu
         end if
     end if
     vv = v(j,k)
@@ -1142,11 +1388,11 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     vn(j,k) = 0.0
     if (wet(j,k)==1) then
         if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     else
         if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                vn(j,k) = vv+dvv
+            vn(j,k) = vv+dvv
         end if
     end if
 !}    
@@ -1201,7 +1447,7 @@ subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,
     v(j,k) = vn(j,k)
 !}
 !}
-end subroutine dyn_shapiro_vernieuw_merged
+end subroutine pipeline_0_dyn_shapiro_vernieuw
 
 AST not shown.
 Argument translations:
@@ -1211,7 +1457,7 @@ This subroutine will be offloaded to the FPGA
 
 ================================================================================
 Subroutine name: wave2d
-Filename: ./Shallow-Water-2D/main.f95
+Filename: scratch/main.f95
 Source:
 program wave2d
       integer(4), parameter :: nx = 500 
@@ -1259,7 +1505,7 @@ program wave2d
     hmax = 0.
     do j = 1, ny, 1
         do k = 1, nx, 1
-                hmax = max(hmax,h(j,k))
+            hmax = max(hmax,h(j,k))
         end do
     end do
     dummy = 0
@@ -1277,298 +1523,7 @@ program wave2d
     open(40, file='v.dat', form='formatted')
     do j = 26, 26, 1
         do k = 26, 26, 1
-                eta(j,k) = 1.0
-        end do
-    end do
-    do n = 1, ntot, 1
-        time = REAL(n)*dt
-        call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
-        call shapiro(j, k, wet, etan, eps, eta)
-        call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
-    end do
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
-        write(20, '(101F12.6)')(h(j,k), k = 0, nx+1)
-        write(30, '(101F12.6)')(u(j,k), k = 0, nx+1)
-        write(40, '(101F12.6)')(v(j,k), k = 0, nx+1)
-    end do
-    write(6, *)("Data output at time = ", time/60.0, " min")
-
-end program wave2d
-
-AST not shown.
-Argument translations:
-	dyn->
-	    call dyn(j, k, dx, g, eta, dt, dy, un, u, wet, v, vn, h, etan)
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	shapiro->
-	    call shapiro(j, k, wet, etan, eps, eta)
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "eps", argument = VarName (fromList []) "eps"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	vernieuw->
-	    call vernieuw(dt, dx, dy, eps, eta, etan, g, h, hmin, hzero, j, k, u, un, v, vn, wet)
-	ArgTrans {parameter = ArgName (fromList []) "dt", argument = VarName (fromList []) "dt"}
-	ArgTrans {parameter = ArgName (fromList []) "dx", argument = VarName (fromList []) "dx"}
-	ArgTrans {parameter = ArgName (fromList []) "dy", argument = VarName (fromList []) "dy"}
-	ArgTrans {parameter = ArgName (fromList []) "eps", argument = VarName (fromList []) "eps"}
-	ArgTrans {parameter = ArgName (fromList []) "eta", argument = VarName (fromList []) "eta"}
-	ArgTrans {parameter = ArgName (fromList []) "etan", argument = VarName (fromList []) "etan"}
-	ArgTrans {parameter = ArgName (fromList []) "g", argument = VarName (fromList []) "g"}
-	ArgTrans {parameter = ArgName (fromList []) "h", argument = VarName (fromList []) "h"}
-	ArgTrans {parameter = ArgName (fromList []) "hmin", argument = VarName (fromList []) "hmin"}
-	ArgTrans {parameter = ArgName (fromList []) "hzero", argument = VarName (fromList []) "hzero"}
-	ArgTrans {parameter = ArgName (fromList []) "j", argument = VarName (fromList []) "j"}
-	ArgTrans {parameter = ArgName (fromList []) "k", argument = VarName (fromList []) "k"}
-	ArgTrans {parameter = ArgName (fromList []) "u", argument = VarName (fromList []) "u"}
-	ArgTrans {parameter = ArgName (fromList []) "un", argument = VarName (fromList []) "un"}
-	ArgTrans {parameter = ArgName (fromList []) "v", argument = VarName (fromList []) "v"}
-	ArgTrans {parameter = ArgName (fromList []) "vn", argument = VarName (fromList []) "vn"}
-	ArgTrans {parameter = ArgName (fromList []) "wet", argument = VarName (fromList []) "wet"}
-
-This subroutine will not be offloaded to the FPGA
-================================================================================
-
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- With Loop Guards 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-================================================================================
-Subroutine name: dyn_shapiro_vernieuw_merged
-Filename: 
-Source:
-subroutine dyn_shapiro_vernieuw_merged(dt,dx,dy,eps,eta,etan,g,h,hmin,hzero,j,k,u,un,v,vn,wet)
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real :: dt
-      real, dimension(0:501,0:501) :: du
-      real :: duu
-      real, dimension(0:501,0:501) :: dv
-      real :: dvv
-      real :: dx
-      real :: dy
-      real :: eps
-      real, dimension(0:501,0:501), intent(In) :: eta
-      real, dimension(0:501,0:501) :: etan
-      real :: g
-      real, dimension(0:501,0:501), intent(InOut) :: h
-      real :: hen
-      real :: hep
-      real, intent(In) :: hmin
-      real :: hnn
-      real :: hnp
-      real :: hsn
-      real :: hsp
-      real :: hue
-      real :: huw
-      real :: hvn
-      real :: hvs
-      real :: hwn
-      real :: hwp
-      real, dimension(0:501,0:501), intent(In) :: hzero
-      integer, intent(InOut) :: j
-      integer, intent(InOut) :: k
-      real :: term1
-      real :: term2
-      real :: term3
-      real, dimension(0:501,0:501), intent(Out) :: u
-      real, dimension(0:501,0:501), intent(InOut) :: un
-      real :: uu
-      real, dimension(0:501,0:501), intent(Out) :: v
-      real, dimension(0:501,0:501), intent(InOut) :: vn
-      real :: vv
-      integer, dimension(0:501,0:501), intent(Out) :: wet
-! Original Subroutine Name: dyn {
-! OpenCLStencil (
-!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
-!    ){
-! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-        dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-    end if
-!}    
-!}
-! OpenCLStencil (
-!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
-!    ){
-! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        un(j,k) = 0.0
-        uu = u(j,k)
-        duu = du(j,k)
-        if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
-        else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
-        end if
-        vv = v(j,k)
-        dvv = dv(j,k)
-        vn(j,k) = 0.0
-        if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
-        else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
-        end if
-    end if
-!}    
-!}
-! OpenCLStencil (
-!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	2 point stencil on 2D array un: [[0,0],[0,-1]]
-!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
-!    ){
-! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-        hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-        hue = hep+hen
-        hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-        hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-        huw = hwp+hwn
-        hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-        hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-        hvn = hnp+hnn
-        hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-        hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-        hvs = hsp+hsn
-        etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-    end if
-!}    
-!}
-!}
-! Original Subroutine Name: shapiro {
-! OpenCLStencil (
-!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
-!    ){
-! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
-        else
-                eta(j,k) = etan(j,k)
-        end if
-    end if
-!}    
-!}
-!}
-! Original Subroutine Name: vernieuw {
-! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
-    end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
-!}
-!}
-end subroutine dyn_shapiro_vernieuw_merged
-
-AST not shown.
-Argument translations:
-
-This subroutine will be offloaded to the FPGA
-================================================================================
-
-================================================================================
-Subroutine name: wave2d
-Filename: ./Shallow-Water-2D/main.f95
-Source:
-program wave2d
-      integer(4), parameter :: nx = 500 
-      integer(4), parameter :: ny = 500 
-      real :: dt
-      real :: dx
-      real :: dy
-      real :: eps
-      real, dimension(0:ny+1,0:nx+1) :: eta
-      real, dimension(0:ny+1,0:nx+1) :: etan
-      real :: g
-      real, dimension(0:ny+1,0:nx+1) :: h
-      real :: hmin
-      real, dimension(0:ny+1,0:nx+1) :: hzero
-      integer :: j
-      integer :: k
-      real, dimension(0:ny+1,0:nx+1) :: u
-      real, dimension(0:ny+1,0:nx+1) :: un
-      real, dimension(0:ny+1,0:nx+1) :: v
-      real, dimension(0:ny+1,0:nx+1) :: vn
-      integer, dimension(0:ny+1,0:nx+1) :: wet
-      real :: hmax
-      real :: time
-      real :: dtmax
-      real :: c
-      real :: lambda
-      integer :: n
-      integer :: ntot
-      integer :: nout
-      integer :: dummy
-    ntot = 10000
-    eps = 0.05
-    call init(hmin, dx, dy, dt, g, j, k, hzero, eta, etan, h, wet, u, un, v, vn)
-    open(90, file='debug.dat', form='formatted')
-    open(10, file='eta0.dat', form='formatted')
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(eta(j,k), k = 0, nx+1)
-    end do
-    close(10)
-    open(10, file='h0.dat', form='formatted')
-    do j = 0, ny+1, 1
-        write(10, '(101F12.6)')(hzero(j,k), k = 0, nx+1)
-    end do
-    close(10)
-    hmax = 0.
-    do j = 1, ny, 1
-        do k = 1, nx, 1
-                hmax = max(hmax,h(j,k))
-        end do
-    end do
-    dummy = 0
-    c = sqrt(2*g*hmax)
-    write(6, *)("c = ", c)
-    lambda = dt*sqrt(g*hmax)/min(dx,dy)
-    write(6, *)("lambda = ", lambda)
-    if (lambda>1) then
-        write(6, *)("This will not work. Do you know why?")
-        stop 
-    end if
-    open(10, file='eta.dat', form='formatted')
-    open(20, file='h.dat', form='formatted')
-    open(30, file='u.dat', form='formatted')
-    open(40, file='v.dat', form='formatted')
-    do j = 26, 26, 1
-        do k = 26, 26, 1
-                eta(j,k) = 1.0
+            eta(j,k) = 1.0
         end do
     end do
     do n = 1, ntot, 1
@@ -1659,10 +1614,8 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 !	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
 !    ){
 ! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
-        dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
-    end if
+    du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+    dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
 !}    
 !}
 end subroutine dyn_0
@@ -1691,30 +1644,28 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 !	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 !    ){
 ! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        un(j,k) = 0.0
-        uu = u(j,k)
-        duu = du(j,k)
-        if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
-        else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+    un(j,k) = 0.0
+    uu = u(j,k)
+    duu = du(j,k)
+    if (wet(j,k)==1) then
+        if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+            un(j,k) = uu+duu
         end if
-        vv = v(j,k)
-        dvv = dv(j,k)
-        vn(j,k) = 0.0
-        if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
-        else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+    else
+        if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+            un(j,k) = uu+duu
+        end if
+    end if
+    vv = v(j,k)
+    dvv = dv(j,k)
+    vn(j,k) = 0.0
+    if (wet(j,k)==1) then
+        if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    else
+        if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+            vn(j,k) = vv+dvv
         end if
     end if
 !}    
@@ -1756,21 +1707,19 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 !	2 point stencil on 2D array vn: [[0,0],[-1,0]]
 !    ){
 ! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
-        hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
-        hue = hep+hen
-        hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
-        hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
-        huw = hwp+hwn
-        hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
-        hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
-        hvn = hnp+hnn
-        hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
-        hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
-        hvs = hsp+hsn
-        etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-    end if
+    hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+    hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+    hue = hep+hen
+    hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+    hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+    huw = hwp+hwn
+    hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+    hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+    hvn = hnp+hnn
+    hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+    hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+    hvs = hsp+hsn
+    etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
 !}    
 !}
 end subroutine dyn_2
@@ -1796,15 +1745,13 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 !	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 !    ){
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
-    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-        if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
-        else
-                eta(j,k) = etan(j,k)
-        end if
+    if (wet(j,k)==1) then
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+        term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+        term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+        eta(j,k) = term1+term2+term3
+    else
+        eta(j,k) = etan(j,k)
     end if
 !}    
 !}
@@ -1849,6 +1796,243 @@ no. of kernels: 5
  ! Output streams:
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_0(dt,dx,dy,eta,g,j,k)
+      real :: dt
+      real, dimension(0:501,0:501) :: du
+      real, dimension(0:501,0:501) :: dv
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real :: g
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+! OpenCLStencil (
+!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+    dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+!}    
+!}
+end subroutine dyn_0
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: dyn_1 Order: 1
+ ! Input streams:
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_1(j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501) :: du
+      real :: duu
+      real, dimension(0:501,0:501) :: dv
+      real :: dvv
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real :: uu
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real :: vv
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    un(j,k) = 0.0
+    uu = u(j,k)
+    duu = du(j,k)
+    if (wet(j,k)==1) then
+        if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+            un(j,k) = uu+duu
+        end if
+    else
+        if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+            un(j,k) = uu+duu
+        end if
+    end if
+    vv = v(j,k)
+    dvv = dv(j,k)
+    vn(j,k) = 0.0
+    if (wet(j,k)==1) then
+        if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    else
+        if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+            vn(j,k) = vv+dvv
+        end if
+    end if
+!}    
+!}
+end subroutine dyn_1
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: dyn_2 Order: 2
+ ! Input streams:
+ !	StencilStream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+ !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
+      real :: dt
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real :: hen
+      real :: hep
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+! OpenCLStencil (
+!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+!    ){
+! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+    hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+    hue = hep+hen
+    hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+    hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+    huw = hwp+hwn
+    hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+    hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+    hvn = hnp+hnn
+    hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+    hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+    hvs = hsp+hsn
+    etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+!}    
+!}
+end subroutine dyn_2
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: shapiro Order: 3
+ ! Input streams:
+ !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ ! Output streams:
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine shapiro(eps,eta,etan,j,k,wet)
+      real :: eps
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!    ){
+! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if (wet(j,k)==1) then
+        term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+        term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+        term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+        eta(j,k) = term1+term2+term3
+    else
+        eta(j,k) = etan(j,k)
+    end if
+!}    
+!}
+end subroutine shapiro
+ ! ==============================================
+
+ ! ==============================================
+ ! Name: vernieuw Order: 4
+ ! Input streams:
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real, intent(In) :: hmin
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+    h(j,k) = hzero(j,k)+eta(j,k)
+    wet(j,k) = 1
+    if (h(j,k)<hmin) then
+        wet(j,k) = 0
+    end if
+    u(j,k) = un(j,k)
+    v(j,k) = vn(j,k)
+!}
+end subroutine vernieuw
+ ! ==============================================
+
+
+wet_j_k is largest stream size = 252004 dims used to calculate this = [(0,501),(0,501)]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ With Loop Guards 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ ! ==============================================
+ ! Name: dyn_0 Order: 0
+ ! Input streams:
+ !	StencilStream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+ ! Output streams:
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
@@ -1874,6 +2058,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 end subroutine dyn_0
  ! ==============================================
 
+
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
@@ -1885,6 +2070,7 @@ end subroutine dyn_0
  ! Output streams:
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
@@ -1910,31 +2096,32 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
 !}
 end subroutine dyn_1
  ! ==============================================
+
 
  ! ==============================================
  ! Name: dyn_2 Order: 2
@@ -1945,6 +2132,7 @@ end subroutine dyn_1
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
@@ -1996,6 +2184,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 end subroutine dyn_2
  ! ==============================================
 
+
  ! ==============================================
  ! Name: shapiro Order: 3
  ! Input streams:
@@ -2003,6 +2192,7 @@ end subroutine dyn_2
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
@@ -2022,18 +2212,19 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
 !}
 end subroutine shapiro
  ! ==============================================
+
 
  ! ==============================================
  ! Name: vernieuw Order: 4
@@ -2048,6 +2239,7 @@ end subroutine shapiro
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
@@ -2063,22 +2255,31 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
 
 
-wet_j_k is largest stream size = 252004
-BEFORE
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ With Transit Streams 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 dyn_1 requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+dyn_1 requires:
+Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+dyn_1 requires:
+Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
 dyn_1 requires:
 Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 dyn_1 requires:
@@ -2086,9 +2287,17 @@ Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
 dyn_2 requires:
 StencilStream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 dyn_2 requires:
+StencilStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+dyn_2 requires:
+StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+dyn_2 requires:
 Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 shapiro requires:
+StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+shapiro requires:
 StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+vernieuw requires:
+Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
 Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
@@ -2101,6 +2310,24 @@ Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 
 --------------------------------------------------------------------------------
 
+Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_0
+Consumed at: dyn_1
+Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_0
+Consumed at: dyn_1
+TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: dyn_2
+TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_1
+Consumed at: dyn_2
+TransitStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+Produced at: dyn_2
+Consumed at: shapiro
+Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+Produced at: shapiro
+Consumed at: vernieuw
 Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 Produced at: dyn_1
 Consumed at: vernieuw
@@ -2116,6 +2343,7 @@ Transit Streams Added
  ! Output streams:
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
@@ -2153,6 +2381,7 @@ end subroutine dyn_0
  ! Output streams:
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
@@ -2178,25 +2407,25 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -2213,9 +2442,10 @@ end subroutine dyn_1
  !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
@@ -2276,9 +2506,10 @@ end subroutine dyn_2
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
@@ -2298,12 +2529,12 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 ! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
@@ -2325,6 +2556,7 @@ end subroutine shapiro
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
@@ -2340,13 +2572,270 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
       real, dimension(0:501,0:501), intent(InOut) :: vn
       integer, dimension(0:501,0:501), intent(Out) :: wet
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
+!}
+end subroutine vernieuw
+ ! ==============================================
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ With Reduction Vars Linked 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ ! ==============================================
+ ! Name: dyn_0 Order: 0
+ ! Input streams:
+ !	StencilStream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+ ! Output streams:
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_0(dt,dx,dy,eta,g,j,k)
+      real :: dt
+      real, dimension(0:501,0:501) :: du
+      real, dimension(0:501,0:501) :: dv
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real :: g
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+! OpenCLStencil (
+!	3 point stencil on 2D array eta: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["dt","g","dx","dy"],["du","dv"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
+        du(j,k) = -dt*g*(eta(j,k+1)-eta(j,k))/dx
+        dv(j,k) = -dt*g*(eta(j+1,k)-eta(j,k))/dy
+    end if
+!}    
+!}
+end subroutine dyn_0
+ ! ==============================================
+
+
+ ! ==============================================
+ ! Name: dyn_1 Order: 1
+ ! Input streams:
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_1(j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501) :: du
+      real :: duu
+      real, dimension(0:501,0:501) :: dv
+      real :: dvv
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real :: uu
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      real :: vv
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+!    ){
+! OpenCLMap ( ["u","du","wet","v","dv"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
+        un(j,k) = 0.0
+        uu = u(j,k)
+        duu = du(j,k)
+        if (wet(j,k)==1) then
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
+        else
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
+        end if
+        vv = v(j,k)
+        dvv = dv(j,k)
+        vn(j,k) = 0.0
+        if (wet(j,k)==1) then
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
+        else
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
+        end if
+    end if
+!}    
+!}
+end subroutine dyn_1
+ ! ==============================================
+
+
+ ! ==============================================
+ ! Name: dyn_2 Order: 2
+ ! Input streams:
+ !	StencilStream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+ !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
+      real :: dt
+      real :: dx
+      real :: dy
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real :: hen
+      real :: hep
+      real :: hnn
+      real :: hnp
+      real :: hsn
+      real :: hsp
+      real :: hue
+      real :: huw
+      real :: hvn
+      real :: hvs
+      real :: hwn
+      real :: hwp
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+! OpenCLStencil (
+!	5 point stencil on 2D array h: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	2 point stencil on 2D array un: [[0,0],[0,-1]]
+!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
+!    ){
+! OpenCLMap ( ["h","eta","dt","dx","dy"],[],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
+        hep = 0.5*(un(j,k)+abs(un(j,k)))*h(j,k)
+        hen = 0.5*(un(j,k)-abs(un(j,k)))*h(j,k+1)
+        hue = hep+hen
+        hwp = 0.5*(un(j,k-1)+abs(un(j,k-1)))*h(j,k-1)
+        hwn = 0.5*(un(j,k-1)-abs(un(j,k-1)))*h(j,k)
+        huw = hwp+hwn
+        hnp = 0.5*(vn(j,k)+abs(vn(j,k)))*h(j,k)
+        hnn = 0.5*(vn(j,k)-abs(vn(j,k)))*h(j+1,k)
+        hvn = hnp+hnn
+        hsp = 0.5*(vn(j-1,k)+abs(vn(j-1,k)))*h(j-1,k)
+        hsn = 0.5*(vn(j-1,k)-abs(vn(j-1,k)))*h(j,k)
+        hvs = hsp+hsn
+        etan(j,k) = eta(j,k)-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+    end if
+!}    
+!}
+end subroutine dyn_2
+ ! ==============================================
+
+
+ ! ==============================================
+ ! Name: shapiro Order: 3
+ ! Input streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ ! Output streams:
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine shapiro(eps,eta,etan,j,k,wet)
+      real :: eps
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501) :: etan
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real :: term1
+      real :: term2
+      real :: term3
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLStencil (
+!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+!    ){
+! OpenCLMap ( ["wet","etan","eps"],["eta"],["(j,1,500,1)","(k,1,500,1)"],[]) {
+    if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
+        if (wet(j,k)==1) then
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
+        else
+            eta(j,k) = etan(j,k)
+        end if
+    end if
+!}    
+!}
+end subroutine shapiro
+ ! ==============================================
+
+
+ ! ==============================================
+ ! Name: vernieuw Order: 4
+ ! Input streams:
+ !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Output streams:
+ !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
+ ! Output Reduction Variables:
+ ! --------------------------------------------
+subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
+      real, dimension(0:501,0:501), intent(In) :: eta
+      real, dimension(0:501,0:501), intent(InOut) :: h
+      real, intent(In) :: hmin
+      real, dimension(0:501,0:501), intent(In) :: hzero
+      integer, intent(InOut) :: j
+      integer, intent(InOut) :: k
+      real, dimension(0:501,0:501), intent(Out) :: u
+      real, dimension(0:501,0:501), intent(InOut) :: un
+      real, dimension(0:501,0:501), intent(Out) :: v
+      real, dimension(0:501,0:501), intent(InOut) :: vn
+      integer, dimension(0:501,0:501), intent(Out) :: wet
+! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
+    end if
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2357,39 +2846,6 @@ end subroutine vernieuw
  With Synthesised Loop Vars 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-stream = eta_j_k dims = [(0,501),(0,501)]
-stream = wet_j_k dims = [(0,501),(0,501)]
-stream = du_j_k dims = [(0,501),(0,501)]
-stream = dv_j_k dims = [(0,501),(0,501)]
-stream = u_j_k dims = [(0,501),(0,501)]
-stream = v_j_k dims = [(0,501),(0,501)]
-stream = h_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = eta_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = etan_j_k dims = [(0,501),(0,501)]
-stream = wet_j_k dims = [(0,501),(0,501)]
-stream = eta_j_k dims = [(0,501),(0,501)]
-stream = h_j_k dims = [(0,501),(0,501)]
-stream = hzero_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = du_j_k dims = [(0,501),(0,501)]
-stream = dv_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = etan_j_k dims = [(0,501),(0,501)]
-stream = vn_j_k dims = [(0,501),(0,501)]
-stream = un_j_k dims = [(0,501),(0,501)]
-stream = eta_j_k dims = [(0,501),(0,501)]
-stream = h_j_k dims = [(0,501),(0,501)]
-stream = u_j_k dims = [(0,501),(0,501)]
-stream = v_j_k dims = [(0,501),(0,501)]
-stream = wet_j_k dims = [(0,501),(0,501)]
  ! ==============================================
  ! Name: dyn_0 Order: 0
  ! Input streams:
@@ -2397,6 +2853,7 @@ stream = wet_j_k dims = [(0,501),(0,501)]
  ! Output streams:
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
@@ -2436,6 +2893,7 @@ end subroutine dyn_0
  ! Output streams:
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
@@ -2463,25 +2921,25 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -2498,9 +2956,10 @@ end subroutine dyn_1
  !	StencilStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]!	2 point stencil on 2D array vn: [[0,0],[-1,0]]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
@@ -2563,9 +3022,10 @@ end subroutine dyn_2
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
@@ -2587,12 +3047,12 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
     k = mod(count, 502)
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
@@ -2614,6 +3074,7 @@ end subroutine shapiro
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
@@ -2631,13 +3092,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2658,6 +3121,7 @@ end subroutine vernieuw
  ! Output streams:
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_0(dt,dx,dy,eta,g,j,k)
@@ -2701,6 +3165,7 @@ end subroutine dyn_0
  ! Output streams:
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_1(j,k,u,un,v,vn,wet)
@@ -2728,25 +3193,25 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -2771,9 +3236,10 @@ end subroutine dyn_1
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_jm1_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
@@ -2846,9 +3312,10 @@ end subroutine dyn_2
  !	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
  ! Output streams:
- !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+ !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine shapiro(eps,eta,etan,j,k,wet)
@@ -2870,12 +3337,12 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
     k = mod(count, 502)
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
@@ -2899,6 +3366,7 @@ end subroutine shapiro
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
 subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
@@ -2916,13 +3384,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
  ! ==============================================
@@ -2947,6 +3417,7 @@ Input Streams:
 OutputStreams:
 	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
 	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -2976,7 +3447,7 @@ subroutine dyn_0(dt,dx,dy,eta,g,j,k)
 end subroutine dyn_0
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3034,6 +3505,7 @@ Input Streams:
 OutputStreams:
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3063,25 +3535,25 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -3089,7 +3561,7 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
 end subroutine dyn_1
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3166,9 +3638,10 @@ Input Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_jm1_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 OutputStreams:
-	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3224,7 +3697,7 @@ subroutine dyn_2(dt,dx,dy,eta,etan,h,j,k,un,vn)
 end subroutine dyn_2
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3328,9 +3801,10 @@ Input Streams:
 	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
 	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
 OutputStreams:
-	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
+	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3354,12 +3828,12 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
     k = mod(count, 502)
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
@@ -3367,7 +3841,7 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
 end subroutine shapiro
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Just 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3379,22 +3853,22 @@ Cache Lines:
 	Smart cache item
 	Input stream: vn_j_k
 	Buffer size: 1005
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 503
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		vn_j_k from buffer index = 1005
+		vn_j_k from buffer index = 503
 	-------------------------------
 
 	-------------------------------
 	Smart cache item
 	Input stream: un_j_k
 	Buffer size: 1005
-	Max positive offset = 0
-	Max negative offset = 0
+	Max positive offset = 503
+	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		un_j_k from buffer index = 1005
+		un_j_k from buffer index = 503
 	-------------------------------
 
 	-------------------------------
@@ -3476,6 +3950,7 @@ OutputStreams:
 	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
 	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+Input reduction vars: 
 readPipes:
 writtenPipes:
 
@@ -3495,18 +3970,20 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
 --------------------------------------------------------------------------------
-SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count"}
+SPD {driverLoopLowerBound = 0, driverLoopUpperBound = 0, driverLoopIndexName = "count", largestStreamDimensions = [], largestStreamName = ""}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Nothing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3784,25 +4261,25 @@ subroutine dyn_1(j,k,u,un,v,vn,wet)
         uu = u(j,k)
         duu = du(j,k)
         if (wet(j,k)==1) then
-                if ((wet(j,k+1)==1) .or. (duu>0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .or. (duu>0.0)) then
+                un(j,k) = uu+duu
+            end if
         else
-                if ((wet(j,k+1)==1) .and. (duu<0.0)) then
-                                un(j,k) = uu+duu
-                end if
+            if ((wet(j,k+1)==1) .and. (duu<0.0)) then
+                un(j,k) = uu+duu
+            end if
         end if
         vv = v(j,k)
         dvv = dv(j,k)
         vn(j,k) = 0.0
         if (wet(j,k)==1) then
-                if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .or. (dvv>0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         else
-                if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
-                                vn(j,k) = vv+dvv
-                end if
+            if ((wet(j+1,k)==1) .and. (dvv<0.0)) then
+                vn(j,k) = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -3837,25 +4314,25 @@ subroutine dyn_1(j,k)
         uu = u_j_k
         duu = du_j_k
         if (wet_j_k==1) then
-                if ((wet_j_kp1==1) .or. (duu>0.0)) then
-                                un_j_k = uu+duu
-                end if
+            if ((wet_j_kp1==1) .or. (duu>0.0)) then
+                un_j_k = uu+duu
+            end if
         else
-                if ((wet_j_kp1==1) .and. (duu<0.0)) then
-                                un_j_k = uu+duu
-                end if
+            if ((wet_j_kp1==1) .and. (duu<0.0)) then
+                un_j_k = uu+duu
+            end if
         end if
         vv = v_j_k
         dvv = dv_j_k
         vn_j_k = 0.0
         if (wet_j_k==1) then
-                if ((wet_jp1_k==1) .or. (dvv>0.0)) then
-                                vn_j_k = vv+dvv
-                end if
+            if ((wet_jp1_k==1) .or. (dvv>0.0)) then
+                vn_j_k = vv+dvv
+            end if
         else
-                if ((wet_jp1_k==1) .and. (dvv<0.0)) then
-                                vn_j_k = vv+dvv
-                end if
+            if ((wet_jp1_k==1) .and. (dvv<0.0)) then
+                vn_j_k = vv+dvv
+            end if
         end if
     end if
 !}    
@@ -3990,12 +4467,12 @@ subroutine shapiro(eps,eta,etan,j,k,wet)
     k = mod(count, 502)
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet(j,k)==1) then
-                term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
-                term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
-                term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
-                eta(j,k) = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet(j,k+1)+wet(j,k-1)+wet(j+1,k)+wet(j-1,k)))*etan(j,k)
+            term2 = 0.25*eps*(wet(j,k+1)*etan(j,k+1)+wet(j,k-1)*etan(j,k-1))
+            term3 = 0.25*eps*(wet(j+1,k)*etan(j+1,k)+wet(j-1,k)*etan(j-1,k))
+            eta(j,k) = term1+term2+term3
         else
-                eta(j,k) = etan(j,k)
+            eta(j,k) = etan(j,k)
         end if
     end if
 !}    
@@ -4030,12 +4507,12 @@ subroutine shapiro(eps,j,k)
     k = mod(count, 502)
     if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
         if (wet_j_k==1) then
-                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
-                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
-                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
-                eta_j_k = term1+term2+term3
+            term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
+            term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
+            term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
+            eta_j_k = term1+term2+term3
         else
-                eta_j_k = etan_j_k
+            eta_j_k = etan_j_k
         end if
     end if
 !}    
@@ -4058,13 +4535,15 @@ subroutine vernieuw(eta,h,hmin,hzero,j,k,u,un,v,vn,wet)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h(j,k) = hzero(j,k)+eta(j,k)
-    wet(j,k) = 1
-    if (h(j,k)<hmin) then
-        wet(j,k) = 0
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+        h(j,k) = hzero(j,k)+eta(j,k)
+        wet(j,k) = 1
+        if (h(j,k)<hmin) then
+            wet(j,k) = 0
+        end if
+        u(j,k) = un(j,k)
+        v(j,k) = vn(j,k)
     end if
-    u(j,k) = un(j,k)
-    v(j,k) = vn(j,k)
 !}
 end subroutine vernieuw
 
@@ -4084,801 +4563,17 @@ subroutine vernieuw(hmin,j,k)
 ! OpenCLMap ( ["hzero","h","hmin","un","vn","eta"],["h","wet","u","v"],["(j,0,501,1)","(k,0,501,1)"],[]) {
     j = count/502
     k = mod(count, 502)
-    h_j_k = hzero_j_k+eta_j_k
-    wet_j_k = 1
-    if (h_j_k<hmin) then
-        wet_j_k = 0
-    end if
-    u_j_k = un_j_k
-    v_j_k = vn_j_k
-!}
-end subroutine vernieuw
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_0_smart_cache 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-subroutine dyn_0_smart_cache
-      real :: eta_read_in
-      real, dimension(1:503) :: eta_buffer
-      real :: eta_j_kp1
-      real :: eta_jp1_k
-      real :: eta_j_k
-      integer :: i
-      integer :: count
-      integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
-    do count = 1, nloop, 1
-        compIndex = count-maxPositiveOffset
-        !$PRAGMA unroll
-        do i = 1, smartCacheSize-1, 1
-                eta_buffer(i) = eta_buffer(i+1)
-        end do
-        if (count<smartCacheSize) then
-                call read_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
-                eta_buffer(503) = eta_read_in
-        end if
-        if (compIndex>=0) then
-                eta_j_k = eta_buffer(1)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
-                eta_j_kp1 = eta_buffer(503)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
-                eta_jp1_k = eta_buffer(2)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
-        end if
-    end do
-end subroutine dyn_0_smart_cache
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_0_smart_cache", argPositions = [], subroutineName = ""}
-
---------------------------------------------------------------------------------
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_1_smart_cache 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-subroutine dyn_1_smart_cache
-      real :: wet_read_in
-      real, dimension(1:503) :: wet_buffer
-      real :: wet_j_kp1
-      real :: wet_jp1_k
-      real :: wet_j_k
-      integer :: i
-      integer :: count
-      integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 503 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 0 
-    do count = 1, nloop, 1
-        compIndex = count-maxPositiveOffset
-        !$PRAGMA unroll
-        do i = 1, smartCacheSize-1, 1
-                wet_buffer(i) = wet_buffer(i+1)
-        end do
-        if (count<smartCacheSize) then
-                call read_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(503) = wet_read_in
-        end if
-        if (compIndex>=0) then
-                wet_j_k = wet_buffer(1)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
-                wet_j_kp1 = wet_buffer(503)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
-                wet_jp1_k = wet_buffer(2)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
-        end if
-    end do
-end subroutine dyn_1_smart_cache
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_1_smart_cache", argPositions = [], subroutineName = ""}
-
---------------------------------------------------------------------------------
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-dyn_2_smart_cache 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-subroutine dyn_2_smart_cache
-      real :: h_read_in
-      real :: un_read_in
-      real :: vn_read_in
-      real, dimension(1:1005) :: h_buffer
-      real, dimension(1:1005) :: un_buffer
-      real, dimension(1:1005) :: vn_buffer
-      real :: h_jm1_k
-      real :: h_j_kp1
-      real :: h_j_k
-      real :: h_jp1_k
-      real :: h_j_km1
-      real :: un_j_k
-      real :: un_j_km1
-      real :: vn_j_k
-      real :: vn_jm1_k
-      integer :: i
-      integer :: count
-      integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
-    do count = 1, nloop, 1
-        compIndex = count-maxPositiveOffset
-        !$PRAGMA unroll
-        do i = 1, smartCacheSize-1, 1
-                h_buffer(i) = h_buffer(i+1)
-                un_buffer(i) = un_buffer(i+1)
-                vn_buffer(i) = vn_buffer(i+1)
-        end do
-        if (count<smartCacheSize) then
-                call read_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
-                h_buffer(1005) = h_read_in
-                call read_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1005) = un_read_in
-                call read_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1005) = vn_read_in
-        end if
-        if (compIndex>=0) then
-                h_j_k = h_buffer(503)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
-                h_j_km1 = h_buffer(1)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
-                h_j_kp1 = h_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
-                h_jm1_k = h_buffer(502)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
-                h_jp1_k = h_buffer(504)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
-                un_j_k = un_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
-                un_j_km1 = un_buffer(503)
-                call write_pipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
-                vn_j_k = vn_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
-                vn_jm1_k = vn_buffer(1004)
-                call write_pipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
-        end if
-    end do
-end subroutine dyn_2_smart_cache
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_2_smart_cache", argPositions = [], subroutineName = ""}
-
---------------------------------------------------------------------------------
-
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-shapiro_smart_cache 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-subroutine shapiro_smart_cache
-      real :: vn_read_in
-      real :: un_read_in
-      real :: etan_read_in
-      real :: wet_read_in
-      real, dimension(1:1005) :: vn_buffer
-      real, dimension(1:1005) :: un_buffer
-      real, dimension(1:1005) :: etan_buffer
-      real, dimension(1:1005) :: wet_buffer
-      real :: vn_j_k
-      real :: un_j_k
-      real :: etan_jm1_k
-      real :: etan_j_kp1
-      real :: etan_j_k
-      real :: etan_jp1_k
-      real :: etan_j_km1
-      real :: wet_jm1_k
-      real :: wet_j_kp1
-      real :: wet_j_k
-      real :: wet_jp1_k
-      real :: wet_j_km1
-      integer :: i
-      integer :: count
-      integer :: compIndex
-      integer, parameter :: nloop = 252507 
-      integer, parameter :: smartCacheSize = 1005 
-      integer, parameter :: maxPositiveOffset = 503 
-      integer, parameter :: maxNegativeOffset = 503 
-    do count = 1, nloop, 1
-        compIndex = count-maxPositiveOffset
-        !$PRAGMA unroll
-        do i = 1, smartCacheSize-1, 1
-                vn_buffer(i) = vn_buffer(i+1)
-                un_buffer(i) = un_buffer(i+1)
-                etan_buffer(i) = etan_buffer(i+1)
-                wet_buffer(i) = wet_buffer(i+1)
-        end do
-        if (count<smartCacheSize) then
-                call read_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
-                etan_buffer(1005) = etan_read_in
-                call read_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1005) = un_read_in
-                call read_pipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1005) = vn_read_in
-                call read_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(1005) = wet_read_in
-        end if
-        if (compIndex>=0) then
-                etan_j_k = etan_buffer(503)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
-                etan_j_km1 = etan_buffer(1)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
-                etan_j_kp1 = etan_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
-                etan_jm1_k = etan_buffer(502)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
-                etan_jp1_k = etan_buffer(504)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
-                un_j_k = un_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
-                vn_j_k = vn_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
-                wet_j_k = wet_buffer(503)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
-                wet_j_km1 = wet_buffer(1)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
-                wet_j_kp1 = wet_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
-                wet_jm1_k = wet_buffer(502)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
-                wet_jp1_k = wet_buffer(504)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
-        end if
-    end do
-end subroutine shapiro_smart_cache
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "shapiro_smart_cache", argPositions = [], subroutineName = ""}
-
---------------------------------------------------------------------------------
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_0_eta_j_k_reader(eta)
-      real, dimension(0:501,0:501) :: eta
-      real :: eta_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                eta_j_k = eta(a,b)
-                call write_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_j_k)
-        end do
-    end do
-end subroutine dyn_0_eta_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_0_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_1_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                wet_j_k = wet(a,b)
-                call write_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_j_k)
-        end do
-    end do
-end subroutine dyn_1_wet_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_1_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_1_u_j_k_reader(u)
-      real, dimension(0:501,0:501) :: u
-      real :: u_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                u_j_k = u(a,b)
-                call write_pipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
-        end do
-    end do
-end subroutine dyn_1_u_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_1_u_j_k_reader", argPositions = [(0,"u")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_1_v_j_k_reader(v)
-      real, dimension(0:501,0:501) :: v
-      real :: v_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                v_j_k = v(a,b)
-                call write_pipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
-        end do
-    end do
-end subroutine dyn_1_v_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_1_v_j_k_reader", argPositions = [(0,"v")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_2_h_j_k_reader(h)
-      real, dimension(0:501,0:501) :: h
-      real :: h_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                h_j_k = h(a,b)
-                call write_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_j_k)
-        end do
-    end do
-end subroutine dyn_2_h_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_2_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_2_eta_j_k_reader(eta)
-      real, dimension(0:501,0:501) :: eta
-      real :: eta_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                eta_j_k = eta(a,b)
-                call write_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
-        end do
-    end do
-end subroutine dyn_2_eta_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_2_eta_j_k_reader", argPositions = [(0,"eta")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine shapiro_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                wet_j_k = wet(a,b)
-                call write_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_j_k)
-        end do
-    end do
-end subroutine shapiro_wet_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "shapiro_wet_j_k_reader", argPositions = [(0,"wet")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine vernieuw_h_j_k_reader(h)
-      real, dimension(0:501,0:501) :: h
-      real :: h_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                h_j_k = h(a,b)
-                call write_pipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
-        end do
-    end do
-end subroutine vernieuw_h_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "vernieuw_h_j_k_reader", argPositions = [(0,"h")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine vernieuw_hzero_j_k_reader(hzero)
-      real, dimension(0:501,0:501) :: hzero
-      real :: hzero_j_k
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                hzero_j_k = hzero(a,b)
-                call write_pipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
-        end do
-    end do
-end subroutine vernieuw_hzero_j_k_reader
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "vernieuw_hzero_j_k_reader", argPositions = [(0,"hzero")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine vernieuw_output_writer(h,u,v,wet)
-      real :: h_j_k_read_in
-      real, dimension(0:501,0:501) :: h
-      real :: u_j_k_read_in
-      real, dimension(0:501,0:501) :: u
-      real :: v_j_k_read_in
-      real, dimension(0:501,0:501) :: v
-      real :: wet_j_k_read_in
-      real, dimension(0:501,0:501) :: wet
-      integer :: a
-      integer :: b
-    do a = 0, 501, 1
-        do b = 0, 501, 1
-                call read_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k_read_in)
-                h(a,b) = h_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k_read_in)
-                u(a,b) = u_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k_read_in)
-                v(a,b) = v_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k_read_in)
-                wet(a,b) = wet_j_k_read_in
-        end do
-    end do
-end subroutine vernieuw_output_writer
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "vernieuw_output_writer", argPositions = [(0,"h"),(1,"u"),(2,"v"),(3,"wet")], subroutineName = ""}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_0(dt,dx,dy,g)
-      integer, parameter :: nloop = 252004 
-      integer :: count
-      real :: dt
-      real :: du_j_k
-      real :: dv_j_k
-      real :: dx
-      real :: dy
-      real :: eta_j_kp1
-      real :: eta_jp1_k
-      real :: eta_j_k
-      real :: g
-      integer :: j
-      integer :: k
-    do count = 1, nloop, 1
-        call read_pipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
-        call read_pipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
-        call read_pipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
-        j = count/502
-        k = mod(count, 502)
-        if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
-                dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
-        end if
-        call write_pipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
-        call write_pipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
-    end do
-end subroutine dyn_0
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_0", argPositions = [(0,"dt"),(1,"dx"),(2,"dy"),(3,"g")], subroutineName = "dyn"}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_1
-      integer, parameter :: nloop = 252004 
-      integer :: count
-      real :: du_j_k
-      real :: duu
-      real :: dv_j_k
-      real :: dvv
-      integer :: j
-      integer :: k
-      real :: u_j_k
-      real :: un_j_k
-      real :: uu
-      real :: v_j_k
-      real :: vn_j_k
-      real :: vv
-      integer :: wet_j_kp1
-      integer :: wet_jp1_k
-      integer :: wet_j_k
-    do count = 1, nloop, 1
-        call read_pipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
-        call read_pipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
-        call read_pipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
-        call read_pipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
-        call read_pipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
-        call read_pipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
-        call read_pipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
-        j = count/502
-        k = mod(count, 502)
-        if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                un_j_k = 0.0
-                uu = u_j_k
-                duu = du_j_k
-                if (wet_j_k==1) then
-                                if ((wet_j_kp1==1) .or. (duu>0.0)) then
-                                                                un_j_k = uu+duu
-                                end if
-                else
-                                if ((wet_j_kp1==1) .and. (duu<0.0)) then
-                                                                un_j_k = uu+duu
-                                end if
-                end if
-                vv = v_j_k
-                dvv = dv_j_k
-                vn_j_k = 0.0
-                if (wet_j_k==1) then
-                                if ((wet_jp1_k==1) .or. (dvv>0.0)) then
-                                                                vn_j_k = vv+dvv
-                                end if
-                else
-                                if ((wet_jp1_k==1) .and. (dvv<0.0)) then
-                                                                vn_j_k = vv+dvv
-                                end if
-                end if
-        end if
-        call write_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_j_k)
-        call write_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_j_k)
-    end do
-end subroutine dyn_1
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_1", argPositions = [], subroutineName = "dyn"}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine dyn_2(dt,dx,dy)
-      integer, parameter :: nloop = 252004 
-      integer :: count
-      real :: dt
-      real :: dx
-      real :: dy
-      real :: eta_j_k
-      real :: etan_j_k
-      real :: h_jm1_k
-      real :: h_j_kp1
-      real :: h_j_k
-      real :: h_jp1_k
-      real :: h_j_km1
-      real :: hen
-      real :: hep
-      real :: hnn
-      real :: hnp
-      real :: hsn
-      real :: hsp
-      real :: hue
-      real :: huw
-      real :: hvn
-      real :: hvs
-      real :: hwn
-      real :: hwp
-      integer :: j
-      integer :: k
-      real :: un_j_k
-      real :: un_j_km1
-      real :: vn_j_k
-      real :: vn_jm1_k
-    do count = 1, nloop, 1
-        call read_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
-        call read_pipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
-        call read_pipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
-        call read_pipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
-        call read_pipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
-        j = count/502
-        k = mod(count, 502)
-        if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                hep = 0.5*(un_j_k+abs(un_j_k))*h_j_k
-                hen = 0.5*(un_j_k-abs(un_j_k))*h_j_kp1
-                hue = hep+hen
-                hwp = 0.5*(un_j_km1+abs(un_j_km1))*h_j_km1
-                hwn = 0.5*(un_j_km1-abs(un_j_km1))*h_j_k
-                huw = hwp+hwn
-                hnp = 0.5*(vn_j_k+abs(vn_j_k))*h_j_k
-                hnn = 0.5*(vn_j_k-abs(vn_j_k))*h_jp1_k
-                hvn = hnp+hnn
-                hsp = 0.5*(vn_jm1_k+abs(vn_jm1_k))*h_jm1_k
-                hsn = 0.5*(vn_jm1_k-abs(vn_jm1_k))*h_j_k
-                hvs = hsp+hsn
-                etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
-        end if
-        call write_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_j_k)
-        call write_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_j_k)
-        call write_pipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_j_k)
-    end do
-end subroutine dyn_2
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "dyn_2", argPositions = [(0,"dt"),(1,"dx"),(2,"dy")], subroutineName = "dyn"}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine shapiro(eps)
-      integer, parameter :: nloop = 252004 
-      integer :: count
-      real :: eps
-      real :: eta_j_k
-      real :: etan_jm1_k
-      real :: etan_j_kp1
-      real :: etan_j_k
-      real :: etan_jp1_k
-      real :: etan_j_km1
-      integer :: j
-      integer :: k
-      real :: term1
-      real :: term2
-      real :: term3
-      integer :: wet_jm1_k
-      integer :: wet_j_kp1
-      integer :: wet_j_k
-      integer :: wet_jp1_k
-      integer :: wet_j_km1
-    do count = 1, nloop, 1
-        call read_pipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
-        call read_pipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
-        call read_pipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
-        call read_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
-        call read_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
-        call read_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
-        call read_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
-        call read_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
-        call read_pipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
-        call read_pipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
-        call read_pipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
-        call read_pipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
-        j = count/502
-        k = mod(count, 502)
-        if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                if (wet_j_k==1) then
-                                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
-                                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
-                                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
-                                eta_j_k = term1+term2+term3
-                else
-                                eta_j_k = etan_j_k
-                end if
-        end if
-        call write_pipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
-        call write_pipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
-        call write_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
-    end do
-end subroutine shapiro
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "shapiro", argPositions = [(0,"eps")], subroutineName = "shapiro"}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
---------------------------------------------------------------------------------
-
-subroutine vernieuw(hmin)
-      integer, parameter :: nloop = 252004 
-      integer :: count
-      real :: eta_j_k
-      real :: h_j_k
-      real, intent(In) :: hmin
-      real :: hzero_j_k
-      integer :: j
-      integer :: k
-      real :: u_j_k
-      real :: un_j_k
-      real :: v_j_k
-      real :: vn_j_k
-      integer :: wet_j_k
-    do count = 1, nloop, 1
-        call read_pipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
-        call read_pipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
-        call read_pipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
-        call read_pipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
-        call read_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
-        j = count/502
-        k = mod(count, 502)
+    if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
         h_j_k = hzero_j_k+eta_j_k
         wet_j_k = 1
         if (h_j_k<hmin) then
-                wet_j_k = 0
+            wet_j_k = 0
         end if
         u_j_k = un_j_k
         v_j_k = vn_j_k
-        call write_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k)
-        call write_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k)
-        call write_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k)
-        call write_pipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k)
-    end do
+    end if
+!}
 end subroutine vernieuw
-
-
---------------------------------------------------------------------------------
-
-KCD {kernelName = "vernieuw", argPositions = [(0,"hmin")], subroutineName = "vernieuw"}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 --------------------------------------------------------------------------------
@@ -4999,8 +4694,8 @@ subroutine dyn_0_eta_j_k_reader(eta)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                eta_j_k = eta(a,b)
-                call write_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_j_k)
+            eta_j_k = eta(a,b)
+            call write_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_j_k)
         end do
     end do
 end subroutine dyn_0_eta_j_k_reader
@@ -5022,19 +4717,19 @@ subroutine dyn_0_smart_cache
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
-                eta_buffer(i) = eta_buffer(i+1)
+            eta_buffer(i) = eta_buffer(i+1)
         end do
         if (count<smartCacheSize) then
-                call read_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
-                eta_buffer(503) = eta_read_in
+            call read_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
+            eta_buffer(503) = eta_read_in
         end if
         if (compIndex>=0) then
-                eta_j_k = eta_buffer(1)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
-                eta_j_kp1 = eta_buffer(503)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
-                eta_jp1_k = eta_buffer(2)
-                call write_pipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
+            eta_j_k = eta_buffer(1)
+            call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_k__pipe, eta_j_k)
+            eta_j_kp1 = eta_buffer(503)
+            call write_pipe(dyn_0_smart_cache__dyn_0__eta_j_kp1__pipe, eta_j_kp1)
+            eta_jp1_k = eta_buffer(2)
+            call write_pipe(dyn_0_smart_cache__dyn_0__eta_jp1_k__pipe, eta_jp1_k)
         end if
     end do
 end subroutine dyn_0_smart_cache
@@ -5060,8 +4755,8 @@ subroutine dyn_0(dt,dx,dy,g)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
-                dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
+            du_j_k = -dt*g*(eta_j_kp1-eta_j_k)/dx
+            dv_j_k = -dt*g*(eta_jp1_k-eta_j_k)/dy
         end if
         call write_pipe(dyn_0__dyn_1__du_j_k__pipe, du_j_k)
         call write_pipe(dyn_0__dyn_1__dv_j_k__pipe, dv_j_k)
@@ -5075,8 +4770,8 @@ subroutine dyn_1_wet_j_k_reader(wet)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                wet_j_k = wet(a,b)
-                call write_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_j_k)
+            wet_j_k = wet(a,b)
+            call write_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_j_k)
         end do
     end do
 end subroutine dyn_1_wet_j_k_reader
@@ -5088,8 +4783,8 @@ subroutine dyn_1_u_j_k_reader(u)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                u_j_k = u(a,b)
-                call write_pipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
+            u_j_k = u(a,b)
+            call write_pipe(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe, u_j_k)
         end do
     end do
 end subroutine dyn_1_u_j_k_reader
@@ -5101,8 +4796,8 @@ subroutine dyn_1_v_j_k_reader(v)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                v_j_k = v(a,b)
-                call write_pipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
+            v_j_k = v(a,b)
+            call write_pipe(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe, v_j_k)
         end do
     end do
 end subroutine dyn_1_v_j_k_reader
@@ -5124,19 +4819,19 @@ subroutine dyn_1_smart_cache
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
-                wet_buffer(i) = wet_buffer(i+1)
+            wet_buffer(i) = wet_buffer(i+1)
         end do
         if (count<smartCacheSize) then
-                call read_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(503) = wet_read_in
+            call read_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
+            wet_buffer(503) = wet_read_in
         end if
         if (compIndex>=0) then
-                wet_j_k = wet_buffer(1)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
-                wet_j_kp1 = wet_buffer(503)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
-                wet_jp1_k = wet_buffer(2)
-                call write_pipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
+            wet_j_k = wet_buffer(1)
+            call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_k__pipe, wet_j_k)
+            wet_j_kp1 = wet_buffer(503)
+            call write_pipe(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe, wet_j_kp1)
+            wet_jp1_k = wet_buffer(2)
+            call write_pipe(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe, wet_jp1_k)
         end if
     end do
 end subroutine dyn_1_smart_cache
@@ -5170,30 +4865,30 @@ subroutine dyn_1
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                un_j_k = 0.0
-                uu = u_j_k
-                duu = du_j_k
-                if (wet_j_k==1) then
-                                if ((wet_j_kp1==1) .or. (duu>0.0)) then
-                                                                un_j_k = uu+duu
-                                end if
-                else
-                                if ((wet_j_kp1==1) .and. (duu<0.0)) then
-                                                                un_j_k = uu+duu
-                                end if
+            un_j_k = 0.0
+            uu = u_j_k
+            duu = du_j_k
+            if (wet_j_k==1) then
+                if ((wet_j_kp1==1) .or. (duu>0.0)) then
+                    un_j_k = uu+duu
                 end if
-                vv = v_j_k
-                dvv = dv_j_k
-                vn_j_k = 0.0
-                if (wet_j_k==1) then
-                                if ((wet_jp1_k==1) .or. (dvv>0.0)) then
-                                                                vn_j_k = vv+dvv
-                                end if
-                else
-                                if ((wet_jp1_k==1) .and. (dvv<0.0)) then
-                                                                vn_j_k = vv+dvv
-                                end if
+            else
+                if ((wet_j_kp1==1) .and. (duu<0.0)) then
+                    un_j_k = uu+duu
                 end if
+            end if
+            vv = v_j_k
+            dvv = dv_j_k
+            vn_j_k = 0.0
+            if (wet_j_k==1) then
+                if ((wet_jp1_k==1) .or. (dvv>0.0)) then
+                    vn_j_k = vv+dvv
+                end if
+            else
+                if ((wet_jp1_k==1) .and. (dvv<0.0)) then
+                    vn_j_k = vv+dvv
+                end if
+            end if
         end if
         call write_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_j_k)
         call write_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_j_k)
@@ -5207,8 +4902,8 @@ subroutine dyn_2_h_j_k_reader(h)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                h_j_k = h(a,b)
-                call write_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_j_k)
+            h_j_k = h(a,b)
+            call write_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_j_k)
         end do
     end do
 end subroutine dyn_2_h_j_k_reader
@@ -5220,8 +4915,8 @@ subroutine dyn_2_eta_j_k_reader(eta)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                eta_j_k = eta(a,b)
-                call write_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
+            eta_j_k = eta(a,b)
+            call write_pipe(dyn_2_eta_j_k_reader__dyn_2__eta_j_k__pipe, eta_j_k)
         end do
     end do
 end subroutine dyn_2_eta_j_k_reader
@@ -5253,37 +4948,37 @@ subroutine dyn_2_smart_cache
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
-                h_buffer(i) = h_buffer(i+1)
-                un_buffer(i) = un_buffer(i+1)
-                vn_buffer(i) = vn_buffer(i+1)
+            h_buffer(i) = h_buffer(i+1)
+            un_buffer(i) = un_buffer(i+1)
+            vn_buffer(i) = vn_buffer(i+1)
         end do
         if (count<smartCacheSize) then
-                call read_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
-                h_buffer(1005) = h_read_in
-                call read_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1005) = un_read_in
-                call read_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1005) = vn_read_in
+            call read_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
+            h_buffer(1005) = h_read_in
+            call read_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
+            un_buffer(1005) = un_read_in
+            call read_pipe(dyn_1__dyn_2_smart_cache__vn_j_k__pipe, vn_read_in)
+            vn_buffer(1005) = vn_read_in
         end if
         if (compIndex>=0) then
-                h_j_k = h_buffer(503)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
-                h_j_km1 = h_buffer(1)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
-                h_j_kp1 = h_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
-                h_jm1_k = h_buffer(502)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
-                h_jp1_k = h_buffer(504)
-                call write_pipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
-                un_j_k = un_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
-                un_j_km1 = un_buffer(503)
-                call write_pipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
-                vn_j_k = vn_buffer(1005)
-                call write_pipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
-                vn_jm1_k = vn_buffer(1004)
-                call write_pipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
+            h_j_k = h_buffer(503)
+            call write_pipe(dyn_2_smart_cache__dyn_2__h_j_k__pipe, h_j_k)
+            h_j_km1 = h_buffer(1)
+            call write_pipe(dyn_2_smart_cache__dyn_2__h_j_km1__pipe, h_j_km1)
+            h_j_kp1 = h_buffer(1005)
+            call write_pipe(dyn_2_smart_cache__dyn_2__h_j_kp1__pipe, h_j_kp1)
+            h_jm1_k = h_buffer(502)
+            call write_pipe(dyn_2_smart_cache__dyn_2__h_jm1_k__pipe, h_jm1_k)
+            h_jp1_k = h_buffer(504)
+            call write_pipe(dyn_2_smart_cache__dyn_2__h_jp1_k__pipe, h_jp1_k)
+            un_j_k = un_buffer(1005)
+            call write_pipe(dyn_2_smart_cache__dyn_2__un_j_k__pipe, un_j_k)
+            un_j_km1 = un_buffer(503)
+            call write_pipe(dyn_2_smart_cache__dyn_2__un_j_km1__pipe, un_j_km1)
+            vn_j_k = vn_buffer(1005)
+            call write_pipe(dyn_2_smart_cache__dyn_2__vn_j_k__pipe, vn_j_k)
+            vn_jm1_k = vn_buffer(1004)
+            call write_pipe(dyn_2_smart_cache__dyn_2__vn_jm1_k__pipe, vn_jm1_k)
         end if
     end do
 end subroutine dyn_2_smart_cache
@@ -5333,19 +5028,19 @@ subroutine dyn_2(dt,dx,dy)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                hep = 0.5*(un_j_k+abs(un_j_k))*h_j_k
-                hen = 0.5*(un_j_k-abs(un_j_k))*h_j_kp1
-                hue = hep+hen
-                hwp = 0.5*(un_j_km1+abs(un_j_km1))*h_j_km1
-                hwn = 0.5*(un_j_km1-abs(un_j_km1))*h_j_k
-                huw = hwp+hwn
-                hnp = 0.5*(vn_j_k+abs(vn_j_k))*h_j_k
-                hnn = 0.5*(vn_j_k-abs(vn_j_k))*h_jp1_k
-                hvn = hnp+hnn
-                hsp = 0.5*(vn_jm1_k+abs(vn_jm1_k))*h_jm1_k
-                hsn = 0.5*(vn_jm1_k-abs(vn_jm1_k))*h_j_k
-                hvs = hsp+hsn
-                etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
+            hep = 0.5*(un_j_k+abs(un_j_k))*h_j_k
+            hen = 0.5*(un_j_k-abs(un_j_k))*h_j_kp1
+            hue = hep+hen
+            hwp = 0.5*(un_j_km1+abs(un_j_km1))*h_j_km1
+            hwn = 0.5*(un_j_km1-abs(un_j_km1))*h_j_k
+            huw = hwp+hwn
+            hnp = 0.5*(vn_j_k+abs(vn_j_k))*h_j_k
+            hnn = 0.5*(vn_j_k-abs(vn_j_k))*h_jp1_k
+            hvn = hnp+hnn
+            hsp = 0.5*(vn_jm1_k+abs(vn_jm1_k))*h_jm1_k
+            hsn = 0.5*(vn_jm1_k-abs(vn_jm1_k))*h_j_k
+            hvs = hsp+hsn
+            etan_j_k = eta_j_k-dt*(hue-huw)/dx-dt*(hvn-hvs)/dy
         end if
         call write_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_j_k)
         call write_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_j_k)
@@ -5360,8 +5055,8 @@ subroutine shapiro_wet_j_k_reader(wet)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                wet_j_k = wet(a,b)
-                call write_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_j_k)
+            wet_j_k = wet(a,b)
+            call write_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_j_k)
         end do
     end do
 end subroutine shapiro_wet_j_k_reader
@@ -5398,46 +5093,46 @@ subroutine shapiro_smart_cache
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
-                vn_buffer(i) = vn_buffer(i+1)
-                un_buffer(i) = un_buffer(i+1)
-                etan_buffer(i) = etan_buffer(i+1)
-                wet_buffer(i) = wet_buffer(i+1)
+            vn_buffer(i) = vn_buffer(i+1)
+            un_buffer(i) = un_buffer(i+1)
+            etan_buffer(i) = etan_buffer(i+1)
+            wet_buffer(i) = wet_buffer(i+1)
         end do
         if (count<smartCacheSize) then
-                call read_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
-                etan_buffer(1005) = etan_read_in
-                call read_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
-                un_buffer(1005) = un_read_in
-                call read_pipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
-                vn_buffer(1005) = vn_read_in
-                call read_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
-                wet_buffer(1005) = wet_read_in
+            call read_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
+            etan_buffer(1005) = etan_read_in
+            call read_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)
+            un_buffer(1005) = un_read_in
+            call read_pipe(dyn_2__shapiro_smart_cache__vn_j_k__pipe, vn_read_in)
+            vn_buffer(1005) = vn_read_in
+            call read_pipe(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe, wet_read_in)
+            wet_buffer(1005) = wet_read_in
         end if
         if (compIndex>=0) then
-                etan_j_k = etan_buffer(503)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
-                etan_j_km1 = etan_buffer(1)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
-                etan_j_kp1 = etan_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
-                etan_jm1_k = etan_buffer(502)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
-                etan_jp1_k = etan_buffer(504)
-                call write_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
-                un_j_k = un_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
-                vn_j_k = vn_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
-                wet_j_k = wet_buffer(503)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
-                wet_j_km1 = wet_buffer(1)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
-                wet_j_kp1 = wet_buffer(1005)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
-                wet_jm1_k = wet_buffer(502)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
-                wet_jp1_k = wet_buffer(504)
-                call write_pipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
+            etan_j_k = etan_buffer(503)
+            call write_pipe(shapiro_smart_cache__shapiro__etan_j_k__pipe, etan_j_k)
+            etan_j_km1 = etan_buffer(1)
+            call write_pipe(shapiro_smart_cache__shapiro__etan_j_km1__pipe, etan_j_km1)
+            etan_j_kp1 = etan_buffer(1005)
+            call write_pipe(shapiro_smart_cache__shapiro__etan_j_kp1__pipe, etan_j_kp1)
+            etan_jm1_k = etan_buffer(502)
+            call write_pipe(shapiro_smart_cache__shapiro__etan_jm1_k__pipe, etan_jm1_k)
+            etan_jp1_k = etan_buffer(504)
+            call write_pipe(shapiro_smart_cache__shapiro__etan_jp1_k__pipe, etan_jp1_k)
+            un_j_k = un_buffer(503)
+            call write_pipe(shapiro_smart_cache__shapiro__un_j_k__pipe, un_j_k)
+            vn_j_k = vn_buffer(503)
+            call write_pipe(shapiro_smart_cache__shapiro__vn_j_k__pipe, vn_j_k)
+            wet_j_k = wet_buffer(503)
+            call write_pipe(shapiro_smart_cache__shapiro__wet_j_k__pipe, wet_j_k)
+            wet_j_km1 = wet_buffer(1)
+            call write_pipe(shapiro_smart_cache__shapiro__wet_j_km1__pipe, wet_j_km1)
+            wet_j_kp1 = wet_buffer(1005)
+            call write_pipe(shapiro_smart_cache__shapiro__wet_j_kp1__pipe, wet_j_kp1)
+            wet_jm1_k = wet_buffer(502)
+            call write_pipe(shapiro_smart_cache__shapiro__wet_jm1_k__pipe, wet_jm1_k)
+            wet_jp1_k = wet_buffer(504)
+            call write_pipe(shapiro_smart_cache__shapiro__wet_jp1_k__pipe, wet_jp1_k)
         end if
     end do
 end subroutine shapiro_smart_cache
@@ -5478,14 +5173,14 @@ subroutine shapiro(eps)
         j = count/502
         k = mod(count, 502)
         if ((j>=1) .and. (j<=500) .and. (k>=1) .and. (k<=500)) then
-                if (wet_j_k==1) then
-                                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
-                                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
-                                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
-                                eta_j_k = term1+term2+term3
-                else
-                                eta_j_k = etan_j_k
-                end if
+            if (wet_j_k==1) then
+                term1 = (1.0-0.25*eps*(wet_j_kp1+wet_j_km1+wet_jp1_k+wet_jm1_k))*etan_j_k
+                term2 = 0.25*eps*(wet_j_kp1*etan_j_kp1+wet_j_km1*etan_j_km1)
+                term3 = 0.25*eps*(wet_jp1_k*etan_jp1_k+wet_jm1_k*etan_jm1_k)
+                eta_j_k = term1+term2+term3
+            else
+                eta_j_k = etan_j_k
+            end if
         end if
         call write_pipe(shapiro__vernieuw__eta_j_k__pipe, eta_j_k)
         call write_pipe(shapiro__vernieuw__un_j_k__pipe, un_j_k)
@@ -5500,8 +5195,8 @@ subroutine vernieuw_h_j_k_reader(h)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                h_j_k = h(a,b)
-                call write_pipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
+            h_j_k = h(a,b)
+            call write_pipe(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe, h_j_k)
         end do
     end do
 end subroutine vernieuw_h_j_k_reader
@@ -5513,8 +5208,8 @@ subroutine vernieuw_hzero_j_k_reader(hzero)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                hzero_j_k = hzero(a,b)
-                call write_pipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
+            hzero_j_k = hzero(a,b)
+            call write_pipe(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe, hzero_j_k)
         end do
     end do
 end subroutine vernieuw_hzero_j_k_reader
@@ -5541,13 +5236,15 @@ subroutine vernieuw(hmin)
         call read_pipe(shapiro__vernieuw__vn_j_k__pipe, vn_j_k)
         j = count/502
         k = mod(count, 502)
-        h_j_k = hzero_j_k+eta_j_k
-        wet_j_k = 1
-        if (h_j_k<hmin) then
+        if ((j>=0) .and. (j<=501) .and. (k>=0) .and. (k<=501)) then
+            h_j_k = hzero_j_k+eta_j_k
+            wet_j_k = 1
+            if (h_j_k<hmin) then
                 wet_j_k = 0
+            end if
+            u_j_k = un_j_k
+            v_j_k = vn_j_k
         end if
-        u_j_k = un_j_k
-        v_j_k = vn_j_k
         call write_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k)
         call write_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k)
         call write_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k)
@@ -5568,14 +5265,14 @@ subroutine vernieuw_output_writer(h,u,v,wet)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
-                call read_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k_read_in)
-                h(a,b) = h_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k_read_in)
-                u(a,b) = u_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k_read_in)
-                v(a,b) = v_j_k_read_in
-                call read_pipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k_read_in)
-                wet(a,b) = wet_j_k_read_in
+            call read_pipe(vernieuw__vernieuw_output_writer__h_j_k__pipe, h_j_k_read_in)
+            h(a,b) = h_j_k_read_in
+            call read_pipe(vernieuw__vernieuw_output_writer__u_j_k__pipe, u_j_k_read_in)
+            u(a,b) = u_j_k_read_in
+            call read_pipe(vernieuw__vernieuw_output_writer__v_j_k__pipe, v_j_k_read_in)
+            v(a,b) = v_j_k_read_in
+            call read_pipe(vernieuw__vernieuw_output_writer__wet_j_k__pipe, wet_j_k_read_in)
+            wet(a,b) = wet_j_k_read_in
         end do
     end do
 end subroutine vernieuw_output_writer

@@ -481,6 +481,7 @@ varAccessAnalysis_readsAfter' (_, SrcLoc _ line_end _) accessAnalysis accumAnaly
             (readSpans, writeSpans) = DMap.findWithDefault ([], []) varname accessAnalysis
             newReadSpans = filter (\((SrcLoc _ line_read column_read), _) -> line_read >= line_end) readSpans
             outputAnalysis = DMap.insert varname (newReadSpans, writeSpans) DMap.empty
+varAccessAnalysis_readsAfter' (_, srcLoc ) _ _ _ = error ("missing for\n " ++ show srcLoc)
 
 checkHangingReads :: LocalVarAccessAnalysis -> VarName Anno -> Bool
 checkHangingReads analysis varname = case earliestRead of
