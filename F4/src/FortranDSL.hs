@@ -87,6 +87,15 @@ ifLT variableName compareTo body = If nullAnno
                                       []
                                       Nothing
 
+ifLE variableName compareTo body =
+  If
+    nullAnno
+    nullSrcSpan
+    (lessThanEq (var variableName) compareTo)
+    body
+    []
+    Nothing
+
 ifGECon variableName compareTo = ifGE variableName (con compareTo)
 
 ifGE variableName compareTo body = If

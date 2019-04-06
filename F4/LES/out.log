@@ -16143,13 +16143,14 @@ subroutine velnw_0_smart_cache
       integer, parameter :: smartCacheSize = 2 
       integer, parameter :: maxPositiveOffset = 2 
       integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(velnw_0_p0_i_j_k_reader__velnw_0_smart_cache__p0_i_j_k__pipe, p0_read_in)
             p0_buffer(2) = p0_read_in
         end if
@@ -16266,6 +16267,7 @@ subroutine velnw_1_smart_cache
       integer, parameter :: smartCacheSize = 304 
       integer, parameter :: maxPositiveOffset = 304 
       integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -16273,7 +16275,7 @@ subroutine velnw_1_smart_cache
             u_buffer(i) = u_buffer(i+1)
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(velnw_1_p0_i_j_k_reader__velnw_1_smart_cache__p0_i_j_k__pipe, p0_read_in)
             p0_buffer(304) = p0_read_in
             call read_pipe(velnw_0__velnw_1_smart_cache__u_i_j_k__pipe, u_read_in)
@@ -16399,6 +16401,7 @@ subroutine velnw_2_smart_cache
       integer, parameter :: smartCacheSize = 91810 
       integer, parameter :: maxPositiveOffset = 91810 
       integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -16407,7 +16410,7 @@ subroutine velnw_2_smart_cache
             u_buffer(i) = u_buffer(i+1)
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(velnw_2_p0_i_j_k_reader__velnw_2_smart_cache__p0_i_j_k__pipe, p0_read_in)
             p0_buffer(91810) = p0_read_in
             call read_pipe(velnw_1__velnw_2_smart_cache__u_i_j_k__pipe, u_read_in)
@@ -16946,6 +16949,7 @@ subroutine les_0_smart_cache
       integer, parameter :: smartCacheSize = 92113 
       integer, parameter :: maxPositiveOffset = 91810 
       integer, parameter :: maxNegativeOffset = 91810 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -16963,7 +16967,7 @@ subroutine les_0_smart_cache
             diu7_buffer(i) = diu7_buffer(i+1)
             diu8_buffer(i) = diu8_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(les_0_diu2_i_j_k_reader__les_0_smart_cache__diu2_i_j_k__pipe, diu2_read_in)
             diu2_buffer(92113) = diu2_read_in
             call read_pipe(les_0_diu3_i_j_k_reader__les_0_smart_cache__diu3_i_j_k__pipe, diu3_read_in)
@@ -17353,6 +17357,7 @@ subroutine les_1_smart_cache
       integer, parameter :: smartCacheSize = 183620 
       integer, parameter :: maxPositiveOffset = 91811 
       integer, parameter :: maxNegativeOffset = 91810 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -17373,7 +17378,7 @@ subroutine les_1_smart_cache
             sm_buffer(i) = sm_buffer(i+1)
             f_buffer(i) = f_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(les_1_diu1_i_j_k_reader__les_1_smart_cache__diu1_i_j_k__pipe, diu1_read_in)
             diu1_buffer(183620) = diu1_read_in
             call read_pipe(les_1_diu2_i_j_k_reader__les_1_smart_cache__diu2_i_j_k__pipe, diu2_read_in)
@@ -17788,6 +17793,7 @@ subroutine les_2_smart_cache
       integer, parameter :: smartCacheSize = 183620 
       integer, parameter :: maxPositiveOffset = 91811 
       integer, parameter :: maxNegativeOffset = 91810 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -17808,7 +17814,7 @@ subroutine les_2_smart_cache
             sm_buffer(i) = sm_buffer(i+1)
             g_buffer(i) = g_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(les_2_diu2_i_j_k_reader__les_2_smart_cache__diu2_i_j_k__pipe, diu2_read_in)
             diu2_buffer(183620) = diu2_read_in
             call read_pipe(les_2_diu4_i_j_k_reader__les_2_smart_cache__diu4_i_j_k__pipe, diu4_read_in)
@@ -18217,6 +18223,7 @@ subroutine les_3_smart_cache
       integer, parameter :: smartCacheSize = 92416 
       integer, parameter :: maxPositiveOffset = 92113 
       integer, parameter :: maxNegativeOffset = 304 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -18237,7 +18244,7 @@ subroutine les_3_smart_cache
             sm_buffer(i) = sm_buffer(i+1)
             h_buffer(i) = h_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(les_3_diu3_i_j_k_reader__les_3_smart_cache__diu3_i_j_k__pipe, diu3_read_in)
             diu3_buffer(92416) = diu3_read_in
             call read_pipe(les_3_diu6_i_j_k_reader__les_3_smart_cache__diu6_i_j_k__pipe, diu6_read_in)
@@ -18629,6 +18636,7 @@ subroutine press_0_smart_cache
       integer, parameter :: smartCacheSize = 91507 
       integer, parameter :: maxPositiveOffset = 0 
       integer, parameter :: maxNegativeOffset = 91507 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -18640,7 +18648,7 @@ subroutine press_0_smart_cache
             v_buffer(i) = v_buffer(i+1)
             w_buffer(i) = w_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(adam__press_0_smart_cache__f_i_j_k__pipe, f_read_in)
             f_buffer(91507) = f_read_in
             call read_pipe(adam__press_0_smart_cache__g_i_j_k__pipe, g_read_in)
@@ -18951,13 +18959,14 @@ subroutine press_5_smart_cache
       integer, parameter :: smartCacheSize = 3 
       integer, parameter :: maxPositiveOffset = 2 
       integer, parameter :: maxNegativeOffset = 2 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(press_4__press_5_smart_cache__p0_synthIdx2_j_k__pipe, p0_read_in)
             p0_buffer(3) = p0_read_in
         end if
@@ -19008,13 +19017,14 @@ subroutine press_6_smart_cache
       integer, parameter :: smartCacheSize = 181801 
       integer, parameter :: maxPositiveOffset = 90901 
       integer, parameter :: maxNegativeOffset = 90901 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(press_5__press_6_smart_cache__p0_i_synthIdx1_k__pipe, p0_read_in)
             p0_buffer(181801) = p0_read_in
         end if
@@ -19065,13 +19075,14 @@ subroutine press_7_smart_cache
       integer, parameter :: smartCacheSize = 183619 
       integer, parameter :: maxPositiveOffset = 91810 
       integer, parameter :: maxNegativeOffset = 91810 
+      integer, parameter :: driverLoopSize = 7645296 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             p0_buffer(i) = p0_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(press_6__press_7_smart_cache__p0_i_j_synthIdx0__pipe, p0_read_in)
             p0_buffer(183619) = p0_read_in
         end if

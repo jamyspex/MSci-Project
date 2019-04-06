@@ -123,6 +123,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_smart_cache() {
       int compindex;
       const int nloop = 252507;
       const int smartcachesize = 503;
+      const int driverloopsize = 252004;
       const int maxpositiveoffset = 503;
       const int maxnegativeoffset = 0;
     for (count = 1;count <= nloop;count += 1) {
@@ -132,7 +133,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_smart_cache() {
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 eta_buffer[F1D2C(1 , i)] = eta_buffer[F1D2C(1 , i+1)];
         }
-        if (count<smartcachesize) {
+        if (count<driverloopsize) {
                                 read_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe,&eta_read_in);
                                 eta_buffer[F1D2C(1 , 503)] = eta_read_in;
         }
@@ -347,6 +348,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_smart_cache() {
       int compindex;
       const int nloop = 252507;
       const int smartcachesize = 1005;
+      const int driverloopsize = 252004;
       const int maxpositiveoffset = 503;
       const int maxnegativeoffset = 503;
     for (count = 1;count <= nloop;count += 1) {
@@ -355,10 +357,10 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_smart_cache() {
 #pragma unroll
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 h_buffer[F1D2C(1 , i)] = h_buffer[F1D2C(1 , i+1)];
-                                un_buffer[F1D2C(1 , i)] = un_buffer[F1D2C(1 , 101)];
+                                un_buffer[F1D2C(1 , i)] = un_buffer[F1D2C(1 , i+1)];
                                 vn_buffer[F1D2C(1 , i)] = vn_buffer[F1D2C(1 , i+1)];
         }
-        if (count<smartcachesize) {
+        if (count<driverloopsize) {
                                 read_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe,&h_read_in);
                                 h_buffer[F1D2C(1 , 1005)] = h_read_in;
                                 read_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe,&un_read_in);
@@ -489,6 +491,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
       int compindex;
       const int nloop = 252507;
       const int smartcachesize = 1005;
+      const int driverloopsize = 252004;
       const int maxpositiveoffset = 503;
       const int maxnegativeoffset = 503;
     for (count = 1;count <= nloop;count += 1) {
@@ -501,7 +504,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
                                 etan_buffer[F1D2C(1 , i)] = etan_buffer[F1D2C(1 , i+1)];
                                 wet_buffer[F1D2C(1 , i)] = wet_buffer[F1D2C(1 , i+1)];
         }
-        if (count<smartcachesize) {
+        if (count<driverloopsize) {
                                 read_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe,&etan_read_in);
                                 etan_buffer[F1D2C(1 , 1005)] = etan_read_in;
                                 read_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe,&un_read_in);
