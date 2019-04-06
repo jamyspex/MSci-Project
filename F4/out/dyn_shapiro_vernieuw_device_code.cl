@@ -219,7 +219,8 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_smart_cache() {
       int count;
       int compindex;
       const int nloop = 252507;
-      const int smartcachesize = 503;
+      const int smartcachesize = 503
+      const int driverloopsize = 252004;
       const int maxpositiveoffset = 503;
       const int maxnegativeoffset = 0;
     for (count = 1;count <= nloop;count += 1) {
@@ -229,7 +230,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_smart_cache() {
         for (i = 1;i <= smartcachesize-1;i += 1) {
                                 wet_buffer[F1D2C(1 , i)] = wet_buffer[F1D2C(1 , i+1)];
         }
-        if (count<smartcachesize) {
+        if (count<driverloopsize) {
                                 read_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe,&wet_read_in);
                                 wet_buffer[F1D2C(1 , 503)] = wet_read_in;
         }
