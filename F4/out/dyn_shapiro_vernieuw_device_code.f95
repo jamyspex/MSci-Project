@@ -131,13 +131,14 @@ subroutine dyn_0_smart_cache
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: driverLoopSize = 252004 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             eta_buffer(i) = eta_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe, eta_read_in)
             eta_buffer(503) = eta_read_in
         end if
@@ -233,13 +234,14 @@ subroutine dyn_1_smart_cache
       integer, parameter :: smartCacheSize = 503 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 0 
+      integer, parameter :: driverLoopSize = 252004 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
         do i = 1, smartCacheSize-1, 1
             wet_buffer(i) = wet_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe, wet_read_in)
             wet_buffer(503) = wet_read_in
         end if
@@ -362,6 +364,7 @@ subroutine dyn_2_smart_cache
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: driverLoopSize = 252004 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -370,7 +373,7 @@ subroutine dyn_2_smart_cache
             un_buffer(i) = un_buffer(i+1)
             vn_buffer(i) = vn_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(dyn_2_h_j_k_reader__dyn_2_smart_cache__h_j_k__pipe, h_read_in)
             h_buffer(1005) = h_read_in
             call read_pipe(dyn_1__dyn_2_smart_cache__un_j_k__pipe, un_read_in)
@@ -507,6 +510,7 @@ subroutine shapiro_smart_cache
       integer, parameter :: smartCacheSize = 1005 
       integer, parameter :: maxPositiveOffset = 503 
       integer, parameter :: maxNegativeOffset = 503 
+      integer, parameter :: driverLoopSize = 252004 
     do count = 1, nloop, 1
         compIndex = count-maxPositiveOffset
         !$PRAGMA unroll
@@ -516,7 +520,7 @@ subroutine shapiro_smart_cache
             etan_buffer(i) = etan_buffer(i+1)
             wet_buffer(i) = wet_buffer(i+1)
         end do
-        if (count<smartCacheSize) then
+        if (count<=driverLoopSize) then
             call read_pipe(dyn_2__shapiro_smart_cache__etan_j_k__pipe, etan_read_in)
             etan_buffer(1005) = etan_read_in
             call read_pipe(dyn_2__shapiro_smart_cache__un_j_k__pipe, un_read_in)

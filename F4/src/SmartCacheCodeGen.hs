@@ -71,8 +71,7 @@ buildSmartCacheBody smc@SmartCache {..} =
     (shiftLoopCode, requiredDecls) =
       generateShiftLoop smc smartCacheSizeParamName
     pipeWrites = generatePipeWrites smc
-    readBlock =
-      ifLT mainLoopVarName (var smartCacheSizeParamName) (block pipeReads)
+    readBlock = ifLE mainLoopVarName (var driverLoopSizeName) (block pipeReads)
     writeBlock = ifGECon compIndexName 0 (block pipeWrites)
     controlDecls =
       [ intDecl mainLoopVarName
@@ -81,10 +80,12 @@ buildSmartCacheBody smc@SmartCache {..} =
       , intParam smartCacheSizeParamName smartCacheSize
       , intParam maxPosOffsetParamName maxPosOffset
       , intParam maxNegOffsetParamName maxNegOffset
+      , intParam driverLoopSizeName driverLoopUpperBound
       ]
     mainLoopBoundVal = driverLoopUpperBound + maxPosOffset
     maxPosOffset = maximum (map maxPositiveOffset cacheLines)
     maxNegOffset = maximum (map maxNegativeOffset cacheLines)
+    driverLoopSizeName = "driverLoopSize"
     compIndexName = "compIndex"
     mainLoopBoundName = "nloop"
     mainLoopVarName = "count"
