@@ -7,6 +7,7 @@ import           Control.Monad.Extra
 import           Data.Generics
 import           Data.List
 import           Data.List.Index
+import           Data.List.Unique
 import           Data.List.Utils
 import qualified Data.Map             as DMap
 import           Data.Maybe
@@ -18,6 +19,7 @@ import           FortranDSL
 import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
+import           Safe
 import           Utils
 
 -- This module synthesises and adds the statements needed to calculate
@@ -201,7 +203,10 @@ getAllLoopVarToRange largestStreamDims kernelCode =
       , imap
           (\idx item -> (idx, item, largestStreamDims !! idx))
           (reverse loopVarUsageOrder))
-    _ -> error "Loop variable usage is not simple can't calculate dummy indices"
+    dir ->
+      error
+        ("Loop variable usage is not simple can't calculate dummy indices - " ++
+         show dir)
   where
     kernelBody = getSubBody kernelCode
     allArrayDecls = getArrayDecls kernelCode
@@ -219,28 +224,37 @@ getNestingDirection usageOrder nestOrder =
     (False, True) -> Reverse
     _             -> Undefined
   where
+    nestOrderOnlyUsed = filter (`elem` usageOrder) nestOrder
     nestDirectionTuple =
-      (usageOrder == nestOrder, reverse usageOrder == nestOrder)
+      (usageOrder == nestOrderOnlyUsed, reverse usageOrder == nestOrderOnlyUsed)
 
 getLoopVarUsageOrder :: [String] -> [Expr Anno] -> [String]
 getLoopVarUsageOrder loopVars arrayAccesses =
   uniq $ map fst $ sortOn snd loopVarPositions
   where
     loopIndexPos = concatMap (getLoopIndexPosition loopVars) arrayAccesses
-    loopVarPositions = checkLoopVarUsageConsistentAndGetPositions loopIndexPos
+    loopVarPositions =
+      checkLoopVarUsageConsistentAndGetPositions arrayAccesses loopIndexPos
 
 checkLoopVarUsageConsistentAndGetPositions ::
-     [(String, String, Maybe Int)] -> [(String, Int)]
-checkLoopVarUsageConsistentAndGetPositions allLoopIndexPos =
+     [Expr Anno] -> [(String, String, Maybe Int)] -> [(String, Int)]
+checkLoopVarUsageConsistentAndGetPositions allArrayAccesses allLoopIndexPos =
   if valid
     then map (\(_, lv, Just pos) -> (lv, pos)) usingAllIndexes
     else error "loop var usage is not consistent"
   where
     usingAllIndexes =
-      head $ filter (all isJust . map (\(_, _, pos) -> pos)) grpdByArray
+      headNote "line 240" $
+      filter (all isJust . map (\(_, _, pos) -> pos)) grpdByArray
     valid = all (validateIndex usingAllIndexes) allLoopIndexPos
     grpdByArray =
-      groupBy (\(an1, _, _) (an2, _, _) -> an1 == an2) allLoopIndexPos
+      groupBy (\(an1, _, _) (an2, _, _) -> an1 == an2) $
+      filter (\(_, lv, _) -> lv `elem` usedIndices) allLoopIndexPos
+    usedIndices =
+      sortUniq $
+      map (getNameFromVarName . getVarNameG) $ getIndices allArrayAccesses
+
+getIndices = concatMap (\(Var _ _ [(_, indices)]) -> indices)
 
 validateIndex ::
      [(String, String, Maybe Int)] -> (String, String, Maybe Int) -> Bool
@@ -248,7 +262,8 @@ validateIndex usesAllLoopVars tv@(_, loopVar, Just pos) =
   pos <= shouldBeLoopVarPos
   where
     (_, _, Just shouldBeLoopVarPos) =
-      head $ filter (\(_, lv, _) -> lv == loopVar) usesAllLoopVars
+      headNote "line 252" $
+      filter (\(_, lv, _) -> lv == loopVar) usesAllLoopVars
 -- <= so array loop vars can be used to index arrays with lower dimensions
 -- Doubt that this is robust - FIXME
 validateIndex _ (_, _, Nothing) = True

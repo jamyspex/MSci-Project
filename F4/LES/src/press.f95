@@ -144,7 +144,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
 #ifdef SOR
 ! --SOR
     do l = 1,nmaxp
-        sor = 0.0
+    !    sor = 0.0
         do nrd = 0,1
             do k = 1,kp
 #ifndef WV_OPENCL
@@ -225,6 +225,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
                     end do
                 end do
             end do
+#ifdef CALC_BOUNDS
 #if defined( TWINNED_BUFFER ) && defined(INLINE_BOUND_CALCS) && !defined(MPI)
       ! --computational boundary(neumann condition)
           do k=0,kp+1
@@ -240,11 +241,11 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
           end do
           end do
 #else
-#ifdef CALC_BOUNDS
             call boundp1(p)
 #endif
 #endif
         end do  ! nrd
+#ifdef CALC_BOUNDS
 #if defined( TWINNED_BUFFER ) && defined(INLINE_BOUND_CALCS) && !defined(MPI)
 ! --computational boundary(neumann condition)
       do j=0,jp+1
@@ -254,7 +255,6 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
       end do
       end do
 #else
-#ifdef CALC_BOUNDS
       call boundp2(p)
 #endif
 #endif

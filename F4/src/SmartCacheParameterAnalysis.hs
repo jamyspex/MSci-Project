@@ -76,16 +76,17 @@ hasConstantStenValues (StencilStream _ _ _ _ (Stencil _ _ _ stencilIndices _)) =
 -- is not present already in the stream add it.
 calculateSmartCacheDetailsForStream ::
      Maybe Kernel -> [Int] -> Stream Anno -> SmartCacheDetailsForStream
-calculateSmartCacheDetailsForStream kernel itOrder sten =
-  SmartCacheDetailsForStream
-    { requiredBufferSize = maxNumBlocks
-    , startIndex = maxStart
-    , endIndex = maxEnd
-    , startToPointDistances = pairsFromStart
-    , maxPosOffset = getMaxOffset all fst centralIdx
-    , maxNegOffset = getMaxOffset all snd centralIdx
-    }
+calculateSmartCacheDetailsForStream kernel itOrder sten = details
   where
+    details =
+      SmartCacheDetailsForStream
+        { requiredBufferSize = maxNumBlocks
+        , startIndex = maxStart
+        , endIndex = maxEnd
+        , startToPointDistances = pairsFromStart
+        , maxPosOffset = getMaxOffset all fst centralIdx
+        , maxNegOffset = getMaxOffset all snd centralIdx
+        }
     (StencilStream name arrayName valueType dims (Stencil anno dimension numPoints coords varName)) =
       sten
     centralIdx = replicate dimension (Offset 0)
@@ -330,6 +331,26 @@ nonSymetricalLargerThan1Offset =
        , [Offset 1, Offset 2, Offset 0]
        , [Offset 0, Offset (-1), Offset 0]
        , [Offset 0, Offset 1, Offset 0]
+       ]
+       (VarName nullAnno "test"))
+
+press =
+  StencilStream
+    "test"
+    "test"
+    Float
+    [(0, 302), (0, 302), (0, 81)]
+    (Stencil
+       nullAnno
+       3
+       7
+       [ [Offset 1, Offset 0, Offset 0]
+       , [Offset 0, Offset 1, Offset 0]
+       , [Offset 0, Offset 0, Offset 0]
+       , [Offset 0, Offset 0, Offset 1]
+       , [Offset 0, Offset 0, Offset (-1)]
+       , [Offset 0, Offset (-1), Offset 0]
+       , [Offset (-1), Offset 0, Offset 0]
        ]
        (VarName nullAnno "test"))
 

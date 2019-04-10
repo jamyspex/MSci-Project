@@ -105,8 +105,29 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
              , map (finalMap DMap.!) previousMemAccNames)
       else Nothing
   , ( finalMap DMap.! currKernName
-    , maybe Nothing (`DMap.lookup` finalMap) currentSCName
-    , map (finalMap DMap.!) currentMemAccNames))
+    , maybe
+        Nothing
+        (`DMap.lookup` finalMap)
+        (trace
+           ("currKernName = " ++
+            currKernName ++ " currentSCName = " ++ show currentSCName)
+           currentSCName)
+    , map
+        (finalMap DMap.!)
+        (trace
+           ("currKernName = " ++
+            currKernName ++
+            " currentMemAccNames = " ++
+            show currentMemAccNames ++
+            "\n map = \n" ++
+            (concatMap
+               (\i ->
+                  name i ++
+                  " \n written pipes = \n" ++
+                  show (writtenPipes i) ++
+                  "\n read pipes = \n" ++ show (readPipes i)) $
+             DMap.elems finalMap))
+           currentMemAccNames)))
   where
     (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
     withReadPipesUpdated =

@@ -14,6 +14,7 @@ import           Language.Fortran
 import           LanguageFortranTools
 import           MiniPP
 import           Parser
+import           Safe
 import           Text.Read
 import           Utils
 
@@ -133,8 +134,10 @@ validateIndexingAndMakeUnique positions =
         indexNotUsedRemove
     groupedByArrayNameAndIdxName = groupByArrayAndIndex maybeRemoved
     valid =
-      all (\grp -> all (== head grp) (tail grp)) groupedByArrayNameAndIdxName
-    unique = map head groupedByArrayNameAndIdxName
+      all
+        (\grp -> all (== headNote "line 136" grp) (tail grp))
+        groupedByArrayNameAndIdxName
+    unique = map (headNote "line 137") groupedByArrayNameAndIdxName
 
 groupByArrayAndIndex :: [(String, String, Int)] -> [[(String, String, Int)]]
 groupByArrayAndIndex input =
