@@ -201,6 +201,7 @@ program main
 !    integer :: syncTicksLocal
     logical :: inNest
 #endif
+#ifndef SOR_ONLY
 !      u=0.0
 !      v=0.0
 !      w=0.0
@@ -390,6 +391,8 @@ if (n>n_nest0) then
 #ifdef TIMINGS
         call system_clock(timestamp(6), clock_rate)
 #endif
+#endif
+! SOR_ONLY
 #ifdef WV_NEW
         call press(u,v,w,p,rhs,f,g,h,dx1,dy1,dzn,dxs,dys,dzs,dt,n,nmax&
 #if !defined( NO_IO)  && !defined( MPI )
@@ -400,6 +403,7 @@ if (n>n_nest0) then
         call press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s, &
                    cn3l,cn3s,cn4l,cn4s,n, nmax,data20,usum,vsum,wsum) !WV getGlobalSumOf and exchangeRealHalos (in boundp)
 #endif
+#ifndef SOR_ONLY
 #ifdef TIMINGS
         call system_clock(timestamp(7), clock_rate)
         do i=1, 7
@@ -483,5 +487,6 @@ if (n>n_nest0) then
 #endif
 #ifdef MPI
     call finalise_mpi()
+#endif
 #endif
 end program

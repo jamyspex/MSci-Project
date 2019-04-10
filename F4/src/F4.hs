@@ -10,12 +10,21 @@ import           AddSmartCaches
 import           AddSynthesisedLoopVars
 import           AddTransitStreams
 import           BuildDeviceModule
-import           CommandLineProcessor        (F4Opts (..), f4CmdParser)
+import           Data.List.Index
+import           CommandLineProcessor           ( F4Opts(..)
+                                                , f4CmdParser
+                                                )
 import           Control.Monad.Extra
-import           Data.Generics               (everything, everywhere,
-                                              everywhereM, gmapQ, gmapT, mkM,
-                                              mkQ, mkT)
-import qualified Data.Map                    as DMap
+import           Data.Generics                  ( everything
+                                                , everywhere
+                                                , everywhereM
+                                                , gmapQ
+                                                , gmapT
+                                                , mkM
+                                                , mkQ
+                                                , mkT
+                                                )
+import qualified Data.Map                      as DMap
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
@@ -23,15 +32,16 @@ import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
 import           Language.Fortran.Pretty
-import qualified LanguageFortranTools        as LFT
+import qualified LanguageFortranTools          as LFT
 import           LinkReductionVars
 import           MemoryAccessCodeGen
 import           MergeSubroutines
 import           MiniPP
 import           Options.Applicative
-import           Parser                      (parseProgramData)
+import           Parser                         ( parseProgramData )
 
-import           RemoveConstantsFromStencils hiding (addLoopGuards)
+import           RemoveConstantsFromStencils
+                                         hiding ( addLoopGuards )
 import           RemoveConstantsWrapper
 import           SanityChecks
 import           ScalarizeKernels
@@ -57,10 +67,10 @@ compilerMain args = do
   initialSubroutineTable <- parseProgramData args
   -- seperate out the parsed files to be offloaded to the FPGA
   subroutineTable <- removeStencilConstantsWrapper args initialSubroutineTable
-  let forOffloadSubTable = DMap.filter parallelise subroutineTable
+  let forOffloadSubTable    = DMap.filter parallelise subroutineTable
   let notForOffloadSubTable = DMap.filter (not . parallelise) subroutineTable
-  let forOffloadSubTable = DMap.filter parallelise subroutineTable
-  let subroutineNames = DMap.keys forOffloadSubTable
+  let forOffloadSubTable    = DMap.filter parallelise subroutineTable
+  let subroutineNames       = DMap.keys forOffloadSubTable
   putStrLn (rule '+' ++ " Subroutines not for offload " ++ rule '+')
   debug_displaySubRoutineTable notForOffloadSubTable False
   putStrLn (rule '+' ++ " Subroutines for offload " ++ rule '+')
@@ -70,23 +80,21 @@ compilerMain args = do
   let subroutineTableWithOffloadSubsMerged =
         mergeSubsToBeParallelised subroutineTable
   debug_displaySubRoutineTable subroutineTableWithOffloadSubsMerged False
-  let mergedOffloadName =
-        head $
-        DMap.keys $ DMap.filter parallelise subroutineTableWithOffloadSubsMerged
+  let mergedOffloadName = head $ DMap.keys $ DMap.filter
+        parallelise
+        subroutineTableWithOffloadSubsMerged
   putStrLn (rule '+' ++ " Pipeline Detection " ++ rule '+')
-  (pipelineNames, pipelineSubroutineTable) <-
-    updateSubTablesWithPipelines
-      (subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName)
-      subroutineTableWithOffloadSubsMerged
+  (pipelineNames, pipelineSubroutineTable) <- updateSubTablesWithPipelines
+    (subroutineTableWithOffloadSubsMerged DMap.! mergedOffloadName)
+    subroutineTableWithOffloadSubsMerged
   putStrLn (rule '+' ++ " Map + Fold Detection " ++ rule '+')
   -- Map and fold detection from Gavin's compiler
   -- < STEP 4 : Parallelise the loops >
   -- WV: this is the equivalent of calling a statefull pass on every subroutine.
-  let (parallelisedSubroutines, parAnnotations) =
-        foldl
-          (paralleliseProgUnit_foldl (ioSubs args) pipelineSubroutineTable)
-          (DMap.empty, [])
-          pipelineNames
+  let (parallelisedSubroutines, parAnnotations) = foldl
+        (paralleliseProgUnit_foldl (ioSubs args) pipelineSubroutineTable)
+        (DMap.empty, [])
+        pipelineNames
   debug_displaySubRoutineTable parallelisedSubroutines False
   let srtWithParallelisedSubroutines =
         DMap.union parallelisedSubroutines pipelineSubroutineTable -- subroutineTableWithOffloadSubsMerged
@@ -95,11 +103,10 @@ compilerMain args = do
         detectStencilsInSubsToBeParallelise srtWithParallelisedSubroutines
   debug_displaySubRoutineTable srtAfterStenDetect False
   -- < Try to fuse the parallelised loops as much as possible (on a per-subroutine basis) >
-  let (combinedKernelSubroutines, combAnnotations) =
-        foldl
-          (combineKernelProgUnit_foldl (loopFusionBound args))
-          (srtAfterStenDetect, [])
-          pipelineNames
+  let (combinedKernelSubroutines, combAnnotations) = foldl
+        (combineKernelProgUnit_foldl (loopFusionBound args))
+        (srtAfterStenDetect, [])
+        pipelineNames
   putStrLn (rule '+' ++ " Combined " ++ rule '+')
   let srtAfterKernelCombination =
         DMap.union combinedKernelSubroutines srtAfterStenDetect
@@ -108,25 +115,29 @@ compilerMain args = do
   --
   -- kernels = [[Kernel]] representing pipelines
   kernels <- mapM getKernels (getOffloadSubs srtAfterKernelCombination)
-  scalarisedKernels <- concatMapM processPipeline kernels
-  (fileName, deviceCode, callingData) <- buildDeviceModule scalarisedKernels
+  scalarisedKernels <- concatMapM (processPipeline (length kernels))
+    $ indexed kernels
+  (fileName, deviceCode, callingData) <- buildDeviceModule (length kernels)
+                                                           scalarisedKernels
   mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
 
-processPipeline :: [Kernel] -> IO [PipelineStage]
-processPipeline kernels = do
+processPipeline :: Int -> (Int, [Kernel]) -> IO [PipelineStage]
+processPipeline totalPipelines (pipelineNumber, kernels) = do
+  let renamedKernels =
+        map (addPipelineNamePrefix totalPipelines pipelineNumber) kernels
   driverLoopParams@(largestStreamName, largestStreamDims, _) <-
-    detectDriverLoopSize kernels
+    detectDriverLoopSize renamedKernels
   putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
-  withGuards <- mapM addLoopGuards kernels -- (getOffloadSubs srtAfterKernelCombination)
+  withGuards <- mapM addLoopGuards renamedKernels -- (getOffloadSubs srtAfterKernelCombination)
   putStrLn (rule '+' ++ " With Transit Streams " ++ rule '+')
   kernelsWithTransitStreams <- addTransitStreams withGuards
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
   kernelsWithReductionVarsLinked <- linkReductionVars kernelsWithTransitStreams
   putStrLn (rule '+' ++ " With Synthesised Loop Vars " ++ rule '+')
-  withLoopVarsSynthesised <-
-    synthesiseLoopVars largestStreamDims kernelsWithReductionVarsLinked
+  withLoopVarsSynthesised <- synthesiseLoopVars largestStreamDims
+                                                kernelsWithReductionVarsLinked
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
@@ -140,23 +151,28 @@ processPipeline kernels = do
   putStrLn (rule '+' ++ " Scalarizing Kernels " ++ rule '+')
   scalarizeKernels withPipes
 
+addPipelineNamePrefix :: Int -> Int -> Kernel -> Kernel
+addPipelineNamePrefix 1 _ k = k
+addPipelineNamePrefix _ pipelineNumber k =
+  k { kernelName = "p" ++ show pipelineNumber ++ "_" ++ kernelName k }
+
 getOffloadSubs :: SubroutineTable -> [SubRec]
 getOffloadSubs subTable =
   DMap.elems $ DMap.filter (\MkSubRec {..} -> parallelise) subTable
 
 updateSubroutineTable :: [SubRec] -> SubroutineTable -> SubroutineTable
-updateSubroutineTable newSubRecs oldSubTable =
-  foldl (\map (key, subRec) -> DMap.insert key subRec map) oldSubTable newItems
-  where
-    newItems = map (\subrec -> (subName subrec, subrec)) newSubRecs
+updateSubroutineTable newSubRecs oldSubTable = foldl
+  (\map (key, subRec) -> DMap.insert key subRec map)
+  oldSubTable
+  newItems
+  where newItems = map (\subrec -> (subName subrec, subrec)) newSubRecs
 
 writeToFile :: F4Opts -> String -> String -> IO ()
 writeToFile F4Opts {..} fileName contents = do
   createDirectoryIfMissing True outputDir
   whenM (doesFileExist filePath) (removeFile filePath)
   writeFile filePath contents
-  where
-    filePath = joinPath [outputDir, fileName]
+  where filePath = joinPath [outputDir, fileName]
 
 validateInputFiles :: Program LFT.Anno -> IO ()
 validateInputFiles fileAst = do
@@ -164,7 +180,8 @@ validateInputFiles fileAst = do
   mapM_ printErrorOrContinue results
 
 banner =
-  rule '=' ++
-  "F4: Finite-element Fortran for FPGAs\n" ++
-  "This compiler allows Fortran finite element codes to be compiled\n" ++
-  "for execution on FPGA devices via OpenCL" ++ rule '='
+  rule '='
+    ++ "F4: Finite-element Fortran for FPGAs\n"
+    ++ "This compiler allows Fortran finite element codes to be compiled\n"
+    ++ "for execution on FPGA devices via OpenCL"
+    ++ rule '='

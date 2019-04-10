@@ -72,7 +72,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
     real, parameter  :: pjuge = 0.0001
     integer, parameter  :: nmaxp = 50 ! WV was 50
     real, parameter  :: omega = 1.
-
+#ifndef SOR_ONLY
 #ifdef CALC_BOUNDS
 #if !defined( INLINE_BOUND_CALCS ) || defined( MPI )
     call bondfg(f,g,h)
@@ -141,6 +141,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
             end do
         end do
     end do
+#endif
 #ifdef SOR
 ! --SOR
     do l = 1,nmaxp
@@ -278,6 +279,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
 #endif
     end do ! l
 #endif
+#ifndef SOR_ONLY
 #ifndef NO_GLOBAL_SOR
     510 continue
 #endif
@@ -433,7 +435,7 @@ subroutine press(rhs,u,dx1,v,dy1,w,dzn,f,g,h,dt,cn1,cn2l,p,cn2s,cn3l,cn3s,cn4l,c
 #endif
     end if
 #endif
-
+#endif
 end subroutine press
 
 end module module_press

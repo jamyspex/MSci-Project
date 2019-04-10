@@ -6,10 +6,10 @@ module AddMemoryAccessKernels where
 
 import           Data.Foldable
 import           Data.Ix
-import           Data.List            as List
+import           Data.List                     as List
 import           Data.Maybe
-import           Data.Sequence        as Seq
-import qualified Data.Set             as Set
+import           Data.Sequence                 as Seq
+import qualified Data.Set                      as Set
 import           Debug.Trace
 import           LanguageFortranTools
 import           Pipeline
@@ -58,111 +58,110 @@ import           Utils
 --
 --
 showPipelineStage (kernel, smartCache, memReaders) =
-  "--------------  PIPELINE STAGE  ---------------\n" ++
-  show kernel ++
-  show smartCache ++
-  concatMap show memReaders ++
-  "----------------------------------------------\n"
+  "--------------  PIPELINE STAGE  ---------------\n"
+    ++ show kernel
+    ++ show smartCache
+    ++ concatMap show memReaders
+    ++ "----------------------------------------------\n"
 
-addMemoryAccesses ::
-     [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> IO [PipelineStage]
+addMemoryAccesses
+  :: [(Kernel, Maybe (PipelineItem SharedPipelineData))] -> IO [PipelineStage]
 addMemoryAccesses kernelsAndSmartCaches = do
   mapM_ (putStrLn . showPipelineStage) withMemoryWriter
   return withMemoryWriter
-  where
-    kernelsConverted =
-      map
-        (\(k, sc) -> (convertKernelToPipelineItem k, sc))
-        kernelsAndSmartCaches
-    withMemoryReaders = addMemoryReaders kernelsConverted
-    withMemoryWriter = addMemoryWriter withMemoryReaders
+ where
+  kernelsConverted =
+    map (\(k, sc) -> (convertKernelToPipelineItem k, sc)) kernelsAndSmartCaches
+  withMemoryReaders = addMemoryReaders kernelsConverted
+  withMemoryWriter  = addMemoryWriter withMemoryReaders
 
 -- Add memory reader kernels
-addMemoryReaders ::
-     [(PipelineItem SharedPipelineData, Maybe (PipelineItem SharedPipelineData))]
+addMemoryReaders
+  :: [ ( PipelineItem SharedPipelineData
+       , Maybe (PipelineItem SharedPipelineData)
+       )
+     ]
   -> [PipelineStage]
 addMemoryReaders kernelsAndSmartCaches = pipeline
-  where
-    sorted =
-      List.sortBy
-        (\(k1, _) (k2, _) -> stageNumber k1 `compare` stageNumber k2)
-        kernelsAndSmartCaches
-    initialPipelineStages = map (\(k, sc) -> (k, sc, [])) sorted
-    availableStreams = Set.empty
-    (_, withMemReaders) =
-      foldl
-        foldOverPipeline
-        (availableStreams, Seq.fromList initialPipelineStages)
-        (range (0, List.length initialPipelineStages))
-    pipeline = toList withMemReaders
+ where
+  sorted = List.sortBy
+    (\(k1, _) (k2, _) -> stageNumber k1 `compare` stageNumber k2)
+    kernelsAndSmartCaches
+  initialPipelineStages = map (\(k, sc) -> (k, sc, [])) sorted
+  availableStreams      = Set.empty
+  (_, withMemReaders)   = foldl
+    foldOverPipeline
+    (availableStreams, Seq.fromList initialPipelineStages)
+    (range (0, List.length initialPipelineStages))
+  pipeline = toList withMemReaders
 
 -- Iterate over the pipeline stages and using a set of the currently available streams.
 -- A stream is available if it has been output by a kernel and has not been used as input to another kernel.
-foldOverPipeline ::
-     (Set.Set String, Seq.Seq PipelineStage)
+foldOverPipeline
+  :: (Set.Set String, Seq.Seq PipelineStage)
   -> Int
   -> (Set.Set String, Seq.Seq PipelineStage)
 foldOverPipeline (availableStreams, pipeline) currentStageIdx =
   (withKernelOutputStreams, updatedPipeline)
-  where
-    updatedPipeline =
-      Seq.update
-        currentStageIdx
-        (kernel, smartCache, requiredMemoryReaders)
-        pipeline
-    (kernel, smartCache, _) = pipeline `Seq.index` currentStageIdx
-    requiredInputStreams = getRequiredInputStreams kernel smartCache
-    requiredMemoryReaders = concatMap buildMemoryReader requiredInputStreams
-    withConsumedStreamsRemoved =
-      foldl
-        (\set stream -> Set.delete (getArrayNameFromStream stream) set)
-        availableStreams
-        requiredInputStreams
-    withKernelOutputStreams =
-      foldl
-        (\set stream -> Set.insert (getArrayNameFromStream stream) set)
-        withConsumedStreamsRemoved
-        (outputStreams kernel)
-      -- (Stream name _ _ _) -> Set.insert name set)
-    buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
-    buildMemoryReader stream@Stream {} = checkForAvailablityAndBuild stream
-    -- if streamAvailable
-    --   then []
-    --   else
-    --     [ MemoryReader
-    --         { memToOutputStreams = [ ( FPGAMemArray streamName dimensions
-    --                                  , stream
-    --                                  )
-    --                                ]
-    --         , nextStage          = NullItem
-    --         , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
-    --         , readPipes          = []
-    --         , writtenPipes       = []
-    --         , sharedData         = NullPipeLineData
-    --         }
-    --     ]
-    -- where streamAvailable = Set.member streamName availableStreams
-    buildMemoryReader stream@(StencilStream streamName arrayName valueType dimensions _) =
-      trace
-        ("WARNING: emitting memory reader for unresolved stencil stream: " ++
-         streamName)
-        checkForAvailablityAndBuild
-        (Stream streamName arrayName valueType dimensions)
-    checkForAvailablityAndBuild stream@(Stream streamName arrayName valueType dimensions) =
-      if streamAvailable
-        then []
-        else [ MemoryReader
-                 { memToOutputStreams =
-                     [(FPGAMemArray streamName dimensions, stream)]
-                 , nextStage = NullItem
-                 , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
-                 , readPipes = []
-                 , writtenPipes = []
-                 , sharedData = NullPipeLineData
-                 }
-             ]
-      where
-        streamAvailable = Set.member arrayName availableStreams
+ where
+  updatedPipeline = Seq.update currentStageIdx
+                               (kernel, smartCache, requiredMemoryReaders)
+                               pipeline
+  (kernel, smartCache, _)    = pipeline `Seq.index` currentStageIdx
+  requiredInputStreams       = getRequiredInputStreams kernel smartCache
+  requiredMemoryReaders      = concatMap buildMemoryReader requiredInputStreams
+  withConsumedStreamsRemoved = foldl
+    (\set stream -> Set.delete (getArrayNameFromStream stream) set)
+    availableStreams
+    requiredInputStreams
+  withKernelOutputStreams = foldl
+    (\set stream -> Set.insert (getArrayNameFromStream stream) set)
+    withConsumedStreamsRemoved
+    (outputStreams kernel)
+    -- (Stream name _ _ _) -> Set.insert name set)
+  buildMemoryReader :: Stream Anno -> [PipelineItem SharedPipelineData]
+  buildMemoryReader stream@Stream{} = checkForAvailablityAndBuild stream
+  -- if streamAvailable
+  --   then []
+  --   else
+  --     [ MemoryReader
+  --         { memToOutputStreams = [ ( FPGAMemArray streamName dimensions
+  --                                  , stream
+  --                                  )
+  --                                ]
+  --         , nextStage          = NullItem
+  --         , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
+  --         , readPipes          = []
+  --         , writtenPipes       = []
+  --         , sharedData         = NullPipeLineData
+  --         }
+  --     ]
+  -- where streamAvailable = Set.member streamName availableStreams
+  buildMemoryReader stream@(StencilStream streamName arrayName valueType dimensions _)
+    = trace
+      (  "WARNING: emitting memory reader for unresolved stencil stream: "
+      ++ streamName
+      )
+      checkForAvailablityAndBuild
+      (Stream streamName arrayName valueType dimensions)
+  checkForAvailablityAndBuild stream@(Stream streamName arrayName valueType dimensions)
+    = if streamAvailable
+      then []
+      else
+        [ MemoryReader
+            { memToOutputStreams = [ ( FPGAMemArray streamName dimensions
+                                     , stream
+                                     )
+                                   ]
+            , nextStage          = NullItem
+            , name = name kernel ++ "_" ++ streamName ++ "_" ++ "reader"
+            , readPipes          = []
+            , writtenPipes       = []
+            , sharedData         = NullPipeLineData
+            , stageNumber        = currentStageIdx
+            }
+        ]
+    where streamAvailable = Set.member arrayName availableStreams
 
 -- used to signify the position a stream is required at.
 -- Allows streams to enter and exit smartcache with the same name
@@ -173,49 +172,49 @@ data StreamPosition
 
 -- used to work out which of the input streams to a pipeline stage need to come
 -- from a memory reader
-getRequiredInputStreams ::
-     PipelineItem SharedPipelineData
+getRequiredInputStreams
+  :: PipelineItem SharedPipelineData
   -> Maybe (PipelineItem SharedPipelineData)
   -> [Stream Anno]
-getRequiredInputStreams kernel smartCache =
-  map snd $ Set.toList withSmartCacheOutputsRemoved
-  where
-    smartCacheInputStreams =
-      maybe [] (map (SmartCacheIn, ) . inputStreams) smartCache
-    smartCacheOutputStreams = maybe [] outputStreams smartCache
-    allInputs = smartCacheInputStreams ++ map (KernelIn, ) (inputStreams kernel)
-    inputSet = Set.fromList allInputs
-  -- delete streams from smart cache to kernel as they don't require mem reader
-    withSmartCacheOutputsRemoved =
-      foldl
-        (\set streamName -> Set.delete (KernelIn, streamName) set)
-        inputSet
-        smartCacheOutputStreams
+getRequiredInputStreams kernel smartCache = map snd
+  $ Set.toList withSmartCacheOutputsRemoved
+ where
+  smartCacheInputStreams =
+    maybe [] (map (SmartCacheIn, ) . inputStreams) smartCache
+  smartCacheOutputStreams      = maybe [] outputStreams smartCache
+  allInputs = smartCacheInputStreams ++ map (KernelIn, ) (inputStreams kernel)
+  inputSet                     = Set.fromList allInputs
+-- delete streams from smart cache to kernel as they don't require mem reader
+  withSmartCacheOutputsRemoved = foldl
+    (\set streamName -> Set.delete (KernelIn, streamName) set)
+    inputSet
+    smartCacheOutputStreams
 
 -- at the minute this is simply gonna look for the last stage
 -- and then add a memory writer for each of the output streams
 addMemoryWriter :: [PipelineStage] -> [PipelineStage]
 addMemoryWriter pipeline = init pipeline ++ [updatedFinalStage]
-  where
-    sortedPipeline =
-      List.sortBy
-        (\(kernel1, _, _) (kernel2, _, _) ->
-           stageNumber kernel1 `compare` stageNumber kernel2)
-        pipeline
-    (lastKernel, smartcache, memoryReaders) = last sortedPipeline
-    memoryWriter =
-      buildMemoryWriter (name lastKernel) (outputStreams lastKernel)
-    updatedFinalStage = (lastKernel, smartcache, memoryWriter : memoryReaders)
+ where
+  sortedPipeline = List.sortBy
+    (\(kernel1, _, _) (kernel2, _, _) ->
+      stageNumber kernel1 `compare` stageNumber kernel2
+    )
+    pipeline
+  (lastKernel, smartcache, memoryReaders) = last sortedPipeline
+  memoryWriter = buildMemoryWriter (name lastKernel)
+                                   (stageNumber lastKernel)
+                                   (outputStreams lastKernel)
+  updatedFinalStage = (lastKernel, smartcache, memoryWriter : memoryReaders)
 
-buildMemoryWriter :: String -> [Stream Anno] -> PipelineItem SharedPipelineData
-buildMemoryWriter kernelName streams =
-  MemoryWriter
-    { inputStreamsToMem =
-        map
-          (\s@(Stream name _ valueType dims) -> (s, FPGAMemArray name dims))
-          streams
-    , name = kernelName ++ "_output_writer"
-    , readPipes = []
-    , writtenPipes = []
-    , sharedData = NullPipeLineData
-    }
+buildMemoryWriter
+  :: String -> Int -> [Stream Anno] -> PipelineItem SharedPipelineData
+buildMemoryWriter kernelName stageNum streams = MemoryWriter
+  { inputStreamsToMem = map
+    (\s@(Stream name _ valueType dims) -> (s, FPGAMemArray name dims))
+    streams
+  , name              = kernelName ++ "_output_writer"
+  , readPipes         = []
+  , writtenPipes      = []
+  , sharedData        = NullPipeLineData
+  , stageNumber       = stageNum
+  }
