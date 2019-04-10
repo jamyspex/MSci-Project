@@ -1823,7 +1823,7 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -1944,7 +1944,7 @@ end subroutine dyn_2
  ! Name: shapiro Order: 3
  ! Input streams:
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
@@ -1990,7 +1990,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2062,7 +2062,7 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -2189,7 +2189,7 @@ end subroutine dyn_2
  ! Name: shapiro Order: 3
  ! Input streams:
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
@@ -2238,7 +2238,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2275,7 +2275,7 @@ end subroutine vernieuw
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 dyn_1 requires:
-StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
 dyn_1 requires:
 Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
 dyn_1 requires:
@@ -2295,7 +2295,7 @@ Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 shapiro requires:
 StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 shapiro requires:
-StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
 vernieuw requires:
 Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
@@ -2373,7 +2373,7 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -2504,7 +2504,7 @@ end subroutine dyn_2
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -2555,7 +2555,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2628,7 +2628,7 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -2759,7 +2759,7 @@ end subroutine dyn_2
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -2810,7 +2810,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -2885,7 +2885,7 @@ end subroutine dyn_0
  ! ==============================================
  ! Name: dyn_1 Order: 1
  ! Input streams:
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	3 point stencil on 2D array wet: [[1,0],[0,0],[0,1]]
  !	Stream: du_j_k array name: du type: Float dimensions: [(0,501),(0,501)]
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -3020,7 +3020,7 @@ end subroutine dyn_2
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	StencilStream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array etan: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
- !	StencilStream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
+ !	StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	5 point stencil on 2D array wet: [[1,0],[0,0],[0,1],[0,-1],[-1,0]]
  ! Output streams:
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -3073,7 +3073,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -3159,9 +3159,9 @@ end subroutine dyn_0
  !	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
@@ -3306,11 +3306,11 @@ end subroutine dyn_2
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jm1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_km1 array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -3365,7 +3365,7 @@ end subroutine shapiro
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Input Reduction Variables:
  ! Output Reduction Variables:
  ! --------------------------------------------
@@ -3499,9 +3499,9 @@ Input Streams:
 	Stream: dv_j_k array name: dv type: Float dimensions: [(0,501),(0,501)]
 	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 OutputStreams:
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
@@ -3584,11 +3584,11 @@ Cache Lines:
 
 
 Input Streams:
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 Output Streams:
-	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -3597,7 +3597,7 @@ This is a memory reader kernel.
 Name: dyn_1_wet_j_k_reader
 --------------------------------------------------------------------------------
 Memory to streams:
-	wet_j_k --> Stream "wet_j_k" "wet" Float [(0,501),(0,501)]
+	wet_j_k --> Stream "wet_j_k" "wet" Int [(0,501),(0,501)]
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -3795,11 +3795,11 @@ Input Streams:
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jm1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_km1 array name: wet type: Int dimensions: [(0,501),(0,501)]
 OutputStreams:
 	TransitStream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	TransitStream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -3906,7 +3906,7 @@ Input Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 Output Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
@@ -3915,11 +3915,11 @@ Output Streams:
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jm1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_kp1 array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jp1_k array name: wet type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_km1 array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: wet_j_km1 array name: wet type: Int dimensions: [(0,501),(0,501)]
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -3928,7 +3928,7 @@ This is a memory reader kernel.
 Name: shapiro_wet_j_k_reader
 --------------------------------------------------------------------------------
 Memory to streams:
-	wet_j_k --> Stream "wet_j_k" "wet" Float [(0,501),(0,501)]
+	wet_j_k --> Stream "wet_j_k" "wet" Int [(0,501),(0,501)]
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ----------------------------------------------
@@ -3949,7 +3949,7 @@ OutputStreams:
 	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Float dimensions: [(0,501),(0,501)]
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 Input reduction vars: 
 readPipes:
 writtenPipes:
@@ -3994,7 +3994,7 @@ Streams to memory:
 	Stream "h_j_k" "h" Float [(0,501),(0,501)] --> h_j_k
 	Stream "u_j_k" "u" Float [(0,501),(0,501)] --> u_j_k
 	Stream "v_j_k" "v" Float [(0,501),(0,501)] --> v_j_k
-	Stream "wet_j_k" "wet" Float [(0,501),(0,501)] --> wet_j_k
+	Stream "wet_j_k" "wet" Int [(0,501),(0,501)] --> wet_j_k
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4038,13 +4038,13 @@ Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__un_j_k__pipe" Float 
 
 Pipe "dyn_1" "dyn_2_smart_cache" "dyn_1__dyn_2_smart_cache__vn_j_k__pipe" Float (Stream "vn_j_k" "vn" Float [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe" Float (Stream "wet_j_kp1" "wet" Float [(0,501),(0,501)])
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe" Int (Stream "wet_j_kp1" "wet" Int [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe" Float (Stream "wet_jp1_k" "wet" Float [(0,501),(0,501)])
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe" Int (Stream "wet_jp1_k" "wet" Int [(0,501),(0,501)])
 
-Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
+Pipe "dyn_1_smart_cache" "dyn_1" "dyn_1_smart_cache__dyn_1__wet_j_k__pipe" Int (Stream "wet_j_k" "wet" Int [(0,501),(0,501)])
 
-Pipe "dyn_1_wet_j_k_reader" "dyn_1_smart_cache" "dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
+Pipe "dyn_1_wet_j_k_reader" "dyn_1_smart_cache" "dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe" Int (Stream "wet_j_k" "wet" Int [(0,501),(0,501)])
 
 Pipe "dyn_1_u_j_k_reader" "dyn_1" "dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe" Float (Stream "u_j_k" "u" Float [(0,501),(0,501)])
 
@@ -4098,17 +4098,17 @@ Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_jp1_k__
 
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__etan_j_km1__pipe" Float (Stream "etan_j_km1" "etan" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jm1_k__pipe" Float (Stream "wet_jm1_k" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jm1_k__pipe" Int (Stream "wet_jm1_k" "wet" Int [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_kp1__pipe" Float (Stream "wet_j_kp1" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_kp1__pipe" Int (Stream "wet_j_kp1" "wet" Int [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_k__pipe" Int (Stream "wet_j_k" "wet" Int [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jp1_k__pipe" Float (Stream "wet_jp1_k" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_jp1_k__pipe" Int (Stream "wet_jp1_k" "wet" Int [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_km1__pipe" Float (Stream "wet_j_km1" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache__shapiro__wet_j_km1__pipe" Int (Stream "wet_j_km1" "wet" Int [(0,501),(0,501)])
 
-Pipe "shapiro_wet_j_k_reader" "shapiro_smart_cache" "shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
+Pipe "shapiro_wet_j_k_reader" "shapiro_smart_cache" "shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe" Int (Stream "wet_j_k" "wet" Int [(0,501),(0,501)])
 
 Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
@@ -4116,7 +4116,7 @@ Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__u_j_
 
 Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__v_j_k__pipe" Float (Stream "v_j_k" "v" Float [(0,501),(0,501)])
 
-Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__wet_j_k__pipe" Float (Stream "wet_j_k" "wet" Float [(0,501),(0,501)])
+Pipe "vernieuw" "vernieuw_output_writer" "vernieuw__vernieuw_output_writer__wet_j_k__pipe" Int (Stream "wet_j_k" "wet" Int [(0,501),(0,501)])
 
 Pipe "vernieuw_h_j_k_reader" "vernieuw" "vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
 
@@ -4643,10 +4643,10 @@ subroutine pipe_initialisation
     call ocl_pipe_real(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe)
     call ocl_pipe_real(dyn_1__dyn_2_smart_cache__un_j_k__pipe)
     call ocl_pipe_real(dyn_1__dyn_2_smart_cache__vn_j_k__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_j_k__pipe)
-    call ocl_pipe_real(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_j_k__pipe)
+    call ocl_pipe_int(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe)
     call ocl_pipe_real(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe)
     call ocl_pipe_real(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe)
     call ocl_pipe_real(dyn_2__shapiro_smart_cache__vn_j_k__pipe)
@@ -4673,16 +4673,16 @@ subroutine pipe_initialisation
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_j_k__pipe)
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_jp1_k__pipe)
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_j_km1__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_jm1_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_kp1__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_jp1_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_km1__pipe)
-    call ocl_pipe_real(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_jm1_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_kp1__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_jp1_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_km1__pipe)
+    call ocl_pipe_int(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__h_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__u_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__v_j_k__pipe)
-    call ocl_pipe_real(vernieuw__vernieuw_output_writer__wet_j_k__pipe)
+    call ocl_pipe_int(vernieuw__vernieuw_output_writer__wet_j_k__pipe)
     call ocl_pipe_real(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe)
     call ocl_pipe_real(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe)
 end subroutine pipe_initialisation
@@ -4765,8 +4765,8 @@ subroutine dyn_0(dt,dx,dy,g)
 end subroutine dyn_0
 
 subroutine dyn_1_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
+      integer, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k
       integer :: a
       integer :: b
     do a = 0, 501, 1
@@ -4804,11 +4804,11 @@ subroutine dyn_1_v_j_k_reader(v)
 end subroutine dyn_1_v_j_k_reader
 
 subroutine dyn_1_smart_cache
-      real :: wet_read_in
-      real, dimension(1:503) :: wet_buffer
-      real :: wet_j_kp1
-      real :: wet_jp1_k
-      real :: wet_j_k
+      integer :: wet_read_in
+      integer, dimension(1:503) :: wet_buffer
+      integer :: wet_j_kp1
+      integer :: wet_jp1_k
+      integer :: wet_j_k
       integer :: i
       integer :: count
       integer :: compIndex
@@ -5052,8 +5052,8 @@ subroutine dyn_2(dt,dx,dy)
 end subroutine dyn_2
 
 subroutine shapiro_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
+      integer, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k
       integer :: a
       integer :: b
     do a = 0, 501, 1
@@ -5068,11 +5068,11 @@ subroutine shapiro_smart_cache
       real :: vn_read_in
       real :: un_read_in
       real :: etan_read_in
-      real :: wet_read_in
+      integer :: wet_read_in
       real, dimension(1:1005) :: vn_buffer
       real, dimension(1:1005) :: un_buffer
       real, dimension(1:1005) :: etan_buffer
-      real, dimension(1:1005) :: wet_buffer
+      integer, dimension(1:1005) :: wet_buffer
       real :: vn_j_k
       real :: un_j_k
       real :: etan_jm1_k
@@ -5080,11 +5080,11 @@ subroutine shapiro_smart_cache
       real :: etan_j_k
       real :: etan_jp1_k
       real :: etan_j_km1
-      real :: wet_jm1_k
-      real :: wet_j_kp1
-      real :: wet_j_k
-      real :: wet_jp1_k
-      real :: wet_j_km1
+      integer :: wet_jm1_k
+      integer :: wet_j_kp1
+      integer :: wet_j_k
+      integer :: wet_jp1_k
+      integer :: wet_j_km1
       integer :: i
       integer :: count
       integer :: compIndex
@@ -5263,8 +5263,8 @@ subroutine vernieuw_output_writer(h,u,v,wet)
       real, dimension(0:501,0:501) :: u
       real :: v_j_k_read_in
       real, dimension(0:501,0:501) :: v
-      real :: wet_j_k_read_in
-      real, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k_read_in
+      integer, dimension(0:501,0:501) :: wet
       integer :: a
       integer :: b
     do a = 0, 501, 1

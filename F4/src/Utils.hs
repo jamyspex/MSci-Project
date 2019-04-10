@@ -511,8 +511,7 @@ printStream (TransitStream name arrayName valueType dims) =
     ++ " dimensions: "
     ++ show dims
 
-data StreamValueType =
-  Float
+data StreamValueType = Float | Int
   deriving (Show, Data, Typeable)
 
 getReductionVarNameQuery :: Fortran Anno -> [String]
@@ -712,6 +711,7 @@ data Array = Array
   { arrayVarName    :: VarName Anno
   , arrDimensions   :: Int
   , dimensionRanges :: [(Int, Int)]
+  , arrayValueType :: BaseType Anno
   } deriving (Show)
 
 arrayExprQuery :: [Array] -> Expr Anno -> [(Expr Anno, Array)]
@@ -814,8 +814,12 @@ arrayFromDeclWithRanges withRanges decl@(Decl _ _ _ typeDecl) = Array
   { arrayVarName    = name
   , arrDimensions   = numberOfDimensions
   , dimensionRanges = if withRanges then dimInts else []
+  , arrayValueType  = baseType
   }
  where
+  baseType = case typeDecl of
+    BaseType _ bt _ _ _ -> bt
+    ArrayT _ _ bt _ _ _ -> bt
   dimExprs           = getArrayDimensions typeDecl
   dimInts            = map getArrayDimensionConstants dimExprs
   numberOfDimensions = length $ getArrayDimensions typeDecl

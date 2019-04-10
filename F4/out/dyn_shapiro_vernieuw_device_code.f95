@@ -61,10 +61,10 @@ subroutine pipe_initialisation
     call ocl_pipe_real(dyn_0_eta_j_k_reader__dyn_0_smart_cache__eta_j_k__pipe)
     call ocl_pipe_real(dyn_1__dyn_2_smart_cache__un_j_k__pipe)
     call ocl_pipe_real(dyn_1__dyn_2_smart_cache__vn_j_k__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe)
-    call ocl_pipe_real(dyn_1_smart_cache__dyn_1__wet_j_k__pipe)
-    call ocl_pipe_real(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_j_kp1__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_jp1_k__pipe)
+    call ocl_pipe_int(dyn_1_smart_cache__dyn_1__wet_j_k__pipe)
+    call ocl_pipe_int(dyn_1_wet_j_k_reader__dyn_1_smart_cache__wet_j_k__pipe)
     call ocl_pipe_real(dyn_1_u_j_k_reader__dyn_1__u_j_k__pipe)
     call ocl_pipe_real(dyn_1_v_j_k_reader__dyn_1__v_j_k__pipe)
     call ocl_pipe_real(dyn_2__shapiro_smart_cache__vn_j_k__pipe)
@@ -91,16 +91,16 @@ subroutine pipe_initialisation
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_j_k__pipe)
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_jp1_k__pipe)
     call ocl_pipe_real(shapiro_smart_cache__shapiro__etan_j_km1__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_jm1_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_kp1__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_jp1_k__pipe)
-    call ocl_pipe_real(shapiro_smart_cache__shapiro__wet_j_km1__pipe)
-    call ocl_pipe_real(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_jm1_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_kp1__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_jp1_k__pipe)
+    call ocl_pipe_int(shapiro_smart_cache__shapiro__wet_j_km1__pipe)
+    call ocl_pipe_int(shapiro_wet_j_k_reader__shapiro_smart_cache__wet_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__h_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__u_j_k__pipe)
     call ocl_pipe_real(vernieuw__vernieuw_output_writer__v_j_k__pipe)
-    call ocl_pipe_real(vernieuw__vernieuw_output_writer__wet_j_k__pipe)
+    call ocl_pipe_int(vernieuw__vernieuw_output_writer__wet_j_k__pipe)
     call ocl_pipe_real(vernieuw_h_j_k_reader__vernieuw__h_j_k__pipe)
     call ocl_pipe_real(vernieuw_hzero_j_k_reader__vernieuw__hzero_j_k__pipe)
 end subroutine pipe_initialisation
@@ -183,8 +183,8 @@ subroutine dyn_0(dt,dx,dy,g)
 end subroutine dyn_0
 
 subroutine dyn_1_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
+      integer, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k
       integer :: a
       integer :: b
     do a = 0, 501, 1
@@ -222,11 +222,11 @@ subroutine dyn_1_v_j_k_reader(v)
 end subroutine dyn_1_v_j_k_reader
 
 subroutine dyn_1_smart_cache
-      real :: wet_read_in
-      real, dimension(1:503) :: wet_buffer
-      real :: wet_j_kp1
-      real :: wet_jp1_k
-      real :: wet_j_k
+      integer :: wet_read_in
+      integer, dimension(1:503) :: wet_buffer
+      integer :: wet_j_kp1
+      integer :: wet_jp1_k
+      integer :: wet_j_k
       integer :: i
       integer :: count
       integer :: compIndex
@@ -470,8 +470,8 @@ subroutine dyn_2(dt,dx,dy)
 end subroutine dyn_2
 
 subroutine shapiro_wet_j_k_reader(wet)
-      real, dimension(0:501,0:501) :: wet
-      real :: wet_j_k
+      integer, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k
       integer :: a
       integer :: b
     do a = 0, 501, 1
@@ -486,11 +486,11 @@ subroutine shapiro_smart_cache
       real :: vn_read_in
       real :: un_read_in
       real :: etan_read_in
-      real :: wet_read_in
+      integer :: wet_read_in
       real, dimension(1:1005) :: vn_buffer
       real, dimension(1:1005) :: un_buffer
       real, dimension(1:1005) :: etan_buffer
-      real, dimension(1:1005) :: wet_buffer
+      integer, dimension(1:1005) :: wet_buffer
       real :: vn_j_k
       real :: un_j_k
       real :: etan_jm1_k
@@ -498,11 +498,11 @@ subroutine shapiro_smart_cache
       real :: etan_j_k
       real :: etan_jp1_k
       real :: etan_j_km1
-      real :: wet_jm1_k
-      real :: wet_j_kp1
-      real :: wet_j_k
-      real :: wet_jp1_k
-      real :: wet_j_km1
+      integer :: wet_jm1_k
+      integer :: wet_j_kp1
+      integer :: wet_j_k
+      integer :: wet_jp1_k
+      integer :: wet_j_km1
       integer :: i
       integer :: count
       integer :: compIndex
@@ -681,8 +681,8 @@ subroutine vernieuw_output_writer(h,u,v,wet)
       real, dimension(0:501,0:501) :: u
       real :: v_j_k_read_in
       real, dimension(0:501,0:501) :: v
-      real :: wet_j_k_read_in
-      real, dimension(0:501,0:501) :: wet
+      integer :: wet_j_k_read_in
+      integer, dimension(0:501,0:501) :: wet
       integer :: a
       integer :: b
     do a = 0, 501, 1
