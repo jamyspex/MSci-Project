@@ -14521,6 +14521,22 @@ subroutine press_2
 !}
 end subroutine press_2
 
+
+--------------------------------------------------------------------------------
+
+Pipeline Statistics
+Pipeline ID: 0
+Number of Compute Kernels: 12
+Compute Kernel Names: p0_velnw_0, p0_velnw_1, p0_velnw_2, p0_feedbf, p0_les_0, p0_les_1, p0_les_2, p0_les_3, p0_adam, p0_press_0, p0_press_1, p0_press_2
+Number of Smart Caches: 8
+Number of Memory Readers: 70
+Number of Memory Writers: 1
+Number of Pipes: 269
+CSV: 
+0,12,8,70,1,269
+
+--------------------------------------------------------------------------------
+
 p1_i_j_k is largest stream size = 7528338 dims used to calculate this = [(0,302),(0,302),(0,81)]
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -15418,6 +15434,22 @@ subroutine press
 !}    
 !}
 end subroutine press
+
+
+--------------------------------------------------------------------------------
+
+Pipeline Statistics
+Pipeline ID: 1
+Number of Compute Kernels: 1
+Compute Kernel Names: p1_press
+Number of Smart Caches: 1
+Number of Memory Readers: 6
+Number of Memory Writers: 1
+Number of Pipes: 28
+CSV: 
+1,1,1,6,1,28
+
+--------------------------------------------------------------------------------
 
 p0_i_j_synthIdx0 is largest stream size = 7528338 dims used to calculate this = [(0,302),(0,302),(0,81)]
 
@@ -16970,6 +17002,22 @@ subroutine press_4
 !}    
 !}
 end subroutine press_4
+
+
+--------------------------------------------------------------------------------
+
+Pipeline Statistics
+Pipeline ID: 2
+Number of Compute Kernels: 5
+Compute Kernel Names: p2_press_0, p2_press_1, p2_press_2, p2_press_3, p2_press_4
+Number of Smart Caches: 3
+Number of Memory Readers: 5
+Number of Memory Writers: 1
+Number of Pipes: 17
+CSV: 
+2,5,3,5,1,17
+
+--------------------------------------------------------------------------------
 
 
 --------------------------------------------------------------------------------

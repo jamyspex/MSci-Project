@@ -9,6 +9,7 @@ import           Data.Generics        (Data, Typeable, everything, everywhere,
                                        gmapQ, gmapT, mkQ, mkT)
 import           Data.List
 import qualified Data.Map             as DMap
+import           Data.Tuple.Utils
 import           Debug.Trace
 import           FortranDSL
 import           Language.Fortran
@@ -102,8 +103,6 @@ getSubBodyWithOriginalNameNode subrec = OriginalSubContainer nullAnno name body
 removeReturns :: Fortran Anno -> Fortran Anno
 removeReturns (Return anno srcSpan _) = NullStmt anno srcSpan
 removeReturns val                     = val
-
-fst3 (a, _, _) = a
 
 getArgTransSubroutinePairs ::
      SubroutineTable -> [([ArgumentTranslation], SubRec)]

@@ -4577,6 +4577,22 @@ end subroutine vernieuw
 
 
 --------------------------------------------------------------------------------
+
+Pipeline Statistics
+Pipeline ID: 0
+Number of Compute Kernels: 5
+Compute Kernel Names: dyn_0, dyn_1, dyn_2, shapiro, vernieuw
+Number of Smart Caches: 4
+Number of Memory Readers: 9
+Number of Memory Writers: 1
+Number of Pipes: 50
+CSV: 
+0,5,4,9,1,50
+
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
  Pipe Init Sub 
 --------------------------------------------------------------------------------
 
