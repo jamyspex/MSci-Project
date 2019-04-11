@@ -131,7 +131,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_1_smart_cache__p0_les_1__sm_ip1_j_k__pipe
       integer :: p0_les_1_smart_cache__p0_les_1__sm_ip1_jp1_k__pipe
       integer :: p0_les_1_smart_cache__p0_les_1__sm_i_j_km1__pipe
-      integer :: p0_les_1_smart_cache__p0_les_1__f_i_j_k__pipe
       integer :: p0_les_1_diu1_i_j_k_reader__p0_les_1_smart_cache__diu1_i_j_k__pipe
       integer :: p0_les_1_diu2_i_j_k_reader__p0_les_1_smart_cache__diu2_i_j_k__pipe
       integer :: p0_les_1_diu3_i_j_k_reader__p0_les_1_smart_cache__diu3_i_j_k__pipe
@@ -182,7 +181,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_2_smart_cache__p0_les_2__sm_ip1_j_k__pipe
       integer :: p0_les_2_smart_cache__p0_les_2__sm_ip1_jp1_k__pipe
       integer :: p0_les_2_smart_cache__p0_les_2__sm_i_j_km1__pipe
-      integer :: p0_les_2_smart_cache__p0_les_2__g_i_j_k__pipe
       integer :: p0_les_2_diu2_i_j_k_reader__p0_les_2_smart_cache__diu2_i_j_k__pipe
       integer :: p0_les_2_diu4_i_j_k_reader__p0_les_2_smart_cache__diu4_i_j_k__pipe
       integer :: p0_les_2_diu5_i_j_k_reader__p0_les_2_smart_cache__diu5_i_j_k__pipe
@@ -229,7 +227,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_3_smart_cache__p0_les_3__sm_ip1_j_kp1__pipe
       integer :: p0_les_3_smart_cache__p0_les_3__sm_ip1_j_k__pipe
       integer :: p0_les_3_smart_cache__p0_les_3__sm_i_jm1_k__pipe
-      integer :: p0_les_3_smart_cache__p0_les_3__h_i_j_k__pipe
       integer :: p0_les_3_diu3_i_j_k_reader__p0_les_3_smart_cache__diu3_i_j_k__pipe
       integer :: p0_les_3_diu6_i_j_k_reader__p0_les_3_smart_cache__diu6_i_j_k__pipe
       integer :: p0_les_3_diu7_i_j_k_reader__p0_les_3_smart_cache__diu7_i_j_k__pipe
@@ -452,7 +449,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_ip1_jp1_k__pipe)
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_i_j_km1__pipe)
-    call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__f_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu1_i_j_k_reader__p0_les_1_smart_cache__diu1_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu2_i_j_k_reader__p0_les_1_smart_cache__diu2_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu3_i_j_k_reader__p0_les_1_smart_cache__diu3_i_j_k__pipe)
@@ -503,7 +499,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_ip1_jp1_k__pipe)
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_i_j_km1__pipe)
-    call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__g_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu2_i_j_k_reader__p0_les_2_smart_cache__diu2_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu4_i_j_k_reader__p0_les_2_smart_cache__diu4_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu5_i_j_k_reader__p0_les_2_smart_cache__diu5_i_j_k__pipe)
@@ -550,7 +545,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_ip1_j_kp1__pipe)
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_i_jm1_k__pipe)
-    call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__h_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu3_i_j_k_reader__p0_les_3_smart_cache__diu3_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu6_i_j_k_reader__p0_les_3_smart_cache__diu6_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu7_i_j_k_reader__p0_les_3_smart_cache__diu7_i_j_k__pipe)

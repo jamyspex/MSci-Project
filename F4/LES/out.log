@@ -21,84 +21,84 @@ Source directory:
 	./src
 Fixed form: False
 Loop fusion bound: Nothing
-CPP Defines: WV_OPENCL, WV_NEW, WV_NEW_VELFG, NO_GLOBAL_SOR, INLINE_BOUND_CALCS, WV_TEST, TWINNED_BUFFER, SOR, NO_IO, IFBF=1, IADAM=0, 
+CPP Defines: WV_OPENCL, WV_NEW, WV_NEW_VELFG, NO_GLOBAL_SOR, INLINE_BOUND_CALCS, WV_TEST, SOR, TWINNED_BUFFER, NO_IO, IFBF=1, IADAM=0, 
 CPP Excludes:
 
 "Executing compiler main..."
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/main_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/init_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/grid_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/set_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/aveflow_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/ifdata_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/velnw_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/press_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondFG_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/adam_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/main_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/init_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/grid_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/set_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/aveflow_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/ifdata_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbfm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/velnw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondv1_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/press_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondFG_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/adam_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./src/main.f95
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/adam_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/press_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondFG_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/velnw_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/adam_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundsm_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/press_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/bondFG_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/boundp_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/velnw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 ./src/params_common_sn_tmp.f95 | grep -v -E '^\s*$' 
 Parsing ./src/adam.f95
 Parsing ./src/feedbf.f95
 Parsing ./src/les.f95
@@ -116,13 +116,13 @@ Writing to scratch/les.f95
 Writing to scratch/main.f95
 Writing to scratch/press.f95
 Writing to scratch/velnw.f95
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/main_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/main_tmp.f95 | grep -v -E '^\s*$' 
 Parsing scratch/main.f95
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/adam_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/feedbf_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/les_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/press_tmp.f95 | grep -v -E '^\s*$' 
-cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DTWINNED_BUFFER -DSOR -DNO_IO -DIFBF=1 -DIADAM=0 scratch/velnw_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/adam_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/feedbf_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/les_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/press_tmp.f95 | grep -v -E '^\s*$' 
+cpp -Wno-invalid-pp-token -P -DWV_OPENCL -DWV_NEW -DWV_NEW_VELFG -DNO_GLOBAL_SOR -DINLINE_BOUND_CALCS -DWV_TEST -DSOR -DTWINNED_BUFFER -DNO_IO -DIFBF=1 -DIADAM=0 scratch/velnw_tmp.f95 | grep -v -E '^\s*$' 
 Parsing scratch/adam.f95
 Parsing scratch/feedbf.f95
 Parsing scratch/les.f95
@@ -12876,8 +12876,6 @@ Pipe "p0_les_1_smart_cache" "p0_les_1" "p0_les_1_smart_cache__p0_les_1__sm_ip1_j
 
 Pipe "p0_les_1_smart_cache" "p0_les_1" "p0_les_1_smart_cache__p0_les_1__sm_i_j_km1__pipe" Float (Stream "sm_i_j_km1" "sm" Float [(-1,301),(-1,301),(0,81)])
 
-Pipe "p0_les_1_smart_cache" "p0_les_1" "p0_les_1_smart_cache__p0_les_1__f_i_j_k__pipe" Float (Stream "f_i_j_k" "f" Float [(0,300),(0,300),(0,80)])
-
 Pipe "p0_les_1_diu1_i_j_k_reader" "p0_les_1_smart_cache" "p0_les_1_diu1_i_j_k_reader__p0_les_1_smart_cache__diu1_i_j_k__pipe" Float (Stream "diu1_i_j_k" "diu1" Float [(-1,302),(0,302),(0,82)])
 
 Pipe "p0_les_1_diu2_i_j_k_reader" "p0_les_1_smart_cache" "p0_les_1_diu2_i_j_k_reader__p0_les_1_smart_cache__diu2_i_j_k__pipe" Float (Stream "diu2_i_j_k" "diu2" Float [(0,302),(0,302),(0,82)])
@@ -12978,8 +12976,6 @@ Pipe "p0_les_2_smart_cache" "p0_les_2" "p0_les_2_smart_cache__p0_les_2__sm_ip1_j
 
 Pipe "p0_les_2_smart_cache" "p0_les_2" "p0_les_2_smart_cache__p0_les_2__sm_i_j_km1__pipe" Float (Stream "sm_i_j_km1" "sm" Float [(-1,301),(-1,301),(0,81)])
 
-Pipe "p0_les_2_smart_cache" "p0_les_2" "p0_les_2_smart_cache__p0_les_2__g_i_j_k__pipe" Float (Stream "g_i_j_k" "g" Float [(0,300),(0,300),(0,80)])
-
 Pipe "p0_les_2_diu2_i_j_k_reader" "p0_les_2_smart_cache" "p0_les_2_diu2_i_j_k_reader__p0_les_2_smart_cache__diu2_i_j_k__pipe" Float (Stream "diu2_i_j_k" "diu2" Float [(0,302),(0,302),(0,82)])
 
 Pipe "p0_les_2_diu4_i_j_k_reader" "p0_les_2_smart_cache" "p0_les_2_diu4_i_j_k_reader__p0_les_2_smart_cache__diu4_i_j_k__pipe" Float (Stream "diu4_i_j_k" "diu4" Float [(0,302),(0,302),(0,82)])
@@ -13071,8 +13067,6 @@ Pipe "p0_les_3_smart_cache" "p0_les_3" "p0_les_3_smart_cache__p0_les_3__sm_ip1_j
 Pipe "p0_les_3_smart_cache" "p0_les_3" "p0_les_3_smart_cache__p0_les_3__sm_ip1_j_k__pipe" Float (Stream "sm_ip1_j_k" "sm" Float [(-1,301),(-1,301),(0,81)])
 
 Pipe "p0_les_3_smart_cache" "p0_les_3" "p0_les_3_smart_cache__p0_les_3__sm_i_jm1_k__pipe" Float (Stream "sm_i_jm1_k" "sm" Float [(-1,301),(-1,301),(0,81)])
-
-Pipe "p0_les_3_smart_cache" "p0_les_3" "p0_les_3_smart_cache__p0_les_3__h_i_j_k__pipe" Float (Stream "h_i_j_k" "h" Float [(0,300),(0,300),(0,80)])
 
 Pipe "p0_les_3_diu3_i_j_k_reader" "p0_les_3_smart_cache" "p0_les_3_diu3_i_j_k_reader__p0_les_3_smart_cache__diu3_i_j_k__pipe" Float (Stream "diu3_i_j_k" "diu3" Float [(0,302),(0,302),(0,82)])
 
@@ -13292,7 +13286,6 @@ digraph G {
 	p0_les_1_smart_cache -> p0_les_1 [ label="sm_ip1_j_k" ]
 	p0_les_1_smart_cache -> p0_les_1 [ label="sm_ip1_jp1_k" ]
 	p0_les_1_smart_cache -> p0_les_1 [ label="sm_i_j_km1" ]
-	p0_les_1_smart_cache -> p0_les_1 [ label="f_i_j_k" ]
 	p0_les_1_diu1_i_j_k_reader -> p0_les_1_smart_cache [ label="diu1_i_j_k" ]
 	p0_les_1_diu2_i_j_k_reader -> p0_les_1_smart_cache [ label="diu2_i_j_k" ]
 	p0_les_1_diu3_i_j_k_reader -> p0_les_1_smart_cache [ label="diu3_i_j_k" ]
@@ -13343,7 +13336,6 @@ digraph G {
 	p0_les_2_smart_cache -> p0_les_2 [ label="sm_ip1_j_k" ]
 	p0_les_2_smart_cache -> p0_les_2 [ label="sm_ip1_jp1_k" ]
 	p0_les_2_smart_cache -> p0_les_2 [ label="sm_i_j_km1" ]
-	p0_les_2_smart_cache -> p0_les_2 [ label="g_i_j_k" ]
 	p0_les_2_diu2_i_j_k_reader -> p0_les_2_smart_cache [ label="diu2_i_j_k" ]
 	p0_les_2_diu4_i_j_k_reader -> p0_les_2_smart_cache [ label="diu4_i_j_k" ]
 	p0_les_2_diu5_i_j_k_reader -> p0_les_2_smart_cache [ label="diu5_i_j_k" ]
@@ -13390,7 +13382,6 @@ digraph G {
 	p0_les_3_smart_cache -> p0_les_3 [ label="sm_ip1_j_kp1" ]
 	p0_les_3_smart_cache -> p0_les_3 [ label="sm_ip1_j_k" ]
 	p0_les_3_smart_cache -> p0_les_3 [ label="sm_i_jm1_k" ]
-	p0_les_3_smart_cache -> p0_les_3 [ label="h_i_j_k" ]
 	p0_les_3_diu3_i_j_k_reader -> p0_les_3_smart_cache [ label="diu3_i_j_k" ]
 	p0_les_3_diu6_i_j_k_reader -> p0_les_3_smart_cache [ label="diu6_i_j_k" ]
 	p0_les_3_diu7_i_j_k_reader -> p0_les_3_smart_cache [ label="diu7_i_j_k" ]
@@ -17118,7 +17109,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_1_smart_cache__p0_les_1__sm_ip1_j_k__pipe
       integer :: p0_les_1_smart_cache__p0_les_1__sm_ip1_jp1_k__pipe
       integer :: p0_les_1_smart_cache__p0_les_1__sm_i_j_km1__pipe
-      integer :: p0_les_1_smart_cache__p0_les_1__f_i_j_k__pipe
       integer :: p0_les_1_diu1_i_j_k_reader__p0_les_1_smart_cache__diu1_i_j_k__pipe
       integer :: p0_les_1_diu2_i_j_k_reader__p0_les_1_smart_cache__diu2_i_j_k__pipe
       integer :: p0_les_1_diu3_i_j_k_reader__p0_les_1_smart_cache__diu3_i_j_k__pipe
@@ -17169,7 +17159,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_2_smart_cache__p0_les_2__sm_ip1_j_k__pipe
       integer :: p0_les_2_smart_cache__p0_les_2__sm_ip1_jp1_k__pipe
       integer :: p0_les_2_smart_cache__p0_les_2__sm_i_j_km1__pipe
-      integer :: p0_les_2_smart_cache__p0_les_2__g_i_j_k__pipe
       integer :: p0_les_2_diu2_i_j_k_reader__p0_les_2_smart_cache__diu2_i_j_k__pipe
       integer :: p0_les_2_diu4_i_j_k_reader__p0_les_2_smart_cache__diu4_i_j_k__pipe
       integer :: p0_les_2_diu5_i_j_k_reader__p0_les_2_smart_cache__diu5_i_j_k__pipe
@@ -17216,7 +17205,6 @@ module velnw_feedbf_les_adam_press_device_code
       integer :: p0_les_3_smart_cache__p0_les_3__sm_ip1_j_kp1__pipe
       integer :: p0_les_3_smart_cache__p0_les_3__sm_ip1_j_k__pipe
       integer :: p0_les_3_smart_cache__p0_les_3__sm_i_jm1_k__pipe
-      integer :: p0_les_3_smart_cache__p0_les_3__h_i_j_k__pipe
       integer :: p0_les_3_diu3_i_j_k_reader__p0_les_3_smart_cache__diu3_i_j_k__pipe
       integer :: p0_les_3_diu6_i_j_k_reader__p0_les_3_smart_cache__diu6_i_j_k__pipe
       integer :: p0_les_3_diu7_i_j_k_reader__p0_les_3_smart_cache__diu7_i_j_k__pipe
@@ -17439,7 +17427,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_ip1_jp1_k__pipe)
     call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__sm_i_j_km1__pipe)
-    call ocl_pipe_real(p0_les_1_smart_cache__p0_les_1__f_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu1_i_j_k_reader__p0_les_1_smart_cache__diu1_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu2_i_j_k_reader__p0_les_1_smart_cache__diu2_i_j_k__pipe)
     call ocl_pipe_real(p0_les_1_diu3_i_j_k_reader__p0_les_1_smart_cache__diu3_i_j_k__pipe)
@@ -17490,7 +17477,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_ip1_jp1_k__pipe)
     call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__sm_i_j_km1__pipe)
-    call ocl_pipe_real(p0_les_2_smart_cache__p0_les_2__g_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu2_i_j_k_reader__p0_les_2_smart_cache__diu2_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu4_i_j_k_reader__p0_les_2_smart_cache__diu4_i_j_k__pipe)
     call ocl_pipe_real(p0_les_2_diu5_i_j_k_reader__p0_les_2_smart_cache__diu5_i_j_k__pipe)
@@ -17537,7 +17523,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_ip1_j_kp1__pipe)
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_ip1_j_k__pipe)
     call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__sm_i_jm1_k__pipe)
-    call ocl_pipe_real(p0_les_3_smart_cache__p0_les_3__h_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu3_i_j_k_reader__p0_les_3_smart_cache__diu3_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu6_i_j_k_reader__p0_les_3_smart_cache__diu6_i_j_k__pipe)
     call ocl_pipe_real(p0_les_3_diu7_i_j_k_reader__p0_les_3_smart_cache__diu7_i_j_k__pipe)
