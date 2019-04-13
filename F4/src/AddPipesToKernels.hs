@@ -301,7 +301,7 @@ compareSmartCacheOpts _ Reduce {} = Prelude.LT
 compareSmartCacheOpts _ _ = Prelude.EQ
 
 buildPipe from to stream =
-  Pipe from to (from ++ "__" ++ to ++ "__" ++ name ++ "__pipe") valueType stream
+  Pipe from to (from ++ "_" ++ to ++ "_" ++ name ++ "_pipe") valueType stream
   where
     (name, valueType) =
       case stream of
