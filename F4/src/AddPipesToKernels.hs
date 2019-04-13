@@ -435,7 +435,7 @@ getOutboundPipes =
 
 -- convert pipe name to graphviz data
 pipeToGraphEdge :: Pipe -> String
-pipeToGraphEdge (Pipe _ _ name _ _) =
+pipeToGraphEdge (Pipe from to _ _ stream) =
   from ++ " -> " ++ to ++ " [ label=\"" ++ stream_name ++ "\" ]"
   where
-    [from, to, stream_name, _] = splitOn "__" name
+    stream_name = getStreamName stream

@@ -5,6 +5,7 @@ module SmartCacheCodeGen where
 import           CodeGenUtils
 import qualified Data.Map             as DMap
 import           Data.Maybe
+import           Data.String.Utils
 import           Debug.Trace
 import           FortranDSL
 import           Language.Fortran
