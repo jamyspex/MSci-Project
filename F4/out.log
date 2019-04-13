@@ -3226,7 +3226,6 @@ end subroutine dyn_1
  ! Name: dyn_2 Order: 2
  ! Input streams:
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
- !	Stream: h_jm1_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_kp1 array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_jp1_k array name: h type: Float dimensions: [(0,501),(0,501)]
@@ -3301,12 +3300,10 @@ end subroutine dyn_2
  ! Input streams:
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
- !	Stream: etan_jm1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_kp1 array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
  !	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
  !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  !	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
@@ -3628,7 +3625,6 @@ Name:dyn_2
 --------------------------------------------------------------------------------
 Input Streams:
 	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
-	Stream: h_jm1_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_j_kp1 array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_jp1_k array name: h type: Float dimensions: [(0,501),(0,501)]
@@ -3713,7 +3709,6 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		h_jm1_k from buffer index = 502
 		h_j_kp1 from buffer index = 1005
 		h_j_k from buffer index = 503
 		h_jp1_k from buffer index = 504
@@ -3750,7 +3745,6 @@ Input Streams:
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 Output Streams:
-	Stream: h_jm1_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_j_kp1 array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_jp1_k array name: h type: Float dimensions: [(0,501),(0,501)]
@@ -3790,12 +3784,10 @@ Name:shapiro
 Input Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
-	Stream: etan_jm1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_kp1 array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
@@ -3879,7 +3871,6 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		etan_jm1_k from buffer index = 502
 		etan_j_kp1 from buffer index = 1005
 		etan_j_k from buffer index = 503
 		etan_jp1_k from buffer index = 504
@@ -3894,7 +3885,6 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		wet_jm1_k from buffer index = 502
 		wet_j_kp1 from buffer index = 1005
 		wet_j_k from buffer index = 503
 		wet_jp1_k from buffer index = 504
@@ -3910,12 +3900,10 @@ Input Streams:
 Output Streams:
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
-	Stream: etan_jm1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_kp1 array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_jp1_k array name: etan type: Float dimensions: [(0,501),(0,501)]
 	Stream: etan_j_km1 array name: etan type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_jm1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_j_kp1 array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 	Stream: wet_jp1_k array name: wet type: Int dimensions: [(0,501),(0,501)]
@@ -4056,8 +4044,6 @@ Pipe "dyn_2" "shapiro_smart_cache" "dyn_2_shapiro_smart_cache_un_j_k_pipe" Float
 
 Pipe "dyn_2" "shapiro_smart_cache" "dyn_2_shapiro_smart_cache_etan_j_k_pipe" Float (Stream "etan_j_k" "etan" Float [(0,501),(0,501)])
 
-Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache_dyn_2_h_jm1_k_pipe" Float (Stream "h_jm1_k" "h" Float [(0,501),(0,501)])
-
 Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache_dyn_2_h_j_kp1_pipe" Float (Stream "h_j_kp1" "h" Float [(0,501),(0,501)])
 
 Pipe "dyn_2_smart_cache" "dyn_2" "dyn_2_smart_cache_dyn_2_h_j_k_pipe" Float (Stream "h_j_k" "h" Float [(0,501),(0,501)])
@@ -4088,8 +4074,6 @@ Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_vn_j_k_pipe" F
 
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_un_j_k_pipe" Float (Stream "un_j_k" "un" Float [(0,501),(0,501)])
 
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_jm1_k_pipe" Float (Stream "etan_jm1_k" "etan" Float [(0,501),(0,501)])
-
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_j_kp1_pipe" Float (Stream "etan_j_kp1" "etan" Float [(0,501),(0,501)])
 
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_j_k_pipe" Float (Stream "etan_j_k" "etan" Float [(0,501),(0,501)])
@@ -4097,8 +4081,6 @@ Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_j_k_pipe"
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_jp1_k_pipe" Float (Stream "etan_jp1_k" "etan" Float [(0,501),(0,501)])
 
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_etan_j_km1_pipe" Float (Stream "etan_j_km1" "etan" Float [(0,501),(0,501)])
-
-Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_wet_jm1_k_pipe" Int (Stream "wet_jm1_k" "wet" Int [(0,501),(0,501)])
 
 Pipe "shapiro_smart_cache" "shapiro" "shapiro_smart_cache_shapiro_wet_j_kp1_pipe" Int (Stream "wet_j_kp1" "wet" Int [(0,501),(0,501)])
 
@@ -4143,7 +4125,6 @@ digraph G {
 	dyn_2 -> shapiro_smart_cache [ label="vn_j_k" ]
 	dyn_2 -> shapiro_smart_cache [ label="un_j_k" ]
 	dyn_2 -> shapiro_smart_cache [ label="etan_j_k" ]
-	dyn_2_smart_cache -> dyn_2 [ label="h_jm1_k" ]
 	dyn_2_smart_cache -> dyn_2 [ label="h_j_kp1" ]
 	dyn_2_smart_cache -> dyn_2 [ label="h_j_k" ]
 	dyn_2_smart_cache -> dyn_2 [ label="h_jp1_k" ]
@@ -4159,12 +4140,10 @@ digraph G {
 	shapiro -> vernieuw [ label="vn_j_k" ]
 	shapiro_smart_cache -> shapiro [ label="vn_j_k" ]
 	shapiro_smart_cache -> shapiro [ label="un_j_k" ]
-	shapiro_smart_cache -> shapiro [ label="etan_jm1_k" ]
 	shapiro_smart_cache -> shapiro [ label="etan_j_kp1" ]
 	shapiro_smart_cache -> shapiro [ label="etan_j_k" ]
 	shapiro_smart_cache -> shapiro [ label="etan_jp1_k" ]
 	shapiro_smart_cache -> shapiro [ label="etan_j_km1" ]
-	shapiro_smart_cache -> shapiro [ label="wet_jm1_k" ]
 	shapiro_smart_cache -> shapiro [ label="wet_j_kp1" ]
 	shapiro_smart_cache -> shapiro [ label="wet_j_k" ]
 	shapiro_smart_cache -> shapiro [ label="wet_jp1_k" ]
@@ -4397,7 +4376,6 @@ subroutine dyn_2(dt,dx,dy,j,k)
       real :: dy
       real :: eta_j_k
       real :: etan_j_k
-      real :: h_jm1_k
       real :: h_j_kp1
       real :: h_j_k
       real :: h_jp1_k
@@ -4483,7 +4461,6 @@ Streams =
 subroutine shapiro(eps,j,k)
       real :: eps
       real :: eta_j_k
-      real :: etan_jm1_k
       real :: etan_j_kp1
       real :: etan_j_k
       real :: etan_jp1_k
@@ -4493,7 +4470,6 @@ subroutine shapiro(eps,j,k)
       real :: term1
       real :: term2
       real :: term3
-      integer :: wet_jm1_k
       integer :: wet_j_kp1
       integer :: wet_j_k
       integer :: wet_jp1_k
@@ -4585,9 +4561,9 @@ Compute Kernel Names: dyn_0, dyn_1, dyn_2, shapiro, vernieuw
 Number of Smart Caches: 4
 Number of Memory Readers: 9
 Number of Memory Writers: 1
-Number of Pipes: 50
+Number of Pipes: 47
 CSV: 
-0,5,4,9,1,50
+0,5,4,9,1,47
 
 --------------------------------------------------------------------------------
 
@@ -4614,7 +4590,6 @@ module dyn_shapiro_vernieuw_device_code
       integer :: dyn_2_shapiro_smart_cache_vn_j_k_pipe
       integer :: dyn_2_shapiro_smart_cache_un_j_k_pipe
       integer :: dyn_2_shapiro_smart_cache_etan_j_k_pipe
-      integer :: dyn_2_smart_cache_dyn_2_h_jm1_k_pipe
       integer :: dyn_2_smart_cache_dyn_2_h_j_kp1_pipe
       integer :: dyn_2_smart_cache_dyn_2_h_j_k_pipe
       integer :: dyn_2_smart_cache_dyn_2_h_jp1_k_pipe
@@ -4630,12 +4605,10 @@ module dyn_shapiro_vernieuw_device_code
       integer :: shapiro_vernieuw_vn_j_k_pipe
       integer :: shapiro_smart_cache_shapiro_vn_j_k_pipe
       integer :: shapiro_smart_cache_shapiro_un_j_k_pipe
-      integer :: shapiro_smart_cache_shapiro_etan_jm1_k_pipe
       integer :: shapiro_smart_cache_shapiro_etan_j_kp1_pipe
       integer :: shapiro_smart_cache_shapiro_etan_j_k_pipe
       integer :: shapiro_smart_cache_shapiro_etan_jp1_k_pipe
       integer :: shapiro_smart_cache_shapiro_etan_j_km1_pipe
-      integer :: shapiro_smart_cache_shapiro_wet_jm1_k_pipe
       integer :: shapiro_smart_cache_shapiro_wet_j_kp1_pipe
       integer :: shapiro_smart_cache_shapiro_wet_j_k_pipe
       integer :: shapiro_smart_cache_shapiro_wet_jp1_k_pipe
@@ -4668,7 +4641,6 @@ subroutine pipe_initialisation
     call ocl_pipe_real(dyn_2_shapiro_smart_cache_vn_j_k_pipe)
     call ocl_pipe_real(dyn_2_shapiro_smart_cache_un_j_k_pipe)
     call ocl_pipe_real(dyn_2_shapiro_smart_cache_etan_j_k_pipe)
-    call ocl_pipe_real(dyn_2_smart_cache_dyn_2_h_jm1_k_pipe)
     call ocl_pipe_real(dyn_2_smart_cache_dyn_2_h_j_kp1_pipe)
     call ocl_pipe_real(dyn_2_smart_cache_dyn_2_h_j_k_pipe)
     call ocl_pipe_real(dyn_2_smart_cache_dyn_2_h_jp1_k_pipe)
@@ -4684,12 +4656,10 @@ subroutine pipe_initialisation
     call ocl_pipe_real(shapiro_vernieuw_vn_j_k_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_vn_j_k_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_un_j_k_pipe)
-    call ocl_pipe_real(shapiro_smart_cache_shapiro_etan_jm1_k_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_etan_j_kp1_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_etan_j_k_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_etan_jp1_k_pipe)
     call ocl_pipe_real(shapiro_smart_cache_shapiro_etan_j_km1_pipe)
-    call ocl_pipe_int(shapiro_smart_cache_shapiro_wet_jm1_k_pipe)
     call ocl_pipe_int(shapiro_smart_cache_shapiro_wet_j_kp1_pipe)
     call ocl_pipe_int(shapiro_smart_cache_shapiro_wet_j_k_pipe)
     call ocl_pipe_int(shapiro_smart_cache_shapiro_wet_jp1_k_pipe)
@@ -4946,7 +4916,6 @@ subroutine dyn_2_smart_cache
       real, dimension(1:1005) :: h_buffer
       real, dimension(1:1005) :: un_buffer
       real, dimension(1:1005) :: vn_buffer
-      real :: h_jm1_k
       real :: h_j_kp1
       real :: h_j_k
       real :: h_jp1_k
@@ -4986,8 +4955,6 @@ subroutine dyn_2_smart_cache
             call write_pipe(dyn_2_smart_cache_dyn_2_h_j_km1_pipe, h_j_km1)
             h_j_kp1 = h_buffer(1005)
             call write_pipe(dyn_2_smart_cache_dyn_2_h_j_kp1_pipe, h_j_kp1)
-            h_jm1_k = h_buffer(502)
-            call write_pipe(dyn_2_smart_cache_dyn_2_h_jm1_k_pipe, h_jm1_k)
             h_jp1_k = h_buffer(504)
             call write_pipe(dyn_2_smart_cache_dyn_2_h_jp1_k_pipe, h_jp1_k)
             un_j_k = un_buffer(1005)
@@ -5010,7 +4977,6 @@ subroutine dyn_2(dt,dx,dy)
       real :: dy
       real :: eta_j_k
       real :: etan_j_k
-      real :: h_jm1_k
       real :: h_j_kp1
       real :: h_j_k
       real :: h_jp1_k
@@ -5038,7 +5004,6 @@ subroutine dyn_2(dt,dx,dy)
         call read_pipe(dyn_2_smart_cache_dyn_2_h_j_k_pipe, h_j_k)
         call read_pipe(dyn_2_smart_cache_dyn_2_h_j_km1_pipe, h_j_km1)
         call read_pipe(dyn_2_smart_cache_dyn_2_h_j_kp1_pipe, h_j_kp1)
-        call read_pipe(dyn_2_smart_cache_dyn_2_h_jm1_k_pipe, h_jm1_k)
         call read_pipe(dyn_2_smart_cache_dyn_2_h_jp1_k_pipe, h_jp1_k)
         call read_pipe(dyn_2_smart_cache_dyn_2_un_j_k_pipe, un_j_k)
         call read_pipe(dyn_2_smart_cache_dyn_2_un_j_km1_pipe, un_j_km1)
@@ -5091,12 +5056,10 @@ subroutine shapiro_smart_cache
       integer, dimension(1:1005) :: wet_buffer
       real :: vn_j_k
       real :: un_j_k
-      real :: etan_jm1_k
       real :: etan_j_kp1
       real :: etan_j_k
       real :: etan_jp1_k
       real :: etan_j_km1
-      integer :: wet_jm1_k
       integer :: wet_j_kp1
       integer :: wet_j_k
       integer :: wet_jp1_k
@@ -5135,8 +5098,6 @@ subroutine shapiro_smart_cache
             call write_pipe(shapiro_smart_cache_shapiro_etan_j_km1_pipe, etan_j_km1)
             etan_j_kp1 = etan_buffer(1005)
             call write_pipe(shapiro_smart_cache_shapiro_etan_j_kp1_pipe, etan_j_kp1)
-            etan_jm1_k = etan_buffer(502)
-            call write_pipe(shapiro_smart_cache_shapiro_etan_jm1_k_pipe, etan_jm1_k)
             etan_jp1_k = etan_buffer(504)
             call write_pipe(shapiro_smart_cache_shapiro_etan_jp1_k_pipe, etan_jp1_k)
             un_j_k = un_buffer(503)
@@ -5149,8 +5110,6 @@ subroutine shapiro_smart_cache
             call write_pipe(shapiro_smart_cache_shapiro_wet_j_km1_pipe, wet_j_km1)
             wet_j_kp1 = wet_buffer(1005)
             call write_pipe(shapiro_smart_cache_shapiro_wet_j_kp1_pipe, wet_j_kp1)
-            wet_jm1_k = wet_buffer(502)
-            call write_pipe(shapiro_smart_cache_shapiro_wet_jm1_k_pipe, wet_jm1_k)
             wet_jp1_k = wet_buffer(504)
             call write_pipe(shapiro_smart_cache_shapiro_wet_jp1_k_pipe, wet_jp1_k)
         end if
@@ -5162,7 +5121,6 @@ subroutine shapiro(eps)
       integer :: count
       real :: eps
       real :: eta_j_k
-      real :: etan_jm1_k
       real :: etan_j_kp1
       real :: etan_j_k
       real :: etan_jp1_k
@@ -5172,7 +5130,6 @@ subroutine shapiro(eps)
       real :: term1
       real :: term2
       real :: term3
-      integer :: wet_jm1_k
       integer :: wet_j_kp1
       integer :: wet_j_k
       integer :: wet_jp1_k
@@ -5181,14 +5138,12 @@ subroutine shapiro(eps)
         call read_pipe(shapiro_smart_cache_shapiro_etan_j_k_pipe, etan_j_k)
         call read_pipe(shapiro_smart_cache_shapiro_etan_j_km1_pipe, etan_j_km1)
         call read_pipe(shapiro_smart_cache_shapiro_etan_j_kp1_pipe, etan_j_kp1)
-        call read_pipe(shapiro_smart_cache_shapiro_etan_jm1_k_pipe, etan_jm1_k)
         call read_pipe(shapiro_smart_cache_shapiro_etan_jp1_k_pipe, etan_jp1_k)
         call read_pipe(shapiro_smart_cache_shapiro_un_j_k_pipe, un_j_k)
         call read_pipe(shapiro_smart_cache_shapiro_vn_j_k_pipe, vn_j_k)
         call read_pipe(shapiro_smart_cache_shapiro_wet_j_k_pipe, wet_j_k)
         call read_pipe(shapiro_smart_cache_shapiro_wet_j_km1_pipe, wet_j_km1)
         call read_pipe(shapiro_smart_cache_shapiro_wet_j_kp1_pipe, wet_j_kp1)
-        call read_pipe(shapiro_smart_cache_shapiro_wet_jm1_k_pipe, wet_jm1_k)
         call read_pipe(shapiro_smart_cache_shapiro_wet_jp1_k_pipe, wet_jp1_k)
         j = count/502
         k = mod(count, 502)

@@ -19,9 +19,12 @@ import           Utils
 -- down columns -> along rows -> back to front
 defaultIterationOrder dims = range (0, dims - 1)
 
+flattenedCArrayStyle :: Int -> [Int]
+flattenedCArrayStyle = reverse . defaultIterationOrder
+
 -- Helper method to print all the sizes of all the different
 -- combination of stencil points in a stream
-printResults stream =
+printResults stream itOrder =
   putStrLn $
   concatMap
     (\(scSize, (start, end)) ->
@@ -31,13 +34,10 @@ printResults stream =
          (show start)
          (show end)) $
   sortStencils $
-  calculateSmartCacheSizeForAllPairsOfStencilPoints
-    (defaultIterationOrder 3)
-    stream
+  calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder stream
 
-printSmartCacheDetailsForStream stream =
-  print $
-  calculateSmartCacheDetailsForStream Nothing (defaultIterationOrder 3) stream
+printSmartCacheDetailsForStream stream itOrder =
+  print $ calculateSmartCacheDetailsForStream Nothing itOrder stream
 
 -- Sorts the results from calculateSmartCacheSizeForAllPairsOfStencilPoints by number of block
 -- and then by the number of 0s in the indices. If multiple potential
@@ -105,9 +105,11 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         (Stencil anno dimension (length updatedCoords) updatedCoords varName)
     all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder toProcess
     (maxNumBlocks, (maxStart, maxEnd)) =
-      (headNote
-         ("SmartCacheParameterAnalysis: line 89 : stream name = " ++
-          getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel)) .
+      (head
+      -- Note
+      --    ("SmartCacheParameterAnalysis: line 89 : stream name = " ++
+      --     getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel))
+        .
        sortStencils)
         centralIdxRemoved --all
     pairsFromStart =
@@ -190,7 +192,14 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
       [(x, y) | x <- stencilIndicesInts, y <- stencilIndicesInts, x /= y]
     smallIndexFirstOnly =
       filter (\(x, y) -> compareIndices x y iterationOrder == LT) allIndexPairs
-    stencilSizesAndIndexPairs = map go smallIndexFirstOnly
+    stencilSizesAndIndexPairs =
+      map
+        go
+        (trace
+           ("allIndexPairs = \n" ++
+            show allIndexPairs ++
+            "\nsmallIndexFirstOnly = \n" ++ show smallIndexFirstOnly)
+           smallIndexFirstOnly)
     go (l1, l2) =
       let initial = ((l1, l2), True, 0)
           ((ol1, ol2), _, totArea) =

@@ -73,9 +73,7 @@ addPipesToPipelineItems pipeline = do
           addPipesToPipelineStages previousStage currentStage newPipes
         getPipe :: (Stream Anno, PipelineItem SharedPipelineData) -> Pipe
         getPipe (stream, dest) =
-          if trace
-               ("getPipe\n" ++ show stream ++ "\n" ++ name dest ++ "\n")
-               valid
+          if valid
             then buildPipe sourceName destName stream
             else error "Stream has different name in map"
           where
@@ -109,30 +107,8 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
              , map (finalMap DMap.!) previousMemAccNames)
       else Nothing
   , ( finalMap DMap.! currKernName
-    , maybe
-        Nothing
-        (`DMap.lookup` finalMap)
-        (trace
-           ("currKernName = " ++
-            currKernName ++ " currentSCName = " ++ show currentSCName)
-           currentSCName)
-    , map
-        (finalMap DMap.!)
-        (trace
-           ("currKernName = " ++
-            currKernName ++
-            " currentMemAccNames = " ++
-            show currentMemAccNames ++
-            "\n map = \n" ++
-            (concatMap
-               (\i ->
-                  "-----------------------------------\n" ++
-                  name i ++
-                  " \n written pipes = \n" ++
-                  show (writtenPipes i) ++
-                  "\n read pipes = \n" ++ show (readPipes i) ++ "\n") $
-             DMap.elems finalMap))
-           currentMemAccNames)))
+    , maybe Nothing (`DMap.lookup` finalMap) currentSCName
+    , map (finalMap DMap.!) currentMemAccNames))
   where
     (prevKern, prevSC, prevMA) = fromMaybe (NullItem, Nothing, []) prevStage
     withReadPipesUpdated =
@@ -148,7 +124,7 @@ addPipesToPipelineStages prevStage (currKern, currSC, currMA) pipes =
         (\map pipe ->
            DMap.adjust (updateWrittenPipes pipe) (getPipeSource pipe) map)
         withReadPipesUpdated
-        (trace ("all pipes = " ++ concatMap (\p -> show p ++ "\n") pipes) pipes)
+        pipes
     updateWrittenPipes pipe item =
       item {writtenPipes = currentWrittenPipes ++ [pipe]}
       where
@@ -214,11 +190,7 @@ removeComputeKernelOutputsFromSmartCacheSources sources =
   filter
     (\(item, _) ->
        (not hasSmartCache ||
-        (trace
-           ("smart cache order = " ++
-            show smartCacheOrder ++
-            " " ++ name item ++ " order = " ++ show (stageNumber item))
-           (not (isComputeKernel item) || stageNumber item /= smartCacheOrder))))
+        (not (isComputeKernel item) || stageNumber item /= smartCacheOrder)))
     sources
   where
     hasSmartCache = any (isSmartCache . fst) sources
