@@ -113,15 +113,15 @@ compilerMain args = do
   -- kernels = [[Kernel]] representing pipelines
   kernels <- mapM getKernels (getOffloadSubs srtAfterKernelCombination)
   scalarisedKernels <-
-    concatMapM (processPipeline (length kernels)) $ indexed kernels
+    concatMapM (processPipeline args (length kernels)) $ indexed kernels
   (fileName, deviceCode, callingData) <-
     buildDeviceModule (length kernels) scalarisedKernels
   mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
 
-processPipeline :: Int -> (Int, [Kernel]) -> IO [PipelineStage]
-processPipeline totalPipelines (pipelineNumber, kernels) = do
+processPipeline :: F4Opts -> Int -> (Int, [Kernel]) -> IO [PipelineStage]
+processPipeline opts totalPipelines (pipelineNumber, kernels) = do
   let renamedKernels =
         map (addPipelineNamePrefix totalPipelines pipelineNumber) kernels
   driverLoopParams@(largestStreamName, largestStreamDims, _) <-
@@ -138,7 +138,7 @@ processPipeline totalPipelines (pipelineNumber, kernels) = do
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
-  smartCacheKernelPairs <- insertSmartCaches withLoopVarsSynthesised
+  smartCacheKernelPairs <- insertSmartCaches opts withLoopVarsSynthesised
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   pipelineStages <- addMemoryAccesses smartCacheKernelPairs
   let withSharedDataUpdated =

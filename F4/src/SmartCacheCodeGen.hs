@@ -6,6 +6,7 @@ import           CodeGenUtils
 import qualified Data.Map             as DMap
 import           Data.Maybe
 import           Data.String.Utils
+import           Data.Tuple.Utils
 import           Debug.Trace
 import           FortranDSL
 import           Language.Fortran
@@ -143,7 +144,7 @@ generatePipeWrites SmartCache {..} = fortran
   where
     fortran =
       concatMap
-        (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx))) ->
+        (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx, _))) ->
            generatePipeWriteCon
              bufIdx
              streamName
@@ -158,7 +159,7 @@ generatePipeWrites SmartCache {..} = fortran
       concatMap
         (\SmartCacheItem {..} ->
            map
-             (\t -> (fst t, (getArrayNameFromStream inputStream, t)))
+             (\t -> (fst3 t, (getArrayNameFromStream inputStream, t)))
              outputStreamNamesAndBufferIndex)
         cacheLines
     combined =
@@ -205,7 +206,7 @@ generateOutVarDecls SmartCacheItem {..} =
     (\name -> typedDecl name (getFortranTypeForStream inputStream))
     outStreamNames
   where
-    outStreamNames = map fst outputStreamNamesAndBufferIndex
+    outStreamNames = map fst3 outputStreamNamesAndBufferIndex
 
 generateBufferDecls :: PipelineItem SharedPipelineData -> [Decl Anno]
 generateBufferDecls SmartCache {..} = map generateBufferDecl cacheLines

@@ -11,11 +11,6 @@
 //+ line 222 (of unmodified file), so semicolon
 //+ wet_j_k is sometimes int, sometimes float. may be more convenient now to just make every simulation array from floats.
 
-
-
-
-
-
 __attribute__((always_inline))
 inline unsigned int F3D2C(
         unsigned int i_rng,unsigned int j_rng, // ranges, i.e. (hb-lb)+1
@@ -25,26 +20,14 @@ inline unsigned int F3D2C(
     return (i_rng*j_rng*(kx-k_lb)+i_rng*(jx-j_lb)+ix-i_lb);
 }
 
-// This is ok for Fortran host, not for C host!
-//__attribute__((always_inline))
-//inline unsigned int F2D2C_OBS(
-//        unsigned int i_rng, // ranges, i.e. (hb-lb)+1
-//        int i_lb, int j_lb, // lower bounds
-//        int ix, int jx
-//        ) {
-//    return (i_rng*(jx-j_lb)+ix-i_lb);
-//}
-
 __attribute__((always_inline))
 inline unsigned int F2D2C(
-        unsigned int j_rng, // ranges, i.e. (hb-lb)+1
+        unsigned int i_rng, // ranges, i.e. (hb-lb)+1
         int i_lb, int j_lb, // lower bounds
         int ix, int jx
         ) {
-    return (j_rng*(ix-i_lb)+jx-j_lb);
+    return (i_rng*(jx-j_lb)+ix-i_lb);
 }
-
-
 
 __attribute__((always_inline))
 inline unsigned int F1D2C(
@@ -71,59 +54,60 @@ inline unsigned int F4D2C(
 
 
         //orig
-        pipe float dyn_0_dyn_1_du_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_0_dyn_1_dv_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_0_smart_cache_dyn_0_eta_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_0_smart_cache_dyn_0_eta_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_0_smart_cache_dyn_0_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_0_eta_j_k_reader_dyn_0_smart_cache_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_dyn_2_smart_cache_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_dyn_2_smart_cache_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_smart_cache_dyn_1_wet_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_smart_cache_dyn_1_wet_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_smart_cache_dyn_1_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_wet_j_k_reader_dyn_1_smart_cache_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_u_j_k_reader_dyn_1_u_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_1_v_j_k_reader_dyn_1_v_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_shapiro_smart_cache_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_shapiro_smart_cache_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_shapiro_smart_cache_etan_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_h_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_h_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_h_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_h_j_km1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_un_j_km1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_smart_cache_dyn_2_vn_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_h_j_k_reader_dyn_2_smart_cache_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float dyn_2_eta_j_k_reader_dyn_2_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_vernieuw_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_vernieuw_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_vernieuw_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_etan_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_etan_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_etan_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_etan_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_etan_j_km1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_wet_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_wet_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_wet_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_smart_cache_shapiro_wet_j_km1_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float shapiro_wet_j_k_reader_shapiro_smart_cache_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-	pipe float shapiro_eta_j_k_reader_shapiro_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_vernieuw_output_writer_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_vernieuw_output_writer_u_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_vernieuw_output_writer_v_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_vernieuw_output_writer_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_h_j_k_reader_vernieuw_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
-        pipe float vernieuw_hzero_j_k_reader_vernieuw_hzero_j_k_pipe __attribute__((xcl_reqd_pipe_depth(32)));
+        pipe float dyn_0_dyn_1_du_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_0_dyn_1_dv_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_0_smart_cache_dyn_0_eta_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_0_smart_cache_dyn_0_eta_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_0_smart_cache_dyn_0_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_0_eta_j_k_reader_dyn_0_smart_cache_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_dyn_2_smart_cache_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_dyn_2_smart_cache_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_smart_cache_dyn_1_wet_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_smart_cache_dyn_1_wet_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_smart_cache_dyn_1_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_wet_j_k_reader_dyn_1_smart_cache_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_u_j_k_reader_dyn_1_u_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_1_v_j_k_reader_dyn_1_v_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_shapiro_smart_cache_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_shapiro_smart_cache_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_shapiro_smart_cache_etan_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_h_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_h_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_h_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_h_j_km1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_un_j_km1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_smart_cache_dyn_2_vn_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_h_j_k_reader_dyn_2_smart_cache_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float dyn_2_eta_j_k_reader_dyn_2_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_vernieuw_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_vernieuw_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_vernieuw_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_vn_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_un_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_etan_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_etan_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_etan_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_etan_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_etan_j_km1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_wet_jm1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_wet_j_kp1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_wet_jp1_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_smart_cache_shapiro_wet_j_km1_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float shapiro_wet_j_k_reader_shapiro_smart_cache_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+	pipe float shapiro_eta_j_k_reader_shapiro_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_vernieuw_output_writer_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_vernieuw_output_writer_u_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_vernieuw_output_writer_v_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_vernieuw_output_writer_wet_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_vernieuw_output_writer_eta_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_h_j_k_reader_vernieuw_h_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
+        pipe float vernieuw_hzero_j_k_reader_vernieuw_hzero_j_k_pipe __attribute__((xcl_reqd_pipe_depth((16))));
 
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_eta_j_k_reader(__global float *eta) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_eta_j_k_reader(__global float * restrict eta) {
 
       float eta_j_k;
       int a;
@@ -162,12 +146,12 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0_smart_cache() {
                                 eta_buffer[F1D2C(1 , 503)] = eta_read_in;
         }
         if (compindex>=0) {
-                                eta_j_k = *eta_buffer;
-                                write_pipe_block(dyn_0_smart_cache_dyn_0_eta_j_k_pipe,&eta_j_k);
-                                eta_j_kp1 = eta_buffer[F1D2C(1 , 2)];
-                                write_pipe_block(dyn_0_smart_cache_dyn_0_eta_j_kp1_pipe,&eta_j_kp1);
-                                eta_jp1_k = eta_buffer[F1D2C(1 , 503)];
-                                write_pipe_block(dyn_0_smart_cache_dyn_0_eta_jp1_k_pipe,&eta_jp1_k);
+				eta_j_k = *eta_buffer;
+				write_pipe_block(dyn_0_smart_cache_dyn_0_eta_j_k_pipe,&eta_j_k);
+				eta_j_kp1 =  eta_buffer[F1D2C(1 , 503)];
+				write_pipe_block(dyn_0_smart_cache_dyn_0_eta_j_kp1_pipe,&eta_j_kp1);
+				eta_jp1_k = eta_buffer[F1D2C(1 , 2)];
+				write_pipe_block(dyn_0_smart_cache_dyn_0_eta_jp1_k_pipe,&eta_jp1_k);
         }
     }
     }
@@ -196,7 +180,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_0(float dt,float 
                 write_pipe_block(dyn_0_dyn_1_dv_j_k_pipe,&dv_j_k);
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_wet_j_k_reader(__global float *wet) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_wet_j_k_reader(__global float * restrict wet) {
 
       float wet_j_k;
       int a;
@@ -208,7 +192,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_wet_j_k_reader(
         }
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_u_j_k_reader(__global float *u) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_u_j_k_reader(__global float * restrict u) {
 
       float u_j_k;
       int a;
@@ -220,7 +204,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_u_j_k_reader(__
         }
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_v_j_k_reader(__global float *v) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_v_j_k_reader(__global float * restrict v) {
 
       float v_j_k;
       int a;
@@ -261,9 +245,9 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1_smart_cache() {
         if (compindex>=0) {
                                 wet_j_k = *wet_buffer;
                                 write_pipe_block(dyn_1_smart_cache_dyn_1_wet_j_k_pipe,&wet_j_k);
-                                wet_j_kp1 = wet_buffer[F1D2C(1 , 2)];
+                                wet_j_kp1 = wet_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(dyn_1_smart_cache_dyn_1_wet_j_kp1_pipe,&wet_j_kp1);
-                                wet_jp1_k = wet_buffer[F1D2C(1 , 503)];
+                                wet_jp1_k = wet_buffer[F1D2C(1 , 2)];
                                 write_pipe_block(dyn_1_smart_cache_dyn_1_wet_jp1_k_pipe,&wet_jp1_k);
         }
     }
@@ -327,7 +311,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_1() {
                 write_pipe_block(dyn_1_dyn_2_smart_cache_vn_j_k_pipe,&vn_j_k);
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_h_j_k_reader(__global float *h) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_h_j_k_reader(__global float * restrict h) {
 
       float h_j_k;
       int a;
@@ -339,7 +323,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_h_j_k_reader(__
         }
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_eta_j_k_reader(__global float *eta) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_eta_j_k_reader(__global float * restrict eta) {
 
       float eta_j_k;
       int a;
@@ -396,21 +380,21 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2_smart_cache() {
         if (compindex>=0) {
                                 h_j_k = h_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_h_j_k_pipe,&h_j_k);
-                                h_j_km1 = h_buffer[F1D2C(1 , 502)];
+                                h_j_km1 = *h_buffer;
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_h_j_km1_pipe,&h_j_km1);
-                                h_j_kp1 = h_buffer[F1D2C(1 , 504)];
+                                h_j_kp1 = h_buffer[F1D2C(1 , 1005)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_h_j_kp1_pipe,&h_j_kp1);
-                                h_jm1_k = *h_buffer;
+                                h_jm1_k = h_buffer[F1D2C(1 , 502)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_h_jm1_k_pipe,&h_jm1_k);
-                                h_jp1_k = h_buffer[F1D2C(1 , 1005)];
+                                h_jp1_k = h_buffer[F1D2C(1 , 504)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_h_jp1_k_pipe,&h_jp1_k);
-                                un_j_k = un_buffer[F1D2C(1 , 503)]; // the compiler is generating these wrong
+                                un_j_k = un_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_un_j_k_pipe,&un_j_k);
-                                un_j_km1 = un_buffer[F1D2C(1 , 502)]; // the compiler is generating these wrong
+                                un_j_km1 = *un_buffer;
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_un_j_km1_pipe,&un_j_km1);
-                                vn_j_k = vn_buffer[F1D2C(1 , 503)]; // the compiler is generating these wrong
+                                vn_j_k = vn_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_vn_j_k_pipe,&vn_j_k);
-                                vn_jm1_k = *vn_buffer; // the compiler is generating these wrong
+                                vn_jm1_k = vn_buffer[F1D2C(1 , 502)];
                                 write_pipe_block(dyn_2_smart_cache_dyn_2_vn_jm1_k_pipe,&vn_jm1_k);
         }
     }
@@ -477,7 +461,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void dyn_2(float dt,float 
                 write_pipe_block(dyn_2_shapiro_smart_cache_vn_j_k_pipe,&vn_j_k);
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_wet_j_k_reader(__global float *wet) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_wet_j_k_reader(__global float * restrict wet) {
 
       float wet_j_k;
       int a;
@@ -489,7 +473,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_wet_j_k_reade
         }
     }
 }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_eta_j_k_reader(__global float *eta) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_eta_j_k_reader(__global float * restrict eta) {
 
       float eta_j_k;
       int a;
@@ -554,13 +538,13 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
         if (compindex>=0) {
                                 etan_j_k = etan_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_etan_j_k_pipe,&etan_j_k);
-                                etan_j_km1 = etan_buffer[F1D2C(1 , 502)];
+                                etan_j_km1 = *etan_buffer;
                                 write_pipe_block(shapiro_smart_cache_shapiro_etan_j_km1_pipe,&etan_j_km1);
-                                etan_j_kp1 = etan_buffer[F1D2C(1 , 504)];
+                                etan_j_kp1 = etan_buffer[F1D2C(1 , 1005)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_etan_j_kp1_pipe,&etan_j_kp1);
-                                etan_jm1_k = *etan_buffer;
+                                etan_jm1_k = etan_buffer[F1D2C(1 , 502)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_etan_jm1_k_pipe,&etan_jm1_k);
-                                etan_jp1_k = etan_buffer[F1D2C(1 , 1005)];
+                                etan_jp1_k = etan_buffer[F1D2C(1 , 504)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_etan_jp1_k_pipe,&etan_jp1_k);
                                 un_j_k = un_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_un_j_k_pipe,&un_j_k);
@@ -568,13 +552,13 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro_smart_cache()
                                 write_pipe_block(shapiro_smart_cache_shapiro_vn_j_k_pipe,&vn_j_k);
                                 wet_j_k = wet_buffer[F1D2C(1 , 503)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_wet_j_k_pipe,&wet_j_k);
-                                wet_j_km1 = wet_buffer[F1D2C(1 , 502)];
+                                wet_j_km1 = *wet_buffer;
                                 write_pipe_block(shapiro_smart_cache_shapiro_wet_j_km1_pipe,&wet_j_km1);
-                                wet_j_kp1 = wet_buffer[F1D2C(1 , 504)];
+                                wet_j_kp1 = wet_buffer[F1D2C(1 , 1005)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_wet_j_kp1_pipe,&wet_j_kp1);
-                                wet_jm1_k = *wet_buffer;
+                                wet_jm1_k = wet_buffer[F1D2C(1 , 502)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_wet_jm1_k_pipe,&wet_jm1_k);
-                                wet_jp1_k = wet_buffer[F1D2C(1 , 1005)];
+                                wet_jp1_k = wet_buffer[F1D2C(1 , 504)];
                                 write_pipe_block(shapiro_smart_cache_shapiro_wet_jp1_k_pipe,&wet_jp1_k);
         }
     }
@@ -632,7 +616,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void shapiro(float eps) {
                 write_pipe_block(shapiro_vernieuw_vn_j_k_pipe,&vn_j_k);
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_h_j_k_reader(__global float *h) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_h_j_k_reader(__global float * restrict h) {
 
       float h_j_k;
       int a;
@@ -644,7 +628,7 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_h_j_k_reader
         }
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_hzero_j_k_reader(__global float *hzero) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_hzero_j_k_reader(__global float * restrict hzero) {
 
       float hzero_j_k;
       int a;
@@ -689,14 +673,20 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw(float hmin) 
                 write_pipe_block(vernieuw_vernieuw_output_writer_u_j_k_pipe,&u_j_k);
                 write_pipe_block(vernieuw_vernieuw_output_writer_v_j_k_pipe,&v_j_k);
                 write_pipe_block(vernieuw_vernieuw_output_writer_wet_j_k_pipe,&wet_j_k);
+                write_pipe_block(vernieuw_vernieuw_output_writer_eta_j_k_pipe,&eta_j_k);
     }
     }
-__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_output_writer(__global float *h,__global float *u,__global float *v,__global float *wet) {
+__kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_output_writer(__global float * restrict h,
+                                                                                  __global float * restrict u,
+                                                                                  __global float * restrict v,
+		                                                                  __global float * restrict wet,
+										  __global float * restrict eta) {
 
       float h_j_k_read_in;
       float u_j_k_read_in;
       float v_j_k_read_in;
       float wet_j_k_read_in;
+      float eta_j_k_read_in;
       int a;
       int b;
     for (a = 0;a <= 501;a += 1) {
@@ -709,6 +699,8 @@ __kernel __attribute__((reqd_work_group_size(1,1,1))) void vernieuw_output_write
                                 v[F2D2C(((501 - 0 )+1) , 0,0 , a,b)] = v_j_k_read_in;
                                 read_pipe_block(vernieuw_vernieuw_output_writer_wet_j_k_pipe,&wet_j_k_read_in);
                                 wet[F2D2C(((501 - 0 )+1) , 0,0 , a,b)] = wet_j_k_read_in;
+                                read_pipe_block(vernieuw_vernieuw_output_writer_eta_j_k_pipe,&eta_j_k_read_in);
+                                eta[F2D2C(((501 - 0 )+1) , 0,0 , a,b)] = eta_j_k_read_in;
         }
     }
     }

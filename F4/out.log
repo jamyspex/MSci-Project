@@ -3465,7 +3465,7 @@ Cache Lines:
 	Output Streams:
 		eta_j_kp1 from buffer index = 503
 		eta_jp1_k from buffer index = 2
-		eta_j_k from buffer index = 1
+		eta_j_k from buffer index = 1 - ORIGIN
 	-------------------------------
 
 
@@ -3579,7 +3579,7 @@ Cache Lines:
 	Output Streams:
 		wet_j_kp1 from buffer index = 503
 		wet_jp1_k from buffer index = 2
-		wet_j_k from buffer index = 1
+		wet_j_k from buffer index = 1 - ORIGIN
 	-------------------------------
 
 
@@ -3715,7 +3715,7 @@ Cache Lines:
 	Output Streams:
 		h_jm1_k from buffer index = 502
 		h_j_kp1 from buffer index = 1005
-		h_j_k from buffer index = 503
+		h_j_k from buffer index = 503 - ORIGIN
 		h_jp1_k from buffer index = 504
 		h_j_km1 from buffer index = 1
 	-------------------------------
@@ -3723,13 +3723,13 @@ Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: un_j_k
-	Buffer size: 1005
+	Buffer size: 503
 	Max positive offset = 0
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		un_j_k from buffer index = 1005
-		un_j_km1 from buffer index = 503
+		un_j_k from buffer index = 503 - ORIGIN
+		un_j_km1 from buffer index = 1
 	-------------------------------
 
 	-------------------------------
@@ -3740,8 +3740,8 @@ Cache Lines:
 	Max negative offset = 2
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		vn_j_k from buffer index = 1005
-		vn_jm1_k from buffer index = 1004
+		vn_j_k from buffer index = 503 - ORIGIN
+		vn_jm1_k from buffer index = 502
 	-------------------------------
 
 
@@ -3857,7 +3857,7 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		vn_j_k from buffer index = 503
+		vn_j_k from buffer index = 503 - ORIGIN
 	-------------------------------
 
 	-------------------------------
@@ -3868,7 +3868,7 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		un_j_k from buffer index = 503
+		un_j_k from buffer index = 503 - ORIGIN
 	-------------------------------
 
 	-------------------------------
@@ -3881,7 +3881,7 @@ Cache Lines:
 	Output Streams:
 		etan_jm1_k from buffer index = 502
 		etan_j_kp1 from buffer index = 1005
-		etan_j_k from buffer index = 503
+		etan_j_k from buffer index = 503 - ORIGIN
 		etan_jp1_k from buffer index = 504
 		etan_j_km1 from buffer index = 1
 	-------------------------------
@@ -3896,7 +3896,7 @@ Cache Lines:
 	Output Streams:
 		wet_jm1_k from buffer index = 502
 		wet_j_kp1 from buffer index = 1005
-		wet_j_k from buffer index = 503
+		wet_j_k from buffer index = 503 - ORIGIN
 		wet_jp1_k from buffer index = 504
 		wet_j_km1 from buffer index = 1
 	-------------------------------
@@ -4990,13 +4990,13 @@ subroutine dyn_2_smart_cache
             call write_pipe(dyn_2_smart_cache_dyn_2_h_jm1_k_pipe, h_jm1_k)
             h_jp1_k = h_buffer(504)
             call write_pipe(dyn_2_smart_cache_dyn_2_h_jp1_k_pipe, h_jp1_k)
-            un_j_k = un_buffer(1005)
+            un_j_k = un_buffer(503)
             call write_pipe(dyn_2_smart_cache_dyn_2_un_j_k_pipe, un_j_k)
-            un_j_km1 = un_buffer(503)
+            un_j_km1 = un_buffer(1)
             call write_pipe(dyn_2_smart_cache_dyn_2_un_j_km1_pipe, un_j_km1)
-            vn_j_k = vn_buffer(1005)
+            vn_j_k = vn_buffer(503)
             call write_pipe(dyn_2_smart_cache_dyn_2_vn_j_k_pipe, vn_j_k)
-            vn_jm1_k = vn_buffer(1004)
+            vn_jm1_k = vn_buffer(502)
             call write_pipe(dyn_2_smart_cache_dyn_2_vn_jm1_k_pipe, vn_jm1_k)
         end if
     end do
