@@ -95,7 +95,7 @@ instance Show SmartCacheItem where
     "Smart cache Transit Item\n" ++
     "Input stream: " ++
     name ++
-    "\n" ++ "Buffer size: " ++ show size ++ "-------------------------------\n"
+    "\n" ++ "Buffer size: " ++ show size ++ "\n-------------------------------\n"
     where
       (name, dims) =
         case inputStream of
