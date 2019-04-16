@@ -23,6 +23,7 @@ import           Data.Tuple.Utils
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
+import           EnsureMemoryWriteback
 import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
@@ -126,8 +127,10 @@ processPipeline opts totalPipelines (pipelineNumber, kernels) = do
         map (addPipelineNamePrefix totalPipelines pipelineNumber) kernels
   driverLoopParams@(largestStreamName, largestStreamDims, _) <-
     detectDriverLoopSize renamedKernels
+  putStrLn (rule '+' ++ " Add Write Back Streams " ++ rule '+')
+  withWriteBackStreams <- ensureMemoryWriteBack renamedKernels
   putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
-  withGuards <- mapM addLoopGuards renamedKernels -- (getOffloadSubs srtAfterKernelCombination)
+  withGuards <- mapM addLoopGuards withWriteBackStreams -- (getOffloadSubs srtAfterKernelCombination)
   putStrLn (rule '+' ++ " With Transit Streams " ++ rule '+')
   kernelsWithTransitStreams <- addTransitStreams withGuards
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')

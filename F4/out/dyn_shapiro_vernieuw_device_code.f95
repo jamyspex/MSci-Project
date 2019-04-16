@@ -47,6 +47,7 @@ module dyn_shapiro_vernieuw_device_code
       integer :: vernieuw_vernieuw_output_writer_u_j_k_pipe
       integer :: vernieuw_vernieuw_output_writer_v_j_k_pipe
       integer :: vernieuw_vernieuw_output_writer_wet_j_k_pipe
+      integer :: vernieuw_vernieuw_output_writer_eta_j_k_pipe
       integer :: vernieuw_h_j_k_reader_vernieuw_h_j_k_pipe
       integer :: vernieuw_hzero_j_k_reader_vernieuw_hzero_j_k_pipe
 contains
@@ -101,6 +102,7 @@ subroutine pipe_initialisation
     call ocl_pipe_real(vernieuw_vernieuw_output_writer_u_j_k_pipe)
     call ocl_pipe_real(vernieuw_vernieuw_output_writer_v_j_k_pipe)
     call ocl_pipe_int(vernieuw_vernieuw_output_writer_wet_j_k_pipe)
+    call ocl_pipe_real(vernieuw_vernieuw_output_writer_eta_j_k_pipe)
     call ocl_pipe_real(vernieuw_h_j_k_reader_vernieuw_h_j_k_pipe)
     call ocl_pipe_real(vernieuw_hzero_j_k_reader_vernieuw_hzero_j_k_pipe)
 end subroutine pipe_initialisation
@@ -667,6 +669,7 @@ subroutine vernieuw(hmin)
             u_j_k = un_j_k
             v_j_k = vn_j_k
         end if
+        call write_pipe(vernieuw_vernieuw_output_writer_eta_j_k_pipe, eta_j_k)
         call write_pipe(vernieuw_vernieuw_output_writer_h_j_k_pipe, h_j_k)
         call write_pipe(vernieuw_vernieuw_output_writer_u_j_k_pipe, u_j_k)
         call write_pipe(vernieuw_vernieuw_output_writer_v_j_k_pipe, v_j_k)
@@ -674,7 +677,9 @@ subroutine vernieuw(hmin)
     end do
 end subroutine vernieuw
 
-subroutine vernieuw_output_writer(h,u,v,wet)
+subroutine vernieuw_output_writer(eta,h,u,v,wet)
+      real :: eta_j_k_read_in
+      real, dimension(0:501,0:501) :: eta
       real :: h_j_k_read_in
       real, dimension(0:501,0:501) :: h
       real :: u_j_k_read_in
@@ -687,6 +692,8 @@ subroutine vernieuw_output_writer(h,u,v,wet)
       integer :: b
     do a = 0, 501, 1
         do b = 0, 501, 1
+            call read_pipe(vernieuw_vernieuw_output_writer_eta_j_k_pipe, eta_j_k_read_in)
+            eta(a,b) = eta_j_k_read_in
             call read_pipe(vernieuw_vernieuw_output_writer_h_j_k_pipe, h_j_k_read_in)
             h(a,b) = h_j_k_read_in
             call read_pipe(vernieuw_vernieuw_output_writer_u_j_k_pipe, u_j_k_read_in)
