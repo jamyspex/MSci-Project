@@ -44,12 +44,13 @@ type ArgumentTranslationTable
 type SubroutineTable = DMap.Map SubNameStr SubRec
 
 data SmartCacheDetailsForStream = SmartCacheDetailsForStream
-  { requiredBufferSize    :: Int
-  , startIndex            :: [Int]
-  , endIndex              :: [Int]
-  , startToPointDistances :: [([Int], Int)]
-  , maxPosOffset          :: Int
-  , maxNegOffset          :: Int
+  { requiredBufferSize      :: Int
+  , startIndex              :: [Int]
+  , endIndex                :: [Int]
+  , startToPointDistances   :: [([Int], Int)]
+  , maxPosOffset            :: Int
+  , maxNegOffset            :: Int
+  , centralPointIsSynthetic :: Bool
   }
 
 buildDummyStreamFromReductionVar :: String -> Stream Anno
@@ -72,6 +73,9 @@ instance Show SmartCacheDetailsForStream where
     "Buffer size: " ++
     show requiredBufferSize ++
     "\n" ++
+    "Central index is synthetic: " ++
+    show centralPointIsSynthetic ++
+    "\n" ++
     concatMap
       (\(point, index) ->
          "Stencil point: " ++
@@ -81,13 +85,21 @@ instance Show SmartCacheDetailsForStream where
       SmartCacheDetailsForStream {..} = smartCacheDetails
 
 data SmartCacheItem
-  = SmartCacheItem { size                            :: Int
-                   , inputStream                     :: Stream Anno
-                   , maxPositiveOffset               :: Int
-                   , maxNegativeOffset               :: Int
-                   , outputStreamNamesAndBufferIndex :: [(String, Int, Bool)] }
+  = SmartCacheItem { size :: Int
+                   , inputStream :: Stream Anno
+                   , maxPositiveOffset :: Int
+                   , maxNegativeOffset :: Int
+                   , outputStreamNamesAndBufferIndex :: [( String
+                                                         , Int
+                                                         , StencilOriginType)] }
   | SmartCacheTransitItem { inputStream :: Stream Anno
                           , size        :: Int }
+
+data StencilOriginType
+  = RealOrigin
+  | SyntheticOrigin
+  | NotOrigin
+  deriving (Show, Eq)
 
 instance Show SmartCacheItem where
   show SmartCacheTransitItem {..} =
@@ -122,14 +134,15 @@ instance Show SmartCacheItem where
     "\n" ++
     "Output Streams:\n" ++
     concatMap
-      (\(name, bufIdx, isOrigin) ->
+      (\(name, bufIdx, originType) ->
          "\t" ++
          name ++
          " from buffer index = " ++
          show bufIdx ++
-         (if isOrigin
-            then " - ORIGIN"
-            else "") ++
+         (case originType of
+            RealOrigin      -> " - Real origin"
+            SyntheticOrigin -> " - Synthetic origin"
+            NotOrigin       -> "") ++
          "\n")
       outputStreamNamesAndBufferIndex ++
     "-------------------------------\n"

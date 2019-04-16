@@ -86,6 +86,7 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         , startToPointDistances = pairsFromStart
         , maxPosOffset = getMaxOffset all fst centralIdx
         , maxNegOffset = getMaxOffset all snd centralIdx
+        , centralPointIsSynthetic = centralPointNeedsAdded
         }
     (StencilStream name arrayName valueType dims (Stencil anno dimension numPoints coords varName)) =
       sten
@@ -103,7 +104,10 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         valueType
         dims
         (Stencil anno dimension (length updatedCoords) updatedCoords varName)
-    all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder toProcess
+    all =
+      calculateSmartCacheSizeForAllPairsOfStencilPoints
+        itOrder
+        (trace ("toProcess = \n" ++ show toProcess) toProcess)
     (maxNumBlocks, (maxStart, maxEnd)) =
       (head
     -- Note
@@ -114,7 +118,8 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         centralIdxRemoved --all
     pairsFromStart =
       map (\(size, (_, point)) -> (point, size)) $
-      filter (\(_, (start, _)) -> start == maxStart) centralIdxRemoved
+      filter (\(_, (start, _)) -> start == maxStart) $
+      trace ("all = " ++ show all) all -- centralIdxRemoved
     centralIdxRemoved =
       filter
         (\(_, (start, end)) ->
@@ -186,7 +191,8 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
     -- ++ show stencilSizesAndIndexPairs
     -- )
   where
-    (Stencil _ stencilDimens _ stencilIndices _) = stencil
+    (Stencil _ stencilDimens _ stencilIndices _) =
+      trace ("stencil being used in calculations = " ++ show stencil) stencil
     stencilIndicesInts = stripStenIndex stencilIndices
     allIndexPairs =
       [(x, y) | x <- stencilIndicesInts, y <- stencilIndicesInts, x /= y]

@@ -110,10 +110,7 @@ buildSmartCacheForKernel opts (k, streamsThatCanComeFromMem) = do
     streamDimensionsOrders =
       map (length . getStreamDimensions) streamsToGoThroughSmartCache
     numberOfStreamDimensions = maximum streamDimensionsOrders
-    iterationOrder =
-      if useCIterationOrder opts
-        then flattenedCArrayStyle numberOfStreamDimensions
-        else defaultIterationOrder numberOfStreamDimensions
+    iterationOrder = defaultIterationOrder numberOfStreamDimensions
     smartCacheItems =
       map
         (buildSmartCacheItem iterationOrder k numberOfStreamDimensions)
@@ -200,7 +197,7 @@ padCacheItems inputs = map updateCacheItem inputs
     largestOriginOffset =
       snd3 $
       maximumBy (\(_, o1, _) (_, o2, _) -> o1 `compare` o2) $
-      filter (\(_, _, isOrigin) -> isOrigin) $
+      filter (\(_, _, originType) -> isOrigin originType) $
       concatMap outputStreamNamesAndBufferIndex stencilItems
     updateCacheItem :: SmartCacheItem -> SmartCacheItem
     updateCacheItem item@SmartCacheTransitItem {..} =
@@ -210,7 +207,7 @@ padCacheItems inputs = map updateCacheItem inputs
         , maxNegativeOffset = maxNegOffset
         , maxPositiveOffset = maxPosOffset
         , outputStreamNamesAndBufferIndex =
-            [(name, largestSize - (maxPosOffset - 1), True)]
+            [(name, largestSize - (maxPosOffset - 1), RealOrigin)]
         }
       where
         (name, arrayName, inputValueType, inputDims) =
@@ -226,17 +223,38 @@ padCacheItems inputs = map updateCacheItem inputs
         sizeDiff = largestSize - size
         originOffset =
           snd3 $
-          head $
-          filter (\(_, _, isOrigin) -> isOrigin) outputStreamNamesAndBufferIndex
+          headNote
+            ("outputStreamNamesAndBufferIndex = " ++
+             show outputStreamNamesAndBufferIndex) $
+          filter
+            (\(_, _, originType) -> isOrigin originType)
+            outputStreamNamesAndBufferIndex
         diffOffset = largestOriginOffset - originOffset
+        withOriginRemovedIfSynthetic =
+          filter
+            (\(_, _, originType) -> (not . isSyntheticOrigin) originType)
+            outputStreamNamesAndBufferIndex
         updated =
           org
             { size = largestSize
             , outputStreamNamesAndBufferIndex =
                 map
-                  (\(name, idx, isOrigin) -> (name, idx + diffOffset, isOrigin)) -- idx + sizeDiff))
+                  (\(name, idx, originType) ->
+                     (name, idx + diffOffset, originType) -- idx + sizeDiff))
+                   )
                   outputStreamNamesAndBufferIndex
             }
+
+isSyntheticOrigin ot =
+  case ot of
+    SyntheticOrigin -> True
+    _               -> False
+
+isOrigin ot =
+  case ot of
+    RealOrigin      -> True
+    SyntheticOrigin -> True
+    NotOrigin       -> False
 
 -- Using the stencil points match the results from SmartCacheParameterAnalysis with
 -- the generated output variable names. The smart cache buffer will be a standard
@@ -257,20 +275,47 @@ buildSmartCacheItem iterationOrder kernel streamDimensionOrder inStream =
     }
   where
     outputVars = getSmartCacheOutputVars kernel inStream
-    SmartCacheDetailsForStream {..} =
+    s@SmartCacheDetailsForStream {..} =
       calculateSmartCacheDetailsForStream (Just kernel) iterationOrder inStream
     pointToStreamNameMap = DMap.fromList outputVars
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           ( pointToStreamNameMap DMap.! map Offset point
+           ( synthenticOriginPointNameWorkaround
+               (originType point)
+               (map Offset point)
+               pointToStreamNameMap --  pointToStreamNameMap DMap.! map Offset point
            , buffIndex
-           , point == originPoint) :
+           , originType point) :
            acc)
         []
         pointsAndDistances
+    originType point =
+      if point == originPoint
+        then if centralPointIsSynthetic
+               then SyntheticOrigin
+               else RealOrigin
+        else NotOrigin
     originPoint = replicate (length $ getStreamDimensions inStream) 0
-    pointsAndDistances = (startIndex, 1) : startToPointDistances
+    pointsAndDistances =
+      (startIndex, 1) :
+      trace
+        ("Smart cache details of stream:\n" ++ show inStream ++ "\n" ++ show s)
+        startToPointDistances
+
+-- god this is getting hairy
+-- If its a synthetic origin then it won't have appeared as a stencil index
+-- therefore there won't be a stream name for it in the map
+-- This doesn't matter because its only used in padding calculation and then
+-- discarded so just return an empty string for the stream name if it is
+-- an artifical origin point and trust it all works out in the end
+synthenticOriginPointNameWorkaround ::
+     StencilOriginType
+  -> [StencilIndex]
+  -> DMap.Map [StencilIndex] String
+  -> String
+synthenticOriginPointNameWorkaround SyntheticOrigin stencilIdx map = ""
+synthenticOriginPointNameWorkaround _ stencilIdx map = map DMap.! stencilIdx
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]

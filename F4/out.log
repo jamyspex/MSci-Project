@@ -3605,7 +3605,7 @@ Cache Lines:
 	Output Streams:
 		eta_j_kp1 from buffer index = 503
 		eta_jp1_k from buffer index = 2
-		eta_j_k from buffer index = 1 - ORIGIN
+		eta_j_k from buffer index = 1 - Real origin
 	-------------------------------
 
 
@@ -3721,7 +3721,7 @@ Cache Lines:
 	Output Streams:
 		wet_j_kp1 from buffer index = 503
 		wet_jp1_k from buffer index = 2
-		wet_j_k from buffer index = 1 - ORIGIN
+		wet_j_k from buffer index = 1 - Real origin
 	-------------------------------
 
 
@@ -3876,7 +3876,7 @@ Cache Lines:
 	Output Streams:
 		h_jm1_k from buffer index = 502
 		h_j_kp1 from buffer index = 1005
-		h_j_k from buffer index = 503 - ORIGIN
+		h_j_k from buffer index = 503 - Real origin
 		h_jp1_k from buffer index = 504
 		h_j_km1 from buffer index = 1
 	-------------------------------
@@ -3889,7 +3889,7 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		un_j_k from buffer index = 503 - ORIGIN
+		un_j_k from buffer index = 503 - Real origin
 		un_j_km1 from buffer index = 1
 	-------------------------------
 
@@ -3901,7 +3901,7 @@ Cache Lines:
 	Max negative offset = 2
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		vn_j_k from buffer index = 503 - ORIGIN
+		vn_j_k from buffer index = 503 - Real origin
 		vn_jm1_k from buffer index = 502
 	-------------------------------
 
@@ -4028,7 +4028,7 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		vn_j_k from buffer index = 503 - ORIGIN
+		vn_j_k from buffer index = 503 - Real origin
 	-------------------------------
 
 	-------------------------------
@@ -4039,7 +4039,7 @@ Cache Lines:
 	Max negative offset = 503
 	Stream Dimensions: [(0,501),(0,501)]
 	Output Streams:
-		un_j_k from buffer index = 503 - ORIGIN
+		un_j_k from buffer index = 503 - Real origin
 	-------------------------------
 
 	-------------------------------
@@ -4052,7 +4052,7 @@ Cache Lines:
 	Output Streams:
 		etan_jm1_k from buffer index = 502
 		etan_j_kp1 from buffer index = 1005
-		etan_j_k from buffer index = 503 - ORIGIN
+		etan_j_k from buffer index = 503 - Real origin
 		etan_jp1_k from buffer index = 504
 		etan_j_km1 from buffer index = 1
 	-------------------------------
@@ -4067,7 +4067,7 @@ Cache Lines:
 	Output Streams:
 		wet_jm1_k from buffer index = 502
 		wet_j_kp1 from buffer index = 1005
-		wet_j_k from buffer index = 503 - ORIGIN
+		wet_j_k from buffer index = 503 - Real origin
 		wet_jp1_k from buffer index = 504
 		wet_j_km1 from buffer index = 1
 	-------------------------------
