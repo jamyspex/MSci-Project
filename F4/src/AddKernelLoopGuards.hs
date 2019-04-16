@@ -7,6 +7,7 @@ import           Data.List
 import           Data.List.Index
 import qualified Data.Map              as DMap
 import           Data.Maybe
+import qualified Data.Set              as Set
 import           Debug.Trace
 import           F95IntrinsicFunctions
 import           FortranDSL
@@ -22,7 +23,8 @@ import           Utils
 addLoopGuards :: Kernel -> IO Kernel
 addLoopGuards kernel = do
   putStrLn $ show withLoopGuards
-  return withLoopGuards
+  withOutputsAsInputs <- addOutputStreamsAsInput withLoopGuards
+  return withOutputsAsInputs
   where
     withLoopGuards =
       kernel
@@ -34,17 +36,35 @@ addLoopGuards kernel = do
     arrays = map arrayFromDecl arrayDecls
     declRangeMap = getDimensionPositionMap arrayDecls
 
--- addLoopGuards :: SubRec -> SubRec
--- addLoopGuards subRec =
---   subRec
---     { subAst =
---         everywhere (mkT (addLoopGuardToMapOrReduce declRangeMap arrays)) ast
---     }
---   where
---     ast = subAst subRec
---     arrayDecls = getArrayDecls ast
---     arrays = map arrayFromDecl arrayDecls
---     declRangeMap = getDimensionPositionMap arrayDecls
+-- If a kernel has loop guards and outputs a stream that has dimensions larger than
+-- the bounds the guard prevents execution against the array must be read from memory
+-- so that uninitialized values are not output around the boundaries.
+-- Example of this is eta in the shapiro kernel of 2DSW.
+-- So check if array is passed into subroutine as argument as this means it can
+-- be read from global memory, and if it can add it as an input stream to the kernel.
+addOutputStreamsAsInput :: Kernel -> IO Kernel
+addOutputStreamsAsInput kernel = do
+  putStrLn "Adding memory input for output"
+  putStrLn $ "kernel outputs = " ++ (show $ outputs kernel)
+  putStrLn $ "availableFromMem = " ++ show availFromMem
+  putStrLn $ "currentInputNames = " ++ show currentInputNames
+  putStrLn $ "notCurrentlyAnInput = " ++ show notCurrentlyAnInput
+  putStrLn $
+    "Inputs to add = \n" ++ concatMap (\s -> "\t" ++ show s ++ "\n") toAdd
+  return kernel {inputs = inputs kernel ++ toAdd}
+  where
+    notCurrentlyAnInput =
+      filter
+        (\os -> getStreamName os `Set.notMember` currentInputNames)
+        availFromMem
+    toAdd = notCurrentlyAnInput
+    currentInputNames = Set.fromList $ map getStreamName $ inputs kernel
+    availFromMem =
+      filter (\os -> getArrayNameFromStream os `Set.member` availableArguments) $
+      outputs kernel
+    availableArguments = Set.fromList argumentNames
+    argumentNames = map getArgName $ getArgs $ body kernel
+
 -- Wrapper to let the main function below work with maps and folds
 addLoopGuardToMapOrReduce ::
      DMap.Map (String, Int) (Int, Int)

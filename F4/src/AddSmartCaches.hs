@@ -118,11 +118,7 @@ buildSmartCacheForKernel opts (k, streamsThatCanComeFromMem) = do
       map
         (buildSmartCacheItem iterationOrder k numberOfStreamDimensions)
         streamsToGoThroughSmartCache
-    paddedSmartCacheItems =
-      trace
-        ("smartCacheItems = \n" ++
-         concatMap (\s -> show s ++ "\n") smartCacheItems) $
-      padCacheItems smartCacheItems
+    paddedSmartCacheItems = padCacheItems smartCacheItems
     withInputStreamsUpdated =
       updateKernelInputStreams allSmartCacheOutputStreams k
     allSmartItemInputStreams = map inputStream paddedSmartCacheItems
