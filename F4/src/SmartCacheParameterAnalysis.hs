@@ -137,7 +137,7 @@ getMaxOffset all select centralIdx =
     then let (offset, _) =
                (headNote "SmartCacheParameterAnalysis: line 103" . sortStencils)
                  filtered
-          in offset
+          in (offset - 1)
     else 0
   where
     stripStencilIndex = map (\(Offset val) -> val)

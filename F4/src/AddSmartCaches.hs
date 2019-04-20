@@ -207,7 +207,7 @@ padCacheItems inputs = map updateCacheItem inputs
         , maxNegativeOffset = maxNegOffset
         , maxPositiveOffset = maxPosOffset
         , outputStreamNamesAndBufferIndex =
-            [(name, largestSize - (maxPosOffset - 1), RealOrigin)]
+            [(name, largestSize - maxPosOffset, RealOrigin)]
         }
       where
         (name, arrayName, inputValueType, inputDims) =

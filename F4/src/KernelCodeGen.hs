@@ -29,6 +29,7 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
         { argPositions =
             imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
         , kernelName = name
+        , pipelineNumber = 0
         , subroutineName = originalSubName
         }
     loopVarName = driverLoopIndexName sharedData
@@ -36,7 +37,7 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
     mainLoop =
       for
         loopVarName
-        (driverLoopLowerBound sharedData + 1)
+        (driverLoopLowerBound sharedData)
         (var driverLoopBoundVarName)
         (block [block pipeReads, kernelBodyWithoutAnnos, block pipeWrites])
     pipeReads = generatePipeReadsKernel mapKern
@@ -44,7 +45,7 @@ generateKernelCode mapKern@Map {..} = (kernel, callingData)
     kernelBodyWithoutAnnos = stripOpenCLAnnos fortran
     decls =
       declNode $
-      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData) :
+      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData - 1) :
       intDecl loopVarName : getDecls fortran
     args = getArgs fortran
     loopVars = getLoopVarNames fortran
@@ -59,6 +60,7 @@ generateKernelCode reduceKern@Reduce {..} = (kernel, callingData)
             imap (\idx (ArgName _ name) -> (idx, name)) loopVarArgsRemoved
         , kernelName = name
         , subroutineName = originalSubName
+        , pipelineNumber = 0
         }
     loopVarName = driverLoopIndexName sharedData
     driverLoopBoundVarName = "nloop"
@@ -66,12 +68,12 @@ generateKernelCode reduceKern@Reduce {..} = (kernel, callingData)
       block
         [ for
             loopVarName
-            (driverLoopLowerBound sharedData + 1)
+            (driverLoopLowerBound sharedData)
             (var driverLoopBoundVarName)
             (block [block pipeReads, kernelBodyWithoutAnnos])
         , for
             loopVarName
-            (driverLoopLowerBound sharedData + 1)
+            (driverLoopLowerBound sharedData)
             (var driverLoopBoundVarName)
             (block pipeWrites)
         ]
@@ -80,7 +82,7 @@ generateKernelCode reduceKern@Reduce {..} = (kernel, callingData)
     kernelBodyWithoutAnnos = stripOpenCLAnnos fortran
     decls =
       declNode $
-      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData) :
+      intParam driverLoopBoundVarName (driverLoopUpperBound sharedData - 1) :
       intDecl loopVarName : getDecls fortran
     args = getArgs fortran
     loopVars = getLoopVarNames fortran

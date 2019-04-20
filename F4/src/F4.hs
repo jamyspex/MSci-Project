@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-cse #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TupleSections   #-}
 
 module F4 where
 
@@ -114,9 +115,12 @@ compilerMain args = do
   -- kernels = [[Kernel]] representing pipelines
   kernels <- mapM getKernels (getOffloadSubs srtAfterKernelCombination)
   scalarisedKernels <-
-    concatMapM (processPipeline args (length kernels)) $ indexed kernels
+    mapM (processPipeline args (length kernels)) $ indexed kernels
+  let withPipelineNumber =
+        concat $
+        imap (\idx pipelineItems -> map (idx, ) pipelineItems) scalarisedKernels
   (fileName, deviceCode, callingData) <-
-    buildDeviceModule (length kernels) scalarisedKernels
+    buildDeviceModule (length kernels) withPipelineNumber
   mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
