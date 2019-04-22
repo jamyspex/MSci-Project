@@ -1,2 +1,0 @@
-# aveflow_trans.f can convert data10 and data11 to average outputs except buildings point
-# when we use gfortran, we should compile as follows::  gfortran  -mcmodel=large -fconvert=big-endian aveflow_trans.f 
