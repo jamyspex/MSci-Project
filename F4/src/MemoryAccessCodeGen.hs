@@ -60,6 +60,7 @@ generateMemoryReader memRead@MemoryReader {..} =
         { kernelName = name
         , argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg
         , subroutineName = ""
+        , pipelineNumber = 0
         }
     arrayArg = [argName memBufferName]
     decls = declNode (memBufferDecl : readOutVarDecl : loopVarDecls)
@@ -118,6 +119,7 @@ generateMemoryWriter memWriter@MemoryWriter {..} =
         { kernelName = name
         , argPositions = imap (\idx (ArgName _ name) -> (idx, name)) arrayArg
         , subroutineName = ""
+        , pipelineNumber = 0
         }
     arrayArg = pipeReadArgs
     decls = declNode (concat pipeReadDecls ++ map intDecl loopVars)

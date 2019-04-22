@@ -6,6 +6,7 @@ import           CodeGenUtils
 import qualified Data.Map             as DMap
 import           Data.Maybe
 import           Data.String.Utils
+import           Data.Tuple.Utils
 import           Debug.Trace
 import           FortranDSL
 import           Language.Fortran
@@ -33,7 +34,13 @@ generateAndPrintSmartCache smc@SmartCache {..} = do
 generateSmartCache ::
      PipelineItem SharedPipelineData -> (ProgUnit Anno, KernelCallingData)
 generateSmartCache smc@SmartCache {..} =
-  (smartCache, KCD {subroutineName = "", kernelName = name, argPositions = []})
+  ( smartCache
+  , KCD
+      { pipelineNumber = 0
+      , subroutineName = ""
+      , kernelName = name
+      , argPositions = []
+      })
   where
     decls = generateDecls smc
     (body, extraDecls) = buildSmartCacheBody smc -- FIXME need to pass the driver loop bounds here
@@ -53,7 +60,7 @@ buildSmartCacheBody ::
 buildSmartCacheBody smc@SmartCache {..} =
   ( for
       mainLoopVarName
-      (driverLoopLowerBound + 1)
+      driverLoopLowerBound
       (var mainLoopBoundName)
       mainLoopBody
   , requiredDecls ++ controlDecls)
@@ -77,7 +84,7 @@ buildSmartCacheBody smc@SmartCache {..} =
     controlDecls =
       [ intDecl mainLoopVarName
       , intDecl compIndexName
-      , intParam mainLoopBoundName mainLoopBoundVal
+      , intParam mainLoopBoundName (mainLoopBoundVal - 1)
       , intParam smartCacheSizeParamName smartCacheSize
       , intParam maxPosOffsetParamName maxPosOffset
       , intParam maxNegOffsetParamName maxNegOffset
@@ -111,7 +118,7 @@ generatePipeReads SmartCache {..} =
   concatMap
     (\(pipeName, arrayName) ->
        generatePipeReadCon
-         assignmentIdx
+         (assignmentIdx - 1)
          pipeName
          (arrayName ++ "_read_in")
          (arrayName ++ "_buffer"))
@@ -143,9 +150,9 @@ generatePipeWrites SmartCache {..} = fortran
   where
     fortran =
       concatMap
-        (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx))) ->
+        (\(Pipe _ _ pipeName _ _, (arrayName, (streamName, bufIdx, _))) ->
            generatePipeWriteCon
-             bufIdx
+             (bufIdx - 1)
              streamName
              (arrayName ++ "_buffer")
              pipeName) $
@@ -158,7 +165,7 @@ generatePipeWrites SmartCache {..} = fortran
       concatMap
         (\SmartCacheItem {..} ->
            map
-             (\t -> (fst t, (getArrayNameFromStream inputStream, t)))
+             (\t -> (fst3 t, (getArrayNameFromStream inputStream, t)))
              outputStreamNamesAndBufferIndex)
         cacheLines
     combined =
@@ -171,7 +178,7 @@ generateShiftLoop ::
      PipelineItem SharedPipelineData -> String -> ([Fortran Anno], [Decl Anno])
 generateShiftLoop SmartCache {..} smcSizeVariableName =
   ( [ pragma "unroll"
-    , for loopVarName 1 (var smcSizeVariableName `minus` con 1) loopBody
+    , for loopVarName 0 (var smcSizeVariableName `minus` con 2) loopBody
     ]
   , [intDecl loopVarName])
   where
@@ -205,7 +212,7 @@ generateOutVarDecls SmartCacheItem {..} =
     (\name -> typedDecl name (getFortranTypeForStream inputStream))
     outStreamNames
   where
-    outStreamNames = map fst outputStreamNamesAndBufferIndex
+    outStreamNames = map fst3 outputStreamNamesAndBufferIndex
 
 generateBufferDecls :: PipelineItem SharedPipelineData -> [Decl Anno]
 generateBufferDecls SmartCache {..} = map generateBufferDecl cacheLines
@@ -214,7 +221,7 @@ generateBufferDecls SmartCache {..} = map generateBufferDecl cacheLines
     generateBufferDecl SmartCacheItem {..} =
       bufferDecl
         (arrayName ++ "_buffer")
-        [(1, smartCacheSize)]
+        [(0, smartCacheSize - 1)]
         (getFortranTypeForStream inputStream)
       where
         Stream _ arrayName streamValueType _ = inputStream

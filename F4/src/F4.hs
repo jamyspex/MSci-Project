@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-cse #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TupleSections   #-}
 
 module F4 where
 
@@ -23,6 +24,7 @@ import           Data.Tuple.Utils
 import           Debug.Trace
 import           DetectDriverLoopSize
 import           DetectIndividualPipelines
+import           EnsureMemoryWriteback
 import           KernelCodeGen
 import           KernelExtraction
 import           Language.Fortran
@@ -113,21 +115,26 @@ compilerMain args = do
   -- kernels = [[Kernel]] representing pipelines
   kernels <- mapM getKernels (getOffloadSubs srtAfterKernelCombination)
   scalarisedKernels <-
-    concatMapM (processPipeline (length kernels)) $ indexed kernels
+    mapM (processPipeline args (length kernels)) $ indexed kernels
+  let withPipelineNumber =
+        concat $
+        imap (\idx pipelineItems -> map (idx, ) pipelineItems) scalarisedKernels
   (fileName, deviceCode, callingData) <-
-    buildDeviceModule (length kernels) scalarisedKernels
+    buildDeviceModule (length kernels) withPipelineNumber
   mapM_ print callingData
   writeToFile args (fileName ++ ".f95") (miniPPProgUnit deviceCode)
   return ()
 
-processPipeline :: Int -> (Int, [Kernel]) -> IO [PipelineStage]
-processPipeline totalPipelines (pipelineNumber, kernels) = do
+processPipeline :: F4Opts -> Int -> (Int, [Kernel]) -> IO [PipelineStage]
+processPipeline opts totalPipelines (pipelineNumber, kernels) = do
   let renamedKernels =
         map (addPipelineNamePrefix totalPipelines pipelineNumber) kernels
   driverLoopParams@(largestStreamName, largestStreamDims, _) <-
     detectDriverLoopSize renamedKernels
+  putStrLn (rule '+' ++ " Add Write Back Streams " ++ rule '+')
+  withWriteBackStreams <- ensureMemoryWriteBack renamedKernels
   putStrLn (rule '+' ++ " With Loop Guards " ++ rule '+')
-  withGuards <- mapM addLoopGuards renamedKernels -- (getOffloadSubs srtAfterKernelCombination)
+  withGuards <- mapM addLoopGuards withWriteBackStreams -- (getOffloadSubs srtAfterKernelCombination)
   putStrLn (rule '+' ++ " With Transit Streams " ++ rule '+')
   kernelsWithTransitStreams <- addTransitStreams withGuards
   putStrLn (rule '+' ++ " With Reduction Vars Linked " ++ rule '+')
@@ -138,7 +145,7 @@ processPipeline totalPipelines (pipelineNumber, kernels) = do
   putStrLn (rule '+' ++ " With Smart Caches " ++ rule '+')
   -- this is a [(Kernel, Maybe SmartCache)] representing kernels and their
   -- preceding smart cache if one is required
-  smartCacheKernelPairs <- insertSmartCaches withLoopVarsSynthesised
+  smartCacheKernelPairs <- insertSmartCaches opts withLoopVarsSynthesised
   putStrLn (rule '+' ++ " With Memory Readers " ++ rule '+')
   pipelineStages <- addMemoryAccesses smartCacheKernelPairs
   let withSharedDataUpdated =

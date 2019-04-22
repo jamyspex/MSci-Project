@@ -86,6 +86,7 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         , startToPointDistances = pairsFromStart
         , maxPosOffset = getMaxOffset all fst centralIdx
         , maxNegOffset = getMaxOffset all snd centralIdx
+        , centralPointIsSynthetic = centralPointNeedsAdded
         }
     (StencilStream name arrayName valueType dims (Stencil anno dimension numPoints coords varName)) =
       sten
@@ -103,18 +104,22 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
         valueType
         dims
         (Stencil anno dimension (length updatedCoords) updatedCoords varName)
-    all = calculateSmartCacheSizeForAllPairsOfStencilPoints itOrder toProcess
+    all =
+      calculateSmartCacheSizeForAllPairsOfStencilPoints
+        itOrder
+        (trace ("toProcess = \n" ++ show toProcess) toProcess)
     (maxNumBlocks, (maxStart, maxEnd)) =
       (head
-      -- Note
-      --    ("SmartCacheParameterAnalysis: line 89 : stream name = " ++
-      --     getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel))
+    -- Note
+    --    ("SmartCacheParameterAnalysis: line 89 : stream name = " ++
+    --     getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel))
         .
        sortStencils)
         centralIdxRemoved --all
     pairsFromStart =
       map (\(size, (_, point)) -> (point, size)) $
-      filter (\(_, (start, _)) -> start == maxStart) centralIdxRemoved
+      filter (\(_, (start, _)) -> start == maxStart) $
+      trace ("all = " ++ show all) all -- centralIdxRemoved
     centralIdxRemoved =
       filter
         (\(_, (start, end)) ->
@@ -132,7 +137,7 @@ getMaxOffset all select centralIdx =
     then let (offset, _) =
                (headNote "SmartCacheParameterAnalysis: line 103" . sortStencils)
                  filtered
-          in offset
+          in (offset - 1)
     else 0
   where
     stripStencilIndex = map (\(Offset val) -> val)
@@ -173,7 +178,8 @@ getMaxOffset all select centralIdx =
 -- significant index in this case -2 and 2 and repeats the process
 calculateSmartCacheSizeForAllPairsOfStencilPoints ::
      [Int] -> Stream Anno -> [(Int, ([Int], [Int]))]
-calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream streamName _ _ arrayDimens stencil)
+calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream streamName _ _ arrayDimens stencil) =
+  stencilSizesAndIndexPairs
     -- trace
     -- (  "calculateSmartCacheSizeForAllPairsOfStencilPoints: stream = "
     -- ++ streamName
@@ -184,22 +190,16 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
     -- ++ " result = "
     -- ++ show stencilSizesAndIndexPairs
     -- )
- = stencilSizesAndIndexPairs
   where
-    (Stencil _ stencilDimens _ stencilIndices _) = stencil
+    (Stencil _ stencilDimens _ stencilIndices _) =
+      trace ("stencil being used in calculations = " ++ show stencil) stencil
     stencilIndicesInts = stripStenIndex stencilIndices
     allIndexPairs =
       [(x, y) | x <- stencilIndicesInts, y <- stencilIndicesInts, x /= y]
     smallIndexFirstOnly =
       filter (\(x, y) -> compareIndices x y iterationOrder == LT) allIndexPairs
-    stencilSizesAndIndexPairs =
-      map
-        go
-        (trace
-           ("allIndexPairs = \n" ++
-            show allIndexPairs ++
-            "\nsmallIndexFirstOnly = \n" ++ show smallIndexFirstOnly)
-           smallIndexFirstOnly)
+    stencilSizesAndIndexPairs = map go smallIndexFirstOnly
+    go :: ([Int], [Int]) -> (Int, ([Int], [Int]))
     go (l1, l2) =
       let initial = ((l1, l2), True, 0)
           ((ol1, ol2), _, totArea) =

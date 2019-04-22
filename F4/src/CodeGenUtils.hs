@@ -8,6 +8,7 @@ import           Utils
 
 data KernelCallingData
   = KCD { kernelName     :: String
+        , pipelineNumber :: Int
         , argPositions   :: [(Int, String)]
         , subroutineName :: String }
   | NullCD

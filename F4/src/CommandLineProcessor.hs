@@ -5,15 +5,16 @@ import           Data.Semigroup      ((<>))
 import           Options.Applicative
 
 data F4Opts = F4Opts
-  { subsForFPGA     :: [String]
-  , cppDefines      :: [String]
-  , cppExcludes     :: [String]
-  , fixedForm       :: Bool
-  , mainSub         :: String
-  , ioSubs          :: [String]
-  , sourceDir       :: String
-  , loopFusionBound :: Maybe Float
-  , outputDir       :: String
+  { subsForFPGA                :: [String]
+  , cppDefines                 :: [String]
+  , cppExcludes                :: [String]
+  , fixedForm                  :: Bool
+  , mainSub                    :: String
+  , ioSubs                     :: [String]
+  , sourceDir                  :: String
+  , loopFusionBound            :: Maybe Float
+  , outputDir                  :: String
+  , flattenMemoryAccessKernels :: Bool
   }
 
 instance Show F4Opts where
@@ -57,6 +58,13 @@ mainSubParser =
   strOption
     (long "main" <> short 'm' <> metavar "<MAIN FILE>" <>
      help "Main file with time step loop.")
+
+flattenMemoryAccessParser :: Parser Bool
+flattenMemoryAccessParser =
+  switch
+    (long "flattenMemoryAccess" <>
+     help
+       "Generate memory access kernels with 1D loops, which accept 1D arrays as input.")
 
 subsForFPGAParser :: Parser [String]
 subsForFPGAParser =
@@ -117,7 +125,8 @@ f4Opts =
   ioSubsParser <*>
   sourceDirParser <*>
   loopFusionBoundParser <*>
-  outputDirectoryParser
+  outputDirectoryParser <*>
+  flattenMemoryAccessParser
 
 f4CmdParser :: ParserInfo F4Opts
 f4CmdParser =

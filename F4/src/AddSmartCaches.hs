@@ -3,6 +3,7 @@
 
 module AddSmartCaches where
 
+import           CommandLineProcessor
 import           Data.Ix
 import           Data.List
 import           Data.List.Index
@@ -10,6 +11,7 @@ import qualified Data.Map                    as DMap
 import           Data.Maybe
 import qualified Data.Set                    as Set
 import           Data.Tuple
+import           Data.Tuple.Utils
 import           Debug.Trace
 import           GHC.Exts
 import           Language.Fortran
@@ -24,9 +26,11 @@ import           Utils
 -- input streams. If it finds StencilStream inputs it constructs an appropriate smart cache
 -- and inserts it into the list with the appropriate position value set.
 insertSmartCaches ::
-     [Kernel] -> IO [(Kernel, Maybe (PipelineItem SharedPipelineData))]
-insertSmartCaches kernels =
-  mapM buildSmartCacheForKernel kernelsAndMemoryStreamable
+     F4Opts
+  -> [Kernel]
+  -> IO [(Kernel, Maybe (PipelineItem SharedPipelineData))]
+insertSmartCaches options kernels =
+  mapM (buildSmartCacheForKernel options) kernelsAndMemoryStreamable
   where
     kernelsAndMemoryStreamable = findStreamsThatCanComeFromMemoryReader kernels
 
@@ -68,9 +72,10 @@ findStreamsThatCanComeFromMemoryReader kernels =
 -- streams to form one smart cache that can be place before the kernel
 -- and will then provide it with the appropriate input streams
 buildSmartCacheForKernel ::
-     (Kernel, Set.Set String)
+     F4Opts
+  -> (Kernel, Set.Set String)
   -> IO (Kernel, Maybe (PipelineItem SharedPipelineData))
-buildSmartCacheForKernel (k, streamsThatCanComeFromMem) = do
+buildSmartCacheForKernel opts (k, streamsThatCanComeFromMem) = do
   print "------------------------------------------"
   print withInputStreamsUpdated
   print "------------------------------------------"
@@ -82,11 +87,6 @@ buildSmartCacheForKernel (k, streamsThatCanComeFromMem) = do
   where
     hasStencilStreams = any isStencil $ inputs k
     stencilStreamInputs = filter isStencil $ inputs k
-  -- The criteria for adding a smart cache is that
-  -- a kernel requires ANY stencil stream inputs that can not come
-  -- from memory. So check if all the input stencil stream can come from
-  -- memory because if they can then only they need to go through the
-  -- smart cache rather than all the input streams to the kernel
     allStencilStreamsComeFromMem =
       all
         (\s -> getStreamName s `Set.member` streamsThatCanComeFromMem)
@@ -94,25 +94,26 @@ buildSmartCacheForKernel (k, streamsThatCanComeFromMem) = do
     streamsToGoThroughSmartCache =
       filter
         (\s
-          -- If all stencil streams come from memory then transit and normal streams
-          -- do not need to go through the smart cache as they do not need to be
-          -- kept in sync with the stencil streams as they come from a memory reader
-          -- which only outputs one stream each therefore there is no deadlock issue.
+        -- If all stencil streams come from memory then transit and normal streams
+        -- do not need to go through the smart cache as they do not need to be
+        -- kept in sync with the stencil streams as they come from a memory reader
+        -- which only outputs one stream each therefore there is no deadlock issue.
           ->
            (not allStencilStreamsComeFromMem &&
             (getStreamName s `Set.notMember` streamsThatCanComeFromMem) ||
             (hasStencilStreams && isTransit s))
-          -- Stencil streams always need to go through the smart cache in order
-          -- have their different components generated.
+        -- Stencil streams always need to go through the smart cache in order
+        -- have their different components generated.
             ||
            isStencil s) $
       inputs k
     streamDimensionsOrders =
       map (length . getStreamDimensions) streamsToGoThroughSmartCache
     numberOfStreamDimensions = maximum streamDimensionsOrders
+    iterationOrder = defaultIterationOrder numberOfStreamDimensions
     smartCacheItems =
       map
-        (buildSmartCacheItem k numberOfStreamDimensions)
+        (buildSmartCacheItem iterationOrder k numberOfStreamDimensions)
         streamsToGoThroughSmartCache
     paddedSmartCacheItems = padCacheItems smartCacheItems
     withInputStreamsUpdated =
@@ -135,6 +136,11 @@ buildSmartCacheForKernel (k, streamsThatCanComeFromMem) = do
         , stageNumber = order k
         }
 
+-- The criteria for adding a smart cache is that
+-- a kernel requires ANY stencil stream inputs that can not come
+-- from memory. So check if all the input stencil stream can come from
+-- memory because if they can then only they need to go through the
+-- smart cache rather than all the input streams to the kernel
 -- TODO This posibly needs to be more advanced when deciding which
 -- streams to add to the smart cache as non stencil streams which do
 -- not come from memory will need to be kept in sync with the smart
@@ -154,7 +160,7 @@ buildStream SmartCacheTransitItem {..} = [Stream name arrayName valueType dims]
       , getStreamDimensions inputStream)
 buildStream SmartCacheItem {..} =
   map
-    (\(name, _) -> Stream name arrayName inputValueType inputDimensions)
+    (\(name, _, _) -> Stream name arrayName inputValueType inputDimensions)
     outputStreamNamesAndBufferIndex
   where
     (Stream _ arrayName inputValueType inputDimensions) = inputStream
@@ -188,6 +194,11 @@ padCacheItems inputs = map updateCacheItem inputs
     maxPosOffset = maximum $ map maxPositiveOffset stencilItems
     maxNegOffset = maximum $ map maxNegativeOffset stencilItems
     largestSize = maximum $ map size stencilItems
+    largestOriginOffset =
+      snd3 $
+      maximumBy (\(_, o1, _) (_, o2, _) -> o1 `compare` o2) $
+      filter (\(_, _, originType) -> isOrigin originType) $
+      concatMap outputStreamNamesAndBufferIndex stencilItems
     updateCacheItem :: SmartCacheItem -> SmartCacheItem
     updateCacheItem item@SmartCacheTransitItem {..} =
       SmartCacheItem
@@ -196,7 +207,7 @@ padCacheItems inputs = map updateCacheItem inputs
         , maxNegativeOffset = maxNegOffset
         , maxPositiveOffset = maxPosOffset
         , outputStreamNamesAndBufferIndex =
-            [(name, largestSize - (maxPosOffset - 1))]
+            [(name, largestSize - maxPosOffset, RealOrigin)]
         }
       where
         (name, arrayName, inputValueType, inputDims) =
@@ -205,30 +216,56 @@ padCacheItems inputs = map updateCacheItem inputs
           , getStreamType inputStream
           , getStreamDimensions inputStream)
     updateCacheItem org@SmartCacheItem {..} =
-      if sizeDiff > 0
+      if diffOffset > 0
         then updated
         else org
       where
         sizeDiff = largestSize - size
+        originOffset =
+          snd3 $
+          headNote
+            ("outputStreamNamesAndBufferIndex = " ++
+             show outputStreamNamesAndBufferIndex) $
+          filter
+            (\(_, _, originType) -> isOrigin originType)
+            outputStreamNamesAndBufferIndex
+        diffOffset = largestOriginOffset - originOffset
+        withOriginRemovedIfSynthetic =
+          filter
+            (\(_, _, originType) -> (not . isSyntheticOrigin) originType)
+            outputStreamNamesAndBufferIndex
         updated =
           org
             { size = largestSize
             , outputStreamNamesAndBufferIndex =
                 map
-                  (\(name, idx) -> (name, idx + sizeDiff))
+                  (\(name, idx, originType) ->
+                     (name, idx + diffOffset, originType) -- idx + sizeDiff))
+                   )
                   outputStreamNamesAndBufferIndex
             }
+
+isSyntheticOrigin ot =
+  case ot of
+    SyntheticOrigin -> True
+    _               -> False
+
+isOrigin ot =
+  case ot of
+    RealOrigin      -> True
+    SyntheticOrigin -> True
+    NotOrigin       -> False
 
 -- Using the stencil points match the results from SmartCacheParameterAnalysis with
 -- the generated output variable names. The smart cache buffer will be a standard
 -- Fortran array with 1 based indexing. This means the values from startToPointDistances
 -- in the SmartCacheDetails structure can be used directly as the indices.
-buildSmartCacheItem :: Kernel -> Int -> Stream Anno -> SmartCacheItem
-buildSmartCacheItem _ _ stream@Stream {} =
+buildSmartCacheItem :: [Int] -> Kernel -> Int -> Stream Anno -> SmartCacheItem
+buildSmartCacheItem _ _ _ stream@Stream {} =
   SmartCacheTransitItem {inputStream = stream, size = 1}
-buildSmartCacheItem _ _ transStream@TransitStream {} =
+buildSmartCacheItem _ _ _ transStream@TransitStream {} =
   SmartCacheTransitItem {inputStream = transStream, size = 1}
-buildSmartCacheItem kernel streamDimensionOrder inStream =
+buildSmartCacheItem iterationOrder kernel streamDimensionOrder inStream =
   SmartCacheItem
     { size = requiredBufferSize
     , inputStream = convertStencilStream inStream
@@ -238,19 +275,47 @@ buildSmartCacheItem kernel streamDimensionOrder inStream =
     }
   where
     outputVars = getSmartCacheOutputVars kernel inStream
-    SmartCacheDetailsForStream {..} =
-      calculateSmartCacheDetailsForStream
-        (Just kernel)
-        (defaultIterationOrder streamDimensionOrder)
-        inStream
+    s@SmartCacheDetailsForStream {..} =
+      calculateSmartCacheDetailsForStream (Just kernel) iterationOrder inStream
     pointToStreamNameMap = DMap.fromList outputVars
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           (pointToStreamNameMap DMap.! map Offset point, buffIndex) : acc)
+           ( synthenticOriginPointNameWorkaround
+               (originType point)
+               (map Offset point)
+               pointToStreamNameMap --  pointToStreamNameMap DMap.! map Offset point
+           , buffIndex
+           , originType point) :
+           acc)
         []
         pointsAndDistances
-    pointsAndDistances = (startIndex, 1) : startToPointDistances
+    originType point =
+      if point == originPoint
+        then if centralPointIsSynthetic
+               then SyntheticOrigin
+               else RealOrigin
+        else NotOrigin
+    originPoint = replicate (length $ getStreamDimensions inStream) 0
+    pointsAndDistances =
+      (startIndex, 1) :
+      trace
+        ("Smart cache details of stream:\n" ++ show inStream ++ "\n" ++ show s)
+        startToPointDistances
+
+-- god this is getting hairy
+-- If its a synthetic origin then it won't have appeared as a stencil index
+-- therefore there won't be a stream name for it in the map
+-- This doesn't matter because its only used in padding calculation and then
+-- discarded so just return an empty string for the stream name if it is
+-- an artifical origin point and trust it all works out in the end
+synthenticOriginPointNameWorkaround ::
+     StencilOriginType
+  -> [StencilIndex]
+  -> DMap.Map [StencilIndex] String
+  -> String
+synthenticOriginPointNameWorkaround SyntheticOrigin stencilIdx map = ""
+synthenticOriginPointNameWorkaround _ stencilIdx map = map DMap.! stencilIdx
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]
