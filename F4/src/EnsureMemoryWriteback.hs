@@ -1,6 +1,6 @@
 module EnsureMemoryWriteback where
 
-import           Data.List            (foldl')
+import           Data.List            (foldl', nubBy)
 import qualified Data.Set             as Set
 import           LanguageFortranTools
 import           Utils
@@ -16,21 +16,25 @@ ensureMemoryWriteBack kernels = do
     readBeforeWritten = getReadBeforeWritten kernels
     updatedLastKernel =
       lastKernel
-        { outputs = outputs lastKernel ++ streamsToWriteBack
+        { outputs =
+            nubBy
+              (\s1 s2 -> getArrayNameFromStream s1 == getArrayNameFromStream s2)
+              (outputs lastKernel ++ streamsToWriteBack)
         , inputs = updatedLastInputs
         }
     lastKernel = last kernels
     updatedLastInputs =
       foldl
         (\acc cur ->
-           if getStreamName cur `Set.notMember` lastKernelCurrentInputs
+           if getArrayNameFromStream cur `Set.notMember` lastKernelCurrentInputs
              then cur : acc
              else acc)
         (inputs lastKernel)
         streamsToWriteBack
     lastKernelCurrentInputs =
-      Set.fromList $ map getStreamName $ inputs lastKernel
-    lastKernelOutputs = Set.fromList $ map getStreamName $ outputs lastKernel
+      Set.fromList $ map getArrayNameFromStream $ inputs lastKernel
+    lastKernelOutputs =
+      Set.fromList $ map getArrayNameFromStream $ outputs lastKernel
     streamsToWriteBack =
       filter
         (\s -> getStreamName s `Set.notMember` lastKernelOutputs)

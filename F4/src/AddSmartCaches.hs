@@ -119,7 +119,7 @@ buildSmartCacheForKernel opts (k, streamsThatCanComeFromMem) = do
     withInputStreamsUpdated =
       updateKernelInputStreams allSmartCacheOutputStreams k
     allSmartItemInputStreams = map inputStream paddedSmartCacheItems
-    allSmartCacheOutputStreams = concatMap buildStream smartCacheItems
+    allSmartCacheOutputStreams = concatMap buildStream paddedSmartCacheItems
     cacheSize = (size . headNote "line 66") paddedSmartCacheItems
     name = kernelName k ++ "_smart_cache"
     smartCache =
@@ -186,10 +186,12 @@ stencilItemsOnly =
 -- than the largest buffer thats going to be in the smart cache. It also updates
 -- the buffer indices to valid in line with the newly padded size
 padCacheItems :: [SmartCacheItem] -> [SmartCacheItem]
-padCacheItems inputs = map updateCacheItem inputs
+padCacheItems inputs =
+  trace ("unpadded =\n" ++ show inputs ++ "\npadded =\n" ++ show padded) padded
     -- inputSorted = sortBy (\x y -> size y `compare` size x) inputs
     -- largestSize = size $ headNote "line 108" inputSorted
   where
+    padded = map updateCacheItem inputs
     stencilItems = stencilItemsOnly inputs
     maxPosOffset = maximum $ map maxPositiveOffset stencilItems
     maxNegOffset = maximum $ map maxNegativeOffset stencilItems
@@ -215,10 +217,12 @@ padCacheItems inputs = map updateCacheItem inputs
           , getArrayNameFromStream inputStream
           , getStreamType inputStream
           , getStreamDimensions inputStream)
-    updateCacheItem org@SmartCacheItem {..} =
-      if diffOffset > 0
-        then updated
-        else org
+    updateCacheItem org@SmartCacheItem {..} = updated
+      -- trace
+      --   ("diffOffset = " ++ show diffOffset)
+      --   (if diffOffset /= 0
+      --      then updated
+      --      else org)
       where
         sizeDiff = largestSize - size
         originOffset =
@@ -242,7 +246,7 @@ padCacheItems inputs = map updateCacheItem inputs
                   (\(name, idx, originType) ->
                      (name, idx + diffOffset, originType) -- idx + sizeDiff))
                    )
-                  outputStreamNamesAndBufferIndex
+                  withOriginRemovedIfSynthetic
             }
 
 isSyntheticOrigin ot =
@@ -281,7 +285,7 @@ buildSmartCacheItem iterationOrder kernel streamDimensionOrder inStream =
     pointsAndVarNames =
       foldl
         (\acc (point, buffIndex) ->
-           ( synthenticOriginPointNameWorkaround
+           ( syntheticOriginPointNameWorkaround
                (originType point)
                (map Offset point)
                pointToStreamNameMap --  pointToStreamNameMap DMap.! map Offset point
@@ -309,13 +313,13 @@ buildSmartCacheItem iterationOrder kernel streamDimensionOrder inStream =
 -- This doesn't matter because its only used in padding calculation and then
 -- discarded so just return an empty string for the stream name if it is
 -- an artifical origin point and trust it all works out in the end
-synthenticOriginPointNameWorkaround ::
+syntheticOriginPointNameWorkaround ::
      StencilOriginType
   -> [StencilIndex]
   -> DMap.Map [StencilIndex] String
   -> String
-synthenticOriginPointNameWorkaround SyntheticOrigin stencilIdx map = ""
-synthenticOriginPointNameWorkaround _ stencilIdx map = map DMap.! stencilIdx
+syntheticOriginPointNameWorkaround SyntheticOrigin stencilIdx map = ""
+syntheticOriginPointNameWorkaround _ stencilIdx map = map DMap.! stencilIdx
 
 -- build variable names for output streams based on stencil points
 getSmartCacheOutputVars :: Kernel -> Stream Anno -> [([StencilIndex], String)]

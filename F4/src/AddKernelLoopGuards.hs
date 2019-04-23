@@ -54,6 +54,7 @@ addOutputStreamsAsInput kernel = do
   return kernel {inputs = inputs kernel ++ toAdd}
   where
     notCurrentlyAnInput =
+      nubBy (\s1 s2 -> getArrayNameFromStream s1 == getArrayNameFromStream s2) $
       filter
         (\os -> getStreamName os `Set.notMember` currentInputNames)
         availFromMem

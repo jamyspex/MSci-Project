@@ -19,9 +19,8 @@ import           Utils
 -- down columns -> along rows -> back to front
 defaultIterationOrder dims = range (0, dims - 1)
 
-flattenedCArrayStyle :: Int -> [Int]
-flattenedCArrayStyle = reverse . defaultIterationOrder
-
+-- flattenedCArrayStyle :: Int -> [Int]
+-- flattenedCArrayStyle = reverse . defaultIterationOrder
 -- Helper method to print all the sizes of all the different
 -- combination of stencil points in a stream
 printResults stream itOrder =
@@ -115,7 +114,7 @@ calculateSmartCacheDetailsForStream kernel itOrder sten = details
     --     getStreamName sten ++ "\nkernel = \n" ++ show (fromJust kernel))
         .
        sortStencils)
-        centralIdxRemoved --all
+        all
     pairsFromStart =
       map (\(size, (_, point)) -> (point, size)) $
       filter (\(_, (start, _)) -> start == maxStart) $
@@ -198,7 +197,9 @@ calculateSmartCacheSizeForAllPairsOfStencilPoints iterationOrder (StencilStream 
       [(x, y) | x <- stencilIndicesInts, y <- stencilIndicesInts, x /= y]
     smallIndexFirstOnly =
       filter (\(x, y) -> compareIndices x y iterationOrder == LT) allIndexPairs
-    stencilSizesAndIndexPairs = map go smallIndexFirstOnly
+    stencilSizesAndIndexPairs =
+      trace ("smallIndexFirstOnly = " ++ show smallIndexFirstOnly) $
+      map go smallIndexFirstOnly
     go :: ([Int], [Int]) -> (Int, ([Int], [Int]))
     go (l1, l2) =
       let initial = ((l1, l2), True, 0)

@@ -64,6 +64,7 @@ buildSmartCacheBody smc@SmartCache {..} =
       (var mainLoopBoundName)
       mainLoopBody
   , requiredDecls ++ controlDecls)
+    -- smcWithSynthOriginsRemoved = removeDummyOrigins smc
   where
     SPD {..} = sharedData
     mainLoopBody =

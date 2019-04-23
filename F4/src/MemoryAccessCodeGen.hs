@@ -107,7 +107,7 @@ getFlattenArrayUpperBound FPGAMemArray {..} =
 generateMemoryWriter ::
      PipelineItem SharedPipelineData -> (ProgUnit Anno, KernelCallingData)
 generateMemoryWriter memWriter@MemoryWriter {..} =
-  if valid
+  if True -- valid
     then (kernel, callingData)
     else error "All buffer dimensions not equal in memory writer"
   where
