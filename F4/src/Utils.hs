@@ -101,6 +101,28 @@ data StencilOriginType
   | NotOrigin
   deriving (Show, Eq)
 
+removeDummyOrigins ::
+     PipelineItem SharedPipelineData -> PipelineItem SharedPipelineData
+removeDummyOrigins smc@SmartCache {..} = smc {cacheLines = synthOriginsRemoved}
+  where
+    synthOriginsRemoved =
+      map
+        (\smci@SmartCacheItem {..} ->
+           smci
+             { outputStreamNamesAndBufferIndex =
+                 filter
+                   (\(_, _, originType) ->
+                      if originType /= SyntheticOrigin
+                        then trace
+                               ("Not removing origin type = " ++ show originType)
+                               True
+                        else trace
+                               ("Removing origin type = " ++ show originType)
+                               False)
+                   outputStreamNamesAndBufferIndex
+             })
+        cacheLines
+
 instance Show SmartCacheItem where
   show SmartCacheTransitItem {..} =
     "-------------------------------\n" ++

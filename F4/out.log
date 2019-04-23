@@ -2027,11 +2027,18 @@ wet_j_k is largest stream size = 252004 dims used to calculate this = [(0,501),(
 
 Streams to write back:
 	Stream "eta_j_k" "eta" Float [(0,501),(0,501)]
+	Stream "h_j_k" "h" Float [(0,501),(0,501)]
+	Stream "u_j_k" "u" Float [(0,501),(0,501)]
+	Stream "v_j_k" "v" Float [(0,501),(0,501)]
+	Stream "wet_j_k" "wet" Int [(0,501),(0,501)]
 
 Last kernel updated = 
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
@@ -2312,6 +2319,9 @@ Inputs to add =
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
@@ -2356,12 +2366,9 @@ end subroutine vernieuw
 Adding memory input for output
 kernel outputs = [Stream "h_j_k" "h" Float [(0,501),(0,501)],Stream "u_j_k" "u" Float [(0,501),(0,501)],Stream "v_j_k" "v" Float [(0,501),(0,501)],Stream "wet_j_k" "wet" Int [(0,501),(0,501)],Stream "eta_j_k" "eta" Float [(0,501),(0,501)]]
 availableFromMem = [Stream "h_j_k" "h" Float [(0,501),(0,501)],Stream "u_j_k" "u" Float [(0,501),(0,501)],Stream "v_j_k" "v" Float [(0,501),(0,501)],Stream "wet_j_k" "wet" Int [(0,501),(0,501)],Stream "eta_j_k" "eta" Float [(0,501),(0,501)]]
-currentInputNames = fromList ["eta_j_k","h_j_k","hzero_j_k","un_j_k","vn_j_k"]
-notCurrentlyAnInput = [Stream "u_j_k" "u" Float [(0,501),(0,501)],Stream "v_j_k" "v" Float [(0,501),(0,501)],Stream "wet_j_k" "wet" Int [(0,501),(0,501)]]
+currentInputNames = fromList ["eta_j_k","h_j_k","hzero_j_k","u_j_k","un_j_k","v_j_k","vn_j_k","wet_j_k"]
+notCurrentlyAnInput = []
 Inputs to add = 
-	Stream "u_j_k" "u" Float [(0,501),(0,501)]
-	Stream "v_j_k" "v" Float [(0,501),(0,501)]
-	Stream "wet_j_k" "wet" Int [(0,501),(0,501)]
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2399,6 +2406,12 @@ StencilStream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]!	
 shapiro requires:
 Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
+Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+vernieuw requires:
+Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+vernieuw requires:
+Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
+vernieuw requires:
 Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
 Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
@@ -2408,12 +2421,6 @@ vernieuw requires:
 Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 vernieuw requires:
 Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-vernieuw requires:
-Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
-vernieuw requires:
-Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
-vernieuw requires:
-Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 
 
 --------------------------------------------------------------------------------
@@ -2658,14 +2665,14 @@ end subroutine shapiro
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -2921,14 +2928,14 @@ end subroutine shapiro
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -3192,14 +3199,14 @@ end subroutine shapiro
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -3492,14 +3499,14 @@ end subroutine shapiro
  ! ==============================================
  ! Name: vernieuw Order: 4
  ! Input streams:
+ !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+ !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+ !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
  !	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
  !	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
  !	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
- !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
- !	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
- !	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
  ! Output streams:
  !	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
  !	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
@@ -3884,7 +3891,7 @@ Cache Lines:
 	-------------------------------
 	Smart cache item
 	Input stream: un_j_k
-	Buffer size: 503
+	Buffer size: 1005
 	Max positive offset = 0
 	Max negative offset = 502
 	Stream Dimensions: [(0,501),(0,501)]
@@ -4120,14 +4127,14 @@ This is a map kernel.
 Name:vernieuw
 --------------------------------------------------------------------------------
 Input Streams:
+	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
+	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
+	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
 	Stream: eta_j_k array name: eta type: Float dimensions: [(0,501),(0,501)]
 	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: hzero_j_k array name: hzero type: Float dimensions: [(0,501),(0,501)]
 	Stream: un_j_k array name: un type: Float dimensions: [(0,501),(0,501)]
 	Stream: vn_j_k array name: vn type: Float dimensions: [(0,501),(0,501)]
-	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
-	Stream: v_j_k array name: v type: Float dimensions: [(0,501),(0,501)]
-	Stream: wet_j_k array name: wet type: Int dimensions: [(0,501),(0,501)]
 OutputStreams:
 	Stream: h_j_k array name: h type: Float dimensions: [(0,501),(0,501)]
 	Stream: u_j_k array name: u type: Float dimensions: [(0,501),(0,501)]
